@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Build output
+dist/
+dist-ssr/
+build/
+
+# Uploads & logs
+uploads/
+logs/
+*.log
+
+# Editor / OS files
+.vscode/*
+.opencode/
+.planning/
+graphify-out/
+
+
+File Ownership.md
+Team Task Allocation.md
+Building flow.md
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.sw?
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Project working docs (local only per team decision)
+AGENTS.md
+PROGRESS.md
