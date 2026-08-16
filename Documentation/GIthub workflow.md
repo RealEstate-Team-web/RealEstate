@@ -143,9 +143,9 @@ git commit -m "Implement property CRUD"
 git push origin feature/property
 ```
 
-Bob **does NOT merge**.
+mola **does NOT merge**.
 
-Bob opens a Pull Request.
+mola opens a Pull Request.
 
 ---
 
@@ -228,7 +228,7 @@ Now everyone can use the new feature.
 
 # 🔄 Another Developer Scenario
 
-Charlie started working before Bob merged.
+mila started working before mola merged.
 
 mola merges:
 
