@@ -106,7 +106,7 @@ Stores common information for every platform user.
 | first_name | VARCHAR(100) | NOT NULL |
 | last_name | VARCHAR(100) | NOT NULL |
 | email | VARCHAR(190) | UNIQUE, NOT NULL |
-| phone | VARCHAR(20) | UNIQUE, NULL |
+| phone | VARCHAR(20) | UNIQUE, NOT NULL |
 | role | ENUM('buyer','agent','admin') | NOT NULL, DEFAULT 'buyer' |
 | status | ENUM('active','suspended') | NOT NULL, DEFAULT 'active' |
 | profile_image_url | VARCHAR(500) | NULL |
