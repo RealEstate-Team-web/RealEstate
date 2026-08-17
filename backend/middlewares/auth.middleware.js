@@ -39,8 +39,13 @@ const authenticate = async (req, res, next) => {
 
     next();
   } catch (error) {
-    error.status = error.status || 401;
-    next(error);
+    const err = new Error(
+      error.name === "TokenExpiredError"
+        ? "Session expired, please log in again"
+        : "Invalid or expired token",
+    );
+    err.status = 401;
+    return next(err);
   }
 };
 
