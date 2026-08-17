@@ -10,10 +10,10 @@ How every developer creates and reviews database tables for this project.
 
 | Developer | Feature | Tables they own |
 |---|---|---|
-| Dev 1 | Authentication | `users`, `user_credentials`, `password_reset_tokens` |
+| Dev 1 | Authentication + Admin Dashboard | `users`, `user_credentials`, `password_reset_tokens`, `agent_profiles` |
 | Dev 2 | Landing Page (public browse, read-only) | none — reads `properties`, `property_categories` |
 | Dev 3 | Buyer/Tenant Dashboard | `favorites`, `visit_bookings`, `messages`, `notifications` |
-| Dev 4 | Agent Module (property creation) + Admin | `agent_profiles`, `properties`, `property_images`, `property_categories`, `amenities`, `property_amenities` |
+| Dev 4 | Agent Module (property creation) | `properties`, `property_images`, `property_categories`, `amenities`, `property_amenities` |
 
 **The schema is shared.** A table is "owned" by a feature developer, but everything is version-controlled and anyone may raise issues. You may not modify a shared table without communicating with the team (see section 9).
 
