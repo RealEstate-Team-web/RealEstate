@@ -11,9 +11,10 @@ function errorHandler(err, req, res, next) {
       ? "Internal Server Error"
       : err.message || "Internal Server Error";
 
-  res.status(status).json({
+res.status(status).json({
     success: false,
     message,
+    ...(err.errors ? { errors: err.errors } : {}),
   });
 }
 

@@ -217,7 +217,6 @@
 
 ## Database
 
-- [ ] Agent Profile Table
 - [ ] Properties
 - [ ] Property Images
 - [ ] Categories
