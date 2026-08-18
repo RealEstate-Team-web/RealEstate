@@ -1,5 +1,5 @@
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const phonePattern = /^[0-9+\-\s()]{10,13}$/;
+const phonePattern = /^\+?[0-9]{7,15}$/;
 
 function validationError(errors) {
   const error = new Error("Validation failed");

@@ -3,7 +3,7 @@ const authService = require("../services/auth.service");
 const register = async (req, res, next) => {
   try {
     const { firstName, lastName, email, phone, password, role } = req.body;
-    await authService.register({
+    const user = await authService.register({
       firstName,
       lastName,
       email,
@@ -15,6 +15,7 @@ const register = async (req, res, next) => {
     res.status(201).json({
       success: true,
       message: "Account created successfully.",
+      user,
     });
   } catch (error) {
     next(error);
@@ -33,7 +34,7 @@ const registerAgent = async (req, res, next) => {
       licenseNumber,
       experience,
     } = req.body;
-    await authService.registerAgent({
+    const user = await authService.registerAgent({
       firstName,
       lastName,
       email,
@@ -47,6 +48,7 @@ const registerAgent = async (req, res, next) => {
     res.status(201).json({
       success: true,
       message: "Registration submitted. Waiting for admin approval.",
+      user,
     });
   } catch (error) {
     next(error);

@@ -60,7 +60,8 @@ async function register({ firstName, lastName, email, phone, password, role, age
     }
 
     await connection.commit();
-    return userId;
+    const created = await User.findUserByEmail(email);
+    return toSafeUser(created);
   } catch (error) {
     await connection.rollback();
     if (error.code === "ER_DUP_ENTRY") {
