@@ -19,12 +19,11 @@ export const Dashboard = () => {
 
   const firstName = user?.firstName || user?.name?.split(' ')[0] || 'Abebe';
 
-  // Stat cards matching UI reference screenshot 1
   const stats = [
     {
       title: 'Total Saved Properties',
       value: '12',
-      change: '↑ 12% from last month',
+      change: '12% from last month',
       icon: Home,
       iconBg: 'bg-blue-50 text-blue-600',
       changeColor: 'text-emerald-600',
@@ -32,7 +31,7 @@ export const Dashboard = () => {
     {
       title: 'Upcoming Visits',
       value: '3',
-      change: 'month',
+      change: 'this month',
       icon: Calendar,
       iconBg: 'bg-indigo-50 text-indigo-600',
       changeColor: 'text-slate-400',
@@ -40,7 +39,7 @@ export const Dashboard = () => {
     {
       title: 'Recent Searches',
       value: '5',
-      change: 'month',
+      change: 'this month',
       icon: Search,
       iconBg: 'bg-slate-100 text-slate-600',
       changeColor: 'text-slate-400',
@@ -48,7 +47,7 @@ export const Dashboard = () => {
     {
       title: 'New Recommendations',
       value: '4',
-      change: '↑ 25% from last month',
+      change: '25% from last month',
       icon: Sparkles,
       iconBg: 'bg-emerald-50 text-emerald-600',
       changeColor: 'text-emerald-600',
@@ -94,7 +93,7 @@ export const Dashboard = () => {
     {
       id: 101,
       title: 'Luxury Villa',
-      specs: '4 Bed • 3 Bath • 330m²',
+      specs: '4 Bed - 3 Bath - 330m²',
       type: 'Villa',
       location: 'Bole, Addis Ababa',
       price: '$350,000',
@@ -106,19 +105,19 @@ export const Dashboard = () => {
     {
       id: 102,
       title: 'Modern Apartment',
-      specs: '2 Bed • 2 Bath • 188m²',
+      specs: '2 Bed - 2 Bath - 188m²',
       type: 'Apartment',
       location: 'Kazanchis, Addis Ababa',
       price: '$130,000',
       status: 'Pending',
       statusColor: 'bg-amber-50 text-amber-700 font-semibold',
       views: 128,
-      img: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&q=80&w=200',
+      img: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&q=80&w=400',
     },
     {
       id: 103,
       title: 'Family House',
-      specs: '3 Bed • 7 Bath • 180m²',
+      specs: '3 Bed - 7 Bath - 180m²',
       type: 'House',
       location: 'Yeka, Addis Ababa',
       price: '$200,000',
@@ -164,12 +163,12 @@ export const Dashboard = () => {
       {/* Welcome Greeting Banner */}
       <div>
         <h1 className="text-xl lg:text-2xl font-bold text-slate-900 tracking-tight">
-          Welcome back, {firstName}! 👋
+          Welcome back, {firstName}!
         </h1>
         <p className="text-xs text-slate-500 mt-1">Here's what's happening with your properties today.</p>
       </div>
 
-      {/* 4 Stat Overview Cards matching UI Screenshot 1 */}
+      {/* 4 Stat Overview Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((stat, idx) => (
           <div
@@ -185,7 +184,8 @@ export const Dashboard = () => {
                 <stat.icon size={20} />
               </div>
             </div>
-            <div className={`mt-3 text-[11px] font-medium ${stat.changeColor}`}>
+            <div className={`mt-3 text-[11px] font-medium flex items-center gap-1 ${stat.changeColor}`}>
+              <TrendingUp size={13} />
               <span>{stat.change}</span>
             </div>
           </div>
@@ -194,7 +194,7 @@ export const Dashboard = () => {
 
       {/* Middle Section: Property Views Chart & Recent Messages */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left: Property Views Over Time Chart (Exact Match to Screenshot 1) */}
+        {/* Left: Property Views Over Time Chart */}
         <div className="lg:col-span-8 bg-white border border-slate-200/80 rounded-xl p-6 shadow-2xs flex flex-col justify-between">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-sm font-bold text-slate-900">Property Views Over Time</h2>
@@ -204,7 +204,6 @@ export const Dashboard = () => {
             </select>
           </div>
 
-          {/* Chart Canvas with Y-Axis and Smooth Blue Line matching Reference UI */}
           <div className="relative w-full h-56 flex">
             {/* Y-Axis Labels */}
             <div className="flex flex-col justify-between text-[10px] text-slate-400 font-medium pr-3 py-1 select-none">
@@ -228,7 +227,7 @@ export const Dashboard = () => {
                 <div className="border-b border-slate-100 w-full"></div>
               </div>
 
-              {/* SVG Smooth Curve Path & Nodes */}
+              {/* SVG Curve Path & Nodes */}
               <svg className="w-full h-full overflow-visible relative z-10" viewBox="0 0 500 150" preserveAspectRatio="none">
                 <defs>
                   <linearGradient id="refGraphFill" x1="0" y1="0" x2="0" y2="1">
@@ -266,7 +265,7 @@ export const Dashboard = () => {
           </div>
         </div>
 
-        {/* Right: Recent Messages Widget (Matching Screenshot 1) */}
+        {/* Right: Recent Messages Widget */}
         <div className="lg:col-span-4 bg-white border border-slate-200/80 rounded-xl p-5 shadow-2xs flex flex-col">
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-sm font-bold text-slate-900">Recent Messages</h2>
