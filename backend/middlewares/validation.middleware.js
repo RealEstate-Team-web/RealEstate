@@ -1,5 +1,8 @@
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const phonePattern = /^\+?[0-9]{7,15}$/;
+const hasUppercase = /[A-Z]/;
+const hasLowercase = /[a-z]/;
+const hasNumber = /[0-9]/;
 
 function validationError(errors) {
   const error = new Error("Validation failed");
@@ -22,13 +25,51 @@ function validateCoreIdentity(body) {
     errors.push("phone is required and must be a valid phone number");
   if (!password || String(password).length < 8)
     errors.push("password must be at least 8 characters");
-  if (role && role !== "buyer") errors.push("role must be 'buyer'");
+  if (password && !hasUppercase.test(password))
+    errors.push("password must contain at least one uppercase letter");
+  if (password && !hasLowercase.test(password))
+    errors.push("password must contain at least one lowercase letter");
+  if (password && !hasNumber.test(password))
+    errors.push("password must contain at least one number");
+  if (role && !["buyer", "agent"].includes(role))
+    errors.push("role must be 'buyer' or 'agent'");
 
   return errors;
 }
 
 const validateRegister = (req, res, next) => {
   const errors = validateCoreIdentity(req.body);
+  if (errors.length > 0) return next(validationError(errors));
+  next();
+};
+
+const validateCompleteAgentProfile = (req, res, next) => {
+  const errors = [];
+  const { agencyName, licenseNumber, experience, officeAddress, bio } =
+    req.body || {};
+
+  if (!agencyName || !String(agencyName).trim())
+    errors.push("agencyName is required");
+  if (!licenseNumber || !String(licenseNumber).trim())
+    errors.push("licenseNumber is required");
+  else if (String(licenseNumber).trim().length > 50)
+    errors.push("licenseNumber must be at most 50 characters");
+  if (
+    experience === undefined ||
+    experience === null ||
+    Number.isNaN(Number(experience)) ||
+    Number(experience) < 0
+  )
+    errors.push("experience is required and must be a non-negative number");
+  if (!officeAddress || !String(officeAddress).trim())
+    errors.push("officeAddress is required");
+  if (bio !== undefined && bio !== null && String(bio).trim()) {
+    if (String(bio).trim().length < 20)
+      errors.push("bio must be at least 20 characters");
+    else if (String(bio).trim().length > 500)
+      errors.push("bio must be at most 500 characters");
+  }
+
   if (errors.length > 0) return next(validationError(errors));
   next();
 };
@@ -64,4 +105,9 @@ const validateLogin = (req, res, next) => {
   next();
 };
 
-module.exports = { validateRegister, validateRegisterAgent, validateLogin };
+module.exports = {
+  validateRegister,
+  validateRegisterAgent,
+  validateCompleteAgentProfile,
+  validateLogin,
+};

@@ -1,5 +1,15 @@
 const User = require("../models/user.model");
 const jwt = require("jsonwebtoken");
+const { pool } = require("../config/db.config");
+
+async function getAgentProfileStatus(userId) {
+  const rows = await pool.execute(
+    "SELECT verification_status FROM agent_profiles WHERE user_id = ?",
+    [userId],
+  );
+  return rows[0][0] ? rows[0][0].verification_status : "incomplete";
+}
+
 const authenticate = async (req, res, next) => {
   const header = req.headers.authorization;
 
@@ -28,6 +38,9 @@ const authenticate = async (req, res, next) => {
       return next(error);
     }
 
+    const agentProfileStatus =
+      user.role === "agent" ? await getAgentProfileStatus(user.id) : null;
+
     req.user = {
       id: user.id,
       firstName: user.first_name,
@@ -36,6 +49,8 @@ const authenticate = async (req, res, next) => {
       phone: user.phone,
       role: user.role,
       status: user.status,
+      profileImageUrl: user.profile_image_url || null,
+      agentProfileStatus,
     };
 
     next();

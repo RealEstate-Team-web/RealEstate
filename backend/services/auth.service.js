@@ -7,7 +7,7 @@ async function hashPassword(password) {
   return bcrypt.hash(password, 10);
 }
 
-function toSafeUser(user) {
+function toSafeUser(user, agentProfileStatus = null) {
   return {
     id: user.id,
     firstName: user.first_name,
@@ -16,10 +16,28 @@ function toSafeUser(user) {
     phone: user.phone,
     role: user.role,
     status: user.status,
+    profileImageUrl: user.profile_image_url || null,
+    agentProfileStatus,
   };
 }
 
-async function register({ firstName, lastName, email, phone, password, role, agentProfile }) {
+async function getAgentProfileStatus(userId) {
+  const rows = await pool.execute(
+    "SELECT verification_status FROM agent_profiles WHERE user_id = ?",
+    [userId],
+  );
+  return rows[0][0] ? rows[0][0].verification_status : "incomplete";
+}
+
+async function register({
+  firstName,
+  lastName,
+  email,
+  phone,
+  password,
+  role = "buyer",
+  agentProfile,
+}) {
   const existing = await User.findUserByEmail(email);
   if (existing) {
     const error = new Error("Email already registered");
@@ -61,7 +79,18 @@ async function register({ firstName, lastName, email, phone, password, role, age
 
     await connection.commit();
     const created = await User.findUserByEmail(email);
-    return toSafeUser(created);
+    const agentProfileStatus = created.role === "agent" ? "incomplete" : null;
+
+    let token = null;
+    if (created.role === "agent") {
+      token = jwt.sign(
+        { sub: created.id, email: created.email, role: created.role },
+        process.env.JWT_SECRET,
+        { expiresIn: process.env.JWT_EXPIRES_IN || "7d" },
+      );
+    }
+
+    return { token, user: toSafeUser(created, agentProfileStatus) };
   } catch (error) {
     await connection.rollback();
     if (error.code === "ER_DUP_ENTRY") {
@@ -85,7 +114,7 @@ async function registerAgent({
   licenseNumber,
   experienceYears,
 }) {
-  return register({
+  const result = await register({
     firstName,
     lastName,
     email,
@@ -94,6 +123,7 @@ async function registerAgent({
     role: "agent",
     agentProfile: { agencyName, licenseNumber, experienceYears },
   });
+  return result.user;
 }
 
 async function login({ email, password }) {
@@ -124,6 +154,51 @@ async function login({ email, password }) {
     { expiresIn: process.env.JWT_EXPIRES_IN || "7d" },
   );
 
-  return { token, user: toSafeUser(user) };
+  const agentProfileStatus =
+    user.role === "agent" ? await getAgentProfileStatus(user.id) : null;
+
+  return { token, user: toSafeUser(user, agentProfileStatus) };
 }
-module.exports = { register, registerAgent, login };
+
+async function completeAgentProfile({
+  userId,
+  agencyName,
+  licenseNumber,
+  experience,
+  officeAddress,
+  bio,
+  profileImageUrl,
+}) {
+  await pool.execute(
+    `INSERT INTO agent_profiles
+       (user_id, agency_name, license_number, experience_years, office_address, bio, verification_status)
+     VALUES (?, ?, ?, ?, ?, ?, 'pending')
+     ON DUPLICATE KEY UPDATE
+       agency_name = VALUES(agency_name),
+       license_number = VALUES(license_number),
+       experience_years = VALUES(experience_years),
+       office_address = VALUES(office_address),
+       bio = VALUES(bio)`,
+    [
+      userId,
+      agencyName,
+      licenseNumber,
+      experience,
+      officeAddress,
+      bio || "",
+    ],
+  );
+
+  if (profileImageUrl) {
+    await pool.execute(
+      "UPDATE users SET profile_image_url = ? WHERE id = ?",
+      [profileImageUrl, userId],
+    );
+  }
+
+  const user = await User.findById(userId);
+  const agentProfileStatus = await getAgentProfileStatus(userId);
+  return toSafeUser(user, agentProfileStatus);
+}
+
+module.exports = { register, registerAgent, login, completeAgentProfile };

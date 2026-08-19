@@ -1,9 +1,10 @@
 const authService = require("../services/auth.service");
+const { uploadToCloudinary } = require("../services/upload.service");
 
 const register = async (req, res, next) => {
   try {
     const { firstName, lastName, email, phone, password, role } = req.body;
-    const user = await authService.register({
+    const result = await authService.register({
       firstName,
       lastName,
       email,
@@ -15,7 +16,8 @@ const register = async (req, res, next) => {
     res.status(201).json({
       success: true,
       message: "Account created successfully.",
-      user,
+      user: result.user,
+      ...(result.token ? { token: result.token } : {}),
     });
   } catch (error) {
     next(error);
@@ -77,6 +79,44 @@ const logout = (req, res) => {
   });
 };
 
+const completeAgentProfile = async (req, res, next) => {
+  try {
+    if (req.user.role !== "agent") {
+      const error = new Error("Only agents can complete an agent profile");
+      error.status = 403;
+      return next(error);
+    }
+
+    const { agencyName, licenseNumber, experience, officeAddress, bio } =
+      req.body;
+
+    let profileImageUrl = null;
+    if (req.file) {
+      profileImageUrl = await uploadToCloudinary(req.file.buffer, {
+        folder: "agent-profile",
+      });
+    }
+
+    const user = await authService.completeAgentProfile({
+      userId: req.user.id,
+      agencyName,
+      licenseNumber,
+      experience: Number(experience),
+      officeAddress,
+      bio,
+      profileImageUrl,
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Agent profile submitted. Waiting for admin approval.",
+      user,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 const me = (req, res) => {
   res.status(200).json({
     success: true,
@@ -85,4 +125,4 @@ const me = (req, res) => {
   });
 };
 
-module.exports = { register, registerAgent, login, logout, me };
+module.exports = { register, registerAgent, login, logout, completeAgentProfile, me };
