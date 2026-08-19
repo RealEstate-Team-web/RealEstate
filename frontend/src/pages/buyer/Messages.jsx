@@ -108,7 +108,7 @@ export const Messages = () => {
               <input
                 type="text"
                 placeholder="Search for conversations..."
-                className="w-full bg-white border border-slate-200 rounded-xl py-2 pl-9 pr-4 text-xs text-slate-800 focus:outline-none focus:border-blue-500 transition"
+                className="w-full bg-white border border-slate-200 rounded-xl py-2 pl-9 pr-4 text-xs text-slate-800 focus:outline-none focus:border-blue-700 transition"
               />
             </div>
           </div>
@@ -120,7 +120,7 @@ export const Messages = () => {
                 onClick={() => setActiveThreadId(conv.id)}
                 className={`p-4 flex items-center space-x-3 cursor-pointer transition ${
                   conv.id === activeThreadId
-                    ? 'bg-blue-50/80 border-l-4 border-blue-600'
+                    ? 'bg-blue-50/90 border-l-4 border-blue-700'
                     : 'hover:bg-slate-100/60'
                 }`}
               >
@@ -133,7 +133,7 @@ export const Messages = () => {
                   <p className="text-xs text-slate-500 truncate mt-0.5">{conv.lastMessage}</p>
                 </div>
                 {conv.unreadCount > 0 && (
-                  <span className="w-5 h-5 bg-blue-600 text-white text-[10px] font-bold rounded-full flex items-center justify-center shrink-0">
+                  <span className="w-5 h-5 bg-blue-700 text-white text-[10px] font-bold rounded-full flex items-center justify-center shrink-0">
                     {conv.unreadCount}
                   </span>
                 )}
@@ -154,13 +154,13 @@ export const Messages = () => {
               />
               <div>
                 <h3 className="text-sm font-bold text-slate-900">Abebe Kebede</h3>
-                <span className="inline-flex items-center gap-1 text-[11px] text-emerald-600 font-medium">
+                <span className="inline-flex items-center gap-1 text-[11px] text-emerald-700 font-medium">
                   <span className="w-2 h-2 rounded-full bg-emerald-500"></span> Online
                 </span>
               </div>
             </div>
 
-            <button className="flex items-center space-x-1.5 bg-blue-600 hover:bg-blue-700 text-white px-3.5 py-2 rounded-xl text-xs font-semibold transition cursor-pointer shadow-xs">
+            <button className="flex items-center space-x-1.5 bg-blue-700 hover:bg-blue-800 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition cursor-pointer shadow-xs">
               <Calendar size={15} />
               <span>Schedule Visit</span>
             </button>
@@ -181,7 +181,7 @@ export const Messages = () => {
                 <div
                   className={`max-w-md p-3.5 rounded-2xl text-xs font-medium ${
                     msg.sender === 'user'
-                      ? 'bg-blue-600 text-white rounded-br-none shadow-md shadow-blue-600/10'
+                      ? 'bg-blue-700 text-white rounded-br-none shadow-md shadow-blue-700/10'
                       : 'bg-slate-100 text-slate-800 rounded-bl-none border border-slate-200/60'
                   }`}
                 >
@@ -211,11 +211,11 @@ export const Messages = () => {
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
               placeholder="Type your message here..."
-              className="flex-1 bg-white border border-slate-200 rounded-xl py-2.5 px-4 text-xs text-slate-800 focus:outline-none focus:border-blue-500 transition"
+              className="flex-1 bg-white border border-slate-200 rounded-xl py-2.5 px-4 text-xs text-slate-800 focus:outline-none focus:border-blue-700 transition"
             />
             <button
               type="submit"
-              className="flex items-center space-x-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-xl text-xs font-semibold transition cursor-pointer shadow-md shadow-blue-600/20"
+              className="flex items-center space-x-1 bg-blue-700 hover:bg-blue-800 text-white px-4 py-2.5 rounded-xl text-xs font-bold transition cursor-pointer shadow-md shadow-blue-700/20"
             >
               <span>Send</span>
               <Send size={14} />

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Search, Filter, Heart, Trash2, Share2, Eye, Bed, Bath, Maximize } from 'lucide-react';
+import { Search, Filter, Heart, Trash2, Share2 } from 'lucide-react';
 
 export const Favorites = () => {
   const favoriteProperties = [
@@ -9,7 +9,7 @@ export const Favorites = () => {
       location: 'Bole, Addis Ababa',
       type: 'Villa',
       status: 'Sold',
-      statusColor: 'bg-amber-500 text-white',
+      statusColor: 'bg-amber-600 text-white',
       price: '$350,000',
       beds: 4,
       baths: 3,
@@ -22,7 +22,7 @@ export const Favorites = () => {
       location: 'Kazanchis, Addis Ababa',
       type: 'Apartment',
       status: 'Active',
-      statusColor: 'bg-emerald-500 text-white',
+      statusColor: 'bg-emerald-600 text-white',
       price: '$120,000',
       beds: 2,
       baths: 2,
@@ -35,7 +35,7 @@ export const Favorites = () => {
       location: 'Bole, Addis Ababa',
       type: 'Villa',
       status: 'Sold',
-      statusColor: 'bg-amber-500 text-white',
+      statusColor: 'bg-amber-600 text-white',
       price: '$350,000',
       beds: 4,
       baths: 3,
@@ -48,7 +48,7 @@ export const Favorites = () => {
       location: 'Bole, Addis Ababa',
       type: 'Apartment',
       status: 'Active',
-      statusColor: 'bg-emerald-500 text-white',
+      statusColor: 'bg-emerald-600 text-white',
       price: '$120,000',
       beds: 2,
       baths: 2,
@@ -61,7 +61,7 @@ export const Favorites = () => {
       location: 'Yeka, Addis Ababa',
       type: 'House',
       status: 'Sold',
-      statusColor: 'bg-amber-500 text-white',
+      statusColor: 'bg-amber-600 text-white',
       price: '$120,000',
       beds: 3,
       baths: 7,
@@ -74,7 +74,7 @@ export const Favorites = () => {
       location: 'Kazanchis, Addis Ababa',
       type: 'Apartment',
       status: 'Active',
-      statusColor: 'bg-emerald-500 text-white',
+      statusColor: 'bg-emerald-600 text-white',
       price: '$120,000',
       beds: 3,
       baths: 2,
@@ -99,18 +99,18 @@ export const Favorites = () => {
           <input
             type="text"
             placeholder="Search saved properties..."
-            className="w-full bg-slate-50 border border-slate-200 focus:border-blue-500 focus:bg-white rounded-xl py-2 pl-10 pr-4 text-xs font-medium text-slate-800 focus:outline-none transition"
+            className="w-full bg-slate-50 border border-slate-200 focus:border-blue-700 focus:bg-white rounded-xl py-2 pl-10 pr-4 text-xs font-medium text-slate-800 focus:outline-none transition"
           />
         </div>
 
-        <button className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-xs font-semibold shadow-md shadow-blue-600/20 transition cursor-pointer">
+        <button className="flex items-center space-x-2 bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 rounded-xl text-xs font-semibold shadow-md shadow-blue-700/20 transition cursor-pointer">
           <Filter size={15} />
           <span>Filter by status</span>
         </button>
 
         <div className="flex items-center space-x-2">
           <span className="text-xs text-slate-400 font-medium">Sort by</span>
-          <select className="bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-700 rounded-xl px-3 py-2 focus:outline-none focus:border-blue-500">
+          <select className="bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-700 rounded-xl px-3 py-2 focus:outline-none focus:border-blue-700">
             <option>Date added</option>
             <option>Price: Low to High</option>
             <option>Price: High to Low</option>
@@ -170,12 +170,12 @@ export const Favorites = () => {
                   <Trash2 size={16} />
                 </button>
                 <button
-                  className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition cursor-pointer"
+                  className="p-2 text-slate-400 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition cursor-pointer"
                   title="Share Property"
                 >
                   <Share2 size={16} />
                 </button>
-                <button className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold transition cursor-pointer">
+                <button className="px-3.5 py-1.5 bg-blue-700 hover:bg-blue-800 text-white rounded-xl text-xs font-bold transition cursor-pointer shadow-xs">
                   View Details
                 </button>
               </div>
@@ -186,7 +186,7 @@ export const Favorites = () => {
 
       {/* Pagination */}
       <div className="mt-8 flex items-center justify-center space-x-2">
-        <button className="px-3 py-1.5 bg-blue-600 text-xs font-semibold text-white rounded-lg">1</button>
+        <button className="px-3.5 py-1.5 bg-blue-700 text-xs font-bold text-white rounded-lg shadow-xs">1</button>
         <button className="px-3 py-1.5 bg-white border border-slate-200 text-xs font-semibold text-slate-600 rounded-lg hover:bg-slate-50 cursor-pointer">
           2
         </button>

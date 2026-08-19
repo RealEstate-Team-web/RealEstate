@@ -10,10 +10,7 @@ import {
   Eye,
   Edit2,
   Trash2,
-  ChevronRight,
-  Clock,
-  ArrowUpRight,
-  MessageSquare
+  Clock
 } from 'lucide-react';
 
 export const Dashboard = () => {
@@ -22,7 +19,6 @@ export const Dashboard = () => {
 
   const firstName = user?.firstName || user?.name?.split(' ')[0] || 'Abebe';
 
-  // Demo Stat Metrics matching UI reference 1
   const stats = [
     {
       title: 'Total Saved Properties',
@@ -30,7 +26,7 @@ export const Dashboard = () => {
       change: '+12% from last month',
       isPositive: true,
       icon: Heart,
-      color: 'bg-blue-500/10 text-blue-600 border-blue-500/20',
+      color: 'bg-blue-700/10 text-blue-700 border-blue-700/20',
     },
     {
       title: 'Upcoming Visits',
@@ -38,7 +34,7 @@ export const Dashboard = () => {
       change: 'this month',
       isPositive: true,
       icon: Calendar,
-      color: 'bg-purple-500/10 text-purple-600 border-purple-500/20',
+      color: 'bg-indigo-700/10 text-indigo-700 border-indigo-700/20',
     },
     {
       title: 'Recent Searches',
@@ -46,7 +42,7 @@ export const Dashboard = () => {
       change: 'this month',
       isPositive: true,
       icon: Search,
-      color: 'bg-slate-500/10 text-slate-600 border-slate-500/20',
+      color: 'bg-slate-700/10 text-slate-700 border-slate-700/20',
     },
     {
       title: 'New Recommendations',
@@ -54,11 +50,10 @@ export const Dashboard = () => {
       change: '+25% from last month',
       isPositive: true,
       icon: Sparkles,
-      color: 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20',
+      color: 'bg-emerald-700/10 text-emerald-700 border-emerald-700/20',
     },
   ];
 
-  // Demo Recent Messages matching UI screenshot 1
   const recentMessages = [
     {
       id: 1,
@@ -94,7 +89,6 @@ export const Dashboard = () => {
     },
   ];
 
-  // Demo Recently Viewed Properties matching UI screenshot 1
   const recentlyViewed = [
     {
       id: 101,
@@ -104,7 +98,7 @@ export const Dashboard = () => {
       location: 'Bole, Addis Ababa',
       price: '$350,000',
       status: 'Active',
-      statusColor: 'bg-emerald-100 text-emerald-700',
+      statusColor: 'bg-emerald-100 text-emerald-800 font-bold',
       views: 245,
       img: 'https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&q=80&w=200',
     },
@@ -116,7 +110,7 @@ export const Dashboard = () => {
       location: 'Kazanchis, Addis Ababa',
       price: '$130,000',
       status: 'Pending',
-      statusColor: 'bg-amber-100 text-amber-700',
+      statusColor: 'bg-amber-100 text-amber-800 font-bold',
       views: 128,
       img: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&q=80&w=200',
     },
@@ -128,13 +122,12 @@ export const Dashboard = () => {
       location: 'Yeka, Addis Ababa',
       price: '$200,000',
       status: 'Sold',
-      statusColor: 'bg-slate-200 text-slate-700',
+      statusColor: 'bg-slate-200 text-slate-800 font-bold',
       views: 312,
       img: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=200',
     },
   ];
 
-  // Demo Upcoming Visits matching UI screenshot 1
   const upcomingVisits = [
     {
       id: 201,
@@ -191,7 +184,7 @@ export const Dashboard = () => {
                 <stat.icon size={22} />
               </div>
             </div>
-            <div className="mt-4 flex items-center space-x-1 text-xs text-emerald-600 font-medium">
+            <div className="mt-4 flex items-center space-x-1 text-xs text-emerald-700 font-bold">
               <TrendingUp size={14} />
               <span>{stat.change}</span>
             </div>
@@ -207,36 +200,35 @@ export const Dashboard = () => {
             <div>
               <h2 className="text-base font-bold text-slate-900">Property Views Over Time</h2>
             </div>
-            <select className="bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-700 rounded-lg px-3 py-1.5 focus:outline-none focus:border-blue-500">
+            <select className="bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-700 rounded-lg px-3 py-1.5 focus:outline-none focus:border-blue-700">
               <option>Last 30 Days</option>
               <option>Last 7 Days</option>
               <option>This Month</option>
             </select>
           </div>
 
-          {/* Line Chart Visual Representation */}
+          {/* Darker Royal Blue SVG Line Chart */}
           <div className="w-full h-56 relative flex flex-col justify-end pt-4">
             <svg className="w-full h-full overflow-visible" viewBox="0 0 500 150">
               <defs>
-                <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.35" />
-                  <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.0" />
+                <linearGradient id="chartGradientDark" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#1d4ed8" stopOpacity="0.4" />
+                  <stop offset="100%" stopColor="#1d4ed8" stopOpacity="0.0" />
                 </linearGradient>
               </defs>
               <path
                 d="M 0 110 Q 60 70, 100 90 T 200 45 T 300 75 T 400 30 T 500 15 L 500 150 L 0 150 Z"
-                fill="url(#chartGradient)"
+                fill="url(#chartGradientDark)"
               />
               <path
                 d="M 0 110 Q 60 70, 100 90 T 200 45 T 300 75 T 400 30 T 500 15"
                 fill="none"
-                stroke="#2563eb"
-                strokeWidth="3"
+                stroke="#1e40af"
+                strokeWidth="3.5"
                 strokeLinecap="round"
               />
-              {/* Data points */}
               {[[0, 110], [83, 85], [166, 45], [250, 75], [333, 30], [416, 40], [500, 15]].map(([cx, cy], i) => (
-                <circle key={i} cx={cx} cy={cy} r="4" fill="#2563eb" stroke="#ffffff" strokeWidth="2" />
+                <circle key={i} cx={cx} cy={cy} r="4.5" fill="#1d4ed8" stroke="#ffffff" strokeWidth="2.5" />
               ))}
             </svg>
             <div className="flex justify-between text-[11px] text-slate-400 font-medium mt-4 pt-2 border-t border-slate-100">
@@ -257,7 +249,7 @@ export const Dashboard = () => {
             <h2 className="text-base font-bold text-slate-900">Recent Messages</h2>
             <button
               onClick={() => navigate('/buyer/messages')}
-              className="text-xs font-bold text-blue-600 hover:text-blue-700 flex items-center gap-0.5 cursor-pointer"
+              className="text-xs font-bold text-blue-700 hover:text-blue-900 cursor-pointer"
             >
               View All
             </button>
@@ -279,7 +271,7 @@ export const Dashboard = () => {
                 </div>
                 <div className="text-right shrink-0 ml-3">
                   <p className="text-[11px] font-medium text-slate-400">{msg.time}</p>
-                  {msg.unread && <span className="inline-block w-2 h-2 rounded-full bg-blue-600 mt-1"></span>}
+                  {msg.unread && <span className="inline-block w-2 h-2 rounded-full bg-blue-700 mt-1"></span>}
                 </div>
               </div>
             ))}
@@ -295,7 +287,7 @@ export const Dashboard = () => {
             <h2 className="text-base font-bold text-slate-900">Recently Viewed Properties</h2>
             <button
               onClick={() => navigate('/buyer/properties')}
-              className="text-xs font-bold text-blue-600 hover:text-blue-700 cursor-pointer"
+              className="text-xs font-bold text-blue-700 hover:text-blue-900 cursor-pointer"
             >
               View All
             </button>
@@ -330,7 +322,7 @@ export const Dashboard = () => {
                     <td className="py-3 px-2 font-medium text-slate-500">{prop.location}</td>
                     <td className="py-3 px-2 font-bold text-slate-900">{prop.price}</td>
                     <td className="py-3 px-2">
-                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${prop.statusColor}`}>
+                      <span className={`px-2 py-0.5 rounded-full text-[10px] ${prop.statusColor}`}>
                         {prop.status}
                       </span>
                     </td>
@@ -339,7 +331,7 @@ export const Dashboard = () => {
                       <div className="flex items-center justify-end space-x-1.5 text-slate-400">
                         <button
                           onClick={() => navigate('/buyer/properties')}
-                          className="p-1 hover:text-blue-600 transition cursor-pointer"
+                          className="p-1 hover:text-blue-700 transition cursor-pointer"
                           title="View"
                         >
                           <Eye size={14} />
@@ -366,7 +358,7 @@ export const Dashboard = () => {
               <h2 className="text-base font-bold text-slate-900">Upcoming Visits</h2>
               <button
                 onClick={() => navigate('/buyer/visits')}
-                className="text-xs font-bold text-blue-600 hover:text-blue-700 cursor-pointer"
+                className="text-xs font-bold text-blue-700 hover:text-blue-900 cursor-pointer"
               >
                 View All
               </button>
@@ -379,7 +371,7 @@ export const Dashboard = () => {
                   className="bg-slate-50/80 border border-slate-100 rounded-xl p-3.5 flex items-center justify-between hover:bg-slate-100/70 transition"
                 >
                   <div className="flex items-center space-x-3">
-                    <div className="w-12 h-12 bg-blue-100/70 text-blue-700 rounded-xl flex flex-col items-center justify-center shrink-0">
+                    <div className="w-12 h-12 bg-blue-100 text-blue-800 rounded-xl flex flex-col items-center justify-center shrink-0">
                       <span className="text-[10px] font-bold uppercase leading-none">{visit.month}</span>
                       <span className="text-base font-extrabold leading-tight mt-0.5">{visit.day}</span>
                     </div>
@@ -392,10 +384,10 @@ export const Dashboard = () => {
                     </div>
                   </div>
                   <span
-                    className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                    className={`px-2 py-0.5 rounded-full text-[10px] font-extrabold ${
                       visit.status === 'Confirmed'
-                        ? 'bg-emerald-100 text-emerald-700'
-                        : 'bg-amber-100 text-amber-700'
+                        ? 'bg-emerald-100 text-emerald-800'
+                        : 'bg-amber-100 text-amber-800'
                     }`}
                   >
                     {visit.status}

@@ -56,7 +56,7 @@ export const Sidebar = ({ isOpen, onClose }) => {
           {/* Mobile Close Button */}
           <button
             onClick={onClose}
-            className="lg:hidden p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition"
+            className="lg:hidden p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer"
             aria-label="Close sidebar"
           >
             <X size={20} />
@@ -79,7 +79,7 @@ export const Sidebar = ({ isOpen, onClose }) => {
               className={({ isActive }) =>
                 `flex items-center justify-between px-4 py-3 rounded-xl font-medium text-sm transition-all duration-200 group ${
                   isActive
-                    ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30'
+                    ? 'bg-blue-700 text-white shadow-lg shadow-blue-900/40'
                     : 'text-slate-400 hover:bg-slate-800/60 hover:text-slate-200'
                 }`
               }
@@ -89,7 +89,7 @@ export const Sidebar = ({ isOpen, onClose }) => {
                 <span>{item.label}</span>
               </div>
               {item.badge && (
-                <span className="px-2 py-0.5 text-xs font-bold bg-indigo-600 text-white rounded-full shadow-sm">
+                <span className="px-2 py-0.5 text-xs font-bold bg-indigo-600 text-white rounded-full shadow-xs">
                   {item.badge}
                 </span>
               )}

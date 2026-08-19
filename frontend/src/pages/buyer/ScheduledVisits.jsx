@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Filter, Calendar, XCircle, Clock, UserCheck } from 'lucide-react';
+import { Search, Filter, Calendar, XCircle, Clock } from 'lucide-react';
 
 export const ScheduledVisits = () => {
   const [visits, setVisits] = useState([
@@ -8,7 +8,7 @@ export const ScheduledVisits = () => {
       title: 'Luxury Villa, Villa, Addis Ababa',
       specs: 'Daniel Tesfaye • 330m²',
       status: 'Confirmed',
-      statusColor: 'bg-emerald-100 text-emerald-700',
+      statusColor: 'bg-emerald-100 text-emerald-800 font-bold',
       dateTime: 'Mon, Oct 23, 2023 | 10:00 AM - 10:30 AM',
       agentName: 'Abebe Kebede',
       agentRole: 'Lead Agent',
@@ -20,7 +20,7 @@ export const ScheduledVisits = () => {
       title: 'Luxury Villa, Yeka, Addis Ababa',
       specs: 'Daniel Tesfaye • 280m²',
       status: 'Confirmed',
-      statusColor: 'bg-emerald-100 text-emerald-700',
+      statusColor: 'bg-emerald-100 text-emerald-800 font-bold',
       dateTime: 'Mon, Oct 23, 2023 | 10:00 AM - 10:30 AM',
       agentName: 'Abebe Kebede',
       agentRole: 'Lead Agent',
@@ -32,7 +32,7 @@ export const ScheduledVisits = () => {
       title: 'Modern Apartment, Addis Ababa',
       specs: 'Daniel Tesfaye • 188m²',
       status: 'Confirmed',
-      statusColor: 'bg-emerald-100 text-emerald-700',
+      statusColor: 'bg-emerald-100 text-emerald-800 font-bold',
       dateTime: 'Mon, Oct 23, 2023 | 10:00 AM - 10:30 AM',
       agentName: 'Abebe Kalleh',
       agentRole: 'Lead Agent',
@@ -44,42 +44,42 @@ export const ScheduledVisits = () => {
       title: 'Modern Apartment, Addis Ababa',
       specs: 'Daniel Tesfaye • 200m²',
       status: 'Confirmed',
-      statusColor: 'bg-emerald-100 text-emerald-700',
+      statusColor: 'bg-emerald-100 text-emerald-800 font-bold',
       dateTime: 'Mon, Oct 23, 2023 | 10:00 AM - 10:30 AM',
       agentName: 'Abebe Home',
       agentRole: 'Lead Agent',
       agentAvatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=150',
-      img: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=200',
+      img: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=400',
     },
     {
       id: 5,
       title: 'Modern Villa, Yeka, Addis Ababa',
       specs: 'Daniel Tesfaye • 310m²',
       status: 'Pending',
-      statusColor: 'bg-amber-100 text-amber-700',
+      statusColor: 'bg-amber-100 text-amber-800 font-bold',
       dateTime: 'Mon, Oct 23, 2023 | 10:00 AM - 10:30 AM',
       agentName: 'Abebe Kebede',
       agentRole: 'Lead Agent',
       agentAvatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=150',
-      img: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=200',
+      img: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=400',
     },
     {
       id: 6,
       title: 'Family House, Yeka, Addis Ababa',
       specs: 'Daniel Tesfaye • 180m²',
       status: 'Confirmed',
-      statusColor: 'bg-emerald-100 text-emerald-700',
+      statusColor: 'bg-emerald-100 text-emerald-800 font-bold',
       dateTime: 'Mon, Oct 23, 2023 | 10:00 AM - 10:30 AM',
       agentName: 'Abebe Kebede',
       agentRole: 'Lead Agent',
       agentAvatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=150',
-      img: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&q=80&w=200',
+      img: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&q=80&w=400',
     },
   ]);
 
   const handleCancelVisit = (id) => {
     setVisits((prev) =>
-      prev.map((v) => (v.id === id ? { ...v, status: 'Cancelled', statusColor: 'bg-rose-100 text-rose-700' } : v))
+      prev.map((v) => (v.id === id ? { ...v, status: 'Cancelled', statusColor: 'bg-rose-100 text-rose-800 font-bold' } : v))
     );
   };
 
@@ -99,18 +99,18 @@ export const ScheduledVisits = () => {
           <input
             type="text"
             placeholder="Search visits..."
-            className="w-full bg-slate-50 border border-slate-200 focus:border-blue-500 focus:bg-white rounded-xl py-2 pl-10 pr-4 text-xs font-medium text-slate-800 focus:outline-none transition"
+            className="w-full bg-slate-50 border border-slate-200 focus:border-blue-700 focus:bg-white rounded-xl py-2 pl-10 pr-4 text-xs font-medium text-slate-800 focus:outline-none transition"
           />
         </div>
 
-        <button className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-xs font-semibold shadow-md shadow-blue-600/20 transition cursor-pointer">
+        <button className="flex items-center space-x-2 bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 rounded-xl text-xs font-semibold shadow-md shadow-blue-700/20 transition cursor-pointer">
           <Filter size={15} />
           <span>Filter by status</span>
         </button>
 
         <div className="flex items-center space-x-2">
           <span className="text-xs text-slate-400 font-medium">Sort by</span>
-          <select className="bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-700 rounded-xl px-3 py-2 focus:outline-none focus:border-blue-500">
+          <select className="bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-700 rounded-xl px-3 py-2 focus:outline-none focus:border-blue-700">
             <option>Date: Soonest</option>
             <option>Date: Latest</option>
           </select>
@@ -125,7 +125,7 @@ export const ScheduledVisits = () => {
             <div className="flex items-center space-x-4 min-w-0">
               <img src={visit.img} alt={visit.title} className="w-16 h-16 rounded-xl object-cover shrink-0 shadow-xs" />
               <div className="min-w-0">
-                <span className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider mb-1 ${visit.statusColor}`}>
+                <span className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] uppercase tracking-wider mb-1 ${visit.statusColor}`}>
                   {visit.status}
                 </span>
                 <h3 className="font-bold text-slate-900 text-sm truncate">{visit.title}</h3>
@@ -135,7 +135,7 @@ export const ScheduledVisits = () => {
 
             {/* Date & Time Slot */}
             <div className="flex items-center space-x-2 text-xs font-semibold text-slate-700 bg-slate-50 px-3.5 py-2 rounded-xl border border-slate-200/70">
-              <Clock size={15} className="text-blue-600" />
+              <Clock size={15} className="text-blue-700" />
               <span>{visit.dateTime}</span>
             </div>
 
@@ -144,7 +144,7 @@ export const ScheduledVisits = () => {
               <img src={visit.agentAvatar} alt={visit.agentName} className="w-10 h-10 rounded-full object-cover border border-slate-200" />
               <div>
                 <p className="text-xs font-bold text-slate-900">{visit.agentName}</p>
-                <span className="inline-block px-2 py-0.5 bg-emerald-50 text-emerald-700 text-[10px] font-bold rounded">
+                <span className="inline-block px-2 py-0.5 bg-emerald-50 text-emerald-800 text-[10px] font-bold rounded">
                   {visit.agentRole}
                 </span>
               </div>
@@ -161,7 +161,7 @@ export const ScheduledVisits = () => {
                   <span>Cancel Visit</span>
                 </button>
               )}
-              <button className="flex items-center space-x-1 text-xs font-semibold text-slate-700 hover:text-blue-600 hover:bg-slate-100 px-3 py-2 rounded-xl border border-slate-200 transition cursor-pointer">
+              <button className="flex items-center space-x-1 text-xs font-semibold text-slate-700 hover:text-blue-700 hover:bg-slate-100 px-3 py-2 rounded-xl border border-slate-200 transition cursor-pointer">
                 <Calendar size={15} />
                 <span>Reschedule Visit</span>
               </button>
@@ -172,7 +172,7 @@ export const ScheduledVisits = () => {
 
       {/* Pagination */}
       <div className="mt-8 flex items-center justify-center space-x-2">
-        <button className="px-3 py-1.5 bg-blue-600 text-xs font-semibold text-white rounded-lg">1</button>
+        <button className="px-3.5 py-1.5 bg-blue-700 text-xs font-bold text-white rounded-lg shadow-xs">1</button>
         <button className="px-3 py-1.5 bg-white border border-slate-200 text-xs font-semibold text-slate-600 rounded-lg hover:bg-slate-50 cursor-pointer">
           2
         </button>
