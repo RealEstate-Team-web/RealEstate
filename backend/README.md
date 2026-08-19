@@ -38,6 +38,8 @@ Open `.env` and configure your own local MySQL credentials:
 | `CLOUDINARY_API_KEY` | `123456789` | Cloudinary API key |
 | `CLOUDINARY_API_SECRET` | `your_secret` | Cloudinary API secret (never commit) |
 | `CLOUDINARY_FOLDER` | `real-estate` | Base folder in Cloudinary for uploads |
+| `LOGIN_RATE_LIMIT` | `5` | (optional) Max failed logins per 15 min. Default: 5 in production, disabled in development |
+| `REGISTER_RATE_LIMIT` | `10` | (optional) Max registrations per hour. Default: 10 in production, disabled in development |
 
 Create the database if it does not exist:
 
@@ -57,6 +59,36 @@ Starts the server with nodemon and auto-reloads on changes.
 
 ```bash
 npm start
+```
+
+## Production deployment
+
+**No code changes are needed for production** — behavior is controlled by environment variables, so the same code behaves differently based on `NODE_ENV`.
+
+| Step | Action | Value |
+|---|---|---|
+| 1 | Set `NODE_ENV` on the host (Render / Railway / VPS / Docker), **not** in the committed `.env` | `NODE_ENV=production` |
+| 2 | Set the other production values on the host: `DB_HOST`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `JWT_SECRET`, `CLOUDINARY_*`, `CLIENT_URL` (your deployed frontend domain) | — |
+| 3 | (Optional) Tune rate limits on the host | `LOGIN_RATE_LIMIT`, `REGISTER_RATE_LIMIT` |
+| 4 | Deploy the code | `git push` + your normal deploy flow |
+
+**Rate limiting behavior (same code, env-driven):**
+
+| Environment | `LOGIN_RATE_LIMIT` | `REGISTER_RATE_LIMIT` | 6th failed login |
+|---|---|---|---|
+| Development (`NODE_ENV=development`) | disabled | disabled | 401 (never blocked) |
+| Production (`NODE_ENV=production`) | 5 / 15 min | 10 / hr | **429** |
+| Any env with vars set | your value | your value | blocks at your limit |
+
+**Smoke-test after deploying** — the 6th failed login must return `429` to confirm production mode is active:
+
+```bash
+for i in 1 2 3 4 5 6; do
+  curl -s -o /dev/null -w "attempt $i: %{http_code}\n" \
+    -X POST https://yourdomain.com/api/auth/login \
+    -H "Content-Type: application/json" \
+    -d '{"email":"nobody@x.com","password":"WrongPass1"}'
+done
 ```
 
 ## Health check
