@@ -10,7 +10,8 @@ import {
   Eye,
   Edit2,
   Trash2,
-  Clock
+  Clock,
+  ChevronRight
 } from 'lucide-react';
 
 export const Dashboard = () => {
@@ -162,25 +163,25 @@ export const Dashboard = () => {
     <div className="space-y-6 font-sans">
       {/* Welcome Greeting Banner */}
       <div>
-        <h1 className="text-xl lg:text-2xl font-bold text-slate-900 tracking-tight">
+        <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
           Welcome back, {firstName}!
         </h1>
         <p className="text-xs text-slate-500 mt-1">Here's what's happening with your properties today.</p>
       </div>
 
-      {/* 4 Stat Overview Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* 4 Stat Overview Cards - Grid Responsive Reflow */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
         {stats.map((stat, idx) => (
           <div
             key={idx}
-            className="bg-white border border-slate-200/80 rounded-xl p-5 shadow-2xs hover:border-slate-300 transition-colors"
+            className="bg-white border border-slate-200/80 rounded-xl p-4 sm:p-5 shadow-2xs hover:border-slate-300 transition-colors"
           >
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-[11px] font-semibold text-slate-500">{stat.title}</p>
-                <h3 className="text-2xl font-bold text-slate-900 mt-2 tracking-tight">{stat.value}</h3>
+                <h3 className="text-2xl font-bold text-slate-900 mt-1.5 tracking-tight">{stat.value}</h3>
               </div>
-              <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${stat.iconBg}`}>
+              <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${stat.iconBg}`}>
                 <stat.icon size={20} />
               </div>
             </div>
@@ -193,10 +194,10 @@ export const Dashboard = () => {
       </div>
 
       {/* Middle Section: Property Views Chart & Recent Messages */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
         {/* Left: Property Views Over Time Chart */}
-        <div className="lg:col-span-8 bg-white border border-slate-200/80 rounded-xl p-6 shadow-2xs flex flex-col justify-between">
-          <div className="flex items-center justify-between mb-4">
+        <div className="xl:col-span-8 bg-white border border-slate-200/80 rounded-xl p-4 sm:p-6 shadow-2xs flex flex-col justify-between">
+          <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
             <h2 className="text-sm font-bold text-slate-900">Property Views Over Time</h2>
             <select className="bg-white border border-slate-200 text-xs font-medium text-slate-600 rounded-lg px-2.5 py-1 focus:outline-none hover:bg-slate-50">
               <option>Last 30 Days</option>
@@ -204,9 +205,9 @@ export const Dashboard = () => {
             </select>
           </div>
 
-          <div className="relative w-full h-56 flex">
+          <div className="relative w-full h-56 flex overflow-hidden">
             {/* Y-Axis Labels */}
-            <div className="flex flex-col justify-between text-[10px] text-slate-400 font-medium pr-3 py-1 select-none">
+            <div className="flex flex-col justify-between text-[10px] text-slate-400 font-medium pr-2 py-1 select-none shrink-0">
               <span>1,500</span>
               <span>1,200</span>
               <span>900</span>
@@ -216,7 +217,7 @@ export const Dashboard = () => {
             </div>
 
             {/* SVG Chart Line Area */}
-            <div className="flex-1 relative flex flex-col justify-between">
+            <div className="flex-1 relative flex flex-col justify-between min-w-0">
               {/* Grid Lines */}
               <div className="absolute inset-0 flex flex-col justify-between pointer-events-none">
                 <div className="border-b border-slate-100 w-full"></div>
@@ -252,7 +253,7 @@ export const Dashboard = () => {
               </svg>
 
               {/* X-Axis Labels */}
-              <div className="flex justify-between text-[11px] text-slate-400 font-medium pt-2">
+              <div className="flex justify-between text-[10px] sm:text-[11px] text-slate-400 font-medium pt-2">
                 <span>May 20</span>
                 <span>May 21</span>
                 <span>May 22</span>
@@ -266,7 +267,7 @@ export const Dashboard = () => {
         </div>
 
         {/* Right: Recent Messages Widget */}
-        <div className="lg:col-span-4 bg-white border border-slate-200/80 rounded-xl p-5 shadow-2xs flex flex-col">
+        <div className="xl:col-span-4 bg-white border border-slate-200/80 rounded-xl p-4 sm:p-5 shadow-2xs flex flex-col">
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-sm font-bold text-slate-900">Recent Messages</h2>
             <button
@@ -284,14 +285,14 @@ export const Dashboard = () => {
                 onClick={() => navigate('/buyer/messages')}
                 className="py-2.5 flex items-center justify-between hover:bg-slate-50 rounded-lg px-1.5 transition cursor-pointer"
               >
-                <div className="flex items-center space-x-3 min-w-0">
+                <div className="flex items-center space-x-3 min-w-0 pr-2">
                   <img src={msg.avatar} alt={msg.name} className="w-9 h-9 rounded-full object-cover shrink-0" />
                   <div className="min-w-0">
                     <p className="text-xs font-bold text-slate-900 truncate">{msg.name}</p>
                     <p className="text-[11px] text-slate-500 truncate">{msg.snippet}</p>
                   </div>
                 </div>
-                <div className="text-right shrink-0 ml-2">
+                <div className="text-right shrink-0">
                   <p className="text-[10px] font-medium text-slate-400">{msg.time}</p>
                   {msg.unread && <span className="inline-block w-2 h-2 rounded-full bg-blue-600 mt-1"></span>}
                 </div>
@@ -302,9 +303,9 @@ export const Dashboard = () => {
       </div>
 
       {/* Bottom Section: Recently Viewed Properties Table & Upcoming Visits */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left: Recently Viewed Properties Table */}
-        <div className="lg:col-span-8 bg-white border border-slate-200/80 rounded-xl p-5 shadow-2xs">
+      <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
+        {/* Left: Recently Viewed Properties Container */}
+        <div className="xl:col-span-8 bg-white border border-slate-200/80 rounded-xl p-4 sm:p-5 shadow-2xs">
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-sm font-bold text-slate-900">Recently Viewed Properties</h2>
             <button
@@ -315,7 +316,8 @@ export const Dashboard = () => {
             </button>
           </div>
 
-          <div className="overflow-x-auto">
+          {/* Desktop & Tablet Table View */}
+          <div className="hidden sm:block overflow-x-auto">
             <table className="w-full text-left text-xs text-slate-600">
               <thead className="bg-slate-50 text-slate-400 font-semibold uppercase text-[10px] tracking-wider border-y border-slate-100">
                 <tr>
@@ -333,10 +335,10 @@ export const Dashboard = () => {
                   <tr key={prop.id} className="hover:bg-slate-50 transition">
                     <td className="py-3 px-3">
                       <div className="flex items-center space-x-3">
-                        <img src={prop.img} alt={prop.title} className="w-10 h-10 rounded-lg object-cover" />
-                        <div>
-                          <p className="font-bold text-slate-900">{prop.title}</p>
-                          <p className="text-[10px] text-slate-400">{prop.specs}</p>
+                        <img src={prop.img} alt={prop.title} className="w-10 h-10 rounded-lg object-cover shrink-0" />
+                        <div className="min-w-0">
+                          <p className="font-bold text-slate-900 truncate">{prop.title}</p>
+                          <p className="text-[10px] text-slate-400 truncate">{prop.specs}</p>
                         </div>
                       </div>
                     </td>
@@ -371,10 +373,29 @@ export const Dashboard = () => {
               </tbody>
             </table>
           </div>
+
+          {/* Mobile Card List View (No Horizontal Table Overflow) */}
+          <div className="sm:hidden space-y-3">
+            {recentlyViewed.map((prop) => (
+              <div key={prop.id} className="p-3 border border-slate-100 rounded-lg bg-slate-50/60 flex items-center justify-between">
+                <div className="flex items-center space-x-3 min-w-0">
+                  <img src={prop.img} alt={prop.title} className="w-12 h-12 rounded-lg object-cover shrink-0" />
+                  <div className="min-w-0">
+                    <h4 className="text-xs font-bold text-slate-900 truncate">{prop.title}</h4>
+                    <p className="text-[10px] text-slate-500">{prop.location}</p>
+                    <p className="text-xs font-extrabold text-slate-900 mt-0.5">{prop.price}</p>
+                  </div>
+                </div>
+                <span className={`px-2 py-0.5 rounded text-[10px] shrink-0 ${prop.statusColor}`}>
+                  {prop.status}
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Right: Upcoming Visits Schedule List */}
-        <div className="lg:col-span-4 bg-white border border-slate-200/80 rounded-xl p-5 shadow-2xs flex flex-col justify-between">
+        <div className="xl:col-span-4 bg-white border border-slate-200/80 rounded-xl p-4 sm:p-5 shadow-2xs flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between mb-3">
               <h2 className="text-sm font-bold text-slate-900">Upcoming Visits</h2>
@@ -392,21 +413,21 @@ export const Dashboard = () => {
                   key={visit.id}
                   className="bg-slate-50 border border-slate-100 rounded-xl p-3 flex items-center justify-between hover:bg-slate-100/70 transition"
                 >
-                  <div className="flex items-center space-x-3">
+                  <div className="flex items-center space-x-3 min-w-0">
                     <div className="w-11 h-11 bg-slate-200/70 text-slate-700 rounded-lg flex flex-col items-center justify-center shrink-0">
                       <span className="text-[9px] font-bold uppercase leading-none text-slate-500">{visit.month}</span>
                       <span className="text-sm font-bold leading-tight mt-0.5">{visit.day}</span>
                     </div>
-                    <div>
-                      <h4 className="text-xs font-bold text-slate-900">{visit.title}</h4>
-                      <p className="text-[11px] text-slate-500 mt-0.5">{visit.agent}</p>
+                    <div className="min-w-0">
+                      <h4 className="text-xs font-bold text-slate-900 truncate">{visit.title}</h4>
+                      <p className="text-[11px] text-slate-500 mt-0.5 truncate">{visit.agent}</p>
                       <p className="text-[10px] text-slate-400 flex items-center gap-1 mt-0.5">
                         <Clock size={10} /> {visit.time}
                       </p>
                     </div>
                   </div>
                   <span
-                    className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
+                    className={`px-2 py-0.5 rounded text-[10px] font-semibold shrink-0 ml-2 ${
                       visit.status === 'Confirmed'
                         ? 'bg-emerald-50 text-emerald-700'
                         : 'bg-amber-50 text-amber-700'
