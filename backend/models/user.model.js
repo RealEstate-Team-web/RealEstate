@@ -6,6 +6,11 @@ const User = {
     return rows[0];
   },
 
+  async findById(userId) {
+    const rows = await query("SELECT * FROM users WHERE id = ?", [userId]);
+    return rows[0];
+  },
+
   async createUser({ firstName, lastName, email, phone, role = "buyer" }) {
     const result = await query(
       `INSERT INTO users (first_name, last_name, email, phone, role)
