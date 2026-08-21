@@ -29,10 +29,10 @@ jobs:
         uses: anomalyco/opencode/github@latest
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          MODEL: ${{ secrets.OPENCODE_MODEL }}
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
         with:
           use_github_token: true
+          model: ${{ secrets.OPENCODE_MODEL }}
           prompt: |
             Review this Pull Request using:
 
