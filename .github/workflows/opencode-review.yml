@@ -1,0 +1,71 @@
+name: OpenCode PR Review
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: read
+
+jobs:
+  review:
+    name: AI PR Review
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Run OpenCode PR Review
+        uses: anomalyco/opencode/github@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          use_github_token: true
+          prompt: |
+            Review this Pull Request using:
+
+            .github/opencode/pr-review.md
+
+            as the mandatory review policy.
+
+            Read the current sprint documentation and all relevant
+            project documentation before reviewing.
+
+            Pay particular attention to:
+
+            - Sprint scope
+            - Out-of-scope work
+            - Database correctness
+            - API correctness
+            - Authentication
+            - Authorization
+            - Security
+            - Cloudinary/image upload security
+            - Frontend implementation
+            - Backend architecture
+            - Validation
+            - Error handling
+            - Tests
+
+            Do not modify files.
+            Do not create commits.
+            Do not push code.
+            Do not approve the Pull Request.
+            Do not merge the Pull Request.
+
+            This is a review-only operation.
+
+            Follow the output format defined in:
+            .github/opencode/pr-review.md
+
+            The Team Lead makes the final approval decision.
