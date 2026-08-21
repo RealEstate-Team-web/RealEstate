@@ -1,4 +1,3 @@
-import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import {
@@ -112,11 +111,11 @@ export const Sidebar = ({ isOpen, onClose }) => {
         <div className="bg-slate-900/90 border border-slate-800 rounded-xl p-3 flex items-center space-x-3">
           <img
             src={user?.avatar || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200'}
-            alt={user?.name || 'User Avatar'}
+            alt={user?.name || user?.firstName || 'User Avatar'}
             className="w-10 h-10 rounded-full object-cover border border-slate-700"
           />
           <div className="flex-1 min-w-0">
-            <p className="text-xs font-semibold text-white truncate">{user?.name || 'Abebe Kebede'}</p>
+            <p className="text-xs font-semibold text-white truncate">{user?.name || `${user?.firstName || ''} ${user?.lastName || ''}`.trim() || 'User'}</p>
             <div className="flex items-center space-x-1.5 mt-0.5">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
               <span className="text-[11px] text-slate-400 truncate">Online</span>

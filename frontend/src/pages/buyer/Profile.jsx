@@ -1,39 +1,17 @@
-import React, { useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
-import { User, Lock, Camera, Check, ShieldCheck } from 'lucide-react';
+import {
+  Mail,
+  Phone,
+  Camera,
+  Save,
+  CheckCircle,
+  Building,
+  ShieldCheck,
+  Calendar
+} from 'lucide-react';
 
 export const Profile = () => {
-  const { user, updateUserProfile } = useAuth();
-
-  const [firstName, setFirstName] = useState(user?.firstName || 'Abebe');
-  const [lastName, setLastName] = useState(user?.lastName || 'Kebede');
-  const [email, setEmail] = useState(user?.email || 'abebe.k@nesthome.com');
-  const [phone, setPhone] = useState(user?.phone || '+251 911 123 456');
-
-  const [currentPassword, setCurrentPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-
-  const [saveSuccess, setSaveSuccess] = useState(false);
-  const [passwordSuccess, setPasswordSuccess] = useState(false);
-
-  const handleProfileSave = (e) => {
-    e.preventDefault();
-    updateUserProfile({ firstName, lastName, email, phone });
-    setSaveSuccess(true);
-    setTimeout(() => setSaveSuccess(false), 3000);
-  };
-
-  const handlePasswordUpdate = (e) => {
-    e.preventDefault();
-    if (newPassword && newPassword === confirmPassword) {
-      setPasswordSuccess(true);
-      setCurrentPassword('');
-      setNewPassword('');
-      setConfirmPassword('');
-      setTimeout(() => setPasswordSuccess(false), 3000);
-    }
-  };
+  const { user } = useAuth();
 
   return (
     <div className="space-y-6 font-sans">
@@ -42,155 +20,141 @@ export const Profile = () => {
         <h1 className="text-2xl font-bold text-slate-900 tracking-tight">My Profile</h1>
       </div>
 
-      {/* Two Column Grid Layout matching Screenshot 7 */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left Card Panel: Personal Information (6 cols) */}
-        <div className="lg:col-span-6 bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs flex flex-col justify-between">
-          <div>
-            <h2 className="text-base font-bold text-slate-900 mb-6 pb-3 border-b border-slate-100">
-              Personal Information
-            </h2>
-
-            {/* Profile Avatar & Photo Upload */}
-            <div className="flex flex-col items-center mb-6">
-              <div className="relative">
-                <img
-                  src={user?.avatar || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200'}
-                  alt={user?.name || 'Abebe Kebede'}
-                  className="w-28 h-28 rounded-full object-cover border-4 border-slate-100 shadow-md"
-                />
-                <button className="absolute bottom-1 right-1 p-2 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg transition cursor-pointer">
-                  <Camera size={14} />
-                </button>
-              </div>
-              <button className="mt-3 px-4 py-1.5 bg-blue-600/10 hover:bg-blue-600/20 text-blue-600 text-xs font-semibold rounded-lg transition cursor-pointer">
-                Change Photo
+        {/* Left Column: Avatar Card & Account Summary */}
+        <div className="lg:col-span-4 space-y-6">
+          {/* Avatar Header Box */}
+          <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs text-center flex flex-col items-center">
+            <div className="relative mb-4">
+              <img
+                src={user?.avatar || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=300'}
+                alt={user?.name || 'User Avatar'}
+                className="w-28 h-28 rounded-full object-cover border-4 border-slate-100 shadow-md"
+              />
+              <button
+                className="absolute bottom-0 right-0 p-2 bg-blue-700 hover:bg-blue-800 text-white rounded-full shadow-md transition cursor-pointer"
+                title="Update avatar"
+              >
+                <Camera size={16} />
               </button>
             </div>
 
-            {/* Profile Form */}
-            <form onSubmit={handleProfileSave} className="space-y-4">
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">First Name</label>
-                <input
-                  type="text"
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3.5 text-xs text-slate-900 font-medium focus:outline-none focus:border-blue-500 transition"
-                />
+            <h2 className="text-lg font-bold text-slate-900">{user?.name || 'Abebe Kebede'}</h2>
+            <p className="text-xs text-slate-500 font-medium mt-0.5">{user?.title || 'Real Estate Buyer'}</p>
+
+            <span className="mt-3 px-3 py-1 bg-emerald-50 text-emerald-800 text-xs font-bold rounded-full border border-emerald-200/60 inline-flex items-center gap-1">
+              <CheckCircle size={14} /> Verified Buyer
+            </span>
+
+            <div className="w-full mt-6 pt-6 border-t border-slate-100 space-y-3 text-left">
+              <div className="flex items-center justify-between text-xs text-slate-500">
+                <span>Account Role</span>
+                <span className="font-semibold text-slate-900 capitalize">{user?.role || 'Buyer'}</span>
               </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">Last Name</label>
-                <input
-                  type="text"
-                  value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3.5 text-xs text-slate-900 font-medium focus:outline-none focus:border-blue-500 transition"
-                />
+              <div className="flex items-center justify-between text-xs text-slate-500">
+                <span>Member Since</span>
+                <span className="font-semibold text-slate-900 flex items-center gap-1">
+                  <Calendar size={13} className="text-slate-400" /> Jan 2024
+                </span>
               </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">Email Address</label>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full bg-slate-100/70 border border-slate-200 rounded-xl py-2.5 px-3.5 text-xs text-slate-700 font-medium focus:outline-none"
-                />
+              <div className="flex items-center justify-between text-xs text-slate-500">
+                <span>Location</span>
+                <span className="font-semibold text-slate-900">Addis Ababa, ET</span>
               </div>
+            </div>
+          </div>
 
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">Phone Number</label>
-                <input
-                  type="text"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  className="w-full bg-slate-100/70 border border-slate-200 rounded-xl py-2.5 px-3.5 text-xs text-slate-700 font-medium focus:outline-none"
-                />
+          {/* Quick Security Badge Box */}
+          <div className="bg-blue-50/60 border border-blue-100 rounded-2xl p-5 shadow-xs">
+            <div className="flex items-start space-x-3">
+              <div className="w-9 h-9 bg-blue-700 text-white rounded-xl flex items-center justify-center shrink-0 shadow-xs">
+                <ShieldCheck size={20} />
               </div>
-
-              {saveSuccess && (
-                <div className="p-3 bg-emerald-50 text-emerald-700 text-xs font-semibold rounded-xl flex items-center space-x-2">
-                  <Check size={16} />
-                  <span>Profile updated successfully!</span>
-                </div>
-              )}
-
-              <button
-                type="submit"
-                className="w-full mt-4 py-3 bg-blue-700 hover:bg-blue-800 text-white rounded-xl text-xs font-bold transition shadow-md shadow-blue-700/20 cursor-pointer"
-              >
-                Save Changes
-              </button>
-            </form>
+              <div>
+                <h4 className="text-xs font-bold text-slate-900">Two-Factor Security Active</h4>
+                <p className="text-xs text-slate-500 mt-1">Your account authentication and saved properties are protected with end-to-end security.</p>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Right Card Panel: Security Settings (6 cols) */}
-        <div className="lg:col-span-6 bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs flex flex-col justify-between">
+        {/* Right Column: Personal Information & Settings Form */}
+        <div className="lg:col-span-8 bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs space-y-6">
           <div>
-            <h2 className="text-base font-bold text-slate-900 mb-6 pb-3 border-b border-slate-100">
-              Security Settings
-            </h2>
+            <h3 className="text-base font-bold text-slate-900 pb-3 border-b border-slate-100">
+              Personal Information
+            </h3>
+          </div>
 
-            <div className="mb-4">
-              <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider">Change Password</h3>
+          <form className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-semibold text-slate-600 uppercase mb-1">First Name</label>
+                <input
+                  type="text"
+                  defaultValue={user?.firstName || 'Abebe'}
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3.5 text-xs text-slate-800 focus:outline-none focus:border-blue-700 font-medium transition"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-600 uppercase mb-1">Last Name</label>
+                <input
+                  type="text"
+                  defaultValue={user?.lastName || 'Kebede'}
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3.5 text-xs text-slate-800 focus:outline-none focus:border-blue-700 font-medium transition"
+                />
+              </div>
             </div>
 
-            <form onSubmit={handlePasswordUpdate} className="space-y-4">
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">Current Password</label>
+            <div>
+              <label className="block text-xs font-semibold text-slate-600 uppercase mb-1">Email Address</label>
+              <div className="relative">
+                <Mail className="absolute left-3.5 top-3 text-slate-400" size={16} />
                 <input
-                  type="password"
-                  placeholder="••••••••••••"
-                  value={currentPassword}
-                  onChange={(e) => setCurrentPassword(e.target.value)}
-                  className="w-full bg-slate-100/70 border border-slate-200 rounded-xl py-2.5 px-3.5 text-xs text-slate-900 focus:outline-none focus:border-blue-500 transition"
+                  type="email"
+                  defaultValue={user?.email || 'abebe.k@nesthome.com'}
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-xs text-slate-800 focus:outline-none focus:border-blue-700 font-medium transition"
                 />
               </div>
+            </div>
 
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">New Password</label>
-                <input
-                  type="password"
-                  placeholder="••••••••••••"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  className="w-full bg-slate-100/70 border border-slate-200 rounded-xl py-2.5 px-3.5 text-xs text-slate-900 focus:outline-none focus:border-blue-500 transition"
-                />
-                {/* Password Strength Progress Bar Indicator */}
-                <div className="mt-2 w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
-                  <div className="bg-emerald-500 h-full w-3/4 transition-all duration-300"></div>
+                <label className="block text-xs font-semibold text-slate-600 uppercase mb-1">Phone Number</label>
+                <div className="relative">
+                  <Phone className="absolute left-3.5 top-3 text-slate-400" size={16} />
+                  <input
+                    type="text"
+                    defaultValue={user?.phone || '+251 911 123 456'}
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-xs text-slate-800 focus:outline-none focus:border-blue-700 font-medium transition"
+                  />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">Confirm New Password</label>
-                <input
-                  type="password"
-                  placeholder="••••••••••••"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="w-full bg-slate-100/70 border border-slate-200 rounded-xl py-2.5 px-3.5 text-xs text-slate-900 focus:outline-none focus:border-blue-500 transition"
-                />
-              </div>
-
-              {passwordSuccess && (
-                <div className="p-3 bg-emerald-50 text-emerald-700 text-xs font-semibold rounded-xl flex items-center space-x-2">
-                  <ShieldCheck size={16} />
-                  <span>Password updated successfully!</span>
+                <label className="block text-xs font-semibold text-slate-600 uppercase mb-1">Preferred Location</label>
+                <div className="relative">
+                  <Building className="absolute left-3.5 top-3 text-slate-400" size={16} />
+                  <input
+                    type="text"
+                    defaultValue="Bole, Addis Ababa"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-xs text-slate-800 focus:outline-none focus:border-blue-700 font-medium transition"
+                  />
                 </div>
-              )}
+              </div>
+            </div>
 
+            <div className="pt-4 border-t border-slate-100 flex justify-end">
               <button
-                type="submit"
-                className="w-full mt-4 py-3 bg-blue-700 hover:bg-blue-800 text-white rounded-xl text-xs font-bold transition shadow-md shadow-blue-700/20 cursor-pointer"
+                type="button"
+                className="flex items-center space-x-2 bg-blue-700 hover:bg-blue-800 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition cursor-pointer shadow-md shadow-blue-700/20"
               >
-                Update Password
+                <Save size={16} />
+                <span>Save Changes</span>
               </button>
-            </form>
-          </div>
+            </div>
+          </form>
         </div>
       </div>
     </div>

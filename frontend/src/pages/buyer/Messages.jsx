@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Search, Calendar, Paperclip, Smile, Send, ArrowLeft } from 'lucide-react';
 
 export const Messages = () => {

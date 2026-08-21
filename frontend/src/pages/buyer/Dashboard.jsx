@@ -1,4 +1,3 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import {
@@ -10,8 +9,7 @@ import {
   Eye,
   Edit2,
   Trash2,
-  Clock,
-  ChevronRight
+  Clock
 } from 'lucide-react';
 
 export const Dashboard = () => {

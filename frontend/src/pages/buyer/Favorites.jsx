@@ -1,4 +1,3 @@
-import React from 'react';
 import { Search, Filter, Heart, Trash2, Share2 } from 'lucide-react';
 
 export const Favorites = () => {
