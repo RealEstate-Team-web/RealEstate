@@ -1,0 +1,115 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+
+language: "en-US"
+
+reviews:
+  profile: "assertive"
+
+  request_changes_workflow: true
+
+  high_level_summary: true
+  review_status: true
+  review_details: true
+
+  auto_review:
+    enabled: true
+    drafts: false
+    base_branches:
+      - "develop"
+      - "main"
+
+  path_instructions:
+
+    - path: "**/*.js"
+      instructions: |
+        Review JavaScript using the project's documented architecture,
+        coding standards, security guidelines, API documentation,
+        and current sprint requirements.
+
+        Pay particular attention to:
+        - input validation
+        - authentication
+        - authorization
+        - SQL injection
+        - asynchronous error handling
+        - secure database queries
+        - separation of concerns
+        - unnecessary duplication
+
+    - path: "**/*.jsx"
+      instructions: |
+        Review React code according to the project's design system,
+        architecture, coding standards, and current sprint requirements.
+
+        Check:
+        - component structure
+        - API integration
+        - loading states
+        - error states
+        - form validation
+        - accessibility
+        - responsive behavior
+        - unnecessary duplicated UI logic
+
+    - path: "**/*.sql"
+      instructions: |
+        Review SQL against Documentation/database_redesigned.md.
+
+        Check:
+        - normalization
+        - primary keys
+        - foreign keys
+        - indexes
+        - constraints
+        - data types
+        - nullable fields
+        - unsafe queries
+        - SQL injection risks
+
+    - path: "backend/**"
+      instructions: |
+        Review backend implementation against:
+        - Documentation/API Design.md
+        - Documentation/Security-Guidelines.md
+        - Documentation/database_redesigned.md
+        - Documentation/Sprints/CURRENT-SPRINT.md
+
+        Pay particular attention to:
+        - authentication
+        - authorization
+        - ownership checks
+        - input validation
+        - secure database access
+        - HTTP status codes
+        - error handling
+        - business logic placement
+
+    - path: "frontend/**"
+      instructions: |
+        Review frontend implementation against:
+        - Documentation/Sprints/CURRENT-SPRINT.md
+
+        Check:
+        - UI consistency
+        - responsive behavior
+        - API integration
+        - loading states
+        - error states
+        - accessibility
+        - unnecessary duplication
+
+    - path: "Documentation/**"
+      instructions: |
+        Review documentation for consistency with the existing project.
+
+        Do not invent requirements.
+
+        Flag:
+        - contradictory documentation
+        - outdated API descriptions
+        - incorrect database descriptions
+        - inconsistent terminology
+        - missing important information
+
+chat:
+  auto_reply: true

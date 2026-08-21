@@ -83,7 +83,7 @@ GET http://localhost:5000/api/health
 - [`Documentation/Team Task Allocation.md`](Documentation/Team Task Allocation.md) — developer ownership
 - [`Documentation/wirefram.md`](Documentation/wirefram.md) — wireframes & page specs
 - [`Documentation/stack_tool.md`](Documentation/stack_tool.md) — technology stack decisions
-- [`Documentation/Coding-Standards.md.md`](Documentation/Coding-Standards.md.md) — coding conventions
+- [`Documentation/Coding-Standards.md`](Documentation/Coding-Standards.md) — coding conventions
 - [`Documentation/Security-Guidelines.md.md`](Documentation/Security-Guidelines.md.md) — security requirements
 - [`Documentation/GIthub workflow.md`](Documentation/GIthub workflow.md) — branch & PR workflow
 - `PROGRESS.md` — implementation status (local, gitignored)
