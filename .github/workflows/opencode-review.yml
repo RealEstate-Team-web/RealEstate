@@ -31,7 +31,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
         with:
-          use_github_token: true
           model: ${{ secrets.OPENCODE_MODEL }}
           prompt: |
             Review this Pull Request using:
