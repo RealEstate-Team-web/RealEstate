@@ -21,16 +21,38 @@ import Messages from '../pages/buyer/Messages';
 import Notifications from '../pages/buyer/Notifications';
 import Profile from '../pages/buyer/Profile';
 import Settings from '../pages/buyer/Settings';
+import { ROUTES } from '../utils/constants';
 
 export const AppRoutes = () => {
   return (
     <Routes>
-      {/* Public Auth Routes */}
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
-      <Route path="/register-agent" element={<RegisterAgent />} />
+      {/* Public Auth Routes wrapped in PublicRoute */}
       <Route
-        path="/forgot-password"
+        path={ROUTES.login}
+        element={
+          <PublicRoute>
+            <Login />
+          </PublicRoute>
+        }
+      />
+      <Route
+        path={ROUTES.register}
+        element={
+          <PublicRoute>
+            <Register />
+          </PublicRoute>
+        }
+      />
+      <Route
+        path={ROUTES.registerAgent}
+        element={
+          <PublicRoute>
+            <RegisterAgent />
+          </PublicRoute>
+        }
+      />
+      <Route
+        path={ROUTES.forgotPassword}
         element={
           <PublicRoute>
             <ForgotPassword />
@@ -38,7 +60,7 @@ export const AppRoutes = () => {
         }
       />
       <Route
-        path="/reset-password"
+        path={ROUTES.resetPassword}
         element={
           <PublicRoute>
             <ResetPassword />
@@ -48,20 +70,20 @@ export const AppRoutes = () => {
 
       {/* Protected Agent Complete Profile Route */}
       <Route
-        path="/complete-agent-profile"
+        path={ROUTES.completeAgentProfile}
         element={
           <PrivateRoute>
-            <RoleRoute allowedRoles={['agent']}>
+            <RoleRoute roles="agent">
               <CompleteAgentProfile />
             </RoleRoute>
           </PrivateRoute>
         }
       />
 
-      {/* Protected Buyer Routes (Developer 3) */}
+      {/* Protected Buyer Routes Shell */}
       <Route element={<PrivateRoute />}>
-        <Route element={<RoleRoute allowedRoles={['buyer']} />}>
-          <Route path="/buyer" element={<DashboardLayout />}>
+        <Route element={<RoleRoute roles="buyer" />}>
+          <Route path={ROUTES.buyer} element={<DashboardLayout />}>
             <Route index element={<Dashboard />} />
             <Route path="properties" element={<BrowseProperties />} />
             <Route path="favorites" element={<Favorites />} />
@@ -75,17 +97,17 @@ export const AppRoutes = () => {
 
         {/* Placeholders for Agent & Admin Modules */}
         <Route
-          path="/agent/*"
+          path={`${ROUTES.agent}/*`}
           element={
-            <RoleRoute allowedRoles={['agent']}>
+            <RoleRoute roles="agent">
               <RolePlaceholder />
             </RoleRoute>
           }
         />
         <Route
-          path="/admin/*"
+          path={`${ROUTES.admin}/*`}
           element={
-            <RoleRoute allowedRoles={['admin']}>
+            <RoleRoute roles="admin">
               <RolePlaceholder />
             </RoleRoute>
           }
@@ -93,9 +115,8 @@ export const AppRoutes = () => {
       </Route>
 
       {/* Fallback Redirects */}
-      <Route path="/dashboard" element={<Navigate to="/buyer" replace />} />
-      <Route path="/" element={<Navigate to="/buyer" replace />} />
-      <Route path="*" element={<Navigate to="/buyer" replace />} />
+      <Route path="/" element={<Navigate to={ROUTES.login} replace />} />
+      <Route path="*" element={<Navigate to={ROUTES.login} replace />} />
     </Routes>
   );
 };

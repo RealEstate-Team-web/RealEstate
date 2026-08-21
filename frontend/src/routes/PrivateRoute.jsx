@@ -1,21 +1,21 @@
 import React from 'react';
-import { Navigate, Outlet, useLocation } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
+import { Navigate, Outlet } from 'react-router-dom';
+import useAuth from '../hooks/useAuth';
+import { ROUTES } from '../utils/constants';
 
 export const PrivateRoute = ({ children }) => {
-  const { isAuthenticated, isLoading, loading } = useAuth();
-  const location = useLocation();
+  const { isAuthenticated, loading } = useAuth();
 
-  if (isLoading || loading) {
+  if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50">
-        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-600"></div>
+      <div className="flex min-h-[60vh] items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-slate-300 border-t-blue-600" />
       </div>
     );
   }
 
   if (!isAuthenticated) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
+    return <Navigate to={ROUTES.login} replace />;
   }
 
   return children ? children : <Outlet />;

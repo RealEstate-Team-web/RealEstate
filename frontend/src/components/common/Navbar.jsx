@@ -7,12 +7,12 @@ import {
   Bell,
   ChevronDown,
   User,
-  LogOut,
-  ShieldCheck
+  LogOut
 } from 'lucide-react';
+import { ROUTES } from '../../utils/constants';
 
 export const Navbar = ({ onToggleSidebar }) => {
-  const { user, logout, switchRole } = useAuth();
+  const { user, logout } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -70,7 +70,7 @@ export const Navbar = ({ onToggleSidebar }) => {
         </div>
       </div>
 
-      {/* Right: Notification Icon, User Profile & Dev Controls */}
+      {/* Right: Notification Icon & User Profile */}
       <div className="flex items-center space-x-4">
         {/* Notification Bell */}
         <button
@@ -94,11 +94,11 @@ export const Navbar = ({ onToggleSidebar }) => {
           >
             <img
               src={user?.avatar || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200'}
-              alt={user?.name || 'Abebe Kebede'}
+              alt={user?.name || user?.firstName || 'User'}
               className="w-9 h-9 rounded-full object-cover border border-slate-300 shadow-xs"
             />
             <div className="hidden sm:block text-left">
-              <p className="text-xs font-semibold text-slate-800 leading-snug">{user?.name || 'Abebe Kebede'}</p>
+              <p className="text-xs font-semibold text-slate-800 leading-snug">{user?.name || `${user?.firstName || ''} ${user?.lastName || ''}`.trim() || 'User'}</p>
               <p className="text-[11px] font-medium text-slate-500 capitalize">{user?.role || 'Buyer'}</p>
             </div>
             <ChevronDown size={16} className="text-slate-400" />
@@ -108,7 +108,7 @@ export const Navbar = ({ onToggleSidebar }) => {
           {showUserDropdown && (
             <div className="absolute right-0 mt-2 w-64 bg-white border border-slate-200 rounded-2xl shadow-xl py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
               <div className="px-4 py-3 border-b border-slate-100 bg-slate-50/50">
-                <p className="text-sm font-bold text-slate-900">{user?.name}</p>
+                <p className="text-sm font-bold text-slate-900">{user?.name || `${user?.firstName || ''} ${user?.lastName || ''}`.trim()}</p>
                 <p className="text-xs text-slate-500 truncate">{user?.email}</p>
               </div>
 
@@ -125,42 +125,16 @@ export const Navbar = ({ onToggleSidebar }) => {
                 </button>
               </div>
 
-              <div className="px-4 py-2 border-t border-b border-slate-100 bg-slate-50/80">
-                <p className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-1">
-                  <ShieldCheck size={13} className="text-blue-600" /> Role Test Switcher
-                </p>
-                <div className="grid grid-cols-2 gap-1.5">
-                  <button
-                    onClick={() => {
-                      switchRole('buyer');
-                      setShowUserDropdown(false);
-                    }}
-                    className="py-1.5 px-2 text-xs bg-blue-50 text-blue-700 font-semibold rounded hover:bg-blue-100 transition"
-                  >
-                    Buyer Role
-                  </button>
-                  <button
-                    onClick={() => {
-                      switchRole('agent');
-                      setShowUserDropdown(false);
-                    }}
-                    className="py-1.5 px-2 text-xs bg-amber-50 text-amber-700 font-semibold rounded hover:bg-amber-100 transition"
-                  >
-                    Agent Role
-                  </button>
-                </div>
-              </div>
-
-              <div className="py-1">
+              <div className="py-1 border-t border-slate-100">
                 <button
                   onClick={() => {
                     logout();
-                    navigate('/login');
+                    navigate(ROUTES.login);
                   }}
-                  className="w-full px-4 py-2 text-sm text-rose-600 hover:bg-rose-50 flex items-center space-x-2 font-medium transition"
+                  className="w-full px-4 py-2 text-sm text-rose-600 hover:bg-rose-50 flex items-center space-x-2 font-medium transition cursor-pointer"
                 >
                   <LogOut size={16} />
-                  <span>Sign Out</span>
+                  <span>Logout</span>
                 </button>
               </div>
             </div>
