@@ -1,19 +1,31 @@
-import { Routes, Route, Navigate } from 'react-router-dom'
-import Login from '../pages/auth/Login'
-import Register from '../pages/auth/Register'
-import RegisterAgent from '../pages/auth/RegisterAgent'
-import CompleteAgentProfile from '../pages/auth/CompleteAgentProfile'
-import ForgotPassword from '../pages/auth/ForgotPassword'
-import ResetPassword from '../pages/auth/ResetPassword'
-import PublicRoute from './PublicRoute'
-import PrivateRoute from './PrivateRoute'
-import RoleRoute from './RoleRoute'
-import RolePlaceholder from '../components/RolePlaceholder'
-import { ROUTES } from '../utils/constants'
+import { Routes, Route, Navigate } from 'react-router-dom';
+import Login from '../pages/auth/Login';
+import Register from '../pages/auth/Register';
+import RegisterAgent from '../pages/auth/RegisterAgent';
+import CompleteAgentProfile from '../pages/auth/CompleteAgentProfile';
+import ForgotPassword from '../pages/auth/ForgotPassword';
+import ResetPassword from '../pages/auth/ResetPassword';
 
-const AppRoutes = () => {
+import PublicRoute from './PublicRoute';
+import PrivateRoute from './PrivateRoute';
+import RoleRoute from './RoleRoute';
+import RolePlaceholder from '../components/RolePlaceholder';
+
+import DashboardLayout from '../layouts/DashboardLayout';
+import Dashboard from '../pages/buyer/Dashboard';
+import BrowseProperties from '../pages/buyer/BrowseProperties';
+import Favorites from '../pages/buyer/Favorites';
+import ScheduledVisits from '../pages/buyer/ScheduledVisits';
+import Messages from '../pages/buyer/Messages';
+import Notifications from '../pages/buyer/Notifications';
+import Profile from '../pages/buyer/Profile';
+import Settings from '../pages/buyer/Settings';
+import { ROUTES } from '../utils/constants';
+
+export const AppRoutes = () => {
   return (
     <Routes>
+      {/* Public Auth Routes wrapped in PublicRoute */}
       <Route
         path={ROUTES.login}
         element={
@@ -22,16 +34,20 @@ const AppRoutes = () => {
           </PublicRoute>
         }
       />
-      <Route path={ROUTES.register} element={<Register />} />
-      <Route path={ROUTES.registerAgent} element={<RegisterAgent />} />
       <Route
-        path={ROUTES.completeAgentProfile}
+        path={ROUTES.register}
         element={
-          <PrivateRoute>
-            <RoleRoute roles="agent">
-              <CompleteAgentProfile />
-            </RoleRoute>
-          </PrivateRoute>
+          <PublicRoute>
+            <Register />
+          </PublicRoute>
+        }
+      />
+      <Route
+        path={ROUTES.registerAgent}
+        element={
+          <PublicRoute>
+            <RegisterAgent />
+          </PublicRoute>
         }
       />
       <Route
@@ -51,40 +67,57 @@ const AppRoutes = () => {
         }
       />
 
+      {/* Protected Agent Complete Profile Route */}
       <Route
-        path={ROUTES.buyer}
-        element={
-          <PrivateRoute>
-            <RoleRoute roles="buyer">
-              <RolePlaceholder />
-            </RoleRoute>
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path={ROUTES.agent}
+        path={ROUTES.completeAgentProfile}
         element={
           <PrivateRoute>
             <RoleRoute roles="agent">
-              <RolePlaceholder />
+              <CompleteAgentProfile />
             </RoleRoute>
           </PrivateRoute>
         }
       />
-      <Route
-        path={ROUTES.admin}
-        element={
-          <PrivateRoute>
+
+      {/* Protected Buyer Routes Shell */}
+      <Route element={<PrivateRoute />}>
+        <Route element={<RoleRoute roles="buyer" />}>
+          <Route path={ROUTES.buyer} element={<DashboardLayout />}>
+            <Route index element={<Dashboard />} />
+            <Route path="properties" element={<BrowseProperties />} />
+            <Route path="favorites" element={<Favorites />} />
+            <Route path="visits" element={<ScheduledVisits />} />
+            <Route path="messages" element={<Messages />} />
+            <Route path="notifications" element={<Notifications />} />
+            <Route path="profile" element={<Profile />} />
+            <Route path="settings" element={<Settings />} />
+          </Route>
+        </Route>
+
+        {/* Placeholders for Agent & Admin Modules */}
+        <Route
+          path={`${ROUTES.agent}/*`}
+          element={
+            <RoleRoute roles="agent">
+              <RolePlaceholder />
+            </RoleRoute>
+          }
+        />
+        <Route
+          path={`${ROUTES.admin}/*`}
+          element={
             <RoleRoute roles="admin">
               <RolePlaceholder />
             </RoleRoute>
-          </PrivateRoute>
-        }
-      />
+          }
+        />
+      </Route>
 
+      {/* Fallback Redirects */}
+      <Route path="/" element={<Navigate to={ROUTES.login} replace />} />
       <Route path="*" element={<Navigate to={ROUTES.login} replace />} />
     </Routes>
-  )
-}
+  );
+};
 
-export default AppRoutes
+export default AppRoutes;

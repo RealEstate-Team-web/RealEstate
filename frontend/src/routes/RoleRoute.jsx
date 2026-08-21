@@ -1,17 +1,19 @@
-import { Navigate } from 'react-router-dom'
-import useAuth from '../hooks/useAuth'
-import { ROLE_DASHBOARDS } from '../utils/constants'
+import { Navigate, Outlet } from 'react-router-dom';
+import useAuth from '../hooks/useAuth';
+import { ROLE_DASHBOARDS, ROUTES } from '../utils/constants';
 
-const RoleRoute = ({ roles, children }) => {
-  const { user } = useAuth()
-  const allowed = Array.isArray(roles) ? roles : [roles]
+export const RoleRoute = ({ roles, allowedRoles, children }) => {
+  const { user } = useAuth();
+  const allowed = roles
+    ? (Array.isArray(roles) ? roles : [roles])
+    : (allowedRoles ? (Array.isArray(allowedRoles) ? allowedRoles : [allowedRoles]) : ['buyer']);
 
   if (!user || !allowed.includes(user.role)) {
-    const fallback = user ? ROLE_DASHBOARDS[user.role] : '/login'
-    return <Navigate to={fallback} replace />
+    const fallback = user && ROLE_DASHBOARDS[user.role] ? ROLE_DASHBOARDS[user.role] : ROUTES.login;
+    return <Navigate to={fallback} replace />;
   }
 
-  return children
-}
+  return children ? children : <Outlet />;
+};
 
-export default RoleRoute
+export default RoleRoute;

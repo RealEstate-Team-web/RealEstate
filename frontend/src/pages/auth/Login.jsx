@@ -1,7 +1,7 @@
-import AuthLayout from '../../layouts/AuthLayout'
-import LoginForm from '../../components/forms/LoginForm'
+import AuthLayout from '../../layouts/AuthLayout';
+import LoginForm from '../../components/forms/LoginForm';
 
-const Login = () => {
+export const Login = () => {
   return (
     <AuthLayout>
       <div className="mx-auto w-full max-w-[420px] rounded-[6px] border border-[#D9E0E2] bg-white px-5 py-7 shadow-sm sm:px-8 sm:py-8">
@@ -16,7 +16,7 @@ const Login = () => {
         <LoginForm />
       </div>
     </AuthLayout>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;
