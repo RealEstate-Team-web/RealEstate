@@ -27,8 +27,6 @@ graphify-out/
 File Ownership.md
 Building flow.md
 
-Sprints/
-Sprint-Plan-Phases-3-7.md
 !.vscode/extensions.json
 .idea
 .DS_Store
@@ -40,5 +38,5 @@ Sprint-Plan-Phases-3-7.md
 
 # Project working docs (local only per team decision)
 PROGRESS.md
-AGENTS.md
+
 
