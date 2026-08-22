@@ -1,0 +1,268 @@
+import { useEffect, useState } from 'react';
+import { Clock, UserCheck, Ban, CheckCircle, XCircle, Loader2 } from 'lucide-react';
+import KpiCard from '../../components/admin/KpiCard';
+import Avatar from '../../components/common/Avatar';
+import StatusBadge from '../../components/common/StatusBadge';
+import {
+  getDashboardStats,
+  getAgents,
+  approveAgent,
+  rejectAgent,
+} from '../../services/admin.service';
+
+const formatDate = (iso) => {
+  if (!iso) return '—';
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return '—';
+  return d
+    .toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
+    .replace(/ /g, '-');
+};
+
+const AgentApproval = () => {
+  const [stats, setStats] = useState(null);
+  const [agents, setAgents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
+  const [actionId, setActionId] = useState(null);
+
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      try {
+        const [s, a] = await Promise.all([getDashboardStats(), getAgents('pending')]);
+        if (!active) return;
+        setStats(s);
+        setAgents(a);
+        setError(null);
+      } catch (err) {
+        if (!active) return;
+        setError(err.message || 'Failed to load agents');
+      } finally {
+        if (active) setLoading(false);
+      }
+    })();
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const reload = async () => {
+    const [s, a] = await Promise.all([getDashboardStats(), getAgents('pending')]);
+    setStats(s);
+    setAgents(a);
+  };
+
+  const act = async (fn, id, label, successMsg) => {
+    setActionId(id);
+    setError(null);
+    setSuccess(null);
+    try {
+      await fn(id);
+      setSuccess(`${label} ${successMsg}`);
+      await reload();
+    } catch (err) {
+      setError(err.message || 'Action failed');
+    } finally {
+      setActionId(null);
+    }
+  };
+
+  const kpis = stats
+    ? [
+        {
+          title: 'Total Pending Agents',
+          value: stats.pendingAgents,
+          icon: Clock,
+          iconBg: 'bg-[#FBF3DD] text-[#E7B85A]',
+        },
+        {
+          title: 'Total Approved Agents',
+          value: stats.approvedAgents,
+          icon: UserCheck,
+          iconBg: 'bg-[#E6F4EC] text-[#4FAF83]',
+        },
+        {
+          title: 'Total Rejected Agents',
+          value: stats.rejectedAgents,
+          icon: XCircle,
+          iconBg: 'bg-[#FBE9E8] text-[#D96B67]',
+        },
+        {
+          title: 'Total Suspended Users',
+          value: stats.suspendedUsers,
+          icon: Ban,
+          iconBg: 'bg-[#FBE9E8] text-[#D96B67]',
+        },
+      ]
+    : [];
+
+  if (loading) {
+    return <div className="py-20 text-center text-[#6B7280]">Loading agent approvals…</div>;
+  }
+
+  return (
+    <div className="space-y-5 font-sans">
+      <h1 className="text-[28px] font-bold text-[#111827] tracking-tight">
+        Agent Approval Dashboard
+      </h1>
+
+      {error && (
+        <div className="rounded-md bg-[#FBE9E8] text-[#B23B36] text-[13px] px-4 py-3">
+          {error}
+        </div>
+      )}
+      {success && (
+        <div className="rounded-md bg-[#E6F4EC] text-[#2F7A55] text-[13px] px-4 py-3">
+          {success}
+        </div>
+      )}
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+        {kpis.map((k) => (
+          <KpiCard
+            key={k.title}
+            title={k.title}
+            value={k.value}
+            icon={k.icon}
+            iconBg={k.iconBg}
+          />
+        ))}
+      </div>
+
+      {/* Pending Verification Requests */}
+      <div className="bg-white border border-[#E5E7EB] rounded-lg shadow-[0_2px_8px_rgba(15,23,42,0.06)] overflow-hidden">
+        <h2 className="text-[17px] font-semibold text-[#111827] px-4 py-3">
+          Pending Verification Requests
+        </h2>
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-[13px] text-[#111827] min-w-[920px]">
+            <thead>
+              <tr className="bg-[#F3F4F8] text-[#374151] font-medium text-[13px] h-[42px]">
+                <th className="py-0 px-4 rounded-l-lg w-[18%]">Applicant Name</th>
+                <th className="py-0 px-4 w-[18%]">Agency Name</th>
+                <th className="py-0 px-4 w-[15%]">Registration Date</th>
+                <th className="py-0 px-4 w-[18%]">Documents Submitted</th>
+                <th className="py-0 px-4 w-[10%]">Status</th>
+                <th className="py-0 px-4 w-[21%] rounded-r-lg">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-[#E5E7EB]">
+              {agents.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="py-10 text-center text-[13px] text-[#6B7280]">
+                    No pending verification requests.
+                  </td>
+                </tr>
+              ) : (
+                agents.map((a) => {
+                  const docs = a.licenseNumber ? [{ label: 'License' }] : [];
+                  return (
+                    <tr key={a.id} className="h-[50px] hover:bg-[#F9FAFB] transition-colors">
+                      <td className="py-0 px-4">
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <Avatar
+                            size={32}
+                            src={a.profile_image_url || undefined}
+                            alt={`${a.first_name} ${a.last_name}`}
+                          />
+                          <span className="font-medium truncate text-[#111827]">
+                            {a.first_name} {a.last_name}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="py-0 px-4 text-[#374151] truncate">{a.agency || '—'}</td>
+                      <td className="py-0 px-4 text-[#374151] whitespace-nowrap">
+                        {formatDate(a.created_at)}
+                      </td>
+                      <td className="py-0 px-4">
+                        {docs.length === 0 ? (
+                          <span className="text-[#9CA3AF]">—</span>
+                        ) : (
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            {docs.map((d) => (
+                              <span
+                                key={d.label}
+                                className="text-[#374151] text-[13px]"
+                              >
+                                {d.label}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                      </td>
+                      <td className="py-0 px-4">
+                        <StatusBadge status={a.status}>{a.status}</StatusBadge>
+                      </td>
+                       <td className="py-0 px-4">
+                         <div className="flex items-center gap-2 whitespace-nowrap">
+                           <button
+                             type="button"
+                             disabled={actionId === a.id}
+                             onClick={() => act(approveAgent, a.id, a.first_name, 'approved')}
+                             className="inline-flex items-center gap-1.5 h-[34px] px-[10px] rounded-md bg-[#edf2fa] border border-[#d6deeb] text-[13px] font-medium text-[#2F7A55] hover:bg-[#e3f3ea] transition-colors disabled:opacity-50"
+                           >
+                             {actionId === a.id ? (
+                               <Loader2 size={19} className="animate-spin" />
+                             ) : (
+                               <CheckCircle size={19} className="text-[#2F7A55]" />
+                             )}
+                             Approve Account
+                           </button>
+                          <button
+                            type="button"
+                            disabled={actionId === a.id}
+                            onClick={() => act(rejectAgent, a.id, a.first_name, 'rejected')}
+                            className="inline-flex items-center gap-1.5 h-[34px] px-[10px] rounded-md bg-[#edf2fa] border border-[#d6deeb] text-[13px] font-medium text-[#B23B36] hover:bg-[#fbe9e8] transition-colors disabled:opacity-50"
+                          >
+                            <XCircle size={19} className="text-[#B23B36]" />
+                            Reject Account
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Bottom grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 items-stretch">
+        <div className="bg-white border border-[#E5E7EB] rounded-lg shadow-[0_2px_8px_rgba(15,23,42,0.06)] p-4 flex flex-col">
+          <h2 className="text-[17px] font-semibold text-[#111827] mb-2">Recent Activity Log</h2>
+          <div className="flex-1 max-h-[260px] overflow-y-auto scrollbar-thin">
+            {!stats || stats.recentAgents.length === 0 ? (
+              <p className="text-[13px] text-[#6B7280] py-6 text-center">
+                No recent activity.
+              </p>
+            ) : (
+              <div className="divide-y divide-slate-100">
+                {stats.recentAgents.map((r) => (
+                  <div key={r.id} className="flex items-center justify-between py-2.5">
+                    <div className="flex items-center space-x-2.5 min-w-0">
+                      <Avatar
+                        size={30}
+                        src={r.profile_image_url || undefined}
+                        alt={`${r.first_name} ${r.last_name}`}
+                      />
+                      <span className="text-[13px] font-semibold text-[#111827] truncate">
+                        {r.first_name} {r.last_name}
+                      </span>
+                    </div>
+                    <StatusBadge status={r.status}>{r.status}</StatusBadge>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default AgentApproval;
