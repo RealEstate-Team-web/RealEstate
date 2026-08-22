@@ -2,28 +2,14 @@ import { NavLink } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import {
   LayoutDashboard,
-  CalendarCheck,
   ShieldCheck,
-  Building2,
-  Users,
-  BarChart3,
-  TrendingUp,
-  User,
-  Settings,
   X,
   Home,
 } from 'lucide-react';
 
 const navItems = [
   { label: 'Dashboard', path: '/admin', icon: LayoutDashboard, end: true },
-  { label: 'Visit Requests', path: '/admin/visits', icon: CalendarCheck, badge: '7', badgeColor: 'bg-[#7558D6]' },
   { label: 'Agent Approval', path: '/admin/agents', icon: ShieldCheck, badge: '7', badgeColor: 'bg-[#E7B85A]' },
-  { label: 'Property Management', path: '/admin/properties', icon: Building2, badge: '19', badgeColor: 'bg-[#E7B85A]' },
-  { label: 'User Management', path: '/admin/users', icon: Users, dot: true, badgeColor: 'bg-[#E7B85A]' },
-  { label: 'Reports', path: '/admin/reports', icon: BarChart3, dot: true, badgeColor: 'bg-[#E7B85A]' },
-  { label: 'Analytics', path: '/admin/analytics', icon: TrendingUp, pill: 'Growth Up', pillColor: 'bg-[#4FAF83]' },
-  { label: 'Profile', path: '/admin/profile', icon: User },
-  { label: 'Settings', path: '/admin/settings', icon: Settings },
 ];
 
 const AdminSidebar = ({ isOpen, onClose }) => {

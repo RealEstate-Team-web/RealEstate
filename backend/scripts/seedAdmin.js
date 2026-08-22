@@ -19,17 +19,26 @@ async function main() {
   }
 
   const passwordHash = await bcrypt.hash(ADMIN.password, 10);
-  const [res] = await pool.execute(
-    "INSERT INTO users (first_name, last_name, email, phone, role, status) VALUES (?, ?, ?, ?, ?, 'active')",
-    [ADMIN.firstName, ADMIN.lastName, ADMIN.email, ADMIN.phone, ADMIN.role],
-  );
-  const userId = res.insertId;
-  await pool.execute(
-    "INSERT INTO user_credentials (user_id, password_hash) VALUES (?, ?)",
-    [userId, passwordHash],
-  );
-
-  console.log(`Admin created -> email: ${ADMIN.email}  password: ${ADMIN.password}`);
+  const conn = await pool.getConnection();
+  try {
+    await conn.beginTransaction();
+    const [res] = await conn.execute(
+      "INSERT INTO users (first_name, last_name, email, phone, role, status) VALUES (?, ?, ?, ?, ?, 'active')",
+      [ADMIN.firstName, ADMIN.lastName, ADMIN.email, ADMIN.phone, ADMIN.role],
+    );
+    const userId = res.insertId;
+    await conn.execute(
+      "INSERT INTO user_credentials (user_id, password_hash) VALUES (?, ?)",
+      [userId, passwordHash],
+    );
+    await conn.commit();
+    console.log(`Admin created -> email: ${ADMIN.email}  password: ${ADMIN.password}`);
+  } catch (err) {
+    await conn.rollback();
+    throw err;
+  } finally {
+    conn.release();
+  }
 }
 
 main()

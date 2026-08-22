@@ -105,11 +105,10 @@ const Dashboard = () => {
   ];
 
   const recent = stats.recentAgents || [];
-  const totalStatus =
-    stats.statusBreakdown.reduce((sum, d) => sum + d.value, 0) || 1;
+  const totalStatus = stats.statusBreakdown.reduce((sum, d) => sum + d.value, 0);
   const donutData = stats.statusBreakdown.map((d) => ({
     ...d,
-    value: Math.round((d.value / totalStatus) * 100),
+    value: totalStatus ? Math.round((d.value / totalStatus) * 100) : 0,
   }));
 
   return (
@@ -168,9 +167,13 @@ const Dashboard = () => {
         </Card>
 
         <Card title="Agent Status Breakdown" className="xl:col-span-3 flex flex-col">
-          <div className="flex-1 flex items-center justify-center">
-            <StatusDonutChart data={donutData} />
-          </div>
+          {totalStatus === 0 ? (
+            <NoData label="No agent status data" />
+          ) : (
+            <div className="flex-1 flex items-center justify-center">
+              <StatusDonutChart data={donutData} />
+            </div>
+          )}
         </Card>
       </div>
 

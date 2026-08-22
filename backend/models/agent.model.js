@@ -68,10 +68,11 @@ const Agent = {
   },
 
   async setVerificationStatus(id, status) {
-    await query(
-      "UPDATE agent_profiles SET verification_status = ?, updated_at = NOW() WHERE id = ?",
+    const [result] = await query(
+      "UPDATE agent_profiles SET verification_status = ?, updated_at = NOW() WHERE id = ? AND verification_status = 'pending'",
       [status, id],
     );
+    return result.affectedRows;
   },
 
   async setUserStatus(userId, status) {

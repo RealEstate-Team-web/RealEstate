@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Clock, UserCheck, Ban, CheckCircle, XCircle, Loader2, Eye } from 'lucide-react';
+import { Clock, UserCheck, Ban, CheckCircle, XCircle, Loader2 } from 'lucide-react';
 import KpiCard from '../../components/admin/KpiCard';
 import Avatar from '../../components/common/Avatar';
 import StatusBadge from '../../components/common/StatusBadge';
@@ -90,7 +90,7 @@ const AgentApproval = () => {
           iconBg: 'bg-[#FBE9E8] text-[#D96B67]',
         },
         {
-          title: 'Total Suspended Agents',
+          title: 'Total Suspended Users',
           value: stats.suspendedUsers,
           icon: Ban,
           iconBg: 'bg-[#FBE9E8] text-[#D96B67]',
@@ -182,14 +182,12 @@ const AgentApproval = () => {
                         ) : (
                           <div className="flex items-center gap-1.5 flex-wrap">
                             {docs.map((d) => (
-                              <a
+                              <span
                                 key={d.label}
-                                href="#"
-                                onClick={(e) => e.preventDefault()}
-                                className="text-[#1F5FA8] underline hover:text-[#174A82] text-[13px]"
+                                className="text-[#374151] text-[13px]"
                               >
                                 {d.label}
-                              </a>
+                              </span>
                             ))}
                           </div>
                         )}
@@ -197,27 +195,21 @@ const AgentApproval = () => {
                       <td className="py-0 px-4">
                         <StatusBadge status={a.status}>{a.status}</StatusBadge>
                       </td>
-                      <td className="py-0 px-4">
-                        <div className="flex items-center gap-2 whitespace-nowrap">
-                          <button
-                            type="button"
-                            className="inline-flex items-center gap-1.5 h-[34px] px-[10px] rounded-md bg-[#edf2fa] border border-[#d6deeb] text-[13px] font-medium text-[#1F5FA8] hover:bg-[#e3ebf7] transition-colors"
-                          >
-                            <Eye size={19} className="text-[#1F5FA8]" /> View Details
-                          </button>
-                          <button
-                            type="button"
-                            disabled={actionId === a.id}
-                            onClick={() => act(approveAgent, a.id, a.first_name, 'approved')}
-                            className="inline-flex items-center gap-1.5 h-[34px] px-[10px] rounded-md bg-[#edf2fa] border border-[#d6deeb] text-[13px] font-medium text-[#2F7A55] hover:bg-[#e3f3ea] transition-colors disabled:opacity-50"
-                          >
-                            {actionId === a.id ? (
-                              <Loader2 size={19} className="animate-spin" />
-                            ) : (
-                              <CheckCircle size={19} className="text-[#2F7A55]" />
-                            )}
-                            Approve Account
-                          </button>
+                       <td className="py-0 px-4">
+                         <div className="flex items-center gap-2 whitespace-nowrap">
+                           <button
+                             type="button"
+                             disabled={actionId === a.id}
+                             onClick={() => act(approveAgent, a.id, a.first_name, 'approved')}
+                             className="inline-flex items-center gap-1.5 h-[34px] px-[10px] rounded-md bg-[#edf2fa] border border-[#d6deeb] text-[13px] font-medium text-[#2F7A55] hover:bg-[#e3f3ea] transition-colors disabled:opacity-50"
+                           >
+                             {actionId === a.id ? (
+                               <Loader2 size={19} className="animate-spin" />
+                             ) : (
+                               <CheckCircle size={19} className="text-[#2F7A55]" />
+                             )}
+                             Approve Account
+                           </button>
                           <button
                             type="button"
                             disabled={actionId === a.id}
@@ -240,24 +232,6 @@ const AgentApproval = () => {
 
       {/* Bottom grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 items-stretch">
-        <div className="bg-white border border-[#E5E7EB] rounded-lg shadow-[0_2px_8px_rgba(15,23,42,0.06)] p-4 flex flex-col">
-          <h2 className="text-[17px] font-semibold text-[#111827] mb-4">Quick Actions</h2>
-          <div className="flex flex-wrap gap-3">
-            <button
-              type="button"
-              className="w-[230px] h-[44px] rounded-md bg-[#4C7FC1] text-white text-[14px] font-medium shadow-sm hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
-            >
-              <CheckCircle size={18} /> Bulk Approve Selected
-            </button>
-            <button
-              type="button"
-              className="w-[230px] h-[44px] rounded-md bg-[#D8494D] text-white text-[14px] font-medium shadow-sm hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
-            >
-              <XCircle size={18} /> Bulk Reject Selected
-            </button>
-          </div>
-        </div>
-
         <div className="bg-white border border-[#E5E7EB] rounded-lg shadow-[0_2px_8px_rgba(15,23,42,0.06)] p-4 flex flex-col">
           <h2 className="text-[17px] font-semibold text-[#111827] mb-2">Recent Activity Log</h2>
           <div className="flex-1 max-h-[260px] overflow-y-auto scrollbar-thin">

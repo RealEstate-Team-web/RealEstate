@@ -49,7 +49,12 @@ async function approveAgent(id) {
     error.status = 404;
     throw error;
   }
-  await Agent.setVerificationStatus(id, "approved");
+  const affected = await Agent.setVerificationStatus(id, "approved");
+  if (affected === 0) {
+    const error = new Error("Agent is not pending approval");
+    error.status = 409;
+    throw error;
+  }
   return { id: agent.id, status: "approved" };
 }
 
@@ -60,7 +65,12 @@ async function rejectAgent(id) {
     error.status = 404;
     throw error;
   }
-  await Agent.setVerificationStatus(id, "rejected");
+  const affected = await Agent.setVerificationStatus(id, "rejected");
+  if (affected === 0) {
+    const error = new Error("Agent is not pending approval");
+    error.status = 409;
+    throw error;
+  }
   return { id: agent.id, status: "rejected" };
 }
 

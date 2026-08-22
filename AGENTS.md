@@ -21,7 +21,7 @@ The backend initial foundation is complete and feature branches can build on it:
 ## First, read these
 
 - `PROGRESS.md` — implementation status (source of truth for what's done/pending)
-- `Resources/` — planning docs (API, database, wireframes, task allocation)
+- `Documentation/` — planning docs (API, database, wireframes, task allocation)
 - `.opencode/skills/` — load the matching skill for the task (e.g. `database`, `api`, `coding-standards`)
 
 ## Stack

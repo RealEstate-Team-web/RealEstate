@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
-import { Menu, Search, Bell, ChevronDown, LogOut, User as UserIcon } from 'lucide-react';
+import { Menu, Search, Bell, ChevronDown, LogOut } from 'lucide-react';
 import { ROUTES } from '../../utils/constants';
 
 const titleMap = {
@@ -88,16 +88,6 @@ const AdminHeader = ({ onToggleSidebar }) => {
                 <p className="text-[13px] font-bold text-slate-900 truncate">{displayName}</p>
                 <p className="text-[11px] text-slate-500 truncate">{user?.email}</p>
               </div>
-              <button
-                onClick={() => {
-                  navigate('/admin/profile');
-                  setOpen(false);
-                }}
-                className="w-full px-4 py-2 text-[13px] text-slate-700 hover:bg-slate-50 flex items-center space-x-2 transition cursor-pointer"
-              >
-                <UserIcon size={16} className="text-slate-400" />
-                <span>My Profile</span>
-              </button>
               <button
                 onClick={() => {
                   logout();

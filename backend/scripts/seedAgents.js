@@ -69,24 +69,33 @@ async function main() {
       continue;
     }
 
-    const [res] = await pool.execute(
-      "INSERT INTO users (first_name, last_name, email, phone, role, status) VALUES (?, ?, ?, ?, 'agent', 'active')",
-      [a.firstName, a.lastName, a.email, a.phone],
-    );
-    const userId = res.insertId;
+    const conn = await pool.getConnection();
+    try {
+      await conn.beginTransaction();
+      const [res] = await conn.execute(
+        "INSERT INTO users (first_name, last_name, email, phone, role, status) VALUES (?, ?, ?, ?, 'agent', 'active')",
+        [a.firstName, a.lastName, a.email, a.phone],
+      );
+      const userId = res.insertId;
 
-    await pool.execute(
-      "INSERT INTO user_credentials (user_id, password_hash) VALUES (?, ?)",
-      [userId, passwordHash],
-    );
-    await pool.execute(
-      `INSERT INTO agent_profiles
-         (user_id, agency_name, license_number, experience_years, city, verification_status)
-       VALUES (?, ?, ?, ?, ?, 'pending')`,
-      [userId, a.agencyName, a.licenseNumber, a.experienceYears, a.city],
-    );
-
-    console.log(`Agent created -> ${a.firstName} ${a.lastName} (${a.email})`);
+      await conn.execute(
+        "INSERT INTO user_credentials (user_id, password_hash) VALUES (?, ?)",
+        [userId, passwordHash],
+      );
+      await conn.execute(
+        `INSERT INTO agent_profiles
+           (user_id, agency_name, license_number, experience_years, city, verification_status)
+         VALUES (?, ?, ?, ?, ?, 'pending')`,
+        [userId, a.agencyName, a.licenseNumber, a.experienceYears, a.city],
+      );
+      await conn.commit();
+      console.log(`Agent created -> ${a.firstName} ${a.lastName} (${a.email})`);
+    } catch (err) {
+      await conn.rollback();
+      throw err;
+    } finally {
+      conn.release();
+    }
   }
 
   console.log(`\nDone. All seeded agents use password: ${PASSWORD}`);

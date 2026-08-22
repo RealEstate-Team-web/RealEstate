@@ -2,12 +2,14 @@ const StatusDonutChart = ({ data, size = 160, stroke = 22 }) => {
   const radius = (size - stroke) / 2;
   const circ = 2 * Math.PI * radius;
 
+  const total = data.reduce((sum, d) => sum + d.value, 0) || 1;
+
   const segs = data.map((d, i) => {
     const before = data.slice(0, i).reduce((sum, x) => sum + x.value, 0);
     return {
       ...d,
-      len: (d.value / 100) * circ,
-      offset: (before / 100) * circ,
+      len: (d.value / total) * circ,
+      offset: (before / total) * circ,
     };
   });
 
