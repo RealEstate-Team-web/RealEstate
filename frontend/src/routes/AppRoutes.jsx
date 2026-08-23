@@ -20,6 +20,10 @@ import Messages from '../pages/buyer/Messages';
 import Notifications from '../pages/buyer/Notifications';
 import Profile from '../pages/buyer/Profile';
 import Settings from '../pages/buyer/Settings';
+
+import AdminLayout from '../layouts/AdminLayout';
+import AdminDashboard from '../pages/admin/Dashboard';
+import Agents from '../pages/admin/Agents';
 import { ROUTES } from '../utils/constants';
 
 export const AppRoutes = () => {
@@ -94,7 +98,7 @@ export const AppRoutes = () => {
           </Route>
         </Route>
 
-        {/* Placeholders for Agent & Admin Modules */}
+        {/* Agent Module placeholder (built separately) */}
         <Route
           path={`${ROUTES.agent}/*`}
           element={
@@ -103,14 +107,15 @@ export const AppRoutes = () => {
             </RoleRoute>
           }
         />
-        <Route
-          path={`${ROUTES.admin}/*`}
-          element={
-            <RoleRoute roles="admin">
-              <RolePlaceholder />
-            </RoleRoute>
-          }
-        />
+
+        {/* Admin Module */}
+        <Route element={<RoleRoute roles="admin" />}>
+          <Route path={ROUTES.admin} element={<AdminLayout />}>
+            <Route index element={<AdminDashboard />} />
+            <Route path="agents" element={<Agents />} />
+            <Route path="*" element={<Navigate to={ROUTES.admin} replace />} />
+          </Route>
+        </Route>
       </Route>
 
       {/* Fallback Redirects */}
