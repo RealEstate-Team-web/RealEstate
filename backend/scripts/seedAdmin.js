@@ -3,8 +3,8 @@ const bcrypt = require("bcrypt");
 const { pool } = require("../config/db.config");
 
 const ADMIN = {
-  firstName: "Abebe",
-  lastName: "Kebede",
+  firstName: "Mila",
+  lastName: "",
   email: "admin@nesthome.com",
   phone: "0900000001",
   password: "Admin@123",
