@@ -118,6 +118,8 @@ Build the first real marketplace and dashboard features: admin management, publi
 **Labels:** ADMIN, FRONTEND, BACKEND, SECURITY, UI  
 **Branch:** `feature/admin-dashboard`
 
+**Status (done):** Implemented on `feature/admin` via PR #8. Delivered scope beyond the original list: admin approve/reject/suspend agent APIs (`GET /api/admin/agents?status=`, `PATCH /api/admin/agents/:id/approve|reject|suspend`) and the Agents page (`Agents.jsx`) with real data — this completes the Agent Approval flow referenced by S1-01.
+
 **Objective**
 
 Create the protected admin dashboard foundation.
@@ -190,40 +192,37 @@ Allow admins to view users and suspend/activate accounts.
 
 ---
 
-### Card S2-03 — [ADMIN] Implement Agent Approval and Category Management
+### Card S2-03 — [ADMIN] Implement Category Management
 
 **Owner:** Developer 1  
 **Labels:** ADMIN, BACKEND, FRONTEND, DATABASE, SECURITY  
 **Branch:** `feature/admin-agents-categories`
 
+**Status:** Agent Approval portion was completed earlier in S2-01 (Admin Dashboard Foundation, merged via PR #8) and is tracked there. This card now covers only Category Management.
+
 **Objective**
 
-Allow admins to approve/reject pending agents and manage property categories.
+Allow admins to manage property categories (create / edit / delete) and expose them publicly for listing filters.
 
 **Requirements**
 
-- Pending agents API.
-- Approve agent API.
-- Reject agent API.
-- Category create/update/delete API.
-- Admin agents page.
-- Admin categories page.
+- Category create/update/delete API (admin-only).
+- Public category list API for filter dropdowns.
+- Admin categories page (list, create, edit, delete).
+- Status/error/empty states on the page.
 
 **Acceptance Criteria**
 
-- Admin can view pending agents.
-- Admin can approve an agent.
-- Admin can reject an agent.
-- Approved agent gains agent access.
-- Admin can create/edit/delete categories.
-- Category changes appear in public filters.
+- Admin can create a category.
+- Admin can edit a category.
+- Admin can delete a category.
+- Duplicate category names are rejected.
+- Category changes appear in public filters (`GET /api/categories`).
 
 **Checklist**
 
-- [ ] Pending agents API
-- [ ] Approve/reject APIs
 - [ ] Category CRUD APIs
-- [ ] Agents page
+- [ ] Public category list endpoint
 - [ ] Categories page
 - [ ] Status/error states
 - [ ] Manual/API testing
@@ -469,6 +468,46 @@ Allow agents to upload property images with cover image and sort order.
 
 ---
 
+### Card S2-10 — [AUTH] Implement Forgot and Reset Password
+
+**Owner:** Developer 1
+**Labels:** AUTH, SECURITY, BACKEND, DATABASE, FRONTEND
+**Branch:** `feature/forgot-reset-password`
+
+**Objective**
+
+Allow users to reset a forgotten password via an emailed single-use link, and connect the existing Forgot/Reset Password pages to real APIs.
+
+**Requirements**
+
+- New `password_reset_tokens` table (hashed token, user_id, expires_at, used_at).
+- `POST /api/auth/forgot-password` — always return a generic success message (no account enumeration); generate token, store hash + expiry, send email.
+- `POST /api/auth/reset-password` — validate token (valid, unused, unexpired), hash and update password, mark token used.
+- Mailer setup (nodemailer + dev SMTP credentials in `.env` only).
+- Rate-limit the forgot-password endpoint.
+- Wire existing `ForgotPassword.jsx` / `ResetPassword.jsx` to the new endpoints (currently mock-only).
+- Input validation + error handling per API Design doc.
+
+**Acceptance Criteria**
+
+- Submitting any email shows the same neutral confirmation.
+- In dev, a reset email is delivered containing the reset link.
+- Reset succeeds with a valid token; invalid/expired/already-used tokens are rejected.
+- Password is updated correctly (bcrypt) and login works with the new password.
+- Frontend pages show success/error states from real API responses.
+
+**Checklist**
+
+- [ ] password_reset_tokens migration
+- [ ] forgot-password endpoint + mailer
+- [ ] reset-password endpoint
+- [ ] Token expiry/single-use enforcement
+- [ ] Rate limiting
+- [ ] Frontend API wiring
+- [ ] Manual testing
+
+---
+
 ## Sprint Dependency Notes
 
 - Sprint 1 authentication must land before dashboards can be fully protected.
@@ -476,6 +515,14 @@ Allow agents to upload property images with cover image and sort order.
 - Admin agent approval depends on agent registration creating pending `agent_profiles`.
 - Admin category management depends on property/category migrations.
 - Buyer visits and agent visit approval share visit status rules and must be coordinated between Developer 3 and Developer 4.
+- Forgot/Reset Password (S2-10) must land before Sprint 4 auth endpoint tests; `S4-02` expects change/reset password tests.
+- S2-10 requires a dev mail transport decision (e.g., nodemailer + Mailtrap); credentials stay in `.env` only.
+
+---
+
+## Backlog (Not Scheduled)
+
+- **[SECURITY] Add refresh token support** — long-lived refresh tokens + `/auth/refresh`, rotation, and an axios 401-retry interceptor. Deferred: no current sprint depends on it; a single 7-day JWT is acceptable for this scope.
 
 ---
 
