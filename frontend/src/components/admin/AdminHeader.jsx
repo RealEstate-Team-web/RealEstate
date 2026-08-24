@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { Menu, Search, Bell, ChevronDown, LogOut } from 'lucide-react';
@@ -21,6 +21,31 @@ const AdminHeader = ({ onToggleSidebar }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const [prevPath, setPrevPath] = useState(location.pathname);
+  const dropdownRef = useRef(null);
+
+  if (prevPath !== location.pathname) {
+    setPrevPath(location.pathname);
+    setOpen(false);
+  }
+
+  useEffect(() => {
+    if (!open) return undefined;
+    const handleMouseDown = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setOpen(false);
+      }
+    };
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') setOpen(false);
+    };
+    document.addEventListener('mousedown', handleMouseDown);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', handleMouseDown);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [open]);
 
   const displayName =
     user?.name ||
@@ -65,7 +90,7 @@ const AdminHeader = ({ onToggleSidebar }) => {
           <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-[#D96B67] rounded-full border-2 border-white" />
         </button>
 
-        <div className="relative">
+        <div className="relative" ref={dropdownRef}>
           <button
             onClick={() => setOpen(!open)}
             className="flex items-center space-x-2.5 p-1.5 pl-2 rounded-full hover:bg-slate-100 transition cursor-pointer border border-transparent hover:border-slate-200"
