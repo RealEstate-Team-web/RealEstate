@@ -11,7 +11,7 @@ import PrivateRoute from './PrivateRoute';
 import RoleRoute from './RoleRoute';
 import RolePlaceholder from '../components/RolePlaceholder';
 
-import DashboardLayout from '../layouts/DashboardLayout';
+import DashboardLayout from '../hooks/layouts/DashboardLayout';
 import Dashboard from '../pages/buyer/Dashboard';
 import BrowseProperties from '../pages/buyer/BrowseProperties';
 import Favorites from '../pages/buyer/Favorites';
@@ -21,7 +21,7 @@ import Notifications from '../pages/buyer/Notifications';
 import Profile from '../pages/buyer/Profile';
 import Settings from '../pages/buyer/Settings';
 
-import AdminLayout from '../layouts/AdminLayout';
+import AdminLayout from '../hooks/layouts/AdminLayout';
 import AdminDashboard from '../pages/admin/Dashboard';
 import Agents from '../pages/admin/Agents';
 import { ROUTES } from '../utils/constants';
