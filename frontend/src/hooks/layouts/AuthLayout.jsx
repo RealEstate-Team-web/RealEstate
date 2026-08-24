@@ -1,4 +1,4 @@
-import propertyImage from '../assets/images/auth-property.jpg'
+import propertyImage from '../../assets/images/auth-property.jpg'
 
 const PropertyImage = () => (
   <div className="hidden lg:block">

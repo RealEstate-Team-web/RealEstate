@@ -1,4 +1,4 @@
-import AuthLayout from '../../layouts/AuthLayout'
+import AuthLayout from '../../hooks/layouts/AuthLayout'
 import RegisterForm from '../../components/forms/RegisterForm'
 
 const RegisterAgent = () => {

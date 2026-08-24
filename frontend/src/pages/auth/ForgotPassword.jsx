@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Mail, ArrowLeft } from 'lucide-react'
-import AuthLayout from '../../layouts/AuthLayout'
+import AuthLayout from '../../hooks/layouts/AuthLayout'
 import FormInput from '../../components/forms/FormInput'
 import { ROUTES } from '../../utils/constants'
 
