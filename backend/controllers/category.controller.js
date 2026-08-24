@@ -3,7 +3,7 @@ const categoryService = require("../services/category.service");
 const getPublic = async (req, res, next) => {
   try {
     const data = await categoryService.getPublicCategories();
-    res.status(200).json({ success: true, data });
+    res.status(200).json({ success: true, message: "Categories", data });
   } catch (error) {
     next(error);
   }
@@ -21,7 +21,7 @@ const list = async (req, res, next) => {
 const getOne = async (req, res, next) => {
   try {
     const data = await categoryService.getCategory(req.params.id);
-    res.status(200).json({ success: true, data });
+    res.status(200).json({ success: true, message: "Category", data });
   } catch (error) {
     next(error);
   }
