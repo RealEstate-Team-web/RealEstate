@@ -142,14 +142,14 @@ Create the protected admin dashboard foundation.
 
 **Checklist**
 
-- [ ] Admin route
-- [ ] Admin layout
-- [ ] Admin sidebar
-- [ ] Dashboard API
-- [ ] Overview cards
-- [ ] Role guard
-- [ ] Unauthorized state
-- [ ] Responsive testing
+- [x] Admin route
+- [x] Admin layout
+- [x] Admin sidebar
+- [x] Dashboard API
+- [x] Overview cards
+- [x] Role guard
+- [x] Unauthorized state
+- [x] Responsive testing
 
 ---
 
@@ -208,7 +208,7 @@ Allow admins to manage property categories (create / edit / delete) and expose t
 
 - Category create/update/delete API (admin-only).
 - Public category list API for filter dropdowns.
-- Admin categories page (list, create, edit, delete).
+- Admin categories page at `/admin/categories` (list, create, edit, delete).
 - Status/error/empty states on the page.
 
 **Acceptance Criteria**
@@ -217,13 +217,13 @@ Allow admins to manage property categories (create / edit / delete) and expose t
 - Admin can edit a category.
 - Admin can delete a category.
 - Duplicate category names are rejected.
-- Category changes appear in public filters (`GET /api/categories`).
+- Categories are exposed via `GET /api/categories` for the property-browse filters (the filter UI itself is delivered with property browsing).
 
 **Checklist**
 
 - [ ] Category CRUD APIs
 - [ ] Public category list endpoint
-- [ ] Categories page
+- [ ] Categories page (`/admin/categories`)
 - [ ] Status/error states
 - [ ] Manual/API testing
 
@@ -515,13 +515,15 @@ Allow users to reset a forgotten password via an emailed single-use link, and co
 - Admin agent approval depends on agent registration creating pending `agent_profiles`.
 - Admin category management depends on property/category migrations.
 - Buyer visits and agent visit approval share visit status rules and must be coordinated between Developer 3 and Developer 4.
-- Forgot/Reset Password (S2-10) must land before Sprint 4 auth endpoint tests; `S4-02` expects change/reset password tests.
+- Forgot/Reset Password (S2-10) must land before Sprint 4 auth endpoint tests that cover the reset flow.
+- `S4-02` also expects change-password (`/api/auth/change-password`) tests; no sprint card delivers this yet — tracked in Backlog.
 - S2-10 requires a dev mail transport decision (e.g., nodemailer + Mailtrap); credentials stay in `.env` only.
 
 ---
 
 ## Backlog (Not Scheduled)
 
+- **[AUTH] Change password endpoint** — `/api/auth/change-password` (authenticated user changes own password). Required by `S4-02` auth endpoint tests; not yet scheduled.
 - **[SECURITY] Add refresh token support** — long-lived refresh tokens + `/auth/refresh`, rotation, and an axios 401-retry interceptor. Deferred: no current sprint depends on it; a single 7-day JWT is acceptable for this scope.
 
 ---
