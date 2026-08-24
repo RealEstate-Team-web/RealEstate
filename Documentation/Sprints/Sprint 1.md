@@ -565,7 +565,7 @@ Allow admins to manage property categories (create / edit / delete) and expose t
 
 - Category create/update/delete API (admin-only).
 - Public category list API for filter dropdowns.
-- Admin categories page (list, create, edit, delete).
+- Admin categories page at `/admin/categories` (list, create, edit, delete).
 - Status/error/empty states on the page.
 
 **Acceptance Criteria**
@@ -574,13 +574,13 @@ Allow admins to manage property categories (create / edit / delete) and expose t
 - Admin can edit a category.
 - Admin can delete a category.
 - Duplicate category names are rejected.
-- Category changes appear in public filters (`GET /api/categories`).
+- Categories are exposed via `GET /api/categories` for the property-browse filters (the filter UI itself is delivered with property browsing).
 
 **Checklist**
 
 - [ ] Category CRUD APIs
 - [ ] Public category list endpoint
-- [ ] Categories page
+- [ ] Categories page (`/admin/categories`)
 - [ ] Status/error states
 - [ ] Manual/API testing
 
