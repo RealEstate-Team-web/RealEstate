@@ -11,6 +11,10 @@ const ADMIN = {
   role: "admin",
 };
 
+// NOTE: This script seeds FRESH DATABASES ONLY. It skips seeding when the
+// admin email already exists, so changes to ADMIN above (e.g. renames) do
+// NOT propagate to existing databases — update those records manually.
+
 async function main() {
   const [existing] = await pool.execute("SELECT id FROM users WHERE email = ?", [ADMIN.email]);
   if (existing.length) {
