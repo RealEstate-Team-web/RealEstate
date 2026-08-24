@@ -3,6 +3,7 @@ import { useAuth } from '../../hooks/useAuth';
 import {
   LayoutDashboard,
   ShieldCheck,
+  Tag,
   X,
   Home,
 } from 'lucide-react';
@@ -16,6 +17,7 @@ const navItems = [
     badgeKey: 'pendingAgents',
     badgeColor: 'bg-[#E7B85A]',
   },
+  { label: 'Categories', path: '/admin/categories', icon: Tag },
 ];
 
 const AdminSidebar = ({ isOpen, onClose, pendingAgents = 0 }) => {

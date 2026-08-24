@@ -8,6 +8,7 @@ const titleMap = {
   '/admin': 'Dashboard',
   '/admin/visits': 'Visit Requests',
   '/admin/agents': 'Agent Approval',
+  '/admin/categories': 'Category Management',
   '/admin/properties': 'Property Management',
   '/admin/users': 'User Management',
   '/admin/reports': 'Reports',
