@@ -226,6 +226,10 @@ Allow admins to manage property categories (create / edit / delete) and expose t
 - [ ] Categories page (`/admin/categories`)
 - [ ] Status/error states
 - [ ] Manual/API testing
+- [ ] Input validation
+- [ ] Responsive behavior
+- [ ] Integration testing
+- [ ] Documentation updates
 
 ---
 
