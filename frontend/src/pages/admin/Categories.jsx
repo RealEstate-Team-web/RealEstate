@@ -40,9 +40,7 @@ const Categories = () => {
     let active = true;
     (async () => {
       try {
-        const data = await getAdminCategories();
-        if (!active) return;
-        setCategories(data);
+        await fetchCategories();
       } catch (err) {
         if (!active) return;
         setLoadError(err.message || 'Failed to load categories');
@@ -70,8 +68,7 @@ const Categories = () => {
   const reload = async () => {
     setRefreshing(true);
     try {
-      const data = await getAdminCategories();
-      setCategories(data);
+      await fetchCategories();
       setRefreshError(null);
     } catch (err) {
       setRefreshError(err.message || 'Failed to refresh categories');
@@ -261,7 +258,11 @@ const Categories = () => {
           </button>
         </div>
         {formError && (
-          <p id="create-name-error" className="mt-2 text-[12px] text-[#B23B36]">
+          <p
+            id="create-name-error"
+            role="alert"
+            className="mt-2 text-[12px] text-[#B23B36]"
+          >
             {formError}
           </p>
         )}
