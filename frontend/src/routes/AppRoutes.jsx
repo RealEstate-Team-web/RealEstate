@@ -11,7 +11,7 @@ import PrivateRoute from './PrivateRoute';
 import RoleRoute from './RoleRoute';
 import RolePlaceholder from '../components/RolePlaceholder';
 
-import DashboardLayout from '../layouts/DashboardLayout';
+import DashboardLayout from '../hooks/layouts/DashboardLayout';
 import Dashboard from '../pages/buyer/Dashboard';
 import BrowseProperties from '../pages/buyer/BrowseProperties';
 import Favorites from '../pages/buyer/Favorites';
@@ -21,9 +21,10 @@ import Notifications from '../pages/buyer/Notifications';
 import Profile from '../pages/buyer/Profile';
 import Settings from '../pages/buyer/Settings';
 
-import AdminLayout from '../layouts/AdminLayout';
+import AdminLayout from '../hooks/layouts/AdminLayout';
 import AdminDashboard from '../pages/admin/Dashboard';
 import Agents from '../pages/admin/Agents';
+import Categories from '../pages/admin/Categories';
 import { ROUTES } from '../utils/constants';
 
 export const AppRoutes = () => {
@@ -113,6 +114,7 @@ export const AppRoutes = () => {
           <Route path={ROUTES.admin} element={<AdminLayout />}>
             <Route index element={<AdminDashboard />} />
             <Route path="agents" element={<Agents />} />
+            <Route path="categories" element={<Categories />} />
             <Route path="*" element={<Navigate to={ROUTES.admin} replace />} />
           </Route>
         </Route>

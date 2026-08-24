@@ -94,6 +94,63 @@ const validateRegisterAgent = (req, res, next) => {
   next();
 };
 
+const normalizeCategoryFields = (req) => {
+  const body = req.body || {};
+  if (typeof body.name === "string") {
+    body.name = body.name.trim();
+  }
+  if (typeof body.description === "string") {
+    body.description = body.description.trim();
+  }
+  return body;
+};
+
+const validateCreateCategory = (req, res, next) => {
+  const errors = [];
+  const { name, description } = normalizeCategoryFields(req);
+
+  if (!name || typeof name !== "string" || !name.trim())
+    errors.push("name is required");
+  else if (name.trim().length > 100)
+    errors.push("name must be at most 100 characters");
+  if (
+    description !== undefined &&
+    description !== null &&
+    (typeof description !== "string" || description.trim().length > 1000)
+  )
+    errors.push("description must be a string of at most 1000 characters");
+
+  if (errors.length > 0) return next(validationError(errors));
+  next();
+};
+
+const validateUpdateCategory = (req, res, next) => {
+  const errors = [];
+  const { name, description } = normalizeCategoryFields(req);
+
+  const hasName = name !== undefined && name !== null;
+  const hasDescription = description !== undefined && description !== null;
+
+  if (!hasName && !hasDescription) {
+    errors.push("at least one of name or description is required");
+  }
+
+  if (hasName) {
+    if (typeof name !== "string" || !name.trim())
+      errors.push("name must be a non-empty string");
+    else if (name.trim().length > 100)
+      errors.push("name must be at most 100 characters");
+  }
+  if (
+    hasDescription &&
+    (typeof description !== "string" || description.trim().length > 1000)
+  )
+    errors.push("description must be a string of at most 1000 characters");
+
+  if (errors.length > 0) return next(validationError(errors));
+  next();
+};
+
 const validateLogin = (req, res, next) => {
   const errors = [];
   const { email, password } = req.body || {};
@@ -110,4 +167,6 @@ module.exports = {
   validateRegisterAgent,
   validateCompleteAgentProfile,
   validateLogin,
+  validateCreateCategory,
+  validateUpdateCategory,
 };

@@ -8,6 +8,17 @@ const {
   rejectAgent,
   suspendAgent,
 } = require("../controllers/admin.controller");
+const {
+  list,
+  getOne,
+  create,
+  update,
+  remove,
+} = require("../controllers/category.controller");
+const {
+  validateCreateCategory,
+  validateUpdateCategory,
+} = require("../middlewares/validation.middleware");
 
 const router = express.Router();
 
@@ -18,5 +29,11 @@ router.get("/agents", getAgents);
 router.patch("/agents/:id/approve", approveAgent);
 router.patch("/agents/:id/reject", rejectAgent);
 router.patch("/agents/:id/suspend", suspendAgent);
+
+router.get("/categories", list);
+router.get("/categories/:id", getOne);
+router.post("/categories", validateCreateCategory, create);
+router.put("/categories/:id", validateUpdateCategory, update);
+router.delete("/categories/:id", remove);
 
 module.exports = router;

@@ -159,6 +159,8 @@ Implement secure buyer and agent registration.
 - [ ] Manual/API testing
 - [ ] Documentation/card notes updated
 
+**Done note:** This card creates a `pending` `agent_profiles` row on agent registration. The admin approve/reject flow that acts on it is implemented and marked complete (see S2-01 Admin Dashboard Foundation).
+
 ---
 
 ### Card S1-02 — [AUTH] Implement Login, JWT, Logout, and Current User
@@ -547,43 +549,46 @@ Allow admins to view users and suspend/activate accounts.
 
 ---
 
-### Card S2-03 — [ADMIN] Implement Agent Approval and Category Management
+### Card S2-03 — [ADMIN] Implement Category Management
 
 **Owner:** Developer 1  
 **Labels:** ADMIN, BACKEND, FRONTEND, DATABASE, SECURITY  
 **Branch:** `feature/admin-agents-categories`
 
+**Status:** Agent Approval portion was completed earlier in S2-01 (Admin Dashboard Foundation, merged via PR #8) and is tracked there. This card now covers only Category Management.
+
 **Objective**
 
-Allow admins to approve/reject pending agents and manage property categories.
+Allow admins to manage property categories (create / edit / delete) and expose them publicly for listing filters.
 
 **Requirements**
 
-- Pending agents API.
-- Approve agent API.
-- Reject agent API.
-- Category create/update/delete API.
-- Admin agents page.
-- Admin categories page.
+- Category create/update/delete API (admin-only).
+- Public category list API for filter dropdowns.
+- Admin categories page at `/admin/categories` (list, create, edit, delete).
+- Status/error/empty states on the page.
 
 **Acceptance Criteria**
 
-- Admin can view pending agents.
-- Admin can approve an agent.
-- Admin can reject an agent.
-- Approved agent gains agent access.
-- Admin can create/edit/delete categories.
-- Category changes appear in public filters.
+- Admin can create a category.
+- Admin can edit a category.
+- Admin can delete a category.
+- Duplicate category names are rejected.
+- Categories are exposed via `GET /api/categories` for the property-browse filters (the filter UI itself is delivered with property browsing).
 
 **Checklist**
 
-- [ ] Pending agents API
-- [ ] Approve/reject APIs
 - [ ] Category CRUD APIs
-- [ ] Agents page
-- [ ] Categories page
+- [ ] Public category list endpoint
+- [ ] Categories page (`/admin/categories`)
 - [ ] Status/error states
 - [ ] Manual/API testing
+- [ ] Input validation
+- [ ] Migration completion
+- [ ] Responsive UI
+- [ ] Self-testing
+- [ ] Review/merge
+- [ ] Integration testing
 
 ---
 

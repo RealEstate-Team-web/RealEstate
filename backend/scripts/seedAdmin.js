@@ -3,13 +3,17 @@ const bcrypt = require("bcrypt");
 const { pool } = require("../config/db.config");
 
 const ADMIN = {
-  firstName: "Abebe",
-  lastName: "Kebede",
+  firstName: "Mila",
+  lastName: "",
   email: "admin@nesthome.com",
   phone: "0900000001",
   password: "Admin@123",
   role: "admin",
 };
+
+// NOTE: This script seeds FRESH DATABASES ONLY. It skips seeding when the
+// admin email already exists, so changes to ADMIN above (e.g. renames) do
+// NOT propagate to existing databases — update those records manually.
 
 async function main() {
   const [existing] = await pool.execute("SELECT id FROM users WHERE email = ?", [ADMIN.email]);

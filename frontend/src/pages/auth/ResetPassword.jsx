@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { CheckCircle2 } from 'lucide-react'
-import AuthLayout from '../../layouts/AuthLayout'
+import AuthLayout from '../../hooks/layouts/AuthLayout'
 import PasswordInput from '../../components/forms/PasswordInput'
 import { ROUTES } from '../../utils/constants'
 
