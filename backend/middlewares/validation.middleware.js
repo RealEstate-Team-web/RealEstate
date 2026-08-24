@@ -128,15 +128,21 @@ const validateUpdateCategory = (req, res, next) => {
   const errors = [];
   const { name, description } = normalizeCategoryFields(req);
 
-  if (name !== undefined && name !== null) {
+  const hasName = name !== undefined && name !== null;
+  const hasDescription = description !== undefined && description !== null;
+
+  if (!hasName && !hasDescription) {
+    errors.push("at least one of name or description is required");
+  }
+
+  if (hasName) {
     if (typeof name !== "string" || !name.trim())
       errors.push("name must be a non-empty string");
     else if (name.trim().length > 100)
       errors.push("name must be at most 100 characters");
   }
   if (
-    description !== undefined &&
-    description !== null &&
+    hasDescription &&
     (typeof description !== "string" || description.trim().length > 1000)
   )
     errors.push("description must be a string of at most 1000 characters");

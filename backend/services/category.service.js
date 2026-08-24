@@ -52,10 +52,16 @@ async function updateCategory(id, { name, description }) {
     if (existing) throw conflict("Category name already exists");
   }
 
-  await Category.update(id, {
-    name: nextName,
-    description: description !== undefined ? description : category.description,
-  });
+  try {
+    await Category.update(id, {
+      name: nextName,
+      description:
+        description !== undefined ? description : category.description,
+    });
+  } catch (err) {
+    if (err.code === "ER_DUP_ENTRY") throw conflict("Category name already exists");
+    throw err;
+  }
 
   return Category.getById(id);
 }
@@ -63,7 +69,8 @@ async function updateCategory(id, { name, description }) {
 async function deleteCategory(id) {
   const category = await Category.getById(id);
   if (!category) throw notFound();
-  await Category.remove(id);
+  const affected = await Category.remove(id);
+  if (affected === 0) throw notFound();
   return { id: Number(id), deleted: true };
 }
 
