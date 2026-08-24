@@ -143,7 +143,7 @@ const AgentApproval = () => {
                 <th className="py-0 px-4 rounded-l-lg w-[18%]">Applicant Name</th>
                 <th className="py-0 px-4 w-[18%]">Agency Name</th>
                 <th className="py-0 px-4 w-[15%]">Registration Date</th>
-                <th className="py-0 px-4 w-[18%]">Documents Submitted</th>
+                <th className="py-0 px-4 w-[18%]">License</th>
                 <th className="py-0 px-4 w-[10%]">Status</th>
                 <th className="py-0 px-4 w-[21%] rounded-r-lg">Actions</th>
               </tr>
@@ -156,9 +156,8 @@ const AgentApproval = () => {
                   </td>
                 </tr>
               ) : (
-                agents.map((a) => {
-                  const docs = a.licenseNumber ? [{ label: 'License' }] : [];
-                  return (
+                 agents.map((a) => {
+                   return (
                     <tr key={a.id} className="h-[50px] hover:bg-[#F9FAFB] transition-colors">
                       <td className="py-0 px-4">
                         <div className="flex items-center gap-2.5 min-w-0">
@@ -177,19 +176,12 @@ const AgentApproval = () => {
                         {formatDate(a.created_at)}
                       </td>
                       <td className="py-0 px-4">
-                        {docs.length === 0 ? (
-                          <span className="text-[#9CA3AF]">—</span>
+                        {a.licenseNumber ? (
+                          <span className="text-[#374151] text-[13px] font-medium whitespace-nowrap">
+                            {a.licenseNumber}
+                          </span>
                         ) : (
-                          <div className="flex items-center gap-1.5 flex-wrap">
-                            {docs.map((d) => (
-                              <span
-                                key={d.label}
-                                className="text-[#374151] text-[13px]"
-                              >
-                                {d.label}
-                              </span>
-                            ))}
-                          </div>
+                          <span className="text-[#9CA3AF]">—</span>
                         )}
                       </td>
                       <td className="py-0 px-4">
