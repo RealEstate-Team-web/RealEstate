@@ -9,10 +9,16 @@ import {
 
 const navItems = [
   { label: 'Dashboard', path: '/admin', icon: LayoutDashboard, end: true },
-  { label: 'Agent Approval', path: '/admin/agents', icon: ShieldCheck, badge: '7', badgeColor: 'bg-[#E7B85A]' },
+  {
+    label: 'Agent Approval',
+    path: '/admin/agents',
+    icon: ShieldCheck,
+    badgeKey: 'pendingAgents',
+    badgeColor: 'bg-[#E7B85A]',
+  },
 ];
 
-const AdminSidebar = ({ isOpen, onClose }) => {
+const AdminSidebar = ({ isOpen, onClose, pendingAgents = 0 }) => {
   const { user } = useAuth();
   const displayName =
     user?.name ||
@@ -78,11 +84,11 @@ const AdminSidebar = ({ isOpen, onClose }) => {
                 <span>{item.label}</span>
               </div>
               <div className="flex items-center">
-                {item.badge && (
+                {item.badgeKey === 'pendingAgents' && pendingAgents > 0 && (
                   <span
                     className={`px-1.5 py-0.5 text-[11px] font-bold text-white rounded-full ${item.badgeColor}`}
                   >
-                    {item.badge}
+                    {pendingAgents}
                   </span>
                 )}
                 {item.dot && (
@@ -121,8 +127,7 @@ const AdminSidebar = ({ isOpen, onClose }) => {
             </p>
             <p className="text-[11px] text-slate-400 truncate">{roleLabel}</p>
             <div className="flex items-center gap-1 mt-0.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#4FAF83]" />
-              <span className="text-[10px] text-[#4FAF83]">Online</span>
+             
             </div>
           </div>
         </div>
