@@ -22,6 +22,11 @@ async function requestReset(email) {
   const connection = await pool.getConnection();
   try {
     await connection.beginTransaction();
+    // Serialize token issuance per user: lock the user row so concurrent
+    // forgot-password requests for the same user run one at a time.
+    await connection.query("SELECT id FROM users WHERE id = ? FOR UPDATE", [
+      user.id,
+    ]);
     // Invalidate any outstanding tokens for this user, then issue a new one
     // atomically on a single connection.
     await connection.query(
