@@ -39,4 +39,22 @@ const registerLimiter = rateLimit({
   },
 });
 
-module.exports = { loginLimiter, registerLimiter };
+const forgotLimit = process.env.FORGOT_RATE_LIMIT
+  ? Number(process.env.FORGOT_RATE_LIMIT)
+  : isProduction
+    ? 5
+    : 0;
+
+const forgotLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  limit: forgotLimit,
+  standardHeaders: "draft-7",
+  legacyHeaders: false,
+  skip: () => forgotLimit === 0,
+  message: {
+    success: false,
+    message: "Too many password-reset requests. Please try again later.",
+  },
+});
+
+module.exports = { loginLimiter, registerLimiter, forgotLimiter };
