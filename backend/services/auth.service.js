@@ -201,4 +201,4 @@ async function completeAgentProfile({
   return toSafeUser(user, agentProfileStatus);
 }
 
-module.exports = { register, registerAgent, login, completeAgentProfile };
+module.exports = { register, registerAgent, login, completeAgentProfile, hashPassword };
