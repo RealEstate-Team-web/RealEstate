@@ -4,7 +4,6 @@ const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS } = process.env;
 const MAIL_FROM = String(
   process.env.MAIL_FROM || SMTP_USER || "NestHome <no-reply@nesthome.com>"
 ).replace(/^["']|["']$/g, "");
-const isProd = process.env.NODE_ENV === "production";
 
 function getTransporter() {
   if (SMTP_HOST && SMTP_USER && SMTP_PASS) {
@@ -38,13 +37,6 @@ async function sendPasswordResetEmail(to, resetLink) {
     </div>`;
 
   if (!transporter) {
-    if (!isProd) {
-      console.log(
-        "[email.service] SMTP not configured — password reset link:\n" +
-          resetLink
-      );
-      return { delivered: false, devLink: resetLink };
-    }
     console.error(
       "[email.service] SMTP not configured; cannot send password reset email."
     );
@@ -66,24 +58,11 @@ async function sendPasswordResetEmail(to, resetLink) {
         "[email.service] Ethereal preview URL:\n" +
           nodemailer.getTestMessageUrl(info)
       );
-      if (!isProd) {
-        console.log("[email.service] Reset link (dev):\n" + resetLink);
-      }
     } else {
       console.log("[email.service] Password reset email sent to " + to);
     }
     return { delivered: true, info };
   } catch (err) {
-    if (!isProd) {
-      console.error(
-        "[email.service] Failed to send reset email; fallback link:\n" +
-          resetLink +
-          "\n(" +
-          err.message +
-          ")"
-      );
-      return { delivered: false, devLink: resetLink, error: err.message };
-    }
     console.error("[email.service] Failed to send reset email: " + err.message);
     return { delivered: false, error: err.message };
   }
