@@ -23,14 +23,16 @@ function validateCoreIdentity(body) {
     errors.push("email must be a valid email address");
   if (!phone || !phonePattern.test(String(phone).trim()))
     errors.push("phone is required and must be a valid phone number");
-  if (!password || String(password).length < 8)
+  if (!password || typeof password !== "string" || password.length < 8)
     errors.push("password must be at least 8 characters");
-  if (password && !hasUppercase.test(password))
-    errors.push("password must contain at least one uppercase letter");
-  if (password && !hasLowercase.test(password))
-    errors.push("password must contain at least one lowercase letter");
-  if (password && !hasNumber.test(password))
-    errors.push("password must contain at least one number");
+  if (typeof password === "string") {
+    if (!hasUppercase.test(password))
+      errors.push("password must contain at least one uppercase letter");
+    if (!hasLowercase.test(password))
+      errors.push("password must contain at least one lowercase letter");
+    if (!hasNumber.test(password))
+      errors.push("password must contain at least one number");
+  }
   if (role && !["buyer", "agent"].includes(role))
     errors.push("role must be 'buyer' or 'agent'");
 
@@ -162,6 +164,36 @@ const validateLogin = (req, res, next) => {
   next();
 };
 
+const validateForgotPassword = (req, res, next) => {
+  const errors = [];
+  const { email } = req.body || {};
+  if (!email || !emailPattern.test(String(email).trim()))
+    errors.push("email must be a valid email address");
+
+  if (errors.length > 0) return next(validationError(errors));
+  next();
+};
+
+const validateResetPassword = (req, res, next) => {
+  const errors = [];
+  const { token, password } = req.body || {};
+
+  if (!token || !String(token).trim()) errors.push("token is required");
+  if (typeof password !== "string" || password.length < 8) {
+    errors.push("password must be at least 8 characters");
+  } else {
+    if (!hasUppercase.test(password))
+      errors.push("password must contain at least one uppercase letter");
+    if (!hasLowercase.test(password))
+      errors.push("password must contain at least one lowercase letter");
+    if (!hasNumber.test(password))
+      errors.push("password must contain at least one number");
+  }
+
+  if (errors.length > 0) return next(validationError(errors));
+  next();
+};
+
 module.exports = {
   validateRegister,
   validateRegisterAgent,
@@ -169,4 +201,6 @@ module.exports = {
   validateLogin,
   validateCreateCategory,
   validateUpdateCategory,
+  validateForgotPassword,
+  validateResetPassword,
 };
