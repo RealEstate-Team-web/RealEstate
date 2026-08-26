@@ -11,6 +11,70 @@ const User = {
     return rows[0];
   },
 
+  async listUsers({ role, status, page = 1, limit = 10 } = {}) {
+    const conditions = [];
+    const params = [];
+    if (role) {
+      conditions.push("role = ?");
+      params.push(role);
+    }
+    if (status) {
+      conditions.push("status = ?");
+      params.push(status);
+    }
+    const where = conditions.length ? " WHERE " + conditions.join(" AND ") : "";
+
+    const [totalRow] = await query(
+      `SELECT COUNT(*) AS count FROM users${where}`,
+      params
+    );
+
+    const l = Math.max(1, Math.min(Number(limit) || 10, 100));
+    const p = Math.max(1, Number(page) || 1);
+    const offset = (p - 1) * l;
+
+    const items = await query(
+      `SELECT id, first_name, last_name, email, phone, role, status, created_at
+         FROM users${where}
+         ORDER BY created_at DESC
+         LIMIT ? OFFSET ?`,
+      [...params, l, offset]
+    );
+
+    const [activeRow] = await query(
+      "SELECT COUNT(*) AS count FROM users WHERE status = 'active'"
+    );
+    const [suspendedRow] = await query(
+      "SELECT COUNT(*) AS count FROM users WHERE status = 'suspended'"
+    );
+    const [adminsRow] = await query(
+      "SELECT COUNT(*) AS count FROM users WHERE role = 'admin'"
+    );
+
+    const total = Number(totalRow.count);
+    const totalPages = Math.max(1, Math.ceil(total / l));
+    return {
+      items,
+      total,
+      active: Number(activeRow.count),
+      suspended: Number(suspendedRow.count),
+      admins: Number(adminsRow.count),
+      page: p,
+      limit: l,
+      totalPages,
+      hasNextPage: p < totalPages,
+      hasPrevPage: p > 1,
+    };
+  },
+
+  async setStatus(id, status) {
+    const result = await query(
+      "UPDATE users SET status = ?, updated_at = NOW() WHERE id = ? AND status <> ?",
+      [status, id, status]
+    );
+    return result.affectedRows;
+  },
+
   async createUser({ firstName, lastName, email, phone, role = "buyer" }) {
     const result = await query(
       `INSERT INTO users (first_name, last_name, email, phone, role)

@@ -1,4 +1,6 @@
 const Agent = require("../models/agent.model");
+const User = require("../models/user.model");
+const { sendSuspensionEmail, sendActivationEmail } = require("../services/email.service");
 
 function statusBreakdown(byStatusRows) {
   const counts = { pending: 0, approved: 0, rejected: 0 };
@@ -85,10 +87,76 @@ async function suspendAgent(id) {
   return { id: agent.id, userStatus: "suspended" };
 }
 
+function validatePagination(page, limit) {
+  const safeInt = (value, fallback) => {
+    if (value === undefined || value === null) return fallback;
+    const n = Number(value);
+    if (!Number.isInteger(n) || n <= 0) {
+      const error = new Error("Invalid page or limit parameter");
+      error.status = 400;
+      throw error;
+    }
+    return n;
+  };
+  const p = safeInt(page, 1);
+  const l = safeInt(limit, 10);
+  const clampedLimit = Math.min(l, 100);
+  return { page: p, limit: clampedLimit };
+}
+
+async function listUsers({ role, status, page, limit } = {}) {
+  const paginated = validatePagination(page, limit);
+  return User.listUsers({ role, status, page: paginated.page, limit: paginated.limit });
+}
+
+async function suspendUser(id) {
+  const user = await User.findById(id);
+  if (!user) {
+    const error = new Error("User not found");
+    error.status = 404;
+    throw error;
+  }
+  if (user.role === "admin") {
+    const error = new Error("Cannot suspend an admin account");
+    error.status = 403;
+    throw error;
+  }
+  const affected = await User.setStatus(id, "suspended");
+  if (affected === 1 && user.email) {
+    sendSuspensionEmail(user.email).catch((err) =>
+      console.error(
+        "[admin.service] Suspension email dispatch failed: " + err.message
+      )
+    );
+  }
+  return { id: user.id, status: "suspended" };
+}
+
+async function activateUser(id) {
+  const user = await User.findById(id);
+  if (!user) {
+    const error = new Error("User not found");
+    error.status = 404;
+    throw error;
+  }
+  const affected = await User.setStatus(id, "active");
+  if (affected === 1 && user.email) {
+    sendActivationEmail(user.email).catch((err) =>
+      console.error(
+        "[admin.service] Activation email dispatch failed: " + err.message
+      )
+    );
+  }
+  return { id: user.id, status: "active" };
+}
+
 module.exports = {
   getDashboardStats,
   listAgents,
   approveAgent,
   rejectAgent,
   suspendAgent,
+  listUsers,
+  suspendUser,
+  activateUser,
 };
