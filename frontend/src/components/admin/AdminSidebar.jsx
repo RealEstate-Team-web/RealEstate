@@ -4,6 +4,7 @@ import {
   LayoutDashboard,
   ShieldCheck,
   Tag,
+  Users,
   X,
   Home,
 } from 'lucide-react';
@@ -18,6 +19,7 @@ const navItems = [
     badgeColor: 'bg-[#E7B85A]',
   },
   { label: 'Categories', path: '/admin/categories', icon: Tag },
+  { label: 'Users', path: '/admin/users', icon: Users },
 ];
 
 const AdminSidebar = ({ isOpen, onClose, pendingAgents = 0 }) => {
