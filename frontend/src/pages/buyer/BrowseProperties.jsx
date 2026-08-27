@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Search,
   Filter,
@@ -7,12 +7,16 @@ import {
   Grid,
   Map as MapIcon,
   MapPin,
-  Navigation
+  Navigation,
+  CheckCircle2
 } from 'lucide-react';
+import { getFavorites, addFavorite, removeFavorite } from '../../services/favorite.service';
 
 export const BrowseProperties = () => {
   const [viewMode, setViewMode] = useState('split');
   const [selectedPropertyId, setSelectedPropertyId] = useState(1);
+  const [favoritedIds, setFavoritedIds] = useState(new Set([1, 2, 4]));
+  const [toastMessage, setToastMessage] = useState(null);
 
   const demoProperties = [
     {
@@ -113,10 +117,63 @@ export const BrowseProperties = () => {
     },
   ];
 
+  useEffect(() => {
+    const loadFavs = async () => {
+      try {
+        const favs = await getFavorites();
+        if (Array.isArray(favs)) {
+          setFavoritedIds(new Set(favs.map((f) => f.id || f.propertyId)));
+        }
+      } catch (err) {
+        console.warn('Failed to load user favorite IDs:', err);
+      }
+    };
+    loadFavs();
+  }, []);
+
+  const showToast = (message) => {
+    setToastMessage(message);
+    setTimeout(() => setToastMessage(null), 3000);
+  };
+
+  const handleToggleFavorite = async (e, prop) => {
+    e.stopPropagation();
+    const isFav = favoritedIds.has(prop.id);
+    const nextSet = new Set(favoritedIds);
+
+    if (isFav) {
+      nextSet.delete(prop.id);
+      setFavoritedIds(nextSet);
+      showToast(`Removed "${prop.title}" from favorites`);
+      try {
+        await removeFavorite(prop.id);
+      } catch (err) {
+        console.error('Failed to remove favorite:', err);
+      }
+    } else {
+      nextSet.add(prop.id);
+      setFavoritedIds(nextSet);
+      showToast(`Saved "${prop.title}" to favorites!`);
+      try {
+        await addFavorite(prop.id);
+      } catch (err) {
+        console.error('Failed to save favorite:', err);
+      }
+    }
+  };
+
   const activeProp = demoProperties.find((p) => p.id === selectedPropertyId) || demoProperties[0];
 
   return (
     <div className="space-y-6 font-sans">
+      {/* Toast Notification Alert */}
+      {toastMessage && (
+        <div className="fixed bottom-6 right-6 z-50 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-xl flex items-center space-x-2 text-xs font-medium animate-in fade-in slide-in-from-bottom-3 duration-200">
+          <CheckCircle2 size={16} className="text-emerald-400 shrink-0" />
+          <span>{toastMessage}</span>
+        </div>
+      )}
+
       {/* Title */}
       <div>
         <h1 className="text-xl lg:text-2xl font-bold text-slate-900 tracking-tight">
@@ -257,60 +314,73 @@ export const BrowseProperties = () => {
         {/* Property Cards Catalog Grid */}
         <div className={viewMode === 'split' ? 'lg:col-span-7' : 'lg:col-span-12'}>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {demoProperties.map((prop) => (
-              <div
-                key={prop.id}
-                onClick={() => setSelectedPropertyId(prop.id)}
-                className={`bg-white border rounded-xl overflow-hidden shadow-2xs hover:shadow-md transition-all duration-200 flex flex-col justify-between group cursor-pointer ${
-                  prop.id === selectedPropertyId ? 'border-blue-600 ring-2 ring-blue-600/20' : 'border-slate-200/80'
-                }`}
-              >
-                <div>
-                  {/* Photo & Badges */}
-                  <div className="relative h-44 overflow-hidden bg-slate-100">
-                    <img
-                      src={prop.img}
-                      alt={prop.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                    <span
-                      className={`absolute top-2.5 left-2.5 text-[10px] font-semibold px-2 py-0.5 rounded uppercase tracking-wider ${
-                        prop.status === 'Active'
-                          ? 'bg-emerald-500 text-white'
-                          : 'bg-slate-700 text-white'
-                      }`}
-                    >
-                      {prop.status}
-                    </span>
-                    <button className="absolute top-2.5 right-2.5 p-1.5 bg-white/80 hover:bg-white text-slate-600 hover:text-rose-500 rounded-full backdrop-blur-xs transition cursor-pointer">
-                      <Heart size={15} />
-                    </button>
-                  </div>
+            {demoProperties.map((prop) => {
+              const isFavorited = favoritedIds.has(prop.id);
 
-                  {/* Info */}
-                  <div className="p-3.5">
-                    <h3 className="font-bold text-slate-900 text-xs">{prop.title}</h3>
-                    <p className="text-[11px] text-slate-500 mt-0.5">{prop.location}</p>
+              return (
+                <div
+                  key={prop.id}
+                  onClick={() => setSelectedPropertyId(prop.id)}
+                  className={`bg-white border rounded-xl overflow-hidden shadow-2xs hover:shadow-md transition-all duration-200 flex flex-col justify-between group cursor-pointer ${
+                    prop.id === selectedPropertyId ? 'border-blue-600 ring-2 ring-blue-600/20' : 'border-slate-200/80'
+                  }`}
+                >
+                  <div>
+                    {/* Photo & Badges */}
+                    <div className="relative h-44 overflow-hidden bg-slate-100">
+                      <img
+                        src={prop.img}
+                        alt={prop.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                      <span
+                        className={`absolute top-2.5 left-2.5 text-[10px] font-semibold px-2 py-0.5 rounded uppercase tracking-wider ${
+                          prop.status === 'Active'
+                            ? 'bg-emerald-500 text-white'
+                            : 'bg-slate-700 text-white'
+                        }`}
+                      >
+                        {prop.status}
+                      </span>
+                      <button
+                        onClick={(e) => handleToggleFavorite(e, prop)}
+                        className={`absolute top-2.5 right-2.5 p-2 rounded-full backdrop-blur-xs transition cursor-pointer shadow-xs ${
+                          isFavorited
+                            ? 'bg-rose-500 text-white hover:bg-rose-600 scale-105'
+                            : 'bg-white/85 hover:bg-white text-slate-600 hover:text-rose-500'
+                        }`}
+                        title={isFavorited ? 'Remove from favorites' : 'Add to favorites'}
+                        aria-label="Toggle Favorite"
+                      >
+                        <Heart size={15} fill={isFavorited ? 'currentColor' : 'none'} />
+                      </button>
+                    </div>
 
-                    <div className="flex items-center space-x-2 text-[11px] text-slate-500 mt-2.5 pt-2.5 border-t border-slate-100 font-medium">
-                      <span>{prop.beds} Beds</span>
-                      <span>•</span>
-                      <span>{prop.baths} Baths</span>
-                      <span>•</span>
-                      <span>{prop.sqft}</span>
+                    {/* Info */}
+                    <div className="p-3.5">
+                      <h3 className="font-bold text-slate-900 text-xs truncate">{prop.title}</h3>
+                      <p className="text-[11px] text-slate-500 mt-0.5 truncate">{prop.location}</p>
+
+                      <div className="flex items-center space-x-2 text-[11px] text-slate-500 mt-2.5 pt-2.5 border-t border-slate-100 font-medium">
+                        <span>{prop.beds} Beds</span>
+                        <span>•</span>
+                        <span>{prop.baths} Baths</span>
+                        <span>•</span>
+                        <span>{prop.sqft}</span>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                {/* Price & Action */}
-                <div className="px-3.5 pb-3.5 pt-1.5 flex items-center justify-between border-t border-slate-100">
-                  <span className="text-sm font-bold text-slate-900">{prop.price}</span>
-                  <button className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold transition cursor-pointer">
-                    View Details
-                  </button>
+                  {/* Price & Action */}
+                  <div className="px-3.5 pb-3.5 pt-1.5 flex items-center justify-between border-t border-slate-100">
+                    <span className="text-sm font-bold text-slate-900">{prop.price}</span>
+                    <button className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold transition cursor-pointer">
+                      View Details
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           {/* Pagination */}

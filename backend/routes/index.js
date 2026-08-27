@@ -3,6 +3,7 @@ const healthRoutes = require("./health.routes");
 const authRoutes = require("./auth.routes");
 const adminRoutes = require("./admin.routes");
 const categoryRoutes = require("./category.routes");
+const favoriteRoutes = require("./favorite.routes");
 const router = express.Router();
 
 router.get("/", (req, res) => {
@@ -16,5 +17,6 @@ router.use("/health", healthRoutes);
 router.use("/auth", authRoutes);
 router.use("/admin", adminRoutes);
 router.use("/categories", categoryRoutes);
+router.use("/favorites", favoriteRoutes);
 
 module.exports = router;

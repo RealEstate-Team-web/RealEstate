@@ -162,6 +162,18 @@ const validateLogin = (req, res, next) => {
   next();
 };
 
+const validateAddFavorite = (req, res, next) => {
+  const errors = [];
+  const { propertyId } = req.body || {};
+
+  if (!propertyId || (!Number(propertyId) && typeof propertyId !== "string")) {
+    errors.push("propertyId is required and must be a valid property identifier");
+  }
+
+  if (errors.length > 0) return next(validationError(errors));
+  next();
+};
+
 module.exports = {
   validateRegister,
   validateRegisterAgent,
@@ -169,4 +181,5 @@ module.exports = {
   validateLogin,
   validateCreateCategory,
   validateUpdateCategory,
+  validateAddFavorite,
 };
