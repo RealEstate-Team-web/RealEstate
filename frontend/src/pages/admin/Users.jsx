@@ -83,18 +83,17 @@ const UserManagement = () => {
     setRefreshError(null);
     try {
       await fn(id);
+      setSuccess(`${name} ${msg}`);
+      setConfirmId(null);
+      try {
+        await reload();
+      } catch (err) {
+        setRefreshError(err.message || 'Failed to refresh the user list');
+      }
     } catch (err) {
-      setActionId(null);
       setError(err.message || 'Action failed');
-      return;
-    }
-    setSuccess(`${name} ${msg}`);
-    setConfirmId(null);
-    setActionId(null);
-    try {
-      await reload();
-    } catch (err) {
-      setRefreshError(err.message || 'Failed to refresh the user list');
+    } finally {
+      setActionId(null);
     }
   };
 

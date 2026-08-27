@@ -36,7 +36,7 @@ const User = {
     const items = await query(
       `SELECT id, first_name AS firstName, last_name AS lastName, email, phone, role, status, created_at AS createdAt
          FROM users${where}
-         ORDER BY created_at DESC
+         ORDER BY created_at DESC, id DESC
          LIMIT ? OFFSET ?`,
       [...params, l, offset]
     );
