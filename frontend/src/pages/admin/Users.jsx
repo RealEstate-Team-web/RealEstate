@@ -60,7 +60,7 @@ const UserManagement = () => {
         setError(null);
       } catch (err) {
         if (!active) return;
-        setError(err.message || 'Failed to load users');
+        setError('Failed to load users');
       } finally {
         if (active) setLoading(false);
       }
@@ -89,7 +89,7 @@ const UserManagement = () => {
       try {
         await reload();
       } catch (err) {
-        setRefreshError(err.message || 'Failed to refresh the user list');
+        setRefreshError('Failed to refresh the user list');
       }
     } catch (err) {
       setError(err.message || 'Action failed');
@@ -298,7 +298,7 @@ const UserManagement = () => {
               <button
                 type="button"
                 disabled={!pagination.hasPrevPage || actionId || refreshing}
-                onClick={() => fetchUsers(pagination.page - 1)}
+                onClick={() => { setConfirmId(null); fetchUsers(pagination.page - 1); }}
                 className="inline-flex items-center gap-1 h-[32px] px-3 rounded-md bg-[#edf2fa] border border-[#d6deeb] text-[13px] font-medium text-[#374151] hover:bg-[#F3F4F8] transition-colors disabled:opacity-50"
               >
                 <ChevronLeft size={15} />
@@ -307,7 +307,7 @@ const UserManagement = () => {
               <button
                 type="button"
                 disabled={!pagination.hasNextPage || actionId || refreshing}
-                onClick={() => fetchUsers(pagination.page + 1)}
+                onClick={() => { setConfirmId(null); fetchUsers(pagination.page + 1); }}
                 className="inline-flex items-center gap-1 h-[32px] px-3 rounded-md bg-[#edf2fa] border border-[#d6deeb] text-[13px] font-medium text-[#374151] hover:bg-[#F3F4F8] transition-colors disabled:opacity-50"
               >
                 Next
