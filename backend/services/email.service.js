@@ -68,4 +68,72 @@ async function sendPasswordResetEmail(to, resetLink) {
   }
 }
 
-module.exports = { sendPasswordResetEmail };
+async function sendSuspensionEmail(to) {
+  const transporter = getTransporter();
+  const subject = "Your NestHome account has been suspended";
+  const text = `Your NestHome account has been suspended by an administrator.\n\nYou will not be able to log in or access NestHome while your account is suspended. If you believe this was done in error, please contact support.\n\nThank you for your understanding.`;
+  const html = `
+    <div style="font-family:Arial,Helvetica,sans-serif;max-width:480px;margin:0 auto;">
+      <h2 style="color:#111827;">Account suspended</h2>
+      <p>Your NestHome account has been suspended by an administrator.</p>
+      <p style="color:#6B7280;font-size:13px;">You will not be able to log in or access NestHome while your account is suspended. If you believe this was done in error, please contact support.</p>
+    </div>`;
+
+  if (!transporter) {
+    console.error(
+      "[email.service] SMTP not configured; cannot send suspension email."
+    );
+    return { delivered: false };
+  }
+
+  try {
+    const info = await transporter.sendMail({
+      from: MAIL_FROM,
+      to,
+      subject,
+      text,
+      html,
+    });
+    console.log("[email.service] Account suspension email sent (recipient redacted)");
+    return { delivered: true, info };
+  } catch (err) {
+    console.error("[email.service] Failed to send suspension email (code: EMAIL_DELIVERY_FAILED)");
+    return { delivered: false, error: err.message };
+  }
+}
+
+async function sendActivationEmail(to) {
+  const transporter = getTransporter();
+  const subject = "Your NestHome account has been reactivated";
+  const text = `Good news — your NestHome account has been reactivated by an administrator.\n\nYou can now log in and access NestHome again. Welcome back!`;
+  const html = `
+    <div style="font-family:Arial,Helvetica,sans-serif;max-width:480px;margin:0 auto;">
+      <h2 style="color:#111827;">Account reactivated</h2>
+      <p>Good news — your NestHome account has been reactivated by an administrator.</p>
+      <p style="color:#6B7280;font-size:13px;">You can now log in and access NestHome again. Welcome back!</p>
+    </div>`;
+
+  if (!transporter) {
+    console.error(
+      "[email.service] SMTP not configured; cannot send activation email."
+    );
+    return { delivered: false };
+  }
+
+  try {
+    const info = await transporter.sendMail({
+      from: MAIL_FROM,
+      to,
+      subject,
+      text,
+      html,
+    });
+    console.log("[email.service] Account activation email sent (recipient redacted)");
+    return { delivered: true, info };
+  } catch (err) {
+    console.error("[email.service] Failed to send activation email (code: EMAIL_DELIVERY_FAILED)");
+    return { delivered: false, error: err.message };
+  }
+}
+
+module.exports = { sendPasswordResetEmail, sendSuspensionEmail, sendActivationEmail };
