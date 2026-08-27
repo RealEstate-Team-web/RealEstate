@@ -29,6 +29,7 @@ const UserManagement = () => {
   const [actionId, setActionId] = useState(null);
   const [confirmId, setConfirmId] = useState(null);
   const [refreshError, setRefreshError] = useState(null);
+  const [refreshing, setRefreshing] = useState(false);
 
   const fetchUsers = async (pageNum) => {
     setLoading(true);
@@ -40,7 +41,7 @@ const UserManagement = () => {
       setStats(result.stats || null);
       setPage(pageNum);
     } catch (err) {
-      setError(err.message || 'Failed to load users');
+      setError('Failed to load users');
     } finally {
       setLoading(false);
     }
@@ -138,14 +139,17 @@ const UserManagement = () => {
             <button
               type="button"
               onClick={async () => {
+                setRefreshing(true);
                 try {
                   await reload();
                   setRefreshError(null);
                 } catch (err) {
-                  setRefreshError(err.message || 'Failed to refresh the user list');
+                  setRefreshError('Failed to refresh the user list');
+                } finally {
+                  setRefreshing(false);
                 }
               }}
-              disabled={actionId}
+              disabled={actionId || refreshing}
               className="inline-flex items-center gap-1.5 h-[30px] px-3 rounded-md bg-white border border-[#e5d9a8] text-[12px] font-medium text-[#8a6d1f] hover:bg-[#fdf8ea] transition-colors disabled:opacity-50 whitespace-nowrap"
             >
             Retry
@@ -230,7 +234,7 @@ const UserManagement = () => {
                               </span>
                               <button
                                 type="button"
-                                disabled={actionId === u.id}
+                                disabled={actionId === u.id || refreshing}
                                 onClick={() =>
                                   act(
                                     isActive ? suspendUser : activateUser,
@@ -248,7 +252,7 @@ const UserManagement = () => {
                               </button>
                               <button
                                 type="button"
-                                disabled={actionId === u.id}
+                                disabled={actionId === u.id || refreshing}
                                 onClick={() => setConfirmId(null)}
                                 className="h-[30px] px-2.5 rounded-md bg-[#edf2fa] border border-[#d6deeb] text-[12px] font-medium text-[#374151] hover:bg-[#F3F4F8] transition-colors disabled:opacity-50"
                               >
@@ -258,7 +262,7 @@ const UserManagement = () => {
                           ) : u.role === 'admin' && isActive ? null : (
                             <button
                               type="button"
-                              disabled={actionId === u.id}
+                              disabled={actionId === u.id || refreshing}
                               onClick={() => setConfirmId(u.id)}
                               className="inline-flex items-center gap-1.5 h-[32px] px-3 rounded-md bg-[#edf2fa] border border-[#d6deeb] text-[13px] font-medium text-[#B23B36] hover:bg-[#fbe9e8] transition-colors disabled:opacity-50"
                             >
@@ -293,7 +297,7 @@ const UserManagement = () => {
             <div className="flex items-center gap-2">
               <button
                 type="button"
-                disabled={!pagination.hasPrevPage || actionId}
+                disabled={!pagination.hasPrevPage || actionId || refreshing}
                 onClick={() => fetchUsers(pagination.page - 1)}
                 className="inline-flex items-center gap-1 h-[32px] px-3 rounded-md bg-[#edf2fa] border border-[#d6deeb] text-[13px] font-medium text-[#374151] hover:bg-[#F3F4F8] transition-colors disabled:opacity-50"
               >
@@ -302,7 +306,7 @@ const UserManagement = () => {
               </button>
               <button
                 type="button"
-                disabled={!pagination.hasNextPage || actionId}
+                disabled={!pagination.hasNextPage || actionId || refreshing}
                 onClick={() => fetchUsers(pagination.page + 1)}
                 className="inline-flex items-center gap-1 h-[32px] px-3 rounded-md bg-[#edf2fa] border border-[#d6deeb] text-[13px] font-medium text-[#374151] hover:bg-[#F3F4F8] transition-colors disabled:opacity-50"
               >
