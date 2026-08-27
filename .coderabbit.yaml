@@ -10,6 +10,12 @@ reviews:
   high_level_summary: true
   review_status: true
   review_details: true
+  sequence_diagrams: true
+  changed_files_summary: true
+
+  path_filters:
+    - "!node_modules/**"
+    - "!**/*.md"
 
   auto_review:
     enabled: true
@@ -19,6 +25,16 @@ reviews:
       - "main"
 
   path_instructions:
+
+    - path: "**"
+      instructions: |
+        Every PR review must:
+        1. Check the PR against the current sprint scope and report any
+           sprint-scope violations (e.g. out-of-scope or future-sprint work).
+        2. Check the PR against the project's documentation and report any
+           documentation violations (e.g. behavior contradicting the docs
+           or changes left undocumented).
+        3. Continue normal code-quality and security review.
 
     - path: "**/*.js"
       instructions: |
