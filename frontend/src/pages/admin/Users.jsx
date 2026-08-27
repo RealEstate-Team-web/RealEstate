@@ -136,12 +136,19 @@ const UserManagement = () => {
           className="rounded-md bg-[#FBF3DD] text-[#8a6d1f] text-[13px] px-4 py-3 flex items-center justify-between gap-3"
         >
           <span>{refreshError}</span>
-          <button
-            type="button"
-            onClick={() => reload()}
-            disabled={actionId}
-            className="inline-flex items-center gap-1.5 h-[30px] px-3 rounded-md bg-white border border-[#e5d9a8] text-[12px] font-medium text-[#8a6d1f] hover:bg-[#fdf8ea] transition-colors disabled:opacity-50 whitespace-nowrap"
-          >
+            <button
+              type="button"
+              onClick={async () => {
+                try {
+                  await reload();
+                  setRefreshError(null);
+                } catch (err) {
+                  setRefreshError(err.message || 'Failed to refresh the user list');
+                }
+              }}
+              disabled={actionId}
+              className="inline-flex items-center gap-1.5 h-[30px] px-3 rounded-md bg-white border border-[#e5d9a8] text-[12px] font-medium text-[#8a6d1f] hover:bg-[#fdf8ea] transition-colors disabled:opacity-50 whitespace-nowrap"
+            >
             Retry
           </button>
         </div>
@@ -199,7 +206,7 @@ const UserManagement = () => {
               ) : (
                 users.map((u) => {
                   const isActive = u.status === 'active';
-                  const name = `${u.first_name} ${u.last_name}`.trim() || u.email;
+                  const name = `${u.firstName} ${u.lastName}`.trim() || u.email;
                   const number = pagination
                     ? (pagination.page - 1) * pagination.limit + users.indexOf(u) + 1
                     : users.indexOf(u) + 1;
@@ -249,7 +256,7 @@ const UserManagement = () => {
                                 No
                               </button>
                             </>
-                          ) : (
+                          ) : u.role === 'admin' && isActive ? null : (
                             <button
                               type="button"
                               disabled={actionId === u.id}
