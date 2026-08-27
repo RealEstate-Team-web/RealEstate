@@ -34,7 +34,7 @@ const User = {
     const offset = (p - 1) * l;
 
     const items = await query(
-      `SELECT id, first_name, last_name, email, phone, role, status, created_at
+      `SELECT id, first_name AS firstName, last_name AS lastName, email, phone, role, status, created_at AS createdAt
          FROM users${where}
          ORDER BY created_at DESC
          LIMIT ? OFFSET ?`,

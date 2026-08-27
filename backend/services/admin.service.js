@@ -104,13 +104,34 @@ function validatePagination(page, limit) {
   return { page: p, limit: clampedLimit };
 }
 
+function validateId(id) {
+  const n = Number(id);
+  if (!Number.isInteger(n) || n <= 0) {
+    const error = new Error("Invalid user id");
+    error.status = 400;
+    throw error;
+  }
+  return n;
+}
+
 async function listUsers({ role, status, page, limit } = {}) {
+  if (role !== undefined && !["buyer", "agent", "admin"].includes(role)) {
+    const error = new Error("Invalid role filter");
+    error.status = 400;
+    throw error;
+  }
+  if (status !== undefined && !["active", "suspended"].includes(status)) {
+    const error = new Error("Invalid status filter");
+    error.status = 400;
+    throw error;
+  }
   const paginated = validatePagination(page, limit);
   return User.listUsers({ role, status, page: paginated.page, limit: paginated.limit });
 }
 
 async function suspendUser(id) {
-  const user = await User.findById(id);
+  const userId = validateId(id);
+  const user = await User.findById(userId);
   if (!user) {
     const error = new Error("User not found");
     error.status = 404;
@@ -133,7 +154,8 @@ async function suspendUser(id) {
 }
 
 async function activateUser(id) {
-  const user = await User.findById(id);
+  const userId = validateId(id);
+  const user = await User.findById(userId);
   if (!user) {
     const error = new Error("User not found");
     error.status = 404;

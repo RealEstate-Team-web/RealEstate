@@ -97,7 +97,7 @@ async function sendSuspensionEmail(to) {
     console.log("[email.service] Account suspension email sent (recipient redacted)");
     return { delivered: true, info };
   } catch (err) {
-    console.error("[email.service] Failed to send suspension email: " + err.message);
+    console.error("[email.service] Failed to send suspension email (code: EMAIL_DELIVERY_FAILED)");
     return { delivered: false, error: err.message };
   }
 }
@@ -131,7 +131,7 @@ async function sendActivationEmail(to) {
     console.log("[email.service] Account activation email sent (recipient redacted)");
     return { delivered: true, info };
   } catch (err) {
-    console.error("[email.service] Failed to send activation email: " + err.message);
+    console.error("[email.service] Failed to send activation email (code: EMAIL_DELIVERY_FAILED)");
     return { delivered: false, error: err.message };
   }
 }
