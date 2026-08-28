@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import {
   Search,
@@ -22,9 +22,9 @@ export const BrowseProperties = () => {
     location.state?.selectedPropertyId || 1
   );
   const [favoritedIds, setFavoritedIds] = useState(new Set());
-  const [pendingIds, setPendingIds] = useState(new Set());
-  const [favsLoading, setFavsLoading] = useState(false);
+  const [favsLoading, setFavsLoading] = useState(true);
   const [favsError, setFavsError] = useState(null);
+  const mutationVersionsRef = useRef(new Map());
   const { toastMessage, showToast } = useToast();
 
   const demoProperties = [
@@ -133,6 +133,7 @@ export const BrowseProperties = () => {
       const favs = await getFavorites();
       if (Array.isArray(favs)) {
         setFavoritedIds(new Set(favs.map((f) => f.id || f.propertyId)));
+        setFavsError(null);
       }
     } catch (err) {
       console.warn('Failed to load user favorite IDs:', err);
@@ -144,20 +145,24 @@ export const BrowseProperties = () => {
 
   useEffect(() => {
     let isMounted = true;
-    (async () => {
-      try {
-        const favs = await getFavorites();
+    getFavorites()
+      .then((favs) => {
         if (isMounted && Array.isArray(favs)) {
           setFavoritedIds(new Set(favs.map((f) => f.id || f.propertyId)));
           setFavsError(null);
         }
-      } catch (err) {
+      })
+      .catch((err) => {
         if (isMounted) {
           console.warn('Failed to load user favorite IDs:', err);
           setFavsError('Could not load your saved favorites');
         }
-      }
-    })();
+      })
+      .finally(() => {
+        if (isMounted) {
+          setFavsLoading(false);
+        }
+      });
     return () => {
       isMounted = false;
     };
@@ -165,54 +170,57 @@ export const BrowseProperties = () => {
 
   const handleToggleFavorite = async (e, prop) => {
     e.stopPropagation();
-    if (pendingIds.has(prop.id)) return;
+    const propId = prop.id;
+    const nextVersion = (mutationVersionsRef.current.get(propId) || 0) + 1;
+    mutationVersionsRef.current.set(propId, nextVersion);
 
-    const isFav = favoritedIds.has(prop.id);
+    let isAdding = false;
 
-    setPendingIds((prev) => new Set(prev).add(prop.id));
     setFavoritedIds((prev) => {
+      const isFav = prev.has(propId);
+      isAdding = !isFav;
       const next = new Set(prev);
       if (isFav) {
-        next.delete(prop.id);
+        next.delete(propId);
       } else {
-        next.add(prop.id);
+        next.add(propId);
       }
       return next;
     });
 
-    if (isFav) {
+    if (isAdding) {
       try {
-        await removeFavorite(prop.id);
-        showToast(`Removed "${prop.title}" from favorites`);
+        await addFavorite(propId);
+        if (mutationVersionsRef.current.get(propId) === nextVersion) {
+          showToast(`Saved "${prop.title}" to favorites!`);
+        }
       } catch (err) {
-        console.error('Failed to remove favorite:', err);
-        setFavoritedIds((prev) => new Set(prev).add(prop.id));
-        showToast('Failed to remove favorite. Please try again.');
-      } finally {
-        setPendingIds((prev) => {
-          const next = new Set(prev);
-          next.delete(prop.id);
-          return next;
-        });
+        console.error('Failed to save favorite:', err);
+        if (mutationVersionsRef.current.get(propId) === nextVersion) {
+          setFavoritedIds((prev) => {
+            const next = new Set(prev);
+            next.delete(propId);
+            return next;
+          });
+          showToast('Failed to save favorite. Please try again.');
+        }
       }
     } else {
       try {
-        await addFavorite(prop.id);
-        showToast(`Saved "${prop.title}" to favorites!`);
+        await removeFavorite(propId);
+        if (mutationVersionsRef.current.get(propId) === nextVersion) {
+          showToast(`Removed "${prop.title}" from favorites`);
+        }
       } catch (err) {
-        console.error('Failed to save favorite:', err);
-        setFavoritedIds((prev) => {
-          const next = new Set(prev);
-          next.delete(prop.id);
-          return next;
-        });
-        showToast('Failed to save favorite. Please try again.');
-      } finally {
-        setPendingIds((prev) => {
-          const next = new Set(prev);
-          next.delete(prop.id);
-          return next;
-        });
+        console.error('Failed to remove favorite:', err);
+        if (mutationVersionsRef.current.get(propId) === nextVersion) {
+          setFavoritedIds((prev) => {
+            const next = new Set(prev);
+            next.add(propId);
+            return next;
+          });
+          showToast('Failed to remove favorite. Please try again.');
+        }
       }
     }
   };
