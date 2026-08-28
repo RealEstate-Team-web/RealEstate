@@ -166,7 +166,9 @@ const validateLogin = (req, res, next) => {
 
 const isValidPositiveBigInt = (value) => {
   if (value === undefined || value === null) return false;
-  const str = String(value).trim();
+  if (typeof value !== "string" && typeof value !== "number" && typeof value !== "bigint")
+    return false;
+  const str = String(value);
   if (!/^[1-9]\d*$/.test(str)) return false;
   try {
     const val = BigInt(str);

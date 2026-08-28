@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import {
   Search,
@@ -9,7 +9,8 @@ import {
   Map as MapIcon,
   MapPin,
   Navigation,
-  CheckCircle2
+  CheckCircle2,
+  AlertCircle
 } from 'lucide-react';
 import { getFavorites, addFavorite, removeFavorite } from '../../services/favorite.service';
 import { useToast } from '../../hooks/useToast';
@@ -22,6 +23,8 @@ export const BrowseProperties = () => {
   );
   const [favoritedIds, setFavoritedIds] = useState(new Set());
   const [pendingIds, setPendingIds] = useState(new Set());
+  const [favsLoading, setFavsLoading] = useState(false);
+  const [favsError, setFavsError] = useState(null);
   const { toastMessage, showToast } = useToast();
 
   const demoProperties = [
@@ -123,19 +126,38 @@ export const BrowseProperties = () => {
     },
   ];
 
+  const loadFavs = useCallback(async () => {
+    setFavsLoading(true);
+    setFavsError(null);
+    try {
+      const favs = await getFavorites();
+      if (Array.isArray(favs)) {
+        setFavoritedIds(new Set(favs.map((f) => f.id || f.propertyId)));
+      }
+    } catch (err) {
+      console.warn('Failed to load user favorite IDs:', err);
+      setFavsError('Could not load your saved favorites');
+    } finally {
+      setFavsLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
     let isMounted = true;
-    const loadFavs = async () => {
+    (async () => {
       try {
         const favs = await getFavorites();
         if (isMounted && Array.isArray(favs)) {
           setFavoritedIds(new Set(favs.map((f) => f.id || f.propertyId)));
+          setFavsError(null);
         }
       } catch (err) {
-        console.warn('Failed to load user favorite IDs:', err);
+        if (isMounted) {
+          console.warn('Failed to load user favorite IDs:', err);
+          setFavsError('Could not load your saved favorites');
+        }
       }
-    };
-    loadFavs();
+    })();
     return () => {
       isMounted = false;
     };
@@ -204,6 +226,27 @@ export const BrowseProperties = () => {
         <div className="fixed bottom-6 right-6 z-50 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-xl flex items-center space-x-2 text-xs font-medium animate-in fade-in slide-in-from-bottom-3 duration-200">
           <CheckCircle2 size={16} className="text-emerald-400 shrink-0" />
           <span>{toastMessage}</span>
+        </div>
+      )}
+
+      {/* Favorite Loading Error Banner with Retry */}
+      {favsError && (
+        <div
+          role="alert"
+          className="rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs px-4 py-3 flex items-center justify-between gap-3 shadow-xs"
+        >
+          <div className="flex items-center space-x-2">
+            <AlertCircle size={16} className="text-amber-600 shrink-0" />
+            <span>{favsError}. Some favorite statuses may not reflect your account.</span>
+          </div>
+          <button
+            type="button"
+            onClick={loadFavs}
+            disabled={favsLoading}
+            className="px-3 py-1 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-semibold transition cursor-pointer disabled:opacity-50 shrink-0 text-xs"
+          >
+            {favsLoading ? 'Retrying...' : 'Retry'}
+          </button>
         </div>
       )}
 
