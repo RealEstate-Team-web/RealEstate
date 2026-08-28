@@ -164,17 +164,24 @@ const validateLogin = (req, res, next) => {
   next();
 };
 
+const isValidPositiveBigInt = (value) => {
+  if (value === undefined || value === null) return false;
+  const str = String(value).trim();
+  if (!/^[1-9]\d*$/.test(str)) return false;
+  try {
+    const val = BigInt(str);
+    return val > 0n && val <= 18446744073709551615n;
+  } catch {
+    return false;
+  }
+};
+
 const validateAddFavorite = (req, res, next) => {
   const errors = [];
   const { propertyId } = req.body || {};
 
-  if (
-    propertyId === undefined ||
-    propertyId === null ||
-    isNaN(Number(propertyId)) ||
-    Number(propertyId) <= 0
-  ) {
-    errors.push("propertyId is required and must be a valid positive number");
+  if (!isValidPositiveBigInt(propertyId)) {
+    errors.push("propertyId is required and must be a valid positive integer");
   }
 
   if (errors.length > 0) return next(validationError(errors));
@@ -184,14 +191,9 @@ const validateAddFavorite = (req, res, next) => {
 const validatePropertyIdParam = (req, res, next) => {
   const { propertyId } = req.params || {};
 
-  if (
-    propertyId === undefined ||
-    propertyId === null ||
-    isNaN(Number(propertyId)) ||
-    Number(propertyId) <= 0
-  ) {
+  if (!isValidPositiveBigInt(propertyId)) {
     return next(
-      validationError(["propertyId parameter must be a valid positive number"]),
+      validationError(["propertyId parameter must be a valid positive integer"]),
     );
   }
 

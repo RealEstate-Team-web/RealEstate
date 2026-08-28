@@ -66,7 +66,7 @@ export const Favorites = () => {
   }, []);
 
   const handleRemoveFavorite = async (propertyId, title) => {
-    const previous = [...favorites];
+    const targetItem = favorites.find((item) => String(item.id) === String(propertyId));
     // Optimistic UI removal
     setFavorites((prev) => prev.filter((item) => String(item.id) !== String(propertyId)));
     showToast(`Removed "${title || 'Property'}" from favorites`);
@@ -75,8 +75,13 @@ export const Favorites = () => {
       await removeFavorite(propertyId);
     } catch (err) {
       console.error('Failed to remove favorite:', err);
-      // Revert if failed
-      setFavorites(previous);
+      // Revert only this item if failed
+      if (targetItem) {
+        setFavorites((prev) => {
+          if (prev.some((item) => String(item.id) === String(propertyId))) return prev;
+          return [...prev, targetItem];
+        });
+      }
       showToast('Failed to remove favorite. Please try again.');
     }
   };

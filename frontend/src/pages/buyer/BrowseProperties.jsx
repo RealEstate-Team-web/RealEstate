@@ -21,6 +21,7 @@ export const BrowseProperties = () => {
     location.state?.selectedPropertyId || 1
   );
   const [favoritedIds, setFavoritedIds] = useState(new Set());
+  const [pendingIds, setPendingIds] = useState(new Set());
   const { toastMessage, showToast } = useToast();
 
   const demoProperties = [
@@ -74,59 +75,60 @@ export const BrowseProperties = () => {
     },
     {
       id: 4,
-      title: 'Modern Residence',
+      title: 'Modern Apartment in Bole',
       location: 'Bole, Addis Ababa',
       type: 'Apartment',
       status: 'Active',
       price: '$120,000',
-      beds: 5,
-      baths: 3,
-      sqft: '250m²',
-      lat: 8.9912,
-      lon: 38.7820,
-      pinTop: '65%',
-      pinLeft: '58%',
+      beds: 2,
+      baths: 2,
+      sqft: '188m²',
+      lat: 8.9922,
+      lon: 38.7855,
+      pinTop: '60%',
+      pinLeft: '62%',
       img: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=400',
     },
     {
       id: 5,
-      title: 'Family Estate',
-      location: 'Yeka, Addis Ababa',
-      type: 'House',
+      title: 'Contemporary Townhouse',
+      location: 'Sarbet, Addis Ababa',
+      type: 'Townhouse',
       status: 'Active',
-      price: '$120,000',
-      beds: 5,
-      baths: 4,
-      sqft: '210m²',
-      lat: 9.0410,
-      lon: 38.7980,
-      pinTop: '20%',
-      pinLeft: '80%',
+      price: '$275,000',
+      beds: 3,
+      baths: 3,
+      sqft: '240m²',
+      lat: 8.995,
+      lon: 38.74,
+      pinTop: '58%',
+      pinLeft: '35%',
       img: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=400',
     },
     {
       id: 6,
-      title: 'Liya Bekele Residence',
-      location: 'CMC, Addis Ababa',
-      type: 'House',
+      title: 'Luxury Penthouse Suite',
+      location: 'Old Airport, Addis Ababa',
+      type: 'Penthouse',
       status: 'Active',
-      price: '$120,000',
-      beds: 8,
-      baths: 5,
-      sqft: '400m²',
-      lat: 9.0230,
-      lon: 38.8210,
-      pinTop: '42%',
-      pinLeft: '85%',
-      img: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&q=80&w=400',
+      price: '$450,000',
+      beds: 4,
+      baths: 4,
+      sqft: '410m²',
+      lat: 8.985,
+      lon: 38.745,
+      pinTop: '70%',
+      pinLeft: '40%',
+      img: 'https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?auto=format&fit=crop&q=80&w=400',
     },
   ];
 
   useEffect(() => {
+    let isMounted = true;
     const loadFavs = async () => {
       try {
         const favs = await getFavorites();
-        if (Array.isArray(favs)) {
+        if (isMounted && Array.isArray(favs)) {
           setFavoritedIds(new Set(favs.map((f) => f.id || f.propertyId)));
         }
       } catch (err) {
@@ -134,35 +136,61 @@ export const BrowseProperties = () => {
       }
     };
     loadFavs();
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const handleToggleFavorite = async (e, prop) => {
     e.stopPropagation();
+    if (pendingIds.has(prop.id)) return;
+
     const isFav = favoritedIds.has(prop.id);
-    const previousSet = new Set(favoritedIds);
-    const nextSet = new Set(favoritedIds);
+
+    setPendingIds((prev) => new Set(prev).add(prop.id));
+    setFavoritedIds((prev) => {
+      const next = new Set(prev);
+      if (isFav) {
+        next.delete(prop.id);
+      } else {
+        next.add(prop.id);
+      }
+      return next;
+    });
 
     if (isFav) {
-      nextSet.delete(prop.id);
-      setFavoritedIds(nextSet);
       try {
         await removeFavorite(prop.id);
         showToast(`Removed "${prop.title}" from favorites`);
       } catch (err) {
         console.error('Failed to remove favorite:', err);
-        setFavoritedIds(previousSet);
+        setFavoritedIds((prev) => new Set(prev).add(prop.id));
         showToast('Failed to remove favorite. Please try again.');
+      } finally {
+        setPendingIds((prev) => {
+          const next = new Set(prev);
+          next.delete(prop.id);
+          return next;
+        });
       }
     } else {
-      nextSet.add(prop.id);
-      setFavoritedIds(nextSet);
       try {
         await addFavorite(prop.id);
         showToast(`Saved "${prop.title}" to favorites!`);
       } catch (err) {
         console.error('Failed to save favorite:', err);
-        setFavoritedIds(previousSet);
+        setFavoritedIds((prev) => {
+          const next = new Set(prev);
+          next.delete(prop.id);
+          return next;
+        });
         showToast('Failed to save favorite. Please try again.');
+      } finally {
+        setPendingIds((prev) => {
+          const next = new Set(prev);
+          next.delete(prop.id);
+          return next;
+        });
       }
     }
   };
