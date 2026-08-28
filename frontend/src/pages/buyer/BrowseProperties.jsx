@@ -171,19 +171,16 @@ export const BrowseProperties = () => {
   const handleToggleFavorite = async (e, prop) => {
     e.stopPropagation();
     const propId = prop.id;
+    const isAdding = !favoritedIds.has(propId);
     const nextVersion = (mutationVersionsRef.current.get(propId) || 0) + 1;
     mutationVersionsRef.current.set(propId, nextVersion);
 
-    let isAdding = false;
-
     setFavoritedIds((prev) => {
-      const isFav = prev.has(propId);
-      isAdding = !isFav;
       const next = new Set(prev);
-      if (isFav) {
-        next.delete(propId);
-      } else {
+      if (isAdding) {
         next.add(propId);
+      } else {
+        next.delete(propId);
       }
       return next;
     });
