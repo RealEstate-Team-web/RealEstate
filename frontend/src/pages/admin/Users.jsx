@@ -40,7 +40,7 @@ const UserManagement = () => {
       setPagination(result.pagination || null);
       setStats(result.stats || null);
       setPage(pageNum);
-    } catch (err) {
+    } catch {
       setError('Failed to load users');
     } finally {
       setLoading(false);
@@ -58,7 +58,7 @@ const UserManagement = () => {
         setStats(result.stats || null);
         setPage(1);
         setError(null);
-      } catch (err) {
+      } catch {
         if (!active) return;
         setError('Failed to load users');
       } finally {
@@ -88,7 +88,7 @@ const UserManagement = () => {
       setConfirmId(null);
       try {
         await reload();
-      } catch (err) {
+      } catch {
         setRefreshError('Failed to refresh the user list');
       }
     } catch (err) {
@@ -143,7 +143,7 @@ const UserManagement = () => {
                 try {
                   await reload();
                   setRefreshError(null);
-                } catch (err) {
+                } catch {
                   setRefreshError('Failed to refresh the user list');
                 } finally {
                   setRefreshing(false);

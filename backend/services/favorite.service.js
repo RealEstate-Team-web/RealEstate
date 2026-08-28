@@ -26,12 +26,33 @@ async function addFavorite(userId, propertyId) {
     };
   }
 
-  const favoriteId = await Favorite.create(userId, propertyId);
-  return {
-    favoriteId,
-    propertyId: Number(propertyId),
-    favorited: true,
-  };
+  try {
+    const favoriteId = await Favorite.create(userId, propertyId);
+    return {
+      favoriteId,
+      propertyId: Number(propertyId),
+      favorited: true,
+    };
+  } catch (err) {
+    if (err.code === "ER_DUP_ENTRY") {
+      return {
+        propertyId: Number(propertyId),
+        favorited: true,
+        message: "Property already saved in favorites",
+      };
+    }
+    if (
+      err.code === "ER_NO_REFERENCED_ROW_2" ||
+      err.code === "ER_NO_REFERENCED_ROW"
+    ) {
+      const error = new Error("Property not found");
+      error.status = 404;
+      throw error;
+    }
+    const error = new Error("Failed to add property to favorites");
+    error.status = 500;
+    throw error;
+  }
 }
 
 /**

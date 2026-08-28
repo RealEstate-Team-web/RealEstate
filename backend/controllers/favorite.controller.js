@@ -17,9 +17,11 @@ const addFavorite = async (req, res, next) => {
   try {
     const { propertyId } = req.body;
     const data = await favoriteService.addFavorite(req.user.id, propertyId);
-    res.status(201).json({
+    const statusCode = data.favoriteId ? 201 : 200;
+    const message = data.message || "Property added to favorites";
+    res.status(statusCode).json({
       success: true,
-      message: "Property added to favorites",
+      message,
       data,
     });
   } catch (error) {

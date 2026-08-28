@@ -6,14 +6,17 @@ const {
   addFavorite,
   removeFavorite,
 } = require("../controllers/favorite.controller");
-const { validateAddFavorite } = require("../middlewares/validation.middleware");
+const {
+  validateAddFavorite,
+  validatePropertyIdParam,
+} = require("../middlewares/validation.middleware");
 
 const router = express.Router();
 
-router.use(authenticate, requireRole("buyer", "admin"));
+router.use(authenticate, requireRole("buyer"));
 
 router.get("/", getFavorites);
 router.post("/", validateAddFavorite, addFavorite);
-router.delete("/:propertyId", removeFavorite);
+router.delete("/:propertyId", validatePropertyIdParam, removeFavorite);
 
 module.exports = router;

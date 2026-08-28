@@ -181,6 +181,23 @@ const validateAddFavorite = (req, res, next) => {
   next();
 };
 
+const validatePropertyIdParam = (req, res, next) => {
+  const { propertyId } = req.params || {};
+
+  if (
+    propertyId === undefined ||
+    propertyId === null ||
+    isNaN(Number(propertyId)) ||
+    Number(propertyId) <= 0
+  ) {
+    return next(
+      validationError(["propertyId parameter must be a valid positive number"]),
+    );
+  }
+
+  next();
+};
+
 const validateForgotPassword = (req, res, next) => {
   const errors = [];
   const { email } = req.body || {};
@@ -221,4 +238,5 @@ module.exports = {
   validateForgotPassword,
   validateResetPassword,
   validateAddFavorite,
+  validatePropertyIdParam,
 };

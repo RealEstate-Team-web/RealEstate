@@ -12,6 +12,7 @@ import {
   CheckCircle2
 } from 'lucide-react';
 import { getFavorites, removeFavorite } from '../../services/favorite.service';
+import { useToast } from '../../hooks/useToast';
 
 export const Favorites = () => {
   const navigate = useNavigate();
@@ -21,12 +22,13 @@ export const Favorites = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [sortBy, setSortBy] = useState('date');
-  const [toastMessage, setToastMessage] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const { toastMessage, showToast } = useToast();
   const itemsPerPage = 6;
 
   const loadFavorites = useCallback(async () => {
     try {
+      setLoading(true);
       const data = await getFavorites();
       setFavorites(Array.isArray(data) ? data : []);
       setError('');
@@ -39,31 +41,29 @@ export const Favorites = () => {
   }, []);
 
   useEffect(() => {
-    let ignore = false;
-    getFavorites()
-      .then((data) => {
-        if (!ignore) {
+    let isMounted = true;
+    (async () => {
+      try {
+        const data = await getFavorites();
+        if (isMounted) {
           setFavorites(Array.isArray(data) ? data : []);
-          setLoading(false);
+          setError('');
         }
-      })
-      .catch((err) => {
-        if (!ignore) {
+      } catch (err) {
+        if (isMounted) {
           console.error('Failed to load favorites:', err);
           setError(err.message || 'Failed to load favorite properties');
+        }
+      } finally {
+        if (isMounted) {
           setLoading(false);
         }
-      });
-
+      }
+    })();
     return () => {
-      ignore = true;
+      isMounted = false;
     };
   }, []);
-
-  const showToast = (message) => {
-    setToastMessage(message);
-    setTimeout(() => setToastMessage(null), 3000);
-  };
 
   const handleRemoveFavorite = async (propertyId, title) => {
     const previous = [...favorites];
@@ -81,12 +81,18 @@ export const Favorites = () => {
     }
   };
 
-  const handleShare = (prop) => {
-    if (navigator.clipboard) {
-      navigator.clipboard.writeText(window.location.origin + `/buyer/properties`);
-      showToast(`Link to "${prop.title}" copied to clipboard!`);
+  const handleShare = async (prop) => {
+    const url = `${window.location.origin}/properties/${prop.id}`;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      try {
+        await navigator.clipboard.writeText(url);
+        showToast(`Link to "${prop.title}" copied to clipboard!`);
+      } catch (err) {
+        console.warn('Clipboard write failed:', err);
+        showToast(`Property link: ${url}`);
+      }
     } else {
-      showToast('Property link ready to share');
+      showToast(`Property link: ${url}`);
     }
   };
 
@@ -134,10 +140,12 @@ export const Favorites = () => {
 
   // Pagination slice
   const totalPages = Math.ceil(filteredAndSortedFavorites.length / itemsPerPage) || 1;
+  const validCurrentPage = Math.min(Math.max(1, currentPage), totalPages);
+
   const paginatedFavorites = useMemo(() => {
-    const start = (currentPage - 1) * itemsPerPage;
+    const start = (validCurrentPage - 1) * itemsPerPage;
     return filteredAndSortedFavorites.slice(start, start + itemsPerPage);
-  }, [filteredAndSortedFavorites, currentPage]);
+  }, [filteredAndSortedFavorites, validCurrentPage]);
 
   return (
     <div className="space-y-6 font-sans">
@@ -352,7 +360,11 @@ export const Favorites = () => {
                       <Share2 size={16} />
                     </button>
                     <button
-                      onClick={() => navigate('/buyer/properties')}
+                      onClick={() =>
+                        navigate('/buyer/properties', {
+                          state: { selectedPropertyId: prop.id },
+                        })
+                      }
                       className="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition cursor-pointer shadow-xs"
                     >
                       View Details
@@ -373,7 +385,7 @@ export const Favorites = () => {
               key={page}
               onClick={() => setCurrentPage(page)}
               className={`px-3.5 py-1.5 text-xs font-bold rounded-lg transition cursor-pointer ${
-                currentPage === page
+                validCurrentPage === page
                   ? 'bg-blue-600 text-white shadow-xs'
                   : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
               }`}

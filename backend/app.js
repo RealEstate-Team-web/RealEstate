@@ -13,19 +13,21 @@ const app = express();
 
 const clientUrl = process.env.CLIENT_URL || "http://localhost:3000";
 
-app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
+app.use(helmet());
 
 app.use(
   cors({
     origin: (origin, callback) => {
+      if (!origin || origin === clientUrl) {
+        return callback(null, true);
+      }
       if (
-        !origin ||
-        origin === clientUrl ||
+        process.env.NODE_ENV !== "production" &&
         /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)
       ) {
         return callback(null, true);
       }
-      return callback(new Error("Not allowed by CORS"));
+      return callback(null, false);
     },
     credentials: true,
   }),

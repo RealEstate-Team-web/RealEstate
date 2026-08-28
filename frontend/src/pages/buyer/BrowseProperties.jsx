@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import {
   Search,
   Filter,
@@ -11,12 +12,16 @@ import {
   CheckCircle2
 } from 'lucide-react';
 import { getFavorites, addFavorite, removeFavorite } from '../../services/favorite.service';
+import { useToast } from '../../hooks/useToast';
 
 export const BrowseProperties = () => {
+  const location = useLocation();
   const [viewMode, setViewMode] = useState('split');
-  const [selectedPropertyId, setSelectedPropertyId] = useState(1);
-  const [favoritedIds, setFavoritedIds] = useState(new Set([1, 2, 4]));
-  const [toastMessage, setToastMessage] = useState(null);
+  const [selectedPropertyId, setSelectedPropertyId] = useState(
+    location.state?.selectedPropertyId || 1
+  );
+  const [favoritedIds, setFavoritedIds] = useState(new Set());
+  const { toastMessage, showToast } = useToast();
 
   const demoProperties = [
     {
@@ -131,33 +136,33 @@ export const BrowseProperties = () => {
     loadFavs();
   }, []);
 
-  const showToast = (message) => {
-    setToastMessage(message);
-    setTimeout(() => setToastMessage(null), 3000);
-  };
-
   const handleToggleFavorite = async (e, prop) => {
     e.stopPropagation();
     const isFav = favoritedIds.has(prop.id);
+    const previousSet = new Set(favoritedIds);
     const nextSet = new Set(favoritedIds);
 
     if (isFav) {
       nextSet.delete(prop.id);
       setFavoritedIds(nextSet);
-      showToast(`Removed "${prop.title}" from favorites`);
       try {
         await removeFavorite(prop.id);
+        showToast(`Removed "${prop.title}" from favorites`);
       } catch (err) {
         console.error('Failed to remove favorite:', err);
+        setFavoritedIds(previousSet);
+        showToast('Failed to remove favorite. Please try again.');
       }
     } else {
       nextSet.add(prop.id);
       setFavoritedIds(nextSet);
-      showToast(`Saved "${prop.title}" to favorites!`);
       try {
         await addFavorite(prop.id);
+        showToast(`Saved "${prop.title}" to favorites!`);
       } catch (err) {
         console.error('Failed to save favorite:', err);
+        setFavoritedIds(previousSet);
+        showToast('Failed to save favorite. Please try again.');
       }
     }
   };
@@ -350,7 +355,8 @@ export const BrowseProperties = () => {
                             : 'bg-white/85 hover:bg-white text-slate-600 hover:text-rose-500'
                         }`}
                         title={isFavorited ? 'Remove from favorites' : 'Add to favorites'}
-                        aria-label="Toggle Favorite"
+                        aria-label={isFavorited ? 'Remove from favorites' : 'Add to favorites'}
+                        aria-pressed={isFavorited}
                       >
                         <Heart size={15} fill={isFavorited ? 'currentColor' : 'none'} />
                       </button>
