@@ -169,6 +169,8 @@ export const BrowseProperties = () => {
   }, []);
 
   const handleToggleFavorite = async (e, prop) => {
+    if (favsLoading || favsError) return;
+
     e.stopPropagation();
     const propId = prop.id;
     const isAdding = !favoritedIds.has(propId);
@@ -425,11 +427,12 @@ export const BrowseProperties = () => {
                       </span>
                       <button
                         onClick={(e) => handleToggleFavorite(e, prop)}
+                        disabled={favsLoading || Boolean(favsError)}
                         className={`absolute top-2.5 right-2.5 p-2 rounded-full backdrop-blur-xs transition cursor-pointer shadow-xs ${
                           isFavorited
                             ? 'bg-rose-500 text-white hover:bg-rose-600 scale-105'
                             : 'bg-white/85 hover:bg-white text-slate-600 hover:text-rose-500'
-                        }`}
+                        } disabled:cursor-not-allowed disabled:opacity-50`}
                         title={isFavorited ? 'Remove from favorites' : 'Add to favorites'}
                         aria-label={isFavorited ? 'Remove from favorites' : 'Add to favorites'}
                         aria-pressed={isFavorited}
