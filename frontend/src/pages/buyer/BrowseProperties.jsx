@@ -170,6 +170,10 @@ export const BrowseProperties = () => {
 
   const handleToggleFavorite = async (e, prop) => {
     e.stopPropagation();
+    if (favsLoading || favsError) {
+      return;
+    }
+
     const propId = prop.id;
     const isAdding = !favoritedIds.has(propId);
     const nextVersion = (mutationVersionsRef.current.get(propId) || 0) + 1;
@@ -425,6 +429,7 @@ export const BrowseProperties = () => {
                       </span>
                       <button
                         onClick={(e) => handleToggleFavorite(e, prop)}
+                        disabled={favsLoading || favsError}
                         className={`absolute top-2.5 right-2.5 p-2 rounded-full backdrop-blur-xs transition cursor-pointer shadow-xs ${
                           isFavorited
                             ? 'bg-rose-500 text-white hover:bg-rose-600 scale-105'
