@@ -1,14 +1,16 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Mail, ArrowLeft } from 'lucide-react'
+import { Mail, ArrowLeft, Loader2 } from 'lucide-react'
 import AuthLayout from '../../hooks/layouts/AuthLayout'
 import FormInput from '../../components/forms/FormInput'
 import { ROUTES } from '../../utils/constants'
+import authService from '../../services/auth.service'
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('')
   const [error, setError] = useState('')
   const [sent, setSent] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -21,7 +23,15 @@ const ForgotPassword = () => {
       return
     }
     setError('')
-    setSent(true)
+    setLoading(true)
+    try {
+      await authService.requestPasswordReset(email.trim())
+      setSent(true)
+    } catch (err) {
+      setError(err.message || 'Something went wrong. Please try again.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -66,8 +76,10 @@ const ForgotPassword = () => {
             />
             <button
               type="submit"
-              className="mt-1 h-[38px] w-full rounded-[5px] bg-teal text-[15px] font-semibold text-white transition-all duration-150 hover:bg-[#0F828A] hover:shadow-md"
+              disabled={loading}
+              className="mt-1 inline-flex h-[38px] w-full items-center justify-center gap-1.5 rounded-[5px] bg-teal text-[15px] font-semibold text-white transition-all duration-150 hover:bg-[#0F828A] hover:shadow-md disabled:opacity-60"
             >
+              {loading && <Loader2 size={16} className="animate-spin" />}
               Send Reset Link
             </button>
             <p className="mt-1 text-center text-[13px] text-ink">

@@ -84,6 +84,16 @@ const completeAgentProfile = async ({
   return { user: data.user }
 }
 
+const requestPasswordReset = (email) =>
+  api
+    .post('/auth/forgot-password', { email })
+    .then((r) => r.data)
+
+const resetPassword = (token, password) =>
+  api
+    .post('/auth/reset-password', { token, password })
+    .then((r) => r.data)
+
 const authService = {
   register,
   registerAgent,
@@ -91,6 +101,8 @@ const authService = {
   logout,
   getMe,
   completeAgentProfile,
+  requestPasswordReset,
+  resetPassword,
 }
 
 export default authService

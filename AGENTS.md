@@ -60,6 +60,11 @@ npm run lint     # eslint
 
 # Real Estate Project — Code Review Guidelines
 
+Every Pull Request review must:
+1. Check the PR against the current sprint scope and report any sprint-scope violations.
+2. Check the PR against the project's documentation and report any documentation violations.
+3. Continue normal code-quality and security review.
+
 ## Source of Truth
 
 Before reviewing a Pull Request, use these documents:

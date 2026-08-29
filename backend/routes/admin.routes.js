@@ -7,6 +7,9 @@ const {
   approveAgent,
   rejectAgent,
   suspendAgent,
+  listUsers,
+  suspendUser,
+  activateUser,
 } = require("../controllers/admin.controller");
 const {
   list,
@@ -29,6 +32,10 @@ router.get("/agents", getAgents);
 router.patch("/agents/:id/approve", approveAgent);
 router.patch("/agents/:id/reject", rejectAgent);
 router.patch("/agents/:id/suspend", suspendAgent);
+
+router.get("/users", listUsers);
+router.patch("/users/:id/suspend", suspendUser);
+router.patch("/users/:id/activate", activateUser);
 
 router.get("/categories", list);
 router.get("/categories/:id", getOne);
