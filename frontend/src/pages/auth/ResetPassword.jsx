@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { CheckCircle2 } from 'lucide-react'
+import { CheckCircle2, Loader2 } from 'lucide-react'
 import AuthLayout from '../../hooks/layouts/AuthLayout'
 import PasswordInput from '../../components/forms/PasswordInput'
 import { ROUTES } from '../../utils/constants'
+import authService from '../../services/auth.service'
 
 const ResetPassword = () => {
   const [searchParams] = useSearchParams()
@@ -12,6 +13,8 @@ const ResetPassword = () => {
   const [form, setForm] = useState({ password: '', confirmPassword: '' })
   const [errors, setErrors] = useState({})
   const [done, setDone] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [serverError, setServerError] = useState('')
 
   const handleChange = (e) => {
     setForm((f) => ({ ...f, [e.target.name]: e.target.value }))
@@ -25,13 +28,30 @@ const ResetPassword = () => {
     const next = {}
     if (!form.password || form.password.length < 8) {
       next.password = 'Password must be at least 8 characters.'
+    } else {
+      if (!/[A-Z]/.test(form.password))
+        next.password = 'Password must contain an uppercase letter.'
+      else if (!/[a-z]/.test(form.password))
+        next.password = 'Password must contain a lowercase letter.'
+      else if (!/[0-9]/.test(form.password))
+        next.password = 'Password must contain a number.'
     }
     if (form.password !== form.confirmPassword) {
       next.confirmPassword = 'Passwords do not match.'
     }
     setErrors(next)
     if (Object.keys(next).length > 0) return
-    setDone(true)
+
+    setLoading(true)
+    setServerError('')
+    try {
+      await authService.resetPassword(token, form.password)
+      setDone(true)
+    } catch (err) {
+      setServerError(err.message || 'Unable to reset password. The link may be invalid or expired.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -65,6 +85,11 @@ const ResetPassword = () => {
           </p>
         ) : (
           <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
+            {serverError && (
+              <p className="rounded-[5px] border border-[#E5484D]/30 bg-[#FEF2F2] px-3 py-2 text-xs text-[#E5484D]">
+                {serverError}
+              </p>
+            )}
             <PasswordInput
               label="New Password"
               name="password"
@@ -81,8 +106,10 @@ const ResetPassword = () => {
             />
             <button
               type="submit"
-              className="mt-1 h-[38px] w-full rounded-[5px] bg-teal text-[15px] font-semibold text-white transition-all duration-150 hover:bg-[#0F828A] hover:shadow-md"
+              disabled={loading}
+              className="mt-1 inline-flex h-[38px] w-full items-center justify-center gap-1.5 rounded-[5px] bg-teal text-[15px] font-semibold text-white transition-all duration-150 hover:bg-[#0F828A] hover:shadow-md disabled:opacity-60"
             >
+              {loading && <Loader2 size={16} className="animate-spin" />}
               Reset Password
             </button>
           </form>

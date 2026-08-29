@@ -11,10 +11,27 @@ const errorHandler = require("./middlewares/error.middleware");
 
 const app = express();
 
+const clientUrl = process.env.CLIENT_URL || "http://localhost:3000";
+
 app.use(helmet());
 
-const clientUrl = process.env.CLIENT_URL || "http://localhost:5173";
-app.use(cors({ origin: clientUrl, credentials: true }));
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || origin === clientUrl) {
+        return callback(null, true);
+      }
+      if (
+        process.env.NODE_ENV !== "production" &&
+        /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)
+      ) {
+        return callback(null, true);
+      }
+      return callback(null, false);
+    },
+    credentials: true,
+  }),
+);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

@@ -341,13 +341,13 @@ Allow buyers to save, view, and remove favorite properties.
 
 **Checklist**
 
-- [ ] Favorites table/migration
-- [ ] Save API
-- [ ] Remove API
-- [ ] List API
-- [ ] Favorites page
-- [ ] Favorite UI action
-- [ ] Authorization tests/manual checks
+- [x] Favorites table/migration
+- [x] Save API
+- [x] Remove API
+- [x] List API
+- [x] Favorites page
+- [x] Favorite UI action
+- [x] Authorization tests/manual checks
 
 ---
 

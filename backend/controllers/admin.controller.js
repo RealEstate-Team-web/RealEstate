@@ -66,10 +66,66 @@ const suspendAgent = async (req, res, next) => {
   }
 };
 
+const listUsers = async (req, res, next) => {
+  try {
+    const { role, status, page, limit } = req.query;
+    const result = await adminService.listUsers({ role, status, page, limit });
+    res.status(200).json({
+      success: true,
+      message: "User list",
+      data: result.items,
+      pagination: {
+        total: result.total,
+        page: result.page,
+        limit: result.limit,
+        totalPages: result.totalPages,
+        hasNextPage: result.hasNextPage,
+        hasPrevPage: result.hasPrevPage,
+      },
+      stats: {
+        active: result.active,
+        suspended: result.suspended,
+        admins: result.admins,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const suspendUser = async (req, res, next) => {
+  try {
+    const data = await adminService.suspendUser(req.params.id);
+    res.status(200).json({
+      success: true,
+      message: "User suspended",
+      data,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const activateUser = async (req, res, next) => {
+  try {
+    const data = await adminService.activateUser(req.params.id);
+    res.status(200).json({
+      success: true,
+      message: "User activated",
+      data,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getDashboard,
   getAgents,
   approveAgent,
   rejectAgent,
   suspendAgent,
+  listUsers,
+  suspendUser,
+  activateUser,
 };
