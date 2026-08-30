@@ -6,6 +6,14 @@ import CompleteAgentProfile from '../pages/auth/CompleteAgentProfile';
 import ForgotPassword from '../pages/auth/ForgotPassword';
 import ResetPassword from '../pages/auth/ResetPassword';
 
+import Home from "../pages/public/Home";
+import Properties from "../pages/public/Properties";
+import PropertyDetails from "../pages/public/PropertyDetails";
+import Contact from "../pages/public/Contact";
+import About from "../pages/public/About";
+import NotFound from "../pages/public/NotFound";
+import PublicAgents from "../pages/public/PublicAgent";
+
 import PublicRoute from './PublicRoute';
 import PrivateRoute from './PrivateRoute';
 import RoleRoute from './RoleRoute';
@@ -72,7 +80,17 @@ export const AppRoutes = () => {
           </PublicRoute>
         }
       />
+      {/* Public  and landing pages wrapped in PublicRoute */}
 
+
+      {/* Public pages — wrapped with Header + Footer */}
+      <Route path="/" element={<PublicRoute><Home /></PublicRoute>} />
+      <Route path="/properties" element={<PublicRoute><Properties /></PublicRoute>} />
+      <Route path="/properties/:id" element={<PublicRoute><PropertyDetails /></PublicRoute>} />
+      <Route path="/about" element={<PublicRoute><About /></PublicRoute>} />
+      <Route path="/agents" element={<PublicRoute><PublicAgents /></PublicRoute>} />
+      <Route path="/contact" element={<PublicRoute><Contact /></PublicRoute>} />
+      <Route path="*" element={<PublicRoute><NotFound /></PublicRoute>} />
       {/* Protected Agent Complete Profile Route */}
       <Route
         path={ROUTES.completeAgentProfile}
