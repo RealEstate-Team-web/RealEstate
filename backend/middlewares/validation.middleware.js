@@ -232,6 +232,69 @@ const validateResetPassword = (req, res, next) => {
   next();
 };
 
+const datePattern = /^\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\d|3[01])$/;
+const timePattern = /^(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d)?$/;
+
+const validateBookVisit = (req, res, next) => {
+  const errors = [];
+  const { propertyId, visitDate, visitTime, notes } = req.body || {};
+
+  if (!isValidPositiveBigInt(propertyId)) {
+    errors.push("propertyId is required and must be a valid positive integer");
+  }
+
+  if (!visitDate || !datePattern.test(String(visitDate).trim())) {
+    errors.push("visitDate is required and must be a valid date in YYYY-MM-DD format");
+  }
+
+  if (!visitTime || !timePattern.test(String(visitTime).trim())) {
+    errors.push("visitTime is required and must be a valid time in HH:MM format");
+  }
+
+  if (notes !== undefined && notes !== null && typeof notes !== "string") {
+    errors.push("notes must be a string");
+  } else if (typeof notes === "string" && notes.length > 1000) {
+    errors.push("notes cannot exceed 1000 characters");
+  }
+
+  if (errors.length > 0) return next(validationError(errors));
+  next();
+};
+
+const validateVisitIdParam = (req, res, next) => {
+  const { id } = req.params || {};
+
+  if (!isValidPositiveBigInt(id)) {
+    return next(
+      validationError(["Visit ID parameter must be a valid positive integer"]),
+    );
+  }
+
+  next();
+};
+
+const validateRescheduleVisit = (req, res, next) => {
+  const errors = [];
+  const { visitDate, visitTime, notes } = req.body || {};
+
+  if (!visitDate || !datePattern.test(String(visitDate).trim())) {
+    errors.push("visitDate is required and must be a valid date in YYYY-MM-DD format");
+  }
+
+  if (!visitTime || !timePattern.test(String(visitTime).trim())) {
+    errors.push("visitTime is required and must be a valid time in HH:MM format");
+  }
+
+  if (notes !== undefined && notes !== null && typeof notes !== "string") {
+    errors.push("notes must be a string");
+  } else if (typeof notes === "string" && notes.length > 1000) {
+    errors.push("notes cannot exceed 1000 characters");
+  }
+
+  if (errors.length > 0) return next(validationError(errors));
+  next();
+};
+
 module.exports = {
   validateRegister,
   validateRegisterAgent,
@@ -243,4 +306,7 @@ module.exports = {
   validateResetPassword,
   validateAddFavorite,
   validatePropertyIdParam,
+  validateBookVisit,
+  validateVisitIdParam,
+  validateRescheduleVisit,
 };
