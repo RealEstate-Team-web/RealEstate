@@ -60,9 +60,10 @@ async function getBuyerVisits(buyerId, query = {}) {
   const offset = (page - 1) * limit;
   const status = query.status || "all";
   const search = query.search || "";
+  const sort = query.sort === "latest" ? "latest" : "soonest";
 
   const [visits, total] = await Promise.all([
-    Visit.findByBuyerId(buyerId, { status, search, limit, offset }),
+    Visit.findByBuyerId(buyerId, { status, search, sort, limit, offset }),
     Visit.countByBuyerId(buyerId, { status, search }),
   ]);
 

@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
   Calendar,
   Clock,
@@ -49,6 +49,7 @@ export const ScheduledVisits = () => {
           limit: itemsPerPage,
           status: statusFilter,
           search: searchQuery.trim(),
+          sort: sortBy,
         };
         const response = await getVisits(params);
         if (!isMountedRef.current) return;
@@ -67,7 +68,7 @@ export const ScheduledVisits = () => {
         }
       }
     },
-    [currentPage, statusFilter, searchQuery, itemsPerPage]
+    [currentPage, statusFilter, searchQuery, sortBy, itemsPerPage]
   );
 
   useEffect(() => {
@@ -155,17 +156,6 @@ export const ScheduledVisits = () => {
         };
     }
   };
-
-  // Sort visits for current page
-  const sortedVisits = useMemo(() => {
-    const result = [...visits];
-    result.sort((a, b) => {
-      const dateA = new Date(`${a.visitDate}T${a.visitTime || '00:00'}:00`).getTime();
-      const dateB = new Date(`${b.visitDate}T${b.visitTime || '00:00'}:00`).getTime();
-      return sortBy === 'soonest' ? dateA - dateB : dateB - dateA;
-    });
-    return result;
-  }, [visits, sortBy]);
 
   const totalPages = pagination.totalPages || 1;
 
@@ -305,7 +295,7 @@ export const ScheduledVisits = () => {
       )}
 
       {/* Empty State */}
-      {!loading && !error && sortedVisits.length === 0 && (
+      {!loading && !error && visits.length === 0 && (
         <div className="bg-white border border-slate-100 rounded-2xl p-12 text-center space-y-4 shadow-xs">
           <div className="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto">
             <Calendar size={28} />
@@ -335,9 +325,9 @@ export const ScheduledVisits = () => {
       )}
 
       {/* Visits Cards Grid */}
-      {!loading && !error && sortedVisits.length > 0 && (
+      {!loading && !error && visits.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {sortedVisits.map((v) => {
+          {visits.map((v) => {
             const badge = getStatusBadge(v.status);
             const isCancelled = (v.status || '').toLowerCase() === 'cancelled';
             const isCompleted = (v.status || '').toLowerCase() === 'completed';

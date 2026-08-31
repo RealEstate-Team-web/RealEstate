@@ -104,7 +104,7 @@ const Visit = {
     return rows[0] || null;
   },
 
-  async findByBuyerId(buyerId, { status, search, limit, offset } = {}) {
+  async findByBuyerId(buyerId, { status, search, sort, limit, offset } = {}) {
     const params = [buyerId];
     let sql = `
       SELECT 
@@ -157,7 +157,8 @@ const Visit = {
       params.push(term, term, term, term);
     }
 
-    sql += " ORDER BY v.visit_date ASC, v.visit_time ASC, v.created_at DESC";
+    const sortDirection = sort === "latest" ? "DESC" : "ASC";
+    sql += ` ORDER BY v.visit_date ${sortDirection}, v.visit_time ${sortDirection}, v.created_at DESC`;
 
     if (limit !== undefined && offset !== undefined) {
       sql += " LIMIT ? OFFSET ?";
