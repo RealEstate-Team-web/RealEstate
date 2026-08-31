@@ -6,7 +6,7 @@ import Header from '../components/common/Header'
 import Footer from '../components/common/Footer'
 import Loader from '../components/common/Loader'
 const PublicRoute = ({ children }) => {
-  const { isAuthenticated, loading } = useAuth();
+  const { isAuthenticated, loading, user } = useAuth();
 
   if (loading) {
     return (
@@ -14,7 +14,7 @@ const PublicRoute = ({ children }) => {
     );
   }
 
-  if (isAuthenticated) {
+  if (isAuthenticated && user) {
     return <Navigate to={ROLE_DASHBOARDS[user.role] || '/'} replace />
   }
 
