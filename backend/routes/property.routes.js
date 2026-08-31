@@ -1,4 +1,7 @@
-const express = require( "express");
+const express = require("express");
+
+const { authenticate } = require("../middlewares/auth.middleware");
+const { requireRole } = require("../middlewares/role.middleware");
 
 const {
   getProperties,
@@ -25,20 +28,26 @@ router.get(
 
 router.post(
   "/",
+  authenticate,
+  requireRole("agent"),
   createProperty
 );
 
 
 router.patch(
   "/:id",
+  authenticate,
+  requireRole("agent"),
   updateProperty
 );
 
 
 router.delete(
   "/:id",
+  authenticate,
+  requireRole("agent"),
   deleteProperty
 );
 
 
-module.exports=router;
+module.exports = router;
