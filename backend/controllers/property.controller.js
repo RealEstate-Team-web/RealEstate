@@ -15,6 +15,8 @@ const propertyService = require("../services/property.service");
       bathrooms,
       minArea,
       maxArea,
+      furnishingStatus,
+      constructionStatus,
       parking,
       listingType,
       sort = "newest",
