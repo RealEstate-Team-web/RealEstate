@@ -380,13 +380,13 @@ Allow buyers to book, cancel, and reschedule property visits.
 
 **Checklist**
 
-- [ ] Visits table/migration
-- [ ] Book API
-- [ ] Cancel API
-- [ ] Reschedule API
-- [ ] Scheduled visits page
-- [ ] Booking form
-- [ ] Authorization checks
+- [x] Visits table/migration
+- [x] Book API
+- [x] Cancel API
+- [x] Reschedule API
+- [x] Scheduled visits page
+- [x] Booking form
+- [x] Authorization checks
 
 ---
 

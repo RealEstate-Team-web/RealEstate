@@ -232,6 +232,86 @@ const validateResetPassword = (req, res, next) => {
   next();
 };
 
+const datePattern = /^\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\d|3[01])$/;
+const timePattern = /^(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d)?$/;
+
+const isValidCalendarDate = (dateStr) => {
+  if (typeof dateStr !== "string") return false;
+  const str = dateStr.trim();
+  if (!datePattern.test(str)) return false;
+  const [yearStr, monthStr, dayStr] = str.split("-");
+  const year = Number(yearStr);
+  const month = Number(monthStr);
+  const day = Number(dayStr);
+
+  const d = new Date(Date.UTC(year, month - 1, day));
+  return (
+    d.getUTCFullYear() === year &&
+    d.getUTCMonth() === month - 1 &&
+    d.getUTCDate() === day
+  );
+};
+
+const validateBookVisit = (req, res, next) => {
+  const errors = [];
+  const { propertyId, visitDate, visitTime, notes } = req.body || {};
+
+  if (!isValidPositiveBigInt(propertyId)) {
+    errors.push("propertyId is required and must be a valid positive integer");
+  }
+
+  if (!visitDate || !isValidCalendarDate(visitDate)) {
+    errors.push("visitDate is required and must be a valid calendar date in YYYY-MM-DD format");
+  }
+
+  if (!visitTime || !timePattern.test(String(visitTime).trim())) {
+    errors.push("visitTime is required and must be a valid time in HH:MM format");
+  }
+
+  if (notes !== undefined && notes !== null && typeof notes !== "string") {
+    errors.push("notes must be a string");
+  } else if (typeof notes === "string" && notes.length > 1000) {
+    errors.push("notes cannot exceed 1000 characters");
+  }
+
+  if (errors.length > 0) return next(validationError(errors));
+  next();
+};
+
+const validateVisitIdParam = (req, res, next) => {
+  const { id } = req.params || {};
+
+  if (!isValidPositiveBigInt(id)) {
+    return next(
+      validationError(["Visit ID parameter must be a valid positive integer"]),
+    );
+  }
+
+  next();
+};
+
+const validateRescheduleVisit = (req, res, next) => {
+  const errors = [];
+  const { visitDate, visitTime, notes } = req.body || {};
+
+  if (!visitDate || !isValidCalendarDate(visitDate)) {
+    errors.push("visitDate is required and must be a valid calendar date in YYYY-MM-DD format");
+  }
+
+  if (!visitTime || !timePattern.test(String(visitTime).trim())) {
+    errors.push("visitTime is required and must be a valid time in HH:MM format");
+  }
+
+  if (notes !== undefined && notes !== null && typeof notes !== "string") {
+    errors.push("notes must be a string");
+  } else if (typeof notes === "string" && notes.length > 1000) {
+    errors.push("notes cannot exceed 1000 characters");
+  }
+
+  if (errors.length > 0) return next(validationError(errors));
+  next();
+};
+
 module.exports = {
   validateRegister,
   validateRegisterAgent,
@@ -243,4 +323,7 @@ module.exports = {
   validateResetPassword,
   validateAddFavorite,
   validatePropertyIdParam,
+  validateBookVisit,
+  validateVisitIdParam,
+  validateRescheduleVisit,
 };

@@ -10,9 +10,11 @@ import {
   MapPin,
   Navigation,
   CheckCircle2,
-  AlertCircle
+  AlertCircle,
+  Calendar,
 } from 'lucide-react';
 import { getFavorites, addFavorite, removeFavorite } from '../../services/favorite.service';
+import { BookVisitModal } from '../../components/buyer/BookVisitModal';
 import { useToast } from '../../hooks/useToast';
 
 export const BrowseProperties = () => {
@@ -24,6 +26,7 @@ export const BrowseProperties = () => {
   const [favoritedIds, setFavoritedIds] = useState(new Set());
   const [favsLoading, setFavsLoading] = useState(true);
   const [favsError, setFavsError] = useState(null);
+  const [bookingProperty, setBookingProperty] = useState(null);
   const mutationVersionsRef = useRef(new Map());
   const { toastMessage, showToast } = useToast();
 
@@ -387,8 +390,15 @@ export const BrowseProperties = () => {
                 <p className="text-[10px] text-slate-500">{activeProp.location} • {activeProp.sqft}</p>
                 <p className="text-xs font-extrabold text-blue-600 mt-0.5">{activeProp.price}</p>
               </div>
-              <button className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-xs font-semibold transition cursor-pointer">
-                View
+              <button
+                type="button"
+                onClick={() => {
+                  if (activeProp) setBookingProperty(activeProp);
+                }}
+                className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold transition cursor-pointer flex items-center space-x-1"
+              >
+                <Calendar size={13} />
+                <span>Book Visit</span>
               </button>
             </div>
           </div>
@@ -457,11 +467,28 @@ export const BrowseProperties = () => {
                   </div>
 
                   {/* Price & Action */}
-                  <div className="px-3.5 pb-3.5 pt-1.5 flex items-center justify-between border-t border-slate-100">
+                  <div className="px-3.5 pb-3.5 pt-1.5 flex items-center justify-between border-t border-slate-100 gap-1.5">
                     <span className="text-sm font-bold text-slate-900">{prop.price}</span>
-                    <button className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold transition cursor-pointer">
-                      View Details
-                    </button>
+                    <div className="flex items-center space-x-1.5">
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setBookingProperty(prop);
+                        }}
+                        className="px-2.5 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 rounded-lg text-xs font-bold transition cursor-pointer flex items-center space-x-1"
+                      >
+                        <Calendar size={13} />
+                        <span>Tour</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedPropertyId(prop.id)}
+                        className="px-2.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold transition cursor-pointer"
+                      >
+                        View
+                      </button>
+                    </div>
                   </div>
                 </div>
               );
@@ -483,6 +510,18 @@ export const BrowseProperties = () => {
           </div>
         </div>
       </div>
+
+      {/* Book Visit Modal */}
+      {bookingProperty && (
+        <BookVisitModal
+          isOpen={Boolean(bookingProperty)}
+          onClose={() => setBookingProperty(null)}
+          property={bookingProperty}
+          onSuccess={(_created, msg) => {
+            showToast(msg);
+          }}
+        />
+      )}
     </div>
   );
 };
