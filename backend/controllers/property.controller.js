@@ -47,8 +47,6 @@ const propertyService = require("../services/property.service");
         bathrooms,
         minArea,
         maxArea,
-        furnishingStatus,
-        constructionStatus,
         parking,
         listingType,
         sort,
@@ -97,9 +95,10 @@ const propertyService = require("../services/property.service");
 ) => {
   try {
     const propertyId =
-      await propertyService.createProperty(
-        req.body
-      );
+      await propertyService.createProperty({
+        ...req.body,
+        agentId: req.user.id,
+      });
 
     res.status(201).json({
       success: true,
@@ -123,7 +122,8 @@ const propertyService = require("../services/property.service");
   try {
     await propertyService.updateProperty(
       req.params.id,
-      req.body
+      req.body,
+      req.user.id
     );
 
     res.status(200).json({
@@ -144,7 +144,8 @@ const propertyService = require("../services/property.service");
 ) => {
   try {
     await propertyService.deleteProperty(
-      req.params.id
+      req.params.id,
+      req.user.id
     );
 
     res.status(200).json({

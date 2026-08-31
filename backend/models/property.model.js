@@ -1,9 +1,11 @@
- const { query } = require("../config/db.config");
+"use strict";
+
+const { query } = require("../config/db.config");
 
 
- const propertyModel={
-      
-    async findProperties  ({
+const propertyModel = {
+
+    async findProperties({
         city,
         location,
         minPrice,
@@ -18,9 +20,9 @@
         sort = "newest",
         page = 1,
         limit = 12,
-        })  {
-        conditions = [];
-        params = [];
+    }) {
+        const conditions = [];
+        const params = [];
 
         conditions.push("p.status = 'available'");
 
@@ -37,7 +39,7 @@
             )
             `);
 
-            search = `%${location}%`;
+            const search = `%${location}%`;
 
             params.push(search, search);
         }
@@ -79,32 +81,32 @@
 
         if (parking === "true") {
             conditions.push(
-            "p.parking_spaces > 0"
+                "p.parking_spaces > 0"
             );
         }
 
         if (listingType) {
             conditions.push(
-            "p.listing_type = ?"
+                "p.listing_type = ?"
             );
 
             params.push(listingType);
         }
 
-        sortOptions = {
+        const sortOptions = {
             newest: "p.created_at DESC",
             lowest_price: "p.price ASC",
             highest_price: "p.price DESC",
         };
 
-        orderBy =
+        const orderBy =
             sortOptions[sort] ||
             sortOptions.newest;
 
-        offset =
+        const offset =
             (page - 1) * limit;
 
-        sql = `
+        const sql = `
             SELECT
             p.id,
             p.title,
@@ -141,40 +143,40 @@
         params.push(Number(limit));
         params.push(Number(offset));
 
-        properties =
+        const properties =
             await query(sql, params);
 
 
-        countSql = `
+        const countSql = `
             SELECT COUNT(*) AS total
             FROM properties p
             WHERE ${conditions.join(" AND ")}
         `;
 
-        countParams =
+        const countParams =
             params.slice(0, -2);
 
-        countResult =
+        const countResult =
             await query(
-            countSql,
-            countParams
+                countSql,
+                countParams
             );
 
 
         return {
             properties,
             total: Number(
-            countResult[0].total
+                countResult[0].total
             ),
         };
     },
 
 
     // Get one property
-    async findPropertyById  (
+    async findPropertyById(
         id
-        )  {
-        sql = `
+    ) {
+        const sql = `
             SELECT
             p.*
             FROM properties p
@@ -182,7 +184,7 @@
             LIMIT 1
         `;
 
-        rows =
+        const rows =
             await query(sql, [id]);
 
         return rows[0] || null;
@@ -190,7 +192,13 @@
 
 
     // Create property
-    async  createProperty  (data){
+    async createProperty(data) {
+        if (!data.agentId) {
+            const error = new Error("agent_id is required");
+            error.statusCode = 400;
+            throw error;
+        }
+
         const sql = `
             INSERT INTO properties (
                 agent_id,
@@ -237,14 +245,14 @@
 
 
     // Update property
-    async updateProperty  (
+    async updateProperty(
         id,
         data
-        )  {
-        fields = [];
-        params = [];
+    ) {
+        const fields = [];
+        const params = [];
 
-        allowedFields = {
+        const allowedFields = {
             title: "title",
             description: "description",
             categoryId: "category_id",
@@ -262,12 +270,12 @@
             status: "status",
         };
 
-        for ( [key, column] of Object.entries(
+        for (const [key, column] of Object.entries(
             allowedFields
         )) {
             if (data[key] !== undefined) {
-            fields.push(`${column} = ?`);
-            params.push(data[key]);
+                fields.push(`${column} = ?`);
+                params.push(data[key]);
             }
         }
 
@@ -277,13 +285,13 @@
 
         params.push(id);
 
-        sql = `
+        const sql = `
             UPDATE properties
             SET ${fields.join(", ")}
             WHERE id = ?
         `;
 
-        result =
+        const result =
             await query(sql, params);
 
         return result.affectedRows > 0;
@@ -291,15 +299,15 @@
 
 
     // Delete property
-    async deleteProperty (
+    async deleteProperty(
         id
-        )  {
-        sql = `
+    ) {
+        const sql = `
             DELETE FROM properties
             WHERE id = ?
         `;
 
-        result =
+        const result =
             await query(sql, [id]);
 
         return result.affectedRows > 0;

@@ -1,5 +1,13 @@
 const propertyModel = require("../models/property.model");
 
+const assertOwner = (property, agentId) => {
+  if (agentId != null && Number(property.agent_id) !== Number(agentId)) {
+    const error = new Error("You can only manage your own properties");
+    error.statusCode = 403;
+    throw error;
+  }
+};
+
  const getProperties = async (
   filters
 ) => {
@@ -67,7 +75,8 @@ const propertyModel = require("../models/property.model");
 
  const updateProperty = async (
   id,
-  data
+  data,
+  agentId
 ) => {
   const property =
     await propertyModel.findPropertyById(
@@ -83,6 +92,8 @@ const propertyModel = require("../models/property.model");
 
     throw error;
   }
+
+  assertOwner(property, agentId);
 
   return propertyModel.updateProperty(
     id,
@@ -92,7 +103,8 @@ const propertyModel = require("../models/property.model");
 
 
  const deleteProperty = async (
-  id
+  id,
+  agentId
 ) => {
   const property =
     await propertyModel.findPropertyById(
@@ -108,6 +120,8 @@ const propertyModel = require("../models/property.model");
 
     throw error;
   }
+
+  assertOwner(property, agentId);
 
   return propertyModel.deleteProperty(
     id
