@@ -1,4 +1,4 @@
-import { Loader, Loader2, PackageSearch } from "lucide-react";
+import { PackageSearch } from "lucide-react";
 import PropertyCard from "./PropertyCard";
 import Loader from "../common/Loader";
 const PropertyGrid = ({ properties, loading }) => {
