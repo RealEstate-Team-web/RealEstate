@@ -58,6 +58,84 @@ npm run lint     # eslint
 - Keep changes scoped to the assigned developer's files (see `file-ownership` skill)
 
 
+# AI Development Security Rules
+
+## Database Security
+
+- Never concatenate user-controlled values into SQL.
+- Always use parameterized MySQL queries.
+- Validate and sanitize external input.
+- Use database constraints where appropriate.
+- Use transactions for multi-step operations that must be atomic.
+
+## Authentication
+
+- Authentication must be enforced server-side.
+- Never trust authentication state supplied by the frontend.
+- Never store passwords in plaintext.
+- Passwords must be hashed using bcrypt or an approved password hashing algorithm.
+- JWT secrets must never be hardcoded.
+
+## Authorization
+
+- Every protected API endpoint must perform server-side authorization.
+- Never rely on hiding frontend buttons for security.
+- Enforce role-based access control on the backend.
+- Verify resource ownership where required.
+
+## Secrets
+
+- Never hardcode passwords, API keys, JWT secrets or database credentials.
+- Use environment variables.
+- Never commit .env files.
+
+## Dependencies
+
+- Do not install a dependency without justification.
+- Verify package existence and reputation before installation.
+- Prefer existing project dependencies when they solve the problem.
+
+## Validation
+
+- Validate request body, query parameters and route parameters.
+- Reject unexpected input.
+- Do not trust client-side validation.
+
+## Error Handling
+
+- Never expose stack traces or database errors to clients.
+- Return safe, structured error responses.
+- Log detailed errors on the server.
+
+## Logging
+
+- Log security-relevant events.
+- Maintain audit records for sensitive administrative operations.
+
+## Code Changes
+
+- Inspect existing architecture before creating new files.
+- Reuse existing utilities and middleware.
+- Do not rewrite unrelated code.
+- Do not introduce unnecessary dependencies.
+- Run tests and linting before completing the task.
+
+## AI Review
+
+Before declaring a task complete, review the implementation for:
+
+1. Authentication bypass
+2. Authorization bypass
+3. SQL injection
+4. XSS
+5. CSRF where applicable
+6. Hardcoded secrets
+7. Sensitive information leakage
+8. Insecure dependencies
+9. Improper input validation
+10. Race conditions and unsafe concurrent operations
+
+
 # Real Estate Project — Code Review Guidelines
 
 Every Pull Request review must:
