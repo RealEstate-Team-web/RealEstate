@@ -47,7 +47,7 @@ const BookVisitModalContent = ({
     dateInputRef.current?.focus();
 
     const handleKeyDown = (e) => {
-      if (e.key === 'Escape') {
+      if (e.key === 'Escape' && !loading) {
         onClose();
       }
     };
@@ -56,7 +56,7 @@ const BookVisitModalContent = ({
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [onClose]);
+  }, [onClose, loading]);
 
   const targetProperty = property || (visit ? {
     id: visit.propertyId,
@@ -145,7 +145,8 @@ const BookVisitModalContent = ({
           <button
             type="button"
             onClick={onClose}
-            className="p-2 text-slate-400 hover:text-slate-600 rounded-xl hover:bg-slate-100 transition cursor-pointer"
+            disabled={loading}
+            className="p-2 text-slate-400 hover:text-slate-600 rounded-xl hover:bg-slate-100 transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             aria-label="Close modal"
           >
             <X size={18} />

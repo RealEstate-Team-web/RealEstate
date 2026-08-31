@@ -126,46 +126,9 @@ async function cancelVisit(buyerId, visitId) {
  * @returns {Promise<Object>}
  */
 async function rescheduleVisit(buyerId, visitId, { visitDate, visitTime, notes }) {
-  const visit = await Visit.findById(visitId);
-  if (!visit) {
-    const error = new Error("Visit booking not found");
-    error.status = 404;
-    throw error;
-  }
-
-  if (String(visit.buyerId) !== String(buyerId)) {
-    const error = new Error("You are not authorized to reschedule this visit booking");
-    error.status = 403;
-    throw error;
-  }
-
-  if (visit.status === "completed" || visit.status === "cancelled") {
-    const error = new Error(
-      `${visit.status.charAt(0).toUpperCase() + visit.status.slice(1)} visits cannot be rescheduled`
-    );
-    error.status = 400;
-    throw error;
-  }
-
   validateFutureDateTime(visitDate, visitTime);
 
-  const existingConflict = await Visit.findConflictingVisit({
-    property_id: visit.propertyId,
-    buyer_id: buyerId,
-    visit_date: visitDate,
-    visit_time: visitTime,
-    exclude_id: visitId,
-  });
-
-  if (existingConflict) {
-    const error = new Error(
-      "You already have a visit scheduled for this property at this date and time"
-    );
-    error.status = 409;
-    throw error;
-  }
-
-  await Visit.reschedule(visitId, {
+  await Visit.rescheduleAtomic(visitId, buyerId, {
     visit_date: visitDate,
     visit_time: visitTime,
     notes,

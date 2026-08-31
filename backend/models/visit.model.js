@@ -217,6 +217,77 @@ const Visit = {
     return result.affectedRows;
   },
 
+  async rescheduleAtomic(id, buyerId, { visit_date, visit_time, notes }) {
+    const conn = await pool.getConnection();
+    try {
+      await conn.beginTransaction();
+
+      const [visits] = await conn.execute(
+        `SELECT id, buyer_id, property_id, status FROM visit_bookings WHERE id = ? FOR UPDATE`,
+        [id]
+      );
+
+      if (!visits.length) {
+        await conn.rollback();
+        const error = new Error("Visit booking not found");
+        error.status = 404;
+        throw error;
+      }
+
+      const visit = visits[0];
+      if (String(visit.buyer_id) !== String(buyerId)) {
+        await conn.rollback();
+        const error = new Error("You are not authorized to reschedule this visit booking");
+        error.status = 403;
+        throw error;
+      }
+
+      if (visit.status === "completed" || visit.status === "cancelled") {
+        await conn.rollback();
+        const error = new Error(
+          `${visit.status.charAt(0).toUpperCase() + visit.status.slice(1)} visits cannot be rescheduled`
+        );
+        error.status = 400;
+        throw error;
+      }
+
+      const [conflicts] = await conn.execute(
+        `SELECT id FROM visit_bookings 
+         WHERE property_id = ? AND buyer_id = ? AND visit_date = ? AND visit_time = ? AND status IN ('pending', 'approved') AND id != ?
+         FOR UPDATE`,
+        [visit.property_id, buyerId, visit_date, visit_time, id]
+      );
+
+      if (conflicts.length > 0) {
+        await conn.rollback();
+        const error = new Error(
+          "You already have a visit scheduled for this property at this date and time"
+        );
+        error.status = 409;
+        throw error;
+      }
+
+      await conn.execute(
+        `UPDATE visit_bookings
+         SET visit_date = ?,
+             visit_time = ?,
+             notes = COALESCE(?, notes),
+             status = 'pending',
+             updated_at = CURRENT_TIMESTAMP
+         WHERE id = ?`,
+        [visit_date, visit_time, notes || null, id]
+      );
+
+      await conn.commit();
+      return true;
+    } catch (err) {
+      await conn.rollback();
+      throw err;
+    } finally {
+      conn.release();
+    }
+  },
+
   async findConflictingVisit({ property_id, buyer_id, visit_date, visit_time, exclude_id }) {
     let sql = `
       SELECT id, status, visit_date, visit_time

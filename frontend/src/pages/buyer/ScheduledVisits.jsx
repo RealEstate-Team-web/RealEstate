@@ -1,23 +1,31 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
 import {
-  Search,
   Calendar,
-  XCircle,
   Clock,
-  Building,
-  AlertCircle,
+  MapPin,
+  User,
+  Search,
+  Filter,
   CheckCircle2,
-  ArrowRight,
+  XCircle,
+  AlertCircle,
+  ArrowUpDown,
   RefreshCw,
+  Edit2,
+  Trash2,
 } from 'lucide-react';
 import { getVisits, cancelVisit } from '../../services/visit.service';
-import { BookVisitModal } from '../../components/buyer/BookVisitModal';
-import { useToast } from '../../hooks/useToast';
+import BookVisitModal from '../../components/buyer/BookVisitModal';
+import useToast from '../../hooks/useToast';
 
 export const ScheduledVisits = () => {
-  const navigate = useNavigate();
   const [visits, setVisits] = useState([]);
+  const [pagination, setPagination] = useState({
+    total: 0,
+    page: 1,
+    limit: 6,
+    totalPages: 1,
+  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
@@ -29,25 +37,38 @@ export const ScheduledVisits = () => {
   const [cancelling, setCancelling] = useState(false);
 
   const { toastMessage, showToast } = useToast();
-  const itemsPerPage = 5;
+  const itemsPerPage = 6;
 
-  const loadVisits = useCallback(async (isMountedRef = { current: true }) => {
-    try {
-      setLoading(true);
-      setError('');
-      const response = await getVisits();
-      if (!isMountedRef.current) return;
-      setVisits(Array.isArray(response?.data) ? response.data : []);
-    } catch (err) {
-      if (!isMountedRef.current) return;
-      console.error('Failed to load scheduled visits:', err);
-      setError(err.response?.data?.message || err.message || 'Failed to load visits');
-    } finally {
-      if (isMountedRef.current) {
-        setLoading(false);
+  const loadVisits = useCallback(
+    async (isMountedRef = { current: true }) => {
+      try {
+        setLoading(true);
+        setError('');
+        const params = {
+          page: currentPage,
+          limit: itemsPerPage,
+          status: statusFilter,
+          search: searchQuery.trim(),
+        };
+        const response = await getVisits(params);
+        if (!isMountedRef.current) return;
+
+        setVisits(Array.isArray(response?.data) ? response.data : []);
+        if (response?.pagination) {
+          setPagination(response.pagination);
+        }
+      } catch (err) {
+        if (!isMountedRef.current) return;
+        console.error('Failed to load scheduled visits:', err);
+        setError(err.response?.data?.message || err.message || 'Failed to load visits');
+      } finally {
+        if (isMountedRef.current) {
+          setLoading(false);
+        }
       }
-    }
-  }, []);
+    },
+    [currentPage, statusFilter, searchQuery, itemsPerPage]
+  );
 
   useEffect(() => {
     const mountedRef = { current: true };
@@ -67,6 +88,16 @@ export const ScheduledVisits = () => {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [cancelConfirmTarget, cancelling]);
+
+  const handleStatusFilterChange = (status) => {
+    setStatusFilter(status);
+    setCurrentPage(1);
+  };
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+    setCurrentPage(1);
+  };
 
   const handleConfirmCancel = async () => {
     if (!cancelConfirmTarget) return;
@@ -125,43 +156,18 @@ export const ScheduledVisits = () => {
     }
   };
 
-  // Filter and sort visits
-  const filteredVisits = useMemo(() => {
-    let result = [...visits];
-
-    if (statusFilter !== 'all') {
-      result = result.filter((v) => (v.status || '').toLowerCase() === statusFilter.toLowerCase());
-    }
-
-    if (searchQuery.trim()) {
-      const q = searchQuery.toLowerCase();
-      result = result.filter(
-        (v) =>
-          v.propertyTitle?.toLowerCase().includes(q) ||
-          v.propertyCity?.toLowerCase().includes(q) ||
-          v.propertyAddress?.toLowerCase().includes(q) ||
-          v.agentFirstName?.toLowerCase().includes(q) ||
-          v.agentLastName?.toLowerCase().includes(q) ||
-          v.agencyName?.toLowerCase().includes(q)
-      );
-    }
-
+  // Sort visits for current page
+  const sortedVisits = useMemo(() => {
+    const result = [...visits];
     result.sort((a, b) => {
       const dateA = new Date(`${a.visitDate}T${a.visitTime || '00:00'}:00`).getTime();
       const dateB = new Date(`${b.visitDate}T${b.visitTime || '00:00'}:00`).getTime();
       return sortBy === 'soonest' ? dateA - dateB : dateB - dateA;
     });
-
     return result;
-  }, [visits, statusFilter, searchQuery, sortBy]);
+  }, [visits, sortBy]);
 
-  const totalPages = Math.ceil(filteredVisits.length / itemsPerPage) || 1;
-  const validCurrentPage = Math.min(Math.max(1, currentPage), totalPages);
-
-  const paginatedVisits = useMemo(() => {
-    const start = (validCurrentPage - 1) * itemsPerPage;
-    return filteredVisits.slice(start, start + itemsPerPage);
-  }, [filteredVisits, validCurrentPage]);
+  const totalPages = pagination.totalPages || 1;
 
   return (
     <div className="space-y-6 font-sans">
@@ -179,234 +185,295 @@ export const ScheduledVisits = () => {
           <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
             My Scheduled Visits
           </h1>
-          <p className="text-xs text-slate-500 mt-0.5">
-            Manage your scheduled in-person and virtual property tours
+          <p className="text-xs text-slate-500 mt-1">
+            Track and manage your upcoming and past property viewings
           </p>
         </div>
-
         <button
           type="button"
-          onClick={() => navigate('/buyer/properties')}
-          className="inline-flex items-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-xs transition cursor-pointer self-start sm:self-auto"
+          onClick={() => loadVisits()}
+          disabled={loading}
+          className="self-start sm:self-auto px-3.5 py-2 text-xs font-semibold bg-white border border-slate-200 rounded-xl text-slate-700 hover:bg-slate-50 shadow-2xs transition cursor-pointer flex items-center space-x-2 disabled:opacity-50"
         >
-          <Building size={15} />
-          <span>Browse Properties</span>
+          <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
+          <span>Refresh</span>
         </button>
       </div>
 
-      {/* Error Alert with Retry */}
-      {error && (
-        <div
-          role="alert"
-          className="p-4 bg-rose-50 border border-rose-200 rounded-2xl text-rose-800 text-xs flex items-center justify-between shadow-xs"
-        >
-          <div className="flex items-center space-x-2.5">
-            <AlertCircle size={17} className="text-rose-600 shrink-0" />
-            <span>{error}</span>
-          </div>
-          <button
-            type="button"
-            onClick={loadVisits}
-            className="inline-flex items-center space-x-1 px-3 py-1 bg-rose-600 text-white font-semibold rounded-lg hover:bg-rose-700 transition cursor-pointer text-xs"
-          >
-            <RefreshCw size={13} />
-            <span>Retry</span>
-          </button>
-        </div>
-      )}
-
-      {/* Control & Filter Bar */}
-      <div className="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
-        {/* Search */}
-        <div className="relative flex-1 min-w-[240px]">
-          <Search className="absolute left-3.5 top-3 text-slate-400" size={16} />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search by property, city, or agent..."
-            className="w-full bg-slate-50 border border-slate-200 focus:border-blue-600 focus:bg-white rounded-xl py-2 pl-9 pr-4 text-xs font-medium text-slate-800 focus:outline-none transition"
-          />
-        </div>
-
+      {/* Controls & Filters Bar */}
+      <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-xs space-y-3">
         {/* Status Filter Tabs */}
-        <div className="flex items-center space-x-1.5 overflow-x-auto pb-1 md:pb-0">
+        <div className="flex flex-wrap items-center gap-1.5 border-b border-slate-100 pb-3">
           {[
-            { id: 'all', label: 'All' },
-            { id: 'pending', label: 'Pending' },
-            { id: 'approved', label: 'Approved' },
-            { id: 'cancelled', label: 'Cancelled' },
-            { id: 'completed', label: 'Completed' },
-          ].map((tab) => (
-            <button
-              key={tab.id}
-              type="button"
-              onClick={() => {
-                setStatusFilter(tab.id);
-                setCurrentPage(1);
-              }}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap cursor-pointer ${
-                statusFilter === tab.id
-                  ? 'bg-blue-600 text-white shadow-xs'
-                  : 'bg-slate-50 text-slate-600 hover:bg-slate-100 border border-slate-200/60'
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
+            { key: 'all', label: 'All Bookings' },
+            { key: 'pending', label: 'Pending' },
+            { key: 'approved', label: 'Approved' },
+            { key: 'completed', label: 'Completed' },
+            { key: 'cancelled', label: 'Cancelled' },
+          ].map((tab) => {
+            const isActive = statusFilter === tab.key;
+            return (
+              <button
+                key={tab.key}
+                type="button"
+                onClick={() => handleStatusFilterChange(tab.key)}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${
+                  isActive
+                    ? 'bg-blue-600 text-white shadow-xs'
+                    : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                }`}
+              >
+                {tab.label}
+              </button>
+            );
+          })}
         </div>
 
-        {/* Sort Select */}
-        <div className="flex items-center space-x-2 shrink-0">
-          <span className="text-xs text-slate-400 font-medium">Sort</span>
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-            className="bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-700 rounded-xl px-3 py-2 focus:outline-none focus:border-blue-600 transition"
-          >
-            <option value="soonest">Date: Soonest First</option>
-            <option value="latest">Date: Latest First</option>
-          </select>
+        {/* Search & Sort Controls */}
+        <div className="flex flex-col sm:flex-row items-center gap-3">
+          <div className="relative flex-1 w-full">
+            <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+            <input
+              type="text"
+              placeholder="Search by property, city, or agent name..."
+              value={searchQuery}
+              onChange={handleSearchChange}
+              className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition"
+            />
+          </div>
+
+          <div className="flex items-center space-x-2 w-full sm:w-auto shrink-0">
+            <div className="flex items-center space-x-1.5 text-xs text-slate-500 shrink-0">
+              <ArrowUpDown size={14} />
+              <span>Sort:</span>
+            </div>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition cursor-pointer"
+            >
+              <option value="soonest">Date: Soonest First</option>
+              <option value="latest">Date: Furthest First</option>
+            </select>
+          </div>
         </div>
       </div>
 
-      {/* Loading Skeleton */}
+      {/* Loading State */}
       {loading && (
-        <div className="bg-white border border-slate-200/80 rounded-2xl divide-y divide-slate-100 shadow-xs overflow-hidden">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 animate-pulse">
-              <div className="flex items-center space-x-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <div
+              key={i}
+              className="bg-white rounded-2xl border border-slate-100 p-5 space-y-4 animate-pulse shadow-xs"
+            >
+              <div className="flex items-center space-x-3">
                 <div className="w-16 h-16 bg-slate-200 rounded-xl" />
-                <div className="space-y-2">
-                  <div className="w-20 h-4 bg-slate-200 rounded-full" />
-                  <div className="w-40 h-4 bg-slate-200 rounded" />
-                  <div className="w-28 h-3 bg-slate-100 rounded" />
+                <div className="flex-1 space-y-2">
+                  <div className="h-4 bg-slate-200 rounded w-3/4" />
+                  <div className="h-3 bg-slate-200 rounded w-1/2" />
                 </div>
               </div>
-              <div className="w-36 h-9 bg-slate-100 rounded-xl" />
-              <div className="w-32 h-10 bg-slate-100 rounded-full" />
+              <div className="h-10 bg-slate-100 rounded-xl" />
+              <div className="flex justify-between items-center pt-2">
+                <div className="h-4 bg-slate-200 rounded w-20" />
+                <div className="h-8 bg-slate-200 rounded w-24" />
+              </div>
             </div>
           ))}
         </div>
       )}
 
-      {/* Empty State */}
-      {!loading && !error && filteredVisits.length === 0 && (
-        <div className="bg-white border border-slate-200/80 rounded-2xl p-12 text-center shadow-xs">
-          <div className="w-16 h-16 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <Calendar size={28} />
+      {/* Error State */}
+      {!loading && error && (
+        <div className="bg-rose-50 border border-rose-200 rounded-2xl p-6 text-center space-y-3">
+          <div className="w-12 h-12 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center mx-auto">
+            <AlertCircle size={24} />
           </div>
-          <h3 className="text-base font-bold text-slate-900">No scheduled visits found</h3>
-          <p className="text-xs text-slate-500 max-w-md mx-auto mt-1 mb-6">
-            {statusFilter !== 'all' || searchQuery
-              ? 'No visits matched your selected filters. Try changing or resetting your search.'
-              : "You haven't scheduled any property tours yet. Browse available listings and request a visit with the agent."}
-          </p>
+          <div>
+            <h3 className="text-sm font-bold text-rose-900">Failed to Load Visits</h3>
+            <p className="text-xs text-rose-600 mt-0.5">{error}</p>
+          </div>
           <button
             type="button"
-            onClick={() => navigate('/buyer/properties')}
-            className="inline-flex items-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-xs transition cursor-pointer"
+            onClick={() => loadVisits()}
+            className="px-4 py-2 text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 rounded-xl transition cursor-pointer shadow-xs"
           >
-            <span>Explore Properties</span>
-            <ArrowRight size={14} />
+            Try Again
           </button>
         </div>
       )}
 
-      {/* Visits List */}
-      {!loading && !error && filteredVisits.length > 0 && (
-        <div className="bg-white border border-slate-200/80 rounded-2xl divide-y divide-slate-100 shadow-xs overflow-hidden">
-          {paginatedVisits.map((visit) => {
-            const badge = getStatusBadge(visit.status);
-            const isCancelled = visit.status?.toLowerCase() === 'cancelled';
-            const isCompleted = visit.status?.toLowerCase() === 'completed';
+      {/* Empty State */}
+      {!loading && !error && sortedVisits.length === 0 && (
+        <div className="bg-white border border-slate-100 rounded-2xl p-12 text-center space-y-4 shadow-xs">
+          <div className="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto">
+            <Calendar size={28} />
+          </div>
+          <div>
+            <h3 className="text-base font-bold text-slate-900">No scheduled visits found</h3>
+            <p className="text-xs text-slate-500 max-w-sm mx-auto mt-1">
+              {searchQuery || statusFilter !== 'all'
+                ? 'No visits matched your selected filters or search query.'
+                : "You haven't scheduled any property tours yet. Browse available listings and schedule your first visit!"}
+            </p>
+          </div>
+          {(searchQuery || statusFilter !== 'all') && (
+            <button
+              type="button"
+              onClick={() => {
+                setStatusFilter('all');
+                setSearchQuery('');
+                setCurrentPage(1);
+              }}
+              className="px-4 py-2 text-xs font-semibold text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-xl transition cursor-pointer"
+            >
+              Clear Filters
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* Visits Cards Grid */}
+      {!loading && !error && sortedVisits.length > 0 && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {sortedVisits.map((v) => {
+            const badge = getStatusBadge(v.status);
+            const isCancelled = (v.status || '').toLowerCase() === 'cancelled';
+            const isCompleted = (v.status || '').toLowerCase() === 'completed';
+            const isPendingOrApproved = !isCancelled && !isCompleted;
 
             return (
               <div
-                key={visit.id}
-                className="p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-slate-50/70 transition"
+                key={v.id}
+                className="bg-white rounded-2xl border border-slate-100 p-5 shadow-xs hover:shadow-md transition-all space-y-4 flex flex-col justify-between"
               >
-                {/* Property Info */}
-                <div className="flex items-center space-x-4 min-w-0 md:max-w-[35%]">
-                  <img
-                    src={
-                      visit.propertyImage ||
-                      'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=400'
-                    }
-                    alt={visit.propertyTitle}
-                    className="w-16 h-16 rounded-xl object-cover shrink-0 shadow-xs border border-slate-100"
-                  />
-                  <div className="min-w-0">
+                <div className="space-y-3.5">
+                  {/* Card Header with Status Badge */}
+                  <div className="flex items-start justify-between gap-2">
                     <span
-                      className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider mb-1 border ${badge.className}`}
+                      className={`inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold border ${badge.className}`}
                     >
                       {badge.label}
                     </span>
-                    <h3 className="font-bold text-slate-900 text-sm truncate">
-                      {visit.propertyTitle}
-                    </h3>
-                    <p className="text-xs text-slate-500 mt-0.5 truncate">
-                      {visit.propertyCity ? `${visit.propertyCity}, ` : ''}
-                      {visit.propertyAddress || 'Addis Ababa'}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Date & Time Slot */}
-                <div className="flex items-center space-x-2 text-xs font-semibold text-slate-700 bg-slate-50 px-3.5 py-2 rounded-xl border border-slate-200/70 shrink-0">
-                  <Clock size={15} className="text-blue-600 shrink-0" />
-                  <span>
-                    {visit.visitDate} • {visit.visitTime || '10:00'}
-                  </span>
-                </div>
-
-                {/* Agent Info */}
-                <div className="flex items-center space-x-3 shrink-0">
-                  <img
-                    src={
-                      visit.agentAvatar ||
-                      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=150'
-                    }
-                    alt={visit.agentFirstName || 'Agent'}
-                    className="w-10 h-10 rounded-full object-cover border border-slate-200"
-                  />
-                  <div>
-                    <p className="text-xs font-bold text-slate-900">
-                      {visit.agentFirstName ? `${visit.agentFirstName} ${visit.agentLastName || ''}` : 'Property Agent'}
-                    </p>
-                    <span className="inline-block text-[11px] text-slate-400 font-medium">
-                      {visit.agencyName || 'Listing Agent'}
+                    <span className="text-[11px] font-medium text-slate-400">
+                      ID: #{v.id}
                     </span>
                   </div>
+
+                  {/* Property Info Row */}
+                  <div className="flex items-center space-x-3.5">
+                    {v.propertyImage ? (
+                      <img
+                        src={v.propertyImage}
+                        alt={v.propertyTitle}
+                        className="w-16 h-16 rounded-xl object-cover shrink-0 border border-slate-100"
+                      />
+                    ) : (
+                      <div className="w-16 h-16 rounded-xl bg-slate-100 flex items-center justify-center shrink-0 text-slate-400">
+                        <MapPin size={20} />
+                      </div>
+                    )}
+                    <div className="min-w-0 flex-1">
+                      <h3 className="text-sm font-bold text-slate-900 truncate">
+                        {v.propertyTitle}
+                      </h3>
+                      <p className="text-xs text-slate-500 truncate flex items-center gap-1 mt-0.5">
+                        <MapPin size={12} className="text-slate-400 shrink-0" />
+                        <span className="truncate">
+                          {v.propertyAddress ? `${v.propertyAddress}, ` : ''}
+                          {v.propertyCity}
+                        </span>
+                      </p>
+                      {v.propertyPrice && (
+                        <p className="text-xs font-bold text-blue-600 mt-1">
+                          ${Number(v.propertyPrice).toLocaleString()}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Date & Time Slot Box */}
+                  <div className="bg-slate-50 border border-slate-200/70 rounded-xl p-3 grid grid-cols-2 gap-2 text-xs">
+                    <div className="flex items-center space-x-2 text-slate-700">
+                      <Calendar size={15} className="text-blue-600 shrink-0" />
+                      <div>
+                        <p className="text-[10px] text-slate-400 font-medium">Date</p>
+                        <p className="font-semibold text-slate-800">{v.visitDate}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center space-x-2 text-slate-700">
+                      <Clock size={15} className="text-blue-600 shrink-0" />
+                      <div>
+                        <p className="text-[10px] text-slate-400 font-medium">Time</p>
+                        <p className="font-semibold text-slate-800">{v.visitTime?.slice(0, 5)}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Agent Details */}
+                  {(v.agentFirstName || v.agentLastName) && (
+                    <div className="flex items-center space-x-2.5 pt-1 text-xs">
+                      {v.agentAvatar ? (
+                        <img
+                          src={v.agentAvatar}
+                          alt={`${v.agentFirstName} ${v.agentLastName}`}
+                          className="w-7 h-7 rounded-full object-cover shrink-0"
+                        />
+                      ) : (
+                        <div className="w-7 h-7 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-[10px] shrink-0">
+                          {v.agentFirstName?.[0] || 'A'}
+                        </div>
+                      )}
+                      <div className="min-w-0 flex-1">
+                        <p className="text-xs font-semibold text-slate-800 truncate">
+                          {v.agentFirstName} {v.agentLastName}
+                        </p>
+                        <p className="text-[11px] text-slate-500 truncate">
+                          {v.agencyName || 'Listing Agent'}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Notes Preview if available */}
+                  {v.notes && (
+                    <div className="bg-amber-50/60 border border-amber-100 rounded-lg p-2.5 text-[11px] text-amber-900 leading-snug">
+                      <span className="font-semibold text-amber-800">Note: </span>
+                      {v.notes}
+                    </div>
+                  )}
                 </div>
 
-                {/* Action Buttons */}
-                <div className="flex items-center space-x-2 justify-end border-t md:border-t-0 pt-3 md:pt-0 border-slate-100 shrink-0">
-                  {!isCancelled && !isCompleted && (
+                {/* Card Actions */}
+                <div className="pt-3 border-t border-slate-100 flex items-center justify-end space-x-2">
+                  {isPendingOrApproved && (
                     <>
                       <button
                         type="button"
-                        onClick={() => setCancelConfirmTarget(visit)}
-                        className="flex items-center space-x-1 text-xs font-semibold text-rose-600 hover:text-rose-700 hover:bg-rose-50 px-3 py-2 rounded-xl transition cursor-pointer"
+                        onClick={() => setCancelConfirmTarget(v)}
+                        className="px-3 py-1.5 text-xs font-semibold text-rose-600 hover:text-rose-700 hover:bg-rose-50 rounded-lg transition cursor-pointer flex items-center space-x-1"
                       >
-                        <XCircle size={15} />
+                        <Trash2 size={13} />
                         <span>Cancel</span>
                       </button>
                       <button
                         type="button"
-                        onClick={() => setRescheduleVisitTarget(visit)}
-                        className="flex items-center space-x-1 text-xs font-semibold text-slate-700 hover:text-blue-700 hover:bg-slate-100 px-3 py-2 rounded-xl border border-slate-200 transition cursor-pointer"
+                        onClick={() => setRescheduleVisitTarget(v)}
+                        className="px-3 py-1.5 text-xs font-semibold text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition cursor-pointer flex items-center space-x-1"
                       >
-                        <Calendar size={15} />
+                        <Edit2 size={13} />
                         <span>Reschedule</span>
                       </button>
                     </>
                   )}
+
                   {isCancelled && (
-                    <span className="text-xs font-medium text-slate-400 italic px-2">
-                      Cancelled
+                    <span className="text-xs font-medium text-slate-400 px-2">
+                      Visit Cancelled
                     </span>
                   )}
+
                   {isCompleted && (
                     <span className="text-xs font-medium text-emerald-600 px-2 flex items-center gap-1">
                       <CheckCircle2 size={14} /> Completed
@@ -428,7 +495,7 @@ export const ScheduledVisits = () => {
               type="button"
               onClick={() => setCurrentPage(page)}
               className={`px-3.5 py-1.5 text-xs font-bold rounded-lg transition cursor-pointer ${
-                validCurrentPage === page
+                currentPage === page
                   ? 'bg-blue-600 text-white shadow-xs'
                   : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
               }`}
