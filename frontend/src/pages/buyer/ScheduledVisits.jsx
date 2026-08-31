@@ -31,45 +31,42 @@ export const ScheduledVisits = () => {
   const { toastMessage, showToast } = useToast();
   const itemsPerPage = 5;
 
-  const loadVisits = useCallback(async () => {
+  const loadVisits = useCallback(async (isMountedRef = { current: true }) => {
     try {
       setLoading(true);
       setError('');
       const response = await getVisits();
+      if (!isMountedRef.current) return;
       setVisits(Array.isArray(response?.data) ? response.data : []);
     } catch (err) {
+      if (!isMountedRef.current) return;
       console.error('Failed to load scheduled visits:', err);
       setError(err.response?.data?.message || err.message || 'Failed to load visits');
     } finally {
-      setLoading(false);
+      if (isMountedRef.current) {
+        setLoading(false);
+      }
     }
   }, []);
 
   useEffect(() => {
-    let isMounted = true;
-    getVisits()
-      .then((res) => {
-        if (isMounted) {
-          setVisits(Array.isArray(res?.data) ? res.data : []);
-          setError('');
-        }
-      })
-      .catch((err) => {
-        if (isMounted) {
-          console.error('Failed to load scheduled visits:', err);
-          setError(err.response?.data?.message || err.message || 'Failed to load visits');
-        }
-      })
-      .finally(() => {
-        if (isMounted) {
-          setLoading(false);
-        }
-      });
-
+    const mountedRef = { current: true };
+    loadVisits(mountedRef);
     return () => {
-      isMounted = false;
+      mountedRef.current = false;
     };
-  }, []);
+  }, [loadVisits]);
+
+  useEffect(() => {
+    if (!cancelConfirmTarget) return;
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && !cancelling) {
+        setCancelConfirmTarget(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [cancelConfirmTarget, cancelling]);
 
   const handleConfirmCancel = async () => {
     if (!cancelConfirmTarget) return;
@@ -445,12 +442,19 @@ export const ScheduledVisits = () => {
       {/* Cancel Confirmation Modal */}
       {cancelConfirmTarget && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white w-full max-w-md rounded-2xl shadow-2xl border border-slate-100 p-6 space-y-4 animate-in fade-in zoom-in-95 duration-200">
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="cancel-visit-title"
+            className="bg-white w-full max-w-md rounded-2xl shadow-2xl border border-slate-100 p-6 space-y-4 animate-in fade-in zoom-in-95 duration-200"
+          >
             <div className="flex items-center space-x-3 text-rose-600">
               <div className="p-2.5 rounded-xl bg-rose-50">
                 <XCircle size={22} />
               </div>
-              <h3 className="text-base font-bold text-slate-900">Cancel Property Visit</h3>
+              <h3 id="cancel-visit-title" className="text-base font-bold text-slate-900">
+                Cancel Property Visit
+              </h3>
             </div>
             <p className="text-xs text-slate-600 leading-relaxed">
               Are you sure you want to cancel your scheduled visit for{' '}

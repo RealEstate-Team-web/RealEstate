@@ -392,7 +392,9 @@ export const BrowseProperties = () => {
               </div>
               <button
                 type="button"
-                onClick={() => setBookingProperty(activeProp)}
+                onClick={() => {
+                  if (activeProp) setBookingProperty(activeProp);
+                }}
                 className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold transition cursor-pointer flex items-center space-x-1"
               >
                 <Calendar size={13} />

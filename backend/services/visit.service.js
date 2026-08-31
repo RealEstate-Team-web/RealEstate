@@ -35,22 +35,7 @@ async function bookVisit(buyerId, { propertyId, visitDate, visitTime, notes }) {
 
   validateFutureDateTime(visitDate, visitTime);
 
-  const existingConflict = await Visit.findConflictingVisit({
-    property_id: propertyId,
-    buyer_id: buyerId,
-    visit_date: visitDate,
-    visit_time: visitTime,
-  });
-
-  if (existingConflict) {
-    const error = new Error(
-      "You already have a visit scheduled for this property at this date and time"
-    );
-    error.status = 409;
-    throw error;
-  }
-
-  const visitId = await Visit.create({
+  const visitId = await Visit.createAtomic({
     property_id: propertyId,
     buyer_id: buyerId,
     agent_id: property.agentId,
@@ -154,13 +139,31 @@ async function rescheduleVisit(buyerId, visitId, { visitDate, visitTime, notes }
     throw error;
   }
 
-  if (visit.status === "completed") {
-    const error = new Error("Completed visits cannot be rescheduled");
+  if (visit.status === "completed" || visit.status === "cancelled") {
+    const error = new Error(
+      `${visit.status.charAt(0).toUpperCase() + visit.status.slice(1)} visits cannot be rescheduled`
+    );
     error.status = 400;
     throw error;
   }
 
   validateFutureDateTime(visitDate, visitTime);
+
+  const existingConflict = await Visit.findConflictingVisit({
+    property_id: visit.propertyId,
+    buyer_id: buyerId,
+    visit_date: visitDate,
+    visit_time: visitTime,
+    exclude_id: visitId,
+  });
+
+  if (existingConflict) {
+    const error = new Error(
+      "You already have a visit scheduled for this property at this date and time"
+    );
+    error.status = 409;
+    throw error;
+  }
 
   await Visit.reschedule(visitId, {
     visit_date: visitDate,

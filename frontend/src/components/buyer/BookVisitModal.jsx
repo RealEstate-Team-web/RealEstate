@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Calendar, X, AlertCircle } from 'lucide-react';
 import { bookVisit, rescheduleVisit } from '../../services/visit.service';
 
@@ -9,10 +9,14 @@ const BookVisitModalContent = ({
   isReschedule = false,
   onSuccess,
 }) => {
+  const dateInputRef = useRef(null);
+
   const tomorrowStr = (() => {
     const d = new Date();
     d.setDate(d.getDate() + 1);
-    return d.toISOString().split('T')[0];
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${d.getFullYear()}-${month}-${day}`;
   })();
 
   const [visitDate, setVisitDate] = useState(
@@ -37,6 +41,22 @@ const BookVisitModalContent = ({
     '16:00',
     '17:00',
   ];
+
+  // Auto focus first interactive control and handle Escape key
+  useEffect(() => {
+    dateInputRef.current?.focus();
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [onClose]);
 
   const targetProperty = property || (visit ? {
     id: visit.propertyId,
@@ -83,6 +103,9 @@ const BookVisitModalContent = ({
           notes,
         });
         if (onSuccess) onSuccess(created, 'Visit booked successfully! The agent will review your request.');
+      } else {
+        setError('This property is not available for booking. Please try again.');
+        return;
       }
       onClose();
     } catch (err) {
@@ -174,6 +197,7 @@ const BookVisitModalContent = ({
             </label>
             <div className="relative">
               <input
+                ref={dateInputRef}
                 id="visitDate"
                 type="date"
                 min={tomorrowStr}

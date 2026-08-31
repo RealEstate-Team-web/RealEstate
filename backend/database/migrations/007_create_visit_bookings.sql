@@ -23,20 +23,11 @@ CREATE TABLE IF NOT EXISTS visit_bookings (
     CONSTRAINT fk_visit_agent
         FOREIGN KEY (agent_id)
         REFERENCES users(id)
-        ON DELETE CASCADE
+        ON DELETE CASCADE,
+
+    INDEX idx_visit_buyer (buyer_id),
+    INDEX idx_visit_agent (agent_id),
+    INDEX idx_visit_status (status),
+    INDEX idx_visit_date (visit_date),
+    INDEX idx_visit_conflict (property_id, buyer_id, visit_date, visit_time)
 );
-
-CREATE INDEX idx_visit_buyer
-    ON visit_bookings(buyer_id);
-
-CREATE INDEX idx_visit_agent
-    ON visit_bookings(agent_id);
-
-CREATE INDEX idx_visit_property
-    ON visit_bookings(property_id);
-
-CREATE INDEX idx_visit_status
-    ON visit_bookings(status);
-
-CREATE INDEX idx_visit_date
-    ON visit_bookings(visit_date);

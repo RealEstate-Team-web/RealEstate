@@ -1,4 +1,4 @@
-const { query } = require("../config/db.config");
+const { query, pool } = require("../config/db.config");
 
 const Visit = {
   async create({ property_id, buyer_id, agent_id, visit_date, visit_time, notes }) {
@@ -22,6 +22,42 @@ const Visit = {
       notes || null,
     ]);
     return result.insertId;
+  },
+
+  async createAtomic({ property_id, buyer_id, agent_id, visit_date, visit_time, notes }) {
+    const conn = await pool.getConnection();
+    try {
+      await conn.beginTransaction();
+      const [conflicts] = await conn.execute(
+        `SELECT id FROM visit_bookings 
+         WHERE property_id = ? AND buyer_id = ? AND visit_date = ? AND visit_time = ? AND status IN ('pending', 'approved') 
+         FOR UPDATE`,
+        [property_id, buyer_id, visit_date, visit_time]
+      );
+
+      if (conflicts.length > 0) {
+        await conn.rollback();
+        const error = new Error(
+          "You already have a visit scheduled for this property at this date and time"
+        );
+        error.status = 409;
+        throw error;
+      }
+
+      const [res] = await conn.execute(
+        `INSERT INTO visit_bookings (
+          property_id, buyer_id, agent_id, visit_date, visit_time, status, notes
+        ) VALUES (?, ?, ?, ?, ?, 'pending', ?)`,
+        [property_id, buyer_id, agent_id, visit_date, visit_time, notes || null]
+      );
+      await conn.commit();
+      return res.insertId;
+    } catch (err) {
+      await conn.rollback();
+      throw err;
+    } finally {
+      conn.release();
+    }
   },
 
   async findById(id) {
@@ -181,8 +217,8 @@ const Visit = {
     return result.affectedRows;
   },
 
-  async findConflictingVisit({ property_id, buyer_id, visit_date, visit_time }) {
-    const sql = `
+  async findConflictingVisit({ property_id, buyer_id, visit_date, visit_time, exclude_id }) {
+    let sql = `
       SELECT id, status, visit_date, visit_time
       FROM visit_bookings
       WHERE property_id = ?
@@ -190,9 +226,14 @@ const Visit = {
         AND visit_date = ?
         AND visit_time = ?
         AND status IN ('pending', 'approved')
-      LIMIT 1
     `;
-    const rows = await query(sql, [property_id, buyer_id, visit_date, visit_time]);
+    const params = [property_id, buyer_id, visit_date, visit_time];
+    if (exclude_id) {
+      sql += " AND id != ?";
+      params.push(exclude_id);
+    }
+    sql += " LIMIT 1";
+    const rows = await query(sql, params);
     return rows[0] || null;
   },
 

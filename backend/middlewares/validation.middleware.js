@@ -235,6 +235,23 @@ const validateResetPassword = (req, res, next) => {
 const datePattern = /^\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\d|3[01])$/;
 const timePattern = /^(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d)?$/;
 
+const isValidCalendarDate = (dateStr) => {
+  if (typeof dateStr !== "string") return false;
+  const str = dateStr.trim();
+  if (!datePattern.test(str)) return false;
+  const [yearStr, monthStr, dayStr] = str.split("-");
+  const year = Number(yearStr);
+  const month = Number(monthStr);
+  const day = Number(dayStr);
+
+  const d = new Date(Date.UTC(year, month - 1, day));
+  return (
+    d.getUTCFullYear() === year &&
+    d.getUTCMonth() === month - 1 &&
+    d.getUTCDate() === day
+  );
+};
+
 const validateBookVisit = (req, res, next) => {
   const errors = [];
   const { propertyId, visitDate, visitTime, notes } = req.body || {};
@@ -243,8 +260,8 @@ const validateBookVisit = (req, res, next) => {
     errors.push("propertyId is required and must be a valid positive integer");
   }
 
-  if (!visitDate || !datePattern.test(String(visitDate).trim())) {
-    errors.push("visitDate is required and must be a valid date in YYYY-MM-DD format");
+  if (!visitDate || !isValidCalendarDate(visitDate)) {
+    errors.push("visitDate is required and must be a valid calendar date in YYYY-MM-DD format");
   }
 
   if (!visitTime || !timePattern.test(String(visitTime).trim())) {
@@ -277,8 +294,8 @@ const validateRescheduleVisit = (req, res, next) => {
   const errors = [];
   const { visitDate, visitTime, notes } = req.body || {};
 
-  if (!visitDate || !datePattern.test(String(visitDate).trim())) {
-    errors.push("visitDate is required and must be a valid date in YYYY-MM-DD format");
+  if (!visitDate || !isValidCalendarDate(visitDate)) {
+    errors.push("visitDate is required and must be a valid calendar date in YYYY-MM-DD format");
   }
 
   if (!visitTime || !timePattern.test(String(visitTime).trim())) {
