@@ -122,6 +122,23 @@ const User = {
     );
     return rows[0];
   },
+
+  async countByRole() {
+    return query(
+      "SELECT role, COUNT(*) AS count FROM users GROUP BY role",
+    );
+  },
+
+  async countRegistrationsByDay(days) {
+    return query(
+      `SELECT DATE(created_at) AS date, COUNT(*) AS count
+       FROM users
+       WHERE created_at >= CURDATE() - INTERVAL ? DAY
+       GROUP BY DATE(created_at)
+       ORDER BY date ASC`,
+      [days],
+    );
+  },
 };
 
 module.exports = User;

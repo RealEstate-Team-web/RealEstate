@@ -13,6 +13,34 @@ const getDashboard = async (req, res, next) => {
   }
 };
 
+const getAnalytics = async (req, res, next) => {
+  try {
+    const { range } = req.query;
+    const data = await adminService.getAnalytics({ range });
+    res.status(200).json({
+      success: true,
+      message: "Platform analytics",
+      data,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getReports = async (req, res, next) => {
+  try {
+    const { range } = req.query;
+    const data = await adminService.getAnalytics({ range });
+    res.status(200).json({
+      success: true,
+      message: "Platform reports",
+      data,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 const getAgents = async (req, res, next) => {
   try {
     const { status } = req.query;
@@ -121,6 +149,8 @@ const activateUser = async (req, res, next) => {
 
 module.exports = {
   getDashboard,
+  getAnalytics,
+  getReports,
   getAgents,
   approveAgent,
   rejectAgent,

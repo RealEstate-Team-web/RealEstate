@@ -319,6 +319,28 @@ const Visit = {
     const rows = await query(sql, [propertyId]);
     return rows[0] || null;
   },
+
+  async countVisits() {
+    const [row] = await query("SELECT COUNT(*) AS count FROM visit_bookings");
+    return Number(row.count);
+  },
+
+  async countByStatus() {
+    return query(
+      "SELECT status, COUNT(*) AS count FROM visit_bookings GROUP BY status",
+    );
+  },
+
+  async countByDay(days) {
+    return query(
+      `SELECT DATE(created_at) AS date, COUNT(*) AS count
+       FROM visit_bookings
+       WHERE created_at >= CURDATE() - INTERVAL ? DAY
+       GROUP BY DATE(created_at)
+       ORDER BY date ASC`,
+      [days],
+    );
+  },
 };
 
 module.exports = Visit;

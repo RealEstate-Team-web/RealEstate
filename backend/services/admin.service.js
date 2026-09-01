@@ -1,6 +1,60 @@
 const Agent = require("../models/agent.model");
 const User = require("../models/user.model");
+const Property = require("../models/property.model");
+const Visit = require("../models/visit.model");
 const { sendSuspensionEmail, sendActivationEmail } = require("../services/email.service");
+
+function normalizeRange(range) {
+  if (range === undefined || range === null) return 30;
+  const value = Number(range);
+  if (!Number.isInteger(value) || value <= 0) {
+    const error = new Error("Invalid range parameter");
+    error.status = 400;
+    throw error;
+  }
+  return Math.min(value, 365);
+}
+
+function toDateKey(date) {
+  const d = date instanceof Date ? date : new Date(date);
+  const y = d.getUTCFullYear();
+  const m = String(d.getUTCMonth() + 1).padStart(2, "0");
+  const day = String(d.getUTCDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
+function buildTrendSeries(rows, days) {
+  const counts = new Map();
+  rows.forEach((row) => counts.set(toDateKey(row.date), Number(row.count)));
+
+  const series = [];
+  const today = new Date();
+  for (let i = days - 1; i >= 0; i -= 1) {
+    const d = new Date(today);
+    d.setUTCDate(d.getUTCDate() - i);
+    const key = toDateKey(d);
+    series.push({ date: key, count: counts.get(key) || 0 });
+  }
+  return series;
+}
+
+function mapStatusToMeta(status) {
+  const meta = {
+    available: { label: "Available", color: "#4FAF83" },
+    sold: { label: "Sold", color: "#D96B67" },
+    rented: { label: "Rented", color: "#4A9FF5" },
+    pending: { label: "Pending", color: "#E7B85A" },
+    approved: { label: "Approved", color: "#4FAF83" },
+    cancelled: { label: "Cancelled", color: "#D96B67" },
+    completed: { label: "Completed", color: "#4A9FF5" },
+  };
+  return (
+    meta[status] || {
+      label: status.charAt(0).toUpperCase() + status.slice(1),
+      color: "#9CA3AF",
+    }
+  );
+}
 
 function statusBreakdown(byStatusRows) {
   const counts = { pending: 0, approved: 0, rejected: 0 };
@@ -37,6 +91,68 @@ async function getDashboardStats() {
     suspendedUsers: Number(suspended.count),
     recentAgents,
     statusBreakdown: statusBreakdown(byStatusRows),
+  };
+}
+
+async function getAnalytics({ range } = {}) {
+  const days = normalizeRange(range);
+
+  const [usersTotal] = await Agent.countUsers();
+  const [agentsTotal] = await Agent.countAgents();
+  const roleCounts = await User.countByRole();
+  const propByStatus = await Property.countByStatus();
+  const propByCategory = await Property.countByCategory();
+  const visitByStatus = await Visit.countByStatus();
+  const registrations = await User.countRegistrationsByDay(days);
+  const checkins = await Visit.countByDay(days);
+
+  const countOf = (rows, key, value) => {
+    const found = rows.find((r) => r[key] === value);
+    return found ? Number(found.count) : 0;
+  };
+
+  const totalProperties = await Property.countProperties();
+  const totalVisits = await Visit.countVisits();
+
+  const roleCountMap = new Map(roleCounts.map((r) => [r.role, Number(r.count)]));
+
+  const categoryRows = propByCategory.map((row) => {
+    const totalCats = propByCategory.reduce((sum, r) => sum + Number(r.count), 0) || 1;
+    return {
+      id: row.id,
+      name: row.name,
+      count: Number(row.count),
+      pct: Math.round((Number(row.count) / totalCats) * 100),
+    };
+  });
+
+  return {
+    kpis: {
+      users: Number(usersTotal.count),
+      agents: Number(agentsTotal.count),
+      buyers: roleCountMap.get("buyer") || 0,
+      properties: totalProperties,
+      availableProperties: countOf(propByStatus, "status", "available"),
+      visits: totalVisits,
+      pendingVisits: countOf(visitByStatus, "status", "pending"),
+      approvedVisits: countOf(visitByStatus, "status", "approved"),
+      completedVisits: countOf(visitByStatus, "status", "completed"),
+      cancelledVisits: countOf(visitByStatus, "status", "cancelled"),
+    },
+    registrationsTrend: buildTrendSeries(registrations, days),
+    checkinsTrend: buildTrendSeries(checkins, days),
+    items: propByCategory.map((row) => ({
+      id: row.id,
+      name: row.name,
+      status: "active",
+      count: Number(row.count),
+    })),
+    categories: categoryRows,
+    visitStatusBreakdown: visitByStatus.map((row) => ({
+      label: mapStatusToMeta(row.status).label,
+      value: Number(row.count),
+      color: mapStatusToMeta(row.status).color,
+    })),
   };
 }
 
@@ -174,6 +290,7 @@ async function activateUser(id) {
 
 module.exports = {
   getDashboardStats,
+  getAnalytics,
   listAgents,
   approveAgent,
   rejectAgent,

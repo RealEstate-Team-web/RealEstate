@@ -34,6 +34,8 @@ import AdminDashboard from '../pages/admin/Dashboard';
 import Agents from '../pages/admin/Agents';
 import Categories from '../pages/admin/Categories';
 import Users from '../pages/admin/Users';
+import AdminReports from '../pages/admin/Reports';
+import AdminAnalytics from '../pages/admin/Analytics';
 import { ROUTES } from '../utils/constants';
 
 export const AppRoutes = () => {
@@ -135,6 +137,8 @@ export const AppRoutes = () => {
             <Route path="agents" element={<Agents />} />
             <Route path="categories" element={<Categories />} />
             <Route path="users" element={<Users />} />
+            <Route path="reports" element={<AdminReports />} />
+            <Route path="analytics" element={<AdminAnalytics />} />
             <Route path="*" element={<Navigate to={ROUTES.admin} replace />} />
           </Route>
         </Route>
