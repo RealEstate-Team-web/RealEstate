@@ -1,5 +1,13 @@
 import { useEffect, useState } from 'react';
-import { Users, UserCheck, Clock, Building2, Building, CalendarCheck } from 'lucide-react';
+import {
+  Users,
+  UserCheck,
+  Clock,
+  Building2,
+  Building,
+  CalendarCheck,
+  LayoutDashboard,
+} from 'lucide-react';
 import KpiCard from '../../components/admin/KpiCard';
 import StatusDonutChart from '../../components/admin/StatusDonutChart';
 import StatusBadge from '../../components/common/StatusBadge';
@@ -86,21 +94,21 @@ const Dashboard = () => {
       value: '—',
       indicator: <span className="text-[#9CA3AF]">No data yet</span>,
       icon: Building2,
-      iconBg: 'bg-[#E7F0FB] text-[#4A9FF5]',
+      iconBg: 'bg-[#FBF3DD] text-[#E7B85A]',
     },
     {
       title: 'Pending Properties',
       value: '—',
       indicator: <span className="text-[#9CA3AF]">No data yet</span>,
       icon: Building,
-      iconBg: 'bg-[#FBF3DD] text-[#E7B85A]',
+      iconBg: 'bg-[#FBEAE9] text-[#D96B67]',
     },
     {
       title: 'Scheduled Visits',
       value: '—',
       indicator: <span className="text-[#9CA3AF]">No data yet</span>,
       icon: CalendarCheck,
-      iconBg: 'bg-[#E7F0FB] text-[#4A9FF5]',
+      iconBg: 'bg-slate-100 text-slate-500',
     },
   ];
 
@@ -113,9 +121,24 @@ const Dashboard = () => {
 
   return (
     <div className="space-y-5 font-sans">
-      <h1 className="text-[28px] font-bold text-[#111827] tracking-tight">
-        System Health Dashboard
-      </h1>
+      <div className="flex items-start justify-between gap-4 flex-wrap">
+        <div className="min-w-0">
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-[#1D6FD3] mb-1">
+            Overview
+          </p>
+          <div className="flex items-center gap-2.5">
+            <span aria-hidden="true" className="w-10 h-10 rounded-xl bg-[#E7F0FB] text-[#4A9FF5] flex items-center justify-center shrink-0">
+              <LayoutDashboard size={20} />
+            </span>
+            <h1 className="text-[24px] font-bold text-[#111827] tracking-tight">
+              System Health Dashboard
+            </h1>
+          </div>
+          <p className="text-[13px] text-[#6B7280] mt-1">
+            Users, agents, and platform activity at a glance
+          </p>
+        </div>
+      </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-6 gap-4">
         {kpis.map((k) => (

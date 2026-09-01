@@ -109,9 +109,24 @@ const UserManagement = () => {
 
   return (
     <div className="space-y-5 font-sans">
-      <h1 className="text-[28px] font-bold text-[#111827] tracking-tight">
-        User Management
-      </h1>
+      <div className="flex items-start justify-between gap-4 flex-wrap">
+        <div className="min-w-0">
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-[#1D6FD3] mb-1">
+            Management
+          </p>
+          <div className="flex items-center gap-2.5">
+            <span aria-hidden="true" className="w-10 h-10 rounded-xl bg-[#E7F0FB] text-[#4A9FF5] flex items-center justify-center shrink-0">
+              <UsersIcon size={20} />
+            </span>
+            <h1 className="text-[24px] font-bold text-[#111827] tracking-tight">
+              User Management
+            </h1>
+          </div>
+          <p className="text-[13px] text-[#6B7280] mt-1">
+            View, suspend, and activate platform accounts
+          </p>
+        </div>
+      </div>
 
       {error && (
         <div

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Clock, UserCheck, Ban, CheckCircle, XCircle, Loader2 } from 'lucide-react';
+import { Clock, UserCheck, Ban, CheckCircle, XCircle, Loader2, ShieldCheck } from 'lucide-react';
 import KpiCard from '../../components/admin/KpiCard';
 import Avatar from '../../components/common/Avatar';
 import StatusBadge from '../../components/common/StatusBadge';
@@ -81,19 +81,19 @@ const AgentApproval = () => {
           title: 'Total Approved Agents',
           value: stats.approvedAgents,
           icon: UserCheck,
-          iconBg: 'bg-[#E6F4EC] text-[#4FAF83]',
+          iconBg: 'bg-[#E7F4EE] text-[#4FAF83]',
         },
         {
           title: 'Total Rejected Agents',
           value: stats.rejectedAgents,
           icon: XCircle,
-          iconBg: 'bg-[#FBE9E8] text-[#D96B67]',
+          iconBg: 'bg-[#FBEAE9] text-[#D96B67]',
         },
         {
           title: 'Total Suspended Users',
           value: stats.suspendedUsers,
           icon: Ban,
-          iconBg: 'bg-[#FBE9E8] text-[#D96B67]',
+          iconBg: 'bg-[#FBEAE9] text-[#D96B67]',
         },
       ]
     : [];
@@ -104,9 +104,24 @@ const AgentApproval = () => {
 
   return (
     <div className="space-y-5 font-sans">
-      <h1 className="text-[28px] font-bold text-[#111827] tracking-tight">
-        Agent Approval Dashboard
-      </h1>
+      <div className="flex items-start justify-between gap-4 flex-wrap">
+        <div className="min-w-0">
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-[#1D6FD3] mb-1">
+            Approvals
+          </p>
+          <div className="flex items-center gap-2.5">
+            <span aria-hidden="true" className="w-10 h-10 rounded-xl bg-[#E7F0FB] text-[#4A9FF5] flex items-center justify-center shrink-0">
+              <ShieldCheck size={20} />
+            </span>
+            <h1 className="text-[24px] font-bold text-[#111827] tracking-tight">
+              Agent Approval Dashboard
+            </h1>
+          </div>
+          <p className="text-[13px] text-[#6B7280] mt-1">
+            Review, approve, or reject agent verification requests
+          </p>
+        </div>
+      </div>
 
       {error && (
         <div className="rounded-md bg-[#FBE9E8] text-[#B23B36] text-[13px] px-4 py-3">
@@ -192,21 +207,21 @@ const AgentApproval = () => {
                            <button
                              type="button"
                              disabled={actionId === a.id}
-                             onClick={() => act(approveAgent, a.id, a.first_name, 'approved')}
-                             className="inline-flex items-center gap-1.5 h-[34px] px-[10px] rounded-md bg-[#edf2fa] border border-[#d6deeb] text-[13px] font-medium text-[#2F7A55] hover:bg-[#e3f3ea] transition-colors disabled:opacity-50"
-                           >
-                             {actionId === a.id ? (
-                               <Loader2 size={19} className="animate-spin" />
-                             ) : (
-                               <CheckCircle size={19} className="text-[#2F7A55]" />
-                             )}
-                             Approve Account
-                           </button>
+onClick={() => act(approveAgent, a.id, a.first_name, 'approved')}
+                              className="inline-flex items-center gap-1.5 h-[34px] px-[10px] rounded-md bg-[#E7F4EE] text-[13px] font-medium text-[#2F7A55] hover:bg-[#d3efe1] transition-colors disabled:opacity-50"
+                            >
+                            {actionId === a.id ? (
+                              <Loader2 size={19} className="animate-spin" />
+                            ) : (
+                              <CheckCircle size={19} className="text-[#2F7A55]" />
+                            )}
+                            Approve Account
+                          </button>
                           <button
                             type="button"
                             disabled={actionId === a.id}
                             onClick={() => act(rejectAgent, a.id, a.first_name, 'rejected')}
-                            className="inline-flex items-center gap-1.5 h-[34px] px-[10px] rounded-md bg-[#edf2fa] border border-[#d6deeb] text-[13px] font-medium text-[#B23B36] hover:bg-[#fbe9e8] transition-colors disabled:opacity-50"
+                            className="inline-flex items-center gap-1.5 h-[34px] px-[10px] rounded-md bg-[#FBEAE9] text-[13px] font-medium text-[#B23B36] hover:bg-[#f5d8d6] transition-colors disabled:opacity-50"
                           >
                             <XCircle size={19} className="text-[#B23B36]" />
                             Reject Account

@@ -399,7 +399,7 @@ const Reports = ({
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div className="min-w-0">
           {eyebrow && (
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-[#4A9FF5] mb-1">
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-[#1D6FD3] mb-1">
               {eyebrow}
             </p>
           )}
@@ -600,7 +600,7 @@ function Header({ eyebrow, icon: Icon, title, subtitle }) {
     <div className="flex items-start justify-between gap-4 flex-wrap">
       <div className="min-w-0">
         {eyebrow && (
-          <p className="text-[11px] font-semibold uppercase tracking-wider text-[#4A9FF5] mb-1">
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-[#1D6FD3] mb-1">
             {eyebrow}
           </p>
         )}
