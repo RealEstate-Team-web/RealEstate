@@ -3,6 +3,8 @@ const { authenticate } = require("../middlewares/auth.middleware");
 const { requireRole } = require("../middlewares/role.middleware");
 const {
   getDashboard,
+  getAnalytics,
+  getReports,
   getAgents,
   approveAgent,
   rejectAgent,
@@ -28,6 +30,8 @@ const router = express.Router();
 router.use(authenticate, requireRole("admin"));
 
 router.get("/", getDashboard);
+router.get("/analytics", getAnalytics);
+router.get("/reports", getReports);
 router.get("/agents", getAgents);
 router.patch("/agents/:id/approve", approveAgent);
 router.patch("/agents/:id/reject", rejectAgent);
