@@ -390,7 +390,8 @@ const Reports = ({
   }
 
   const showTrend = charts.registrations || charts.checkins;
-  const showPerItem = charts.perItem && data.items && data.items.length > 0;
+  const items = Array.isArray(data.items) ? data.items : [];
+  const showPerItem = charts.perItem && items.length > 0;
   const showCategories = charts.categories && data.categories && data.categories.length > 0;
 
   return (
@@ -542,13 +543,13 @@ const Reports = ({
           {showPerItem && (
             <ChartCard title={chartLabels.items} subtitle="Count by item">
               <ResponsiveContainer width="100%" height={240}>
-                <BarChart data={data.items} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
+                <BarChart data={items} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" vertical={false} />
                   <XAxis dataKey="name" tick={{ fontSize: 11, fill: '#9CA3AF' }} tickLine={false} axisLine={false} interval={0} angle={-20} textAnchor="end" height={50} />
                   <YAxis tick={{ fontSize: 11, fill: '#9CA3AF' }} tickLine={false} axisLine={false} allowDecimals={false} width={34} />
                   <Tooltip content={<ChartTooltip formatter={(v) => formatNumber(v)} />} cursor={{ fill: 'rgba(15,23,42,0.04)' }} />
                   <Bar dataKey="count" radius={[4, 4, 0, 0]}>
-                    {data.items.map((entry, i) => (
+                    {items.map((entry, i) => (
                       <Cell key={entry.id ?? i} fill={DONUT_PALETTE[i % DONUT_PALETTE.length]} />
                     ))}
                   </Bar>
@@ -562,7 +563,7 @@ const Reports = ({
       {/* Data table */}
       {tableConfig && tableConfig.enabled && (
         <ChartCard title={tableConfig.title}>
-          {data.items.length === 0 ? (
+          {items.length === 0 ? (
             <EmptyState message="Nothing to show yet" />
           ) : (
             <div className="overflow-x-auto">
@@ -575,7 +576,7 @@ const Reports = ({
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
-                  {data.items.map((row) => (
+                  {items.map((row) => (
                     <tr key={row.id} className="hover:bg-slate-50 transition">
                       {tableConfig.columns.map((col) => (
                         <td key={col.key} className="py-2.5 px-2 text-[#6B7280]">
