@@ -18,7 +18,7 @@ export const replyToInquiry = (inquiryId, message) =>
 
 // Returns full response envelope with pagination metadata for agent inquiries: { success: true, data: [...], pagination: { ... } }
 export const getAgentInquiries = (params = {}) =>
-  api.get('/inquiries/agent/received', { params }).then((r) => r.data);
+  api.get('/agent/inquiries', { params }).then((r) => r.data);
 
 // Returns unwrapped affected rows count or status: data.data
 export const markInquiryRead = (id) =>

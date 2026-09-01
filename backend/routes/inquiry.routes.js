@@ -26,6 +26,15 @@ router.get(
   inquiryController.getBuyerInquiries
 );
 
+// Agent Inquiries endpoints (Agent role required)
+router.get(
+  "/agent/received",
+  authenticate,
+  requireRole("agent"),
+  inquiryController.getAgentInquiries
+);
+
+// Participant Thread endpoints (Buyer or Agent)
 router.get(
   "/:id",
   authenticate,
@@ -40,14 +49,6 @@ router.post(
   validateInquiryIdParam,
   validateInquiryMessage,
   inquiryController.replyToInquiry
-);
-
-// Agent Inquiries endpoints (Agent role required)
-router.get(
-  "/agent/received",
-  authenticate,
-  requireRole("agent"),
-  inquiryController.getAgentInquiries
 );
 
 router.patch(

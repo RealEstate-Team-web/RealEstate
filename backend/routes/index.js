@@ -7,6 +7,7 @@ const propertyRoutes = require("./property.routes");
 const favoriteRoutes = require("./favorite.routes");
 const visitRoutes = require("./visit.routes");
 const inquiryRoutes = require("./inquiry.routes");
+const agentRoutes = require("./agent.routes");
 const router = express.Router();
 
 router.get("/", (req, res) => {
@@ -19,6 +20,7 @@ router.get("/", (req, res) => {
 router.use("/health", healthRoutes);
 router.use("/auth", authRoutes);
 router.use("/admin", adminRoutes);
+router.use("/agent", agentRoutes);
 router.use("/categories", categoryRoutes);
 router.use("/properties", propertyRoutes);
 router.use("/favorites", favoriteRoutes);
