@@ -122,12 +122,12 @@ async function getBuyerInquiries(buyerId, query = {}) {
 }
 
 /**
- * Retrieve a specific inquiry by ID with buyer authorization
- * @param {number|string} buyerId
+ * Retrieve a specific inquiry by ID with participant authorization (Buyer or Agent)
+ * @param {number|string} userId
  * @param {number|string} inquiryId
  * @returns {Promise<Object>}
  */
-async function getBuyerInquiryById(buyerId, inquiryId) {
+async function getInquiryById(userId, inquiryId) {
   const inquiry = await Inquiry.findById(inquiryId);
   if (!inquiry) {
     const error = new Error("Inquiry not found");
@@ -135,7 +135,10 @@ async function getBuyerInquiryById(buyerId, inquiryId) {
     throw error;
   }
 
-  if (String(inquiry.buyerId) !== String(buyerId)) {
+  const isBuyer = String(inquiry.buyerId) === String(userId);
+  const isAgent = String(inquiry.agentId) === String(userId);
+
+  if (!isBuyer && !isAgent) {
     const error = new Error("You are not authorized to view this inquiry");
     error.status = 403;
     throw error;
@@ -203,7 +206,8 @@ module.exports = {
   submitInquiry,
   replyToInquiry,
   getBuyerInquiries,
-  getBuyerInquiryById,
+  getInquiryById,
+  getBuyerInquiryById: getInquiryById,
   getAgentInquiries,
   markInquiryRead,
 };

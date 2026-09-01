@@ -567,7 +567,7 @@ Buyer — returns inquiries sent by the logged-in user.
 
 GET
 
-```
+```text
 /api/inquiries/:id
 ```
 
@@ -581,7 +581,7 @@ Buyer or Agent — returns detailed inquiry with full message thread history.
 
 POST
 
-```
+```text
 /api/inquiries/:id/messages
 ```
 

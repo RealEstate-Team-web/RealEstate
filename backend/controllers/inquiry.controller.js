@@ -72,15 +72,15 @@ async function getBuyerInquiries(req, res, next) {
 }
 
 /**
- * Get a specific inquiry by ID (Buyer view)
+ * Get a specific inquiry by ID (Participant view: Buyer or Agent)
  * GET /api/inquiries/:id
  */
-async function getBuyerInquiryById(req, res, next) {
+async function getInquiryById(req, res, next) {
   try {
-    const buyerId = req.user.id;
+    const userId = req.user.id;
     const inquiryId = req.params.id;
 
-    const inquiry = await inquiryService.getBuyerInquiryById(buyerId, inquiryId);
+    const inquiry = await inquiryService.getInquiryById(userId, inquiryId);
 
     res.status(200).json({
       success: true,
@@ -138,7 +138,8 @@ module.exports = {
   submitInquiry,
   replyToInquiry,
   getBuyerInquiries,
-  getBuyerInquiryById,
+  getInquiryById,
+  getBuyerInquiryById: getInquiryById,
   getAgentInquiries,
   markInquiryRead,
 };

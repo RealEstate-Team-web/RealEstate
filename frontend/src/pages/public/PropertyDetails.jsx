@@ -46,6 +46,11 @@ const PropertyDetails = ({
 
   // Load property data from API or fallback to demo data
   useEffect(() => {
+    setMessageSent(false);
+    setMessage("");
+    setMessageError("");
+    setActiveImage(0);
+
     const loadProperty = async () => {
       if (propertyData) {
         setProperty(propertyData);

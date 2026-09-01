@@ -29,9 +29,8 @@ router.get(
 router.get(
   "/:id",
   authenticate,
-  requireRole("buyer"),
   validateInquiryIdParam,
-  inquiryController.getBuyerInquiryById
+  inquiryController.getInquiryById
 );
 
 // Thread messages: Send reply message in existing inquiry thread (Buyer or Agent)

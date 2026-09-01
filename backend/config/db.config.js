@@ -19,13 +19,22 @@ async function query(sql, params = []) {
 
 async function withTransaction(callback) {
   const connection = await pool.getConnection();
-  await connection.beginTransaction();
+  let isTransactionActive = false;
   try {
+    await connection.beginTransaction();
+    isTransactionActive = true;
     const result = await callback(connection);
     await connection.commit();
+    isTransactionActive = false;
     return result;
   } catch (error) {
-    await connection.rollback();
+    if (isTransactionActive) {
+      try {
+        await connection.rollback();
+      } catch (rollbackError) {
+        console.error("Failed to rollback transaction:", rollbackError);
+      }
+    }
     throw error;
   } finally {
     connection.release();
