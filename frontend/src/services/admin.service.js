@@ -2,6 +2,11 @@ import api from './api';
 
 export const getDashboardStats = () => api.get('/admin').then((r) => r.data.data);
 
+export const getAnalytics = ({ range } = {}) =>
+  api
+    .get('/admin/analytics', { params: range ? { range } : {} })
+    .then((r) => r.data.data);
+
 export const getAgents = (status) =>
   api
     .get('/admin/agents', { params: status ? { status } : {} })
