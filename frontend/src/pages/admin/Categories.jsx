@@ -182,9 +182,24 @@ const Categories = () => {
 
   return (
     <div className="space-y-5 font-sans">
-      <h1 className="text-[28px] font-bold text-[#111827] tracking-tight">
-        Category Management
-      </h1>
+      <div className="flex items-start justify-between gap-4 flex-wrap">
+        <div className="min-w-0">
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-[#4A9FF5] mb-1">
+            Management
+          </p>
+          <div className="flex items-center gap-2.5">
+            <span aria-hidden="true" className="w-10 h-10 rounded-xl bg-[#E7F0FB] text-[#4A9FF5] flex items-center justify-center shrink-0">
+              <Tag size={20} />
+            </span>
+            <h1 className="text-[24px] font-bold text-[#111827] tracking-tight">
+              Category Management
+            </h1>
+          </div>
+          <p className="text-[13px] text-[#6B7280] mt-1">
+            Organize listings with property categories
+          </p>
+        </div>
+      </div>
 
       {error && (
         <div role="alert" className="rounded-md bg-[#FBE9E8] text-[#B23B36] text-[13px] px-4 py-3">
