@@ -7,6 +7,8 @@ import {
   Users,
   X,
   Home,
+  BarChart3,
+  Activity,
 } from 'lucide-react';
 
 const navItems = [
@@ -20,6 +22,8 @@ const navItems = [
   },
   { label: 'Categories', path: '/admin/categories', icon: Tag },
   { label: 'Users', path: '/admin/users', icon: Users },
+  { label: 'Reports', path: '/admin/reports', icon: BarChart3 },
+  { label: 'Analytics', path: '/admin/analytics', icon: Activity },
 ];
 
 const AdminSidebar = ({ isOpen, onClose, pendingAgents = 0 }) => {
