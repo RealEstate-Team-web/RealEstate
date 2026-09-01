@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import {
   Search,
   Filter,
@@ -12,9 +12,14 @@ import {
   CheckCircle2,
   AlertCircle,
   Calendar,
+  MessageSquare,
+  BedDouble,
+  Bath,
+  Maximize2,
 } from 'lucide-react';
 import { getFavorites, addFavorite, removeFavorite } from '../../services/favorite.service';
 import { BookVisitModal } from '../../components/buyer/BookVisitModal';
+import { InquiryModal } from '../../components/buyer/InquiryModal';
 import { useToast } from '../../hooks/useToast';
 
 export const BrowseProperties = () => {
@@ -27,6 +32,7 @@ export const BrowseProperties = () => {
   const [favsLoading, setFavsLoading] = useState(true);
   const [favsError, setFavsError] = useState(null);
   const [bookingProperty, setBookingProperty] = useState(null);
+  const [inquireProperty, setInquireProperty] = useState(null);
   const mutationVersionsRef = useRef(new Map());
   const { toastMessage, showToast } = useToast();
 
@@ -406,42 +412,54 @@ export const BrowseProperties = () => {
 
         {/* Property Cards Catalog Grid */}
         <div className={viewMode === 'split' ? 'lg:col-span-7' : 'lg:col-span-12'}>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div
+            className={`grid gap-6 ${
+              viewMode === 'split'
+                ? 'grid-cols-1 md:grid-cols-2'
+                : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
+            }`}
+          >
             {demoProperties.map((prop) => {
               const isFavorited = favoritedIds.has(prop.id);
+              const isSelected = prop.id === selectedPropertyId;
 
               return (
                 <div
                   key={prop.id}
                   onClick={() => setSelectedPropertyId(prop.id)}
-                  className={`bg-white border rounded-xl overflow-hidden shadow-2xs hover:shadow-md transition-all duration-200 flex flex-col justify-between group cursor-pointer ${
-                    prop.id === selectedPropertyId ? 'border-blue-600 ring-2 ring-blue-600/20' : 'border-slate-200/80'
+                  className={`bg-white border rounded-2xl overflow-hidden shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between group cursor-pointer ${
+                    isSelected ? 'border-blue-600 ring-2 ring-blue-600/20 shadow-md' : 'border-slate-200/90 hover:border-slate-300'
                   }`}
                 >
                   <div>
-                    {/* Photo & Badges */}
-                    <div className="relative h-44 overflow-hidden bg-slate-100">
+                    {/* Photo & Top Badges */}
+                    <div className="relative h-52 overflow-hidden bg-slate-100">
                       <img
                         src={prop.img}
                         alt={prop.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-80 pointer-events-none" />
+
+                      {/* Status Pill */}
                       <span
-                        className={`absolute top-2.5 left-2.5 text-[10px] font-semibold px-2 py-0.5 rounded uppercase tracking-wider ${
+                        className={`absolute top-3.5 left-3.5 text-[11px] font-bold px-3 py-1 rounded-full tracking-wide shadow-xs ${
                           prop.status === 'Active'
-                            ? 'bg-emerald-500 text-white'
-                            : 'bg-slate-700 text-white'
+                            ? 'bg-emerald-600 text-white'
+                            : 'bg-slate-900/85 text-white backdrop-blur-xs'
                         }`}
                       >
                         {prop.status}
                       </span>
+
+                      {/* Favorite Heart Button */}
                       <button
                         onClick={(e) => handleToggleFavorite(e, prop)}
                         disabled={favsLoading || Boolean(favsError)}
-                        className={`absolute top-2.5 right-2.5 p-2 rounded-full backdrop-blur-xs transition cursor-pointer shadow-xs ${
+                        className={`absolute top-3.5 right-3.5 p-2.5 rounded-full backdrop-blur-md transition cursor-pointer shadow-md ${
                           isFavorited
                             ? 'bg-rose-500 text-white hover:bg-rose-600 scale-105'
-                            : 'bg-white/85 hover:bg-white text-slate-600 hover:text-rose-500'
+                            : 'bg-white/90 hover:bg-white text-slate-700 hover:text-rose-500'
                         } disabled:cursor-not-allowed disabled:opacity-50`}
                         title={isFavorited ? 'Remove from favorites' : 'Add to favorites'}
                         aria-label={isFavorited ? 'Remove from favorites' : 'Add to favorites'}
@@ -449,46 +467,88 @@ export const BrowseProperties = () => {
                       >
                         <Heart size={15} fill={isFavorited ? 'currentColor' : 'none'} />
                       </button>
+
+                      {/* Price Banner on Image */}
+                      <div className="absolute bottom-3 left-3.5">
+                        <span className="text-white text-lg font-black tracking-tight drop-shadow-md">
+                          {prop.price}
+                        </span>
+                      </div>
                     </div>
 
-                    {/* Info */}
-                    <div className="p-3.5">
-                      <h3 className="font-bold text-slate-900 text-xs truncate">{prop.title}</h3>
-                      <p className="text-[11px] text-slate-500 mt-0.5 truncate">{prop.location}</p>
+                    {/* Info Section */}
+                    <div className="p-5 space-y-3">
+                      <div>
+                        <div className="flex items-start justify-between gap-2">
+                          <h3 className="font-bold text-slate-900 text-sm group-hover:text-blue-600 transition-colors line-clamp-1">
+                            {prop.title}
+                          </h3>
+                          {prop.type && (
+                            <span className="text-[10px] font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md shrink-0">
+                              {prop.type}
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-xs text-slate-500 flex items-center gap-1.5 mt-1.5 line-clamp-1">
+                          <MapPin size={13} className="text-slate-400 shrink-0" />
+                          <span>{prop.location}</span>
+                        </p>
+                      </div>
 
-                      <div className="flex items-center space-x-2 text-[11px] text-slate-500 mt-2.5 pt-2.5 border-t border-slate-100 font-medium">
-                        <span>{prop.beds} Beds</span>
-                        <span>•</span>
-                        <span>{prop.baths} Baths</span>
-                        <span>•</span>
-                        <span>{prop.sqft}</span>
+                      {/* Specs Pills */}
+                      <div className="grid grid-cols-3 gap-2 pt-3 border-t border-slate-100 text-slate-600">
+                        <div className="flex items-center justify-center gap-1.5 py-1.5 px-2 bg-slate-50 border border-slate-100 rounded-xl text-[11px] font-semibold">
+                          <BedDouble size={13} className="text-slate-400 shrink-0" />
+                          <span className="truncate">{prop.beds} Beds</span>
+                        </div>
+                        <div className="flex items-center justify-center gap-1.5 py-1.5 px-2 bg-slate-50 border border-slate-100 rounded-xl text-[11px] font-semibold">
+                          <Bath size={13} className="text-slate-400 shrink-0" />
+                          <span className="truncate">{prop.baths} Baths</span>
+                        </div>
+                        <div className="flex items-center justify-center gap-1.5 py-1.5 px-2 bg-slate-50 border border-slate-100 rounded-xl text-[11px] font-semibold">
+                          <Maximize2 size={13} className="text-slate-400 shrink-0" />
+                          <span className="truncate">{prop.sqft}</span>
+                        </div>
                       </div>
                     </div>
                   </div>
 
-                  {/* Price & Action */}
-                  <div className="px-3.5 pb-3.5 pt-1.5 flex items-center justify-between border-t border-slate-100 gap-1.5">
-                    <span className="text-sm font-bold text-slate-900">{prop.price}</span>
-                    <div className="flex items-center space-x-1.5">
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setBookingProperty(prop);
-                        }}
-                        className="px-2.5 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 rounded-lg text-xs font-bold transition cursor-pointer flex items-center space-x-1"
-                      >
-                        <Calendar size={13} />
-                        <span>Tour</span>
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setSelectedPropertyId(prop.id)}
-                        className="px-2.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold transition cursor-pointer"
-                      >
-                        View
-                      </button>
-                    </div>
+                  {/* Action Buttons Footer */}
+                  <div className="px-5 pb-5 pt-1 grid grid-cols-3 gap-2.5">
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setInquireProperty(prop);
+                      }}
+                      className="py-2.5 px-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition cursor-pointer flex items-center justify-center gap-1.5 shadow-2xs"
+                      title="Send inquiry to listing agent"
+                    >
+                      <MessageSquare size={13} className="text-slate-500 shrink-0" />
+                      <span>Inquire</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setBookingProperty(prop);
+                      }}
+                      className="py-2.5 px-3 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200/80 rounded-xl text-xs font-bold transition cursor-pointer flex items-center justify-center gap-1.5 shadow-2xs"
+                      title="Schedule a property tour"
+                    >
+                      <Calendar size={13} className="text-blue-600 shrink-0" />
+                      <span>Tour</span>
+                    </button>
+
+                    <Link
+                      to={`/properties/${prop.id}`}
+                      onClick={(e) => e.stopPropagation()}
+                      className="py-2.5 px-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition cursor-pointer flex items-center justify-center text-center shadow-2xs"
+                      title="View full property details"
+                    >
+                      View
+                    </Link>
                   </div>
                 </div>
               );
@@ -519,6 +579,18 @@ export const BrowseProperties = () => {
           property={bookingProperty}
           onSuccess={(_created, msg) => {
             showToast(msg);
+          }}
+        />
+      )}
+
+      {/* Inquire Modal */}
+      {inquireProperty && (
+        <InquiryModal
+          isOpen={Boolean(inquireProperty)}
+          onClose={() => setInquireProperty(null)}
+          property={inquireProperty}
+          onSuccess={(_created, msg) => {
+            showToast(msg || 'Inquiry sent successfully!');
           }}
         />
       )}

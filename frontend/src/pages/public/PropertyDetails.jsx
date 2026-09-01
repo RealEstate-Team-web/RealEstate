@@ -25,11 +25,14 @@ import {
 } from "../../utils/property.details.mock.data";
 import { PropertyMap } from "./PropertyMap.jsx";
 import PageLoader from "../../components/common/Loader.jsx";
+import { submitInquiry } from "../../services/inquiry.service";
+import useAuth from "../../hooks/useAuth";
 const PropertyDetails = ({
   propertyData = null,
   nearbyData = null,
 }) => {
   const { id } = useParams();
+  const { user } = useAuth();
 
   const [property, setProperty] = useState(propertyData);
   const [loading, setLoading] = useState(!propertyData);
@@ -123,9 +126,16 @@ const PropertyDetails = ({
       ? nearbyData
       : NEARBY_PROPERTIES;
 
-  const images = Array.isArray(property?.images)
+  const rawImages = Array.isArray(property?.images)
     ? property.images.filter(Boolean)
-    : [];
+    : property?.img || property?.image || property?.image_url
+      ? [property?.img || property?.image || property?.image_url]
+      : [];
+
+  const images =
+    rawImages.length > 0
+      ? rawImages
+      : ["https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80"];
 
   const amenities = Array.isArray(property?.amenities)
     ? property.amenities.filter(Boolean)
@@ -138,7 +148,13 @@ const PropertyDetails = ({
 
   const location =
     property?.location ||
-    {};
+    {
+      address: property?.address || "",
+      city: property?.city || "",
+      state: property?.state || "",
+      latitude: property?.latitude,
+      longitude: property?.longitude,
+    };
 
   const numericPrice = Number(property?.price);
 
@@ -193,29 +209,21 @@ const PropertyDetails = ({
 
   // Send message to agent for property visit
   const sendScheduleMessage = async () => {
-    if (!message.trim()) return;
+    if (!message.trim() || !property?.id) return;
 
     try {
       setSendingMessage(true);
 
-      const response = await fetch(
-        `/api/properties/${property.id}/inquiries`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            propertyId: property.id,
-            agentId: agent?.id || null,
-            message: message.trim(),
-          }),
-        }
-      );
+      const senderName = user ? `${user.firstName || ''} ${user.lastName || ''}`.trim() : 'Prospective Buyer';
+      const senderEmail = user?.email || 'buyer@nesthome.com';
 
-      if (!response.ok) {
-        throw new Error("Unable to send message.");
-      }
+      await submitInquiry({
+        propertyId: property.id,
+        name: senderName || 'Prospective Buyer',
+        email: senderEmail,
+        phone: user?.phone || null,
+        message: message.trim(),
+      });
 
       setMessageSent(true);
       setMessage("");

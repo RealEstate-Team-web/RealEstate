@@ -6,6 +6,7 @@ const categoryRoutes = require("./category.routes");
 const propertyRoutes = require("./property.routes");
 const favoriteRoutes = require("./favorite.routes");
 const visitRoutes = require("./visit.routes");
+const inquiryRoutes = require("./inquiry.routes");
 const router = express.Router();
 
 router.get("/", (req, res) => {
@@ -22,5 +23,6 @@ router.use("/categories", categoryRoutes);
 router.use("/properties", propertyRoutes);
 router.use("/favorites", favoriteRoutes);
 router.use("/visits", visitRoutes);
+router.use("/inquiries", inquiryRoutes);
 
 module.exports = router;

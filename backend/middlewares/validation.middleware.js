@@ -312,6 +312,52 @@ const validateRescheduleVisit = (req, res, next) => {
   next();
 };
 
+const validateSubmitInquiry = (req, res, next) => {
+  const errors = [];
+  const { propertyId, name, email, phone, message } = req.body || {};
+
+  if (!isValidPositiveBigInt(propertyId)) {
+    errors.push("propertyId is required and must be a valid positive integer");
+  }
+
+  if (!name || typeof name !== "string" || name.trim().length < 2) {
+    errors.push("name is required and must be at least 2 characters");
+  } else if (name.trim().length > 150) {
+    errors.push("name cannot exceed 150 characters");
+  }
+
+  if (!email || !emailPattern.test(String(email).trim())) {
+    errors.push("email is required and must be a valid email address");
+  }
+
+  if (phone !== undefined && phone !== null && String(phone).trim() !== "") {
+    if (!phonePattern.test(String(phone).trim())) {
+      errors.push("phone must be a valid phone number format");
+    }
+  }
+
+  if (!message || typeof message !== "string" || message.trim().length < 5) {
+    errors.push("message is required and must be at least 5 characters");
+  } else if (message.trim().length > 2000) {
+    errors.push("message cannot exceed 2000 characters");
+  }
+
+  if (errors.length > 0) return next(validationError(errors));
+  next();
+};
+
+const validateInquiryIdParam = (req, res, next) => {
+  const { id } = req.params || {};
+
+  if (!isValidPositiveBigInt(id)) {
+    return next(
+      validationError(["Inquiry ID parameter must be a valid positive integer"]),
+    );
+  }
+
+  next();
+};
+
 module.exports = {
   validateRegister,
   validateRegisterAgent,
@@ -326,4 +372,6 @@ module.exports = {
   validateBookVisit,
   validateVisitIdParam,
   validateRescheduleVisit,
+  validateSubmitInquiry,
+  validateInquiryIdParam,
 };

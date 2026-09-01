@@ -172,22 +172,81 @@ const propertyModel = {
     },
 
 
-    // Get one property
-    async findPropertyById(
-        id
-    ) {
+    // Get one property with images and agent details
+    async findPropertyById(id) {
         const sql = `
             SELECT
-            p.*
+                p.*,
+                p.parking_spaces AS parking,
+                p.listing_type AS listingType,
+                u.first_name AS agentFirstName,
+                u.last_name AS agentLastName,
+                u.email AS agentEmail,
+                u.phone AS agentPhone,
+                u.profile_image_url AS agentPhoto,
+                ap.agency_name AS agencyName,
+                ap.bio AS agentBio,
+                ap.experience AS agentExperience,
+                ap.office_address AS agentOfficeAddress
             FROM properties p
+            LEFT JOIN users u ON u.id = p.agent_id
+            LEFT JOIN agent_profiles ap ON ap.user_id = p.agent_id
             WHERE p.id = ?
             LIMIT 1
         `;
 
-        const rows =
-            await query(sql, [id]);
+        const rows = await query(sql, [id]);
+        if (!rows[0]) return null;
 
-        return rows[0] || null;
+        const p = rows[0];
+
+        // Fetch images
+        const imageRows = await query(
+            `SELECT image_url AS url, is_cover, sort_order FROM property_images WHERE property_id = ? ORDER BY is_cover DESC, sort_order ASC, id ASC`,
+            [id]
+        );
+
+        const images = imageRows.length > 0
+            ? imageRows.map(img => img.url)
+            : [];
+
+        // Fetch amenities
+        let amenities = [];
+        try {
+            const amenityRows = await query(
+                `SELECT a.name FROM property_amenities pa JOIN amenities a ON a.id = pa.amenity_id WHERE pa.property_id = ?`,
+                [id]
+            );
+            amenities = amenityRows.map(a => a.name);
+        } catch {
+            amenities = [];
+        }
+
+        return {
+            ...p,
+            images,
+            amenities,
+            location: {
+                address: p.address,
+                city: p.city,
+                state: p.city,
+                country: p.country,
+                latitude: p.latitude,
+                longitude: p.longitude,
+            },
+            agent: {
+                id: p.agent_id,
+                name: `${p.agentFirstName || ''} ${p.agentLastName || ''}`.trim() || 'Listing Agent',
+                email: p.agentEmail,
+                phone: p.agentPhone,
+                photo: p.agentPhoto,
+                bio: p.agentBio,
+                experienceYears: p.agentExperience,
+                agencyName: p.agencyName,
+                role: 'Listing Agent',
+                location: p.agentOfficeAddress || p.city,
+            }
+        };
     },
 
 
