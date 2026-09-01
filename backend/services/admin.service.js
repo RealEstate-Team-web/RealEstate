@@ -25,7 +25,7 @@ function toDateKey(date) {
 
 function buildTrendSeries(rows, days) {
   const counts = new Map();
-  rows.forEach((row) => counts.set(row.date, Number(row.count)));
+  rows.forEach((row) => counts.set(toDateKey(row.date), Number(row.count)));
 
   const series = [];
   const today = new Date();
@@ -111,8 +111,8 @@ async function getAnalytics({ range } = {}) {
     return found ? Number(found.count) : 0;
   };
 
-  const totalProperties = await Property.countProperties().catch(() => 0);
-  const totalVisits = await Visit.countVisits().catch(() => 0);
+  const totalProperties = await Property.countProperties();
+  const totalVisits = await Visit.countVisits();
 
   const roleCountMap = new Map(roleCounts.map((r) => [r.role, Number(r.count)]));
 
