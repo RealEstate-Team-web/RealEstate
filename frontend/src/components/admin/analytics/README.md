@@ -74,8 +74,7 @@ See `reports.types.js` for full JSDoc typedefs. The important ones:
   kpis: { [key]: number },              // keys must match the `kpis` prop `key`s
   registrationsTrend: [{ date, count }],
   checkinsTrend: [{ date, count }],
-  items: [{ id, name, status, capacity, registered, checkedIn,
-            revenue, fillRate, attendanceRate }],
+  items: [{ id, name, status, count }],
   categories: [{ name, count, pct }],
 }
 ```
