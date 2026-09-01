@@ -1,6 +1,6 @@
 # Current Sprint
 
-Current Sprint: Sprint 2
+Current Sprint: Sprint 3
 
 Primary Sprint Document:
-Documentation/Sprints/Sprint 2.md
+Documentation/Sprints/Sprint 3.md

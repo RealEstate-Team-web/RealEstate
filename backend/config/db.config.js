@@ -17,4 +17,28 @@ async function query(sql, params = []) {
   return rows;
 }
 
-module.exports = { pool, query };
+async function withTransaction(callback) {
+  const connection = await pool.getConnection();
+  let isTransactionActive = false;
+  try {
+    await connection.beginTransaction();
+    isTransactionActive = true;
+    const result = await callback(connection);
+    await connection.commit();
+    isTransactionActive = false;
+    return result;
+  } catch (error) {
+    if (isTransactionActive) {
+      try {
+        await connection.rollback();
+      } catch (rollbackError) {
+        console.error("Failed to rollback transaction:", rollbackError);
+      }
+    }
+    throw error;
+  } finally {
+    connection.release();
+  }
+}
+
+module.exports = { pool, query, withTransaction };
