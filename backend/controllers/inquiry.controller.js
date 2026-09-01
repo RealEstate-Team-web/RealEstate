@@ -63,6 +63,7 @@ async function getBuyerInquiries(req, res, next) {
 
     res.status(200).json({
       success: true,
+      message: "Inquiries retrieved successfully",
       data: inquiries,
       pagination,
     });
@@ -84,6 +85,7 @@ async function getInquiryById(req, res, next) {
 
     res.status(200).json({
       success: true,
+      message: "Inquiry retrieved successfully",
       data: inquiry,
     });
   } catch (error) {
@@ -105,6 +107,7 @@ async function getAgentInquiries(req, res, next) {
 
     res.status(200).json({
       success: true,
+      message: "Inquiries retrieved successfully",
       data: inquiries,
       pagination,
     });
