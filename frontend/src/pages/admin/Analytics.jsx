@@ -23,7 +23,6 @@ const AnalyticsPage = () => (
       { value: '90', label: '90d' },
     ]}
     defaultRange="7"
-    scope="self"
     kpis={[
       { key: 'users', label: 'Users', icon: Users, tone: 'info' },
       { key: 'agents', label: 'Agents', icon: ShieldCheck, tone: 'success' },
