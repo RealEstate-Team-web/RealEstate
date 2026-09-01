@@ -250,12 +250,12 @@ Allow buyers to submit property inquiries and view related messages/placeholders
 
 **Checklist**
 
-- [ ] Inquiries table/migration
-- [ ] Submit inquiry API
-- [ ] Buyer messages/inquiries page
-- [ ] Authorization checks
-- [ ] Error states
-- [ ] Manual/API testing
+- [x] Inquiries table/migration
+- [x] Submit inquiry API
+- [x] Buyer messages/inquiries page
+- [x] Authorization checks
+- [x] Error states
+- [x] Manual/API testing
 
 ---
 

@@ -563,6 +563,42 @@ Buyer — returns inquiries sent by the logged-in user.
 
 ---
 
+## Get Inquiry Thread Details
+
+GET
+
+```text
+/api/inquiries/:id
+```
+
+Permission
+
+Buyer or Agent — returns detailed inquiry with full message thread history.
+
+---
+
+## Send Message / Reply to Inquiry
+
+POST
+
+```text
+/api/inquiries/:id/messages
+```
+
+Permission
+
+Buyer or Agent — sends a follow-up message within the active inquiry thread.
+
+Request
+
+```json
+{
+    "message": "Yes, I would like to schedule a viewing this Saturday."
+}
+```
+
+---
+
 ## Get Agent Inquiries
 
 GET
