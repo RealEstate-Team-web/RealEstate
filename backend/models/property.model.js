@@ -312,5 +312,40 @@ const propertyModel = {
 
         return result.affectedRows > 0;
     },
+
+    async countProperties() {
+        const [row] =
+            await query(
+                "SELECT COUNT(*) AS count FROM properties"
+            );
+        return Number(row.count);
+    },
+
+    async countByStatus() {
+        return query(
+            "SELECT status, COUNT(*) AS count FROM properties GROUP BY status"
+        );
+    },
+
+    async countByCategory() {
+        return query(`
+            SELECT c.id, c.name, COUNT(p.id) AS count
+            FROM property_categories c
+            LEFT JOIN properties p ON p.category_id = c.id
+            GROUP BY c.id, c.name
+            ORDER BY count DESC
+        `);
+    },
+
+    async countByDay(days) {
+        return query(
+            `SELECT DATE(created_at) AS date, COUNT(*) AS count
+             FROM properties
+             WHERE created_at >= CURDATE() - INTERVAL ? DAY
+             GROUP BY DATE(created_at)
+             ORDER BY date ASC`,
+            [days]
+        );
+    },
 };
 module.exports = propertyModel;
