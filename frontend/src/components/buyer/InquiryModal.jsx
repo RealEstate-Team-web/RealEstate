@@ -10,6 +10,8 @@ const InquiryModalContent = ({
 }) => {
   const { user } = useAuth();
   const nameInputRef = useRef(null);
+  const modalRef = useRef(null);
+  const loadingRef = useRef(false);
 
   const defaultName = user ? `${user.firstName || ''} ${user.lastName || ''}`.trim() : '';
   const defaultEmail = user?.email || '';
@@ -26,16 +28,42 @@ const InquiryModalContent = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // Auto focus first interactive control, lock body scroll, and handle Escape key
+  loadingRef.current = loading;
+
+  // Auto focus first interactive control, lock body scroll, trap focus, and handle Escape key
   useEffect(() => {
+    const previouslyFocusedElement = document.activeElement;
     nameInputRef.current?.focus();
 
     const originalOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
 
     const handleKeyDown = (e) => {
-      if (e.key === 'Escape' && !loading) {
+      if (e.key === 'Escape' && !loadingRef.current) {
         onClose();
+        return;
+      }
+
+      if (e.key === 'Tab' && modalRef.current) {
+        const focusable = modalRef.current.querySelectorAll(
+          'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        );
+        if (focusable.length === 0) return;
+
+        const firstElement = focusable[0];
+        const lastElement = focusable[focusable.length - 1];
+
+        if (e.shiftKey) {
+          if (document.activeElement === firstElement) {
+            e.preventDefault();
+            lastElement.focus();
+          }
+        } else {
+          if (document.activeElement === lastElement) {
+            e.preventDefault();
+            firstElement.focus();
+          }
+        }
       }
     };
 
@@ -43,8 +71,11 @@ const InquiryModalContent = ({
     return () => {
       document.body.style.overflow = originalOverflow;
       window.removeEventListener('keydown', handleKeyDown);
+      if (previouslyFocusedElement && typeof previouslyFocusedElement.focus === 'function') {
+        previouslyFocusedElement.focus();
+      }
     };
-  }, [onClose, loading]);
+  }, [onClose]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -102,6 +133,7 @@ const InquiryModalContent = ({
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
       <div
+        ref={modalRef}
         className="bg-white w-full max-w-lg rounded-2xl shadow-2xl border border-slate-100 overflow-hidden transform transition-all animate-in fade-in zoom-in-95 duration-200"
         role="dialog"
         aria-modal="true"

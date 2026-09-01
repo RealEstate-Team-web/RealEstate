@@ -13,9 +13,8 @@ CREATE TABLE IF NOT EXISTS inquiry_messages (
     CONSTRAINT fk_inquiry_msg_sender
         FOREIGN KEY (sender_id)
         REFERENCES users(id)
-        ON DELETE CASCADE,
+        ON DELETE RESTRICT,
 
-    INDEX idx_inquiry_msg_inquiry (inquiry_id),
-    INDEX idx_inquiry_msg_sender (sender_id),
-    INDEX idx_inquiry_msg_created_at (created_at)
+    INDEX idx_inquiry_msg_thread (inquiry_id, created_at, id),
+    INDEX idx_inquiry_msg_sender (sender_id)
 );

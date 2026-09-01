@@ -16,6 +16,12 @@ async function submitInquiry(buyerId, { propertyId, name, email, phone, message 
     throw error;
   }
 
+  if (property.status && property.status !== "available") {
+    const error = new Error("Inquiries can only be submitted for available property listings");
+    error.status = 400;
+    throw error;
+  }
+
   // Prevent users from inquiring on their own listing
   if (String(property.agentId) === String(buyerId)) {
     const error = new Error("You cannot submit an inquiry for your own property listing");
@@ -23,14 +29,19 @@ async function submitInquiry(buyerId, { propertyId, name, email, phone, message 
     throw error;
   }
 
+  const cleanName = typeof name === "string" ? name.trim() : "";
+  const cleanEmail = typeof email === "string" ? email.trim().toLowerCase() : "";
+  const cleanPhone = typeof phone === "string" && phone.trim() ? phone.trim() : null;
+  const cleanMessage = typeof message === "string" ? message.trim() : "";
+
   const inquiryId = await Inquiry.create({
     property_id: propertyId,
     buyer_id: buyerId,
     agent_id: property.agentId,
-    name: name.trim(),
-    email: email.trim().toLowerCase(),
-    phone: phone ? phone.trim() : null,
-    message: message.trim(),
+    name: cleanName,
+    email: cleanEmail,
+    phone: cleanPhone,
+    message: cleanMessage,
   });
 
   const createdInquiry = await Inquiry.findById(inquiryId);
@@ -61,7 +72,20 @@ async function replyToInquiry(userId, inquiryId, messageText) {
     throw error;
   }
 
-  await Inquiry.addMessage(inquiryId, userId, messageText.trim());
+  if (!messageText || typeof messageText !== "string" || !messageText.trim()) {
+    const error = new Error("Message is required and must not be empty");
+    error.status = 400;
+    throw error;
+  }
+
+  const trimmed = messageText.trim();
+  if (trimmed.length > 5000) {
+    const error = new Error("Message cannot exceed 5000 characters");
+    error.status = 400;
+    throw error;
+  }
+
+  await Inquiry.addMessage(inquiryId, userId, trimmed);
 
   // Return refreshed inquiry with all messages
   return await Inquiry.findById(inquiryId);

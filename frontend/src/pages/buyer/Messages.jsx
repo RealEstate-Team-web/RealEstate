@@ -30,6 +30,7 @@ export const Messages = () => {
   const [activeInquiry, setActiveInquiry] = useState(null);
   const [activeInquiryId, setActiveInquiryId] = useState(null);
   const [activeLoading, setActiveLoading] = useState(false);
+  const [activeError, setActiveError] = useState('');
   const [mobileView, setMobileView] = useState('list'); // 'list' | 'chat'
   const [newMessage, setNewMessage] = useState('');
   const [sending, setSending] = useState(false);
@@ -87,18 +88,23 @@ export const Messages = () => {
 
     if (!activeInquiryId) {
       setActiveInquiry(null);
+      setActiveError('');
       return;
     }
 
     const loadActiveThread = async () => {
       try {
         setActiveLoading(true);
+        setActiveError('');
         const detailed = await getInquiryById(activeInquiryId);
         if (isCurrent) {
           setActiveInquiry(detailed);
         }
       } catch (err) {
         console.error('Failed to load inquiry thread:', err);
+        if (isCurrent) {
+          setActiveError('Failed to load this conversation. Please try again.');
+        }
       } finally {
         if (isCurrent) {
           setActiveLoading(false);
@@ -455,7 +461,28 @@ export const Messages = () => {
               mobileView === 'list' ? 'hidden lg:flex' : 'flex'
             }`}
           >
-            {activeInquiry ? (
+            {activeLoading ? (
+              <div className="flex-1 flex flex-col items-center justify-center p-12 text-slate-400 space-y-3">
+                <div className="w-8 h-8 border-3 border-blue-600 border-t-transparent rounded-full animate-spin" />
+                <p className="text-xs font-medium">Loading conversation...</p>
+              </div>
+            ) : activeError ? (
+              <div className="flex-1 flex flex-col items-center justify-center p-12 text-slate-500 space-y-3">
+                <AlertCircle className="w-8 h-8 text-rose-500" />
+                <p className="text-xs font-medium text-rose-600">{activeError}</p>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const currId = activeInquiryId;
+                    setActiveInquiryId(null);
+                    setTimeout(() => setActiveInquiryId(currId), 10);
+                  }}
+                  className="px-3 py-1.5 text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg font-semibold transition cursor-pointer"
+                >
+                  Retry
+                </button>
+              </div>
+            ) : activeInquiry ? (
               <>
                 {/* Active Thread Header */}
                 <div className="p-3.5 border-b border-slate-200/80 flex items-center justify-between bg-slate-50/40">
@@ -549,7 +576,9 @@ export const Messages = () => {
                 <div className="p-4 sm:p-6 space-y-3.5 overflow-y-auto flex-1 max-h-[380px] bg-slate-50/30">
                   {threadMessages.map((msg, idx) => {
                     const isFromUser =
-                      String(msg.senderId) === String(user?.id) ||
+                      (msg.senderId != null &&
+                        user?.id != null &&
+                        String(msg.senderId) === String(user.id)) ||
                       msg.senderRole === 'buyer' ||
                       (!msg.senderRole && idx === 0);
 

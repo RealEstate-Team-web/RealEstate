@@ -321,25 +321,39 @@ const validateSubmitInquiry = (req, res, next) => {
   }
 
   if (!name || typeof name !== "string" || name.trim().length < 2) {
-    errors.push("name is required and must be at least 2 characters");
+    errors.push("name is required and must be a string of at least 2 characters");
   } else if (name.trim().length > 150) {
     errors.push("name cannot exceed 150 characters");
   }
 
-  if (!email || !emailPattern.test(String(email).trim())) {
-    errors.push("email is required and must be a valid email address");
+  if (!email || typeof email !== "string" || !emailPattern.test(email.trim())) {
+    errors.push("email is required and must be a valid email address string");
   }
 
-  if (phone !== undefined && phone !== null && String(phone).trim() !== "") {
-    if (!phonePattern.test(String(phone).trim())) {
-      errors.push("phone must be a valid phone number format");
+  if (phone !== undefined && phone !== null && phone !== "") {
+    if (typeof phone !== "string" || !phonePattern.test(phone.trim())) {
+      errors.push("phone must be a valid phone number string format");
     }
   }
 
   if (!message || typeof message !== "string" || message.trim().length < 5) {
-    errors.push("message is required and must be at least 5 characters");
-  } else if (message.trim().length > 2000) {
-    errors.push("message cannot exceed 2000 characters");
+    errors.push("message is required and must be a string of at least 5 characters");
+  } else if (message.trim().length > 5000) {
+    errors.push("message cannot exceed 5000 characters");
+  }
+
+  if (errors.length > 0) return next(validationError(errors));
+  next();
+};
+
+const validateInquiryMessage = (req, res, next) => {
+  const errors = [];
+  const { message } = req.body || {};
+
+  if (!message || typeof message !== "string" || message.trim().length < 1) {
+    errors.push("message is required and must not be empty");
+  } else if (message.trim().length > 5000) {
+    errors.push("message cannot exceed 5000 characters");
   }
 
   if (errors.length > 0) return next(validationError(errors));
@@ -373,5 +387,6 @@ module.exports = {
   validateVisitIdParam,
   validateRescheduleVisit,
   validateSubmitInquiry,
+  validateInquiryMessage,
   validateInquiryIdParam,
 };

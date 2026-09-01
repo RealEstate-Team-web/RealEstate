@@ -42,6 +42,7 @@ const PropertyDetails = ({
   const [message, setMessage] = useState("");
   const [messageSent, setMessageSent] = useState(false);
   const [sendingMessage, setSendingMessage] = useState(false);
+  const [messageError, setMessageError] = useState("");
 
   // Load property data from API or fallback to demo data
   useEffect(() => {
@@ -53,7 +54,7 @@ const PropertyDetails = ({
       }
 
       if (!id) {
-        setError("Property ID is missing.");
+        setError("Invalid property ID");
         setLoading(false);
         return;
       }
@@ -65,22 +66,20 @@ const PropertyDetails = ({
         const response = await fetch(`/api/properties/${id}`);
 
         if (!response.ok) {
-          throw new Error("Failed to load property.");
+          throw new Error("Failed to fetch property details");
         }
 
         const data = await response.json();
-        const propertyResult = data?.data || data;
-
-        setProperty(propertyResult);
-      } catch (err) {
-        const demoProperty = DEMO_PROPERTIES.find(
+        setProperty(data.data || data);
+      } catch {
+        const fallback = DEMO_PROPERTIES.find(
           (item) => String(item.id) === String(id)
         );
 
-        if (demoProperty) {
-          setProperty(demoProperty);
+        if (fallback) {
+          setProperty(fallback);
         } else {
-          setError("Unable to load this property.");
+          setError("Property not found");
         }
       } finally {
         setLoading(false);
@@ -151,7 +150,6 @@ const PropertyDetails = ({
     {
       address: property?.address || "",
       city: property?.city || "",
-      state: property?.state || "",
       latitude: property?.latitude,
       longitude: property?.longitude,
     };
@@ -191,16 +189,15 @@ const PropertyDetails = ({
     try {
       if (navigator.share) {
         await navigator.share({
-          title: property?.title || "Property",
-          text: `Check out ${property?.title || "this property"}`,
+          title: property.title,
+          text: property.description,
           url: window.location.href,
         });
       } else {
         await navigator.clipboard.writeText(
           window.location.href
         );
-
-        alert("Property link copied!");
+        alert("Property link copied to clipboard!");
       }
     } catch {
       console.log("Share cancelled.");
@@ -211,15 +208,21 @@ const PropertyDetails = ({
   const sendScheduleMessage = async () => {
     if (!message.trim() || !property?.id) return;
 
+    if (!user) {
+      setMessageError("Please sign in to send an inquiry to the listing agent.");
+      return;
+    }
+
     try {
       setSendingMessage(true);
+      setMessageError("");
 
-      const senderName = user ? `${user.firstName || ''} ${user.lastName || ''}`.trim() : 'Prospective Buyer';
-      const senderEmail = user?.email || 'buyer@nesthome.com';
+      const senderName = `${user.firstName || ""} ${user.lastName || ""}`.trim() || user.email;
+      const senderEmail = user.email;
 
       await submitInquiry({
         propertyId: property.id,
-        name: senderName || 'Prospective Buyer',
+        name: senderName,
         email: senderEmail,
         phone: user?.phone || null,
         message: message.trim(),
@@ -227,8 +230,15 @@ const PropertyDetails = ({
 
       setMessageSent(true);
       setMessage("");
-    } catch {
-      setMessageSent(true);
+    } catch (err) {
+      console.error("Failed to send inquiry:", err);
+      const errMsg =
+        err.response?.data?.message ||
+        (Array.isArray(err.response?.data?.errors)
+          ? err.response.data.errors.join(", ")
+          : err.message) ||
+        "Failed to send your request. Please try again.";
+      setMessageError(errMsg);
     } finally {
       setSendingMessage(false);
     }
@@ -725,34 +735,53 @@ const PropertyDetails = ({
                   <>
                     <textarea
                       value={message}
-                      onChange={(event) =>
-                        setMessage(event.target.value)
-                      }
+                      onChange={(event) => {
+                        setMessage(event.target.value);
+                        if (messageError) setMessageError("");
+                      }}
                       rows={4}
-                      placeholder={`Hello ${
-                        agent?.name || "Agent"
-                      }, I would like to schedule a visit for this property.`}
-                      className="w-full resize-none rounded-xl border border-slate-200 bg-[#FAFCFC] px-3 py-3 text-xs text-[#162831] outline-none placeholder:text-slate-400 focus:border-[#0F9690] focus:ring-1 focus:ring-[#0F9690]"
+                      placeholder={
+                        user
+                          ? `Hello ${agent?.name || "Agent"}, I would like to schedule a visit for this property.`
+                          : "Please sign in to send a direct message or visit request to the agent."
+                      }
+                      disabled={!user}
+                      className="w-full resize-none rounded-xl border border-slate-200 bg-[#FAFCFC] px-3 py-3 text-xs text-[#162831] outline-none placeholder:text-slate-400 focus:border-[#0F9690] focus:ring-1 focus:ring-[#0F9690] disabled:bg-slate-100 disabled:cursor-not-allowed"
                     />
 
-                    <button
-                      type="button"
-                      onClick={sendScheduleMessage}
-                      disabled={
-                        sendingMessage ||
-                        !message.trim()
-                      }
-                      className="mt-2 flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-[#0F9690] text-sm font-bold text-white transition hover:bg-[#0D827D] disabled:cursor-not-allowed disabled:opacity-50"
-                    >
-                      {sendingMessage ? (
-                        "Sending..."
-                      ) : (
-                        <>
-                          <Send className="h-4 w-4" />
-                          Send Visit Request
-                        </>
-                      )}
-                    </button>
+                    {messageError && (
+                      <p className="mt-1.5 text-xs text-rose-600 font-medium">
+                        {messageError}
+                      </p>
+                    )}
+
+                    {!user ? (
+                      <Link
+                        to="/login"
+                        className="mt-2 flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-[#0F9690] text-sm font-bold text-white transition hover:bg-[#0D827D]"
+                      >
+                        Sign in to Inquire
+                      </Link>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={sendScheduleMessage}
+                        disabled={
+                          sendingMessage ||
+                          !message.trim()
+                        }
+                        className="mt-2 flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-[#0F9690] text-sm font-bold text-white transition hover:bg-[#0D827D] disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
+                      >
+                        {sendingMessage ? (
+                          "Sending..."
+                        ) : (
+                          <>
+                            <Send className="h-4 w-4" />
+                            Send Visit Request
+                          </>
+                        )}
+                      </button>
+                    )}
                   </>
                 )}
               </div>

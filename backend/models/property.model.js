@@ -212,15 +212,11 @@ const propertyModel = {
 
         // Fetch amenities
         let amenities = [];
-        try {
-            const amenityRows = await query(
-                `SELECT a.name FROM property_amenities pa JOIN amenities a ON a.id = pa.amenity_id WHERE pa.property_id = ?`,
-                [id]
-            );
-            amenities = amenityRows.map(a => a.name);
-        } catch {
-            amenities = [];
-        }
+        const amenityRows = await query(
+            `SELECT a.name FROM property_amenities pa JOIN amenities a ON a.id = pa.amenity_id WHERE pa.property_id = ?`,
+            [id]
+        );
+        amenities = Array.isArray(amenityRows) ? amenityRows.map(a => a.name) : [];
 
         return {
             ...p,
@@ -229,7 +225,6 @@ const propertyModel = {
             location: {
                 address: p.address,
                 city: p.city,
-                state: p.city,
                 country: p.country,
                 latitude: p.latitude,
                 longitude: p.longitude,

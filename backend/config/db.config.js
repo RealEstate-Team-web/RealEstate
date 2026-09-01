@@ -17,4 +17,19 @@ async function query(sql, params = []) {
   return rows;
 }
 
-module.exports = { pool, query };
+async function withTransaction(callback) {
+  const connection = await pool.getConnection();
+  await connection.beginTransaction();
+  try {
+    const result = await callback(connection);
+    await connection.commit();
+    return result;
+  } catch (error) {
+    await connection.rollback();
+    throw error;
+  } finally {
+    connection.release();
+  }
+}
+
+module.exports = { pool, query, withTransaction };

@@ -37,12 +37,6 @@ async function replyToInquiry(req, res, next) {
     const inquiryId = req.params.id;
     const { message } = req.body;
 
-    if (!message || typeof message !== "string" || !message.trim()) {
-      const error = new Error("Message is required and must not be empty");
-      error.status = 400;
-      throw error;
-    }
-
     const inquiry = await inquiryService.replyToInquiry(userId, inquiryId, message);
 
     res.status(201).json({

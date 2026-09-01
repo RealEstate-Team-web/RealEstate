@@ -1,54 +1,87 @@
-const { query } = require("../config/db.config");
+const { query, withTransaction } = require("../config/db.config");
+
+/**
+ * Shared filter builder for inquiries lists and counts
+ * @param {Object} options
+ * @returns {{ clause: string, params: Array }}
+ */
+function buildInquiryFilter({ role = "buyer", status, search }) {
+  let clause = "";
+  const params = [];
+
+  if (status && status !== "all") {
+    clause += " AND i.status = ?";
+    params.push(status);
+  }
+
+  if (search && search.trim()) {
+    if (role === "buyer") {
+      clause +=
+        " AND (p.title LIKE ? OR p.city LIKE ? OR u_agent.first_name LIKE ? OR u_agent.last_name LIKE ? OR i.message LIKE ?)";
+    } else {
+      clause +=
+        " AND (p.title LIKE ? OR u_buyer.first_name LIKE ? OR u_buyer.last_name LIKE ? OR i.name LIKE ? OR i.message LIKE ?)";
+    }
+    const term = `%${search.trim()}%`;
+    params.push(term, term, term, term, term);
+  }
+
+  return { clause, params };
+}
 
 const Inquiry = {
   async create({ property_id, buyer_id, agent_id, name, email, phone, message }) {
-    const sql = `
-      INSERT INTO inquiries (
+    return await withTransaction(async (conn) => {
+      const sql = `
+        INSERT INTO inquiries (
+          property_id,
+          buyer_id,
+          agent_id,
+          name,
+          email,
+          phone,
+          message,
+          status,
+          is_read
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, 'pending', FALSE)
+      `;
+      const [result] = await conn.execute(sql, [
         property_id,
         buyer_id,
         agent_id,
         name,
         email,
-        phone,
+        phone || null,
         message,
-        status,
-        is_read
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, 'pending', FALSE)
-    `;
-    const result = await query(sql, [
-      property_id,
-      buyer_id,
-      agent_id,
-      name,
-      email,
-      phone || null,
-      message,
-    ]);
+      ]);
 
-    const inquiryId = result.insertId;
+      const inquiryId = result.insertId;
 
-    // Record initial message in inquiry_messages thread
-    await query(
-      `INSERT INTO inquiry_messages (inquiry_id, sender_id, message) VALUES (?, ?, ?)`,
-      [inquiryId, buyer_id, message]
-    );
+      // Record initial message in inquiry_messages thread
+      await conn.execute(
+        `INSERT INTO inquiry_messages (inquiry_id, sender_id, message) VALUES (?, ?, ?)`,
+        [inquiryId, buyer_id, message]
+      );
 
-    return inquiryId;
+      return inquiryId;
+    });
   },
 
   async addMessage(inquiryId, senderId, messageText) {
-    const result = await query(
-      `INSERT INTO inquiry_messages (inquiry_id, sender_id, message) VALUES (?, ?, ?)`,
-      [inquiryId, senderId, messageText]
-    );
+    return await withTransaction(async (conn) => {
+      const [result] = await conn.execute(
+        `INSERT INTO inquiry_messages (inquiry_id, sender_id, message) VALUES (?, ?, ?)`,
+        [inquiryId, senderId, messageText]
+      );
 
-    // Update the inquiry's updated_at timestamp
-    await query(
-      `UPDATE inquiries SET updated_at = CURRENT_TIMESTAMP WHERE id = ?`,
-      [inquiryId]
-    );
+      // Update the inquiry's updated_at timestamp
+      await conn.execute(
+        `UPDATE inquiries SET updated_at = CURRENT_TIMESTAMP WHERE id = ?`,
+        [inquiryId]
+      );
 
-    return result.insertId;
+      return result.insertId;
+    });
   },
 
   async getMessages(inquiryId) {
@@ -129,6 +162,9 @@ const Inquiry = {
   },
 
   async findByBuyerId(buyerId, { status, search, limit = 10, offset = 0 } = {}) {
+    const safeLimit = Math.max(1, parseInt(limit, 10) || 10);
+    const safeOffset = Math.max(0, parseInt(offset, 10) || 0);
+
     let sql = `
       SELECT 
         i.id,
@@ -183,23 +219,15 @@ const Inquiry = {
       WHERE i.buyer_id = ?
     `;
 
-    const params = [buyerId];
+    const { clause, params: filterParams } = buildInquiryFilter({
+      role: "buyer",
+      status,
+      search,
+    });
+    sql += clause;
+    sql += ` ORDER BY i.updated_at DESC LIMIT ${safeLimit} OFFSET ${safeOffset}`;
 
-    if (status && status !== "all") {
-      sql += " AND i.status = ?";
-      params.push(status);
-    }
-
-    if (search && search.trim()) {
-      sql += " AND (p.title LIKE ? OR p.city LIKE ? OR u_agent.first_name LIKE ? OR u_agent.last_name LIKE ? OR i.message LIKE ?)";
-      const term = `%${search.trim()}%`;
-      params.push(term, term, term, term, term);
-    }
-
-    sql += " ORDER BY i.updated_at DESC LIMIT ? OFFSET ?";
-    params.push(Number(limit), Number(offset));
-
-    const rows = await query(sql, params);
+    const rows = await query(sql, [buyerId, ...filterParams]);
     return rows;
   },
 
@@ -212,24 +240,21 @@ const Inquiry = {
       WHERE i.buyer_id = ?
     `;
 
-    const params = [buyerId];
+    const { clause, params: filterParams } = buildInquiryFilter({
+      role: "buyer",
+      status,
+      search,
+    });
+    sql += clause;
 
-    if (status && status !== "all") {
-      sql += " AND i.status = ?";
-      params.push(status);
-    }
-
-    if (search && search.trim()) {
-      sql += " AND (p.title LIKE ? OR p.city LIKE ? OR u_agent.first_name LIKE ? OR u_agent.last_name LIKE ? OR i.message LIKE ?)";
-      const term = `%${search.trim()}%`;
-      params.push(term, term, term, term, term);
-    }
-
-    const rows = await query(sql, params);
+    const rows = await query(sql, [buyerId, ...filterParams]);
     return rows[0]?.total ? Number(rows[0].total) : 0;
   },
 
   async findByAgentId(agentId, { status, search, limit = 10, offset = 0 } = {}) {
+    const safeLimit = Math.max(1, parseInt(limit, 10) || 10);
+    const safeOffset = Math.max(0, parseInt(offset, 10) || 0);
+
     let sql = `
       SELECT 
         i.id,
@@ -278,23 +303,15 @@ const Inquiry = {
       WHERE i.agent_id = ?
     `;
 
-    const params = [agentId];
+    const { clause, params: filterParams } = buildInquiryFilter({
+      role: "agent",
+      status,
+      search,
+    });
+    sql += clause;
+    sql += ` ORDER BY i.updated_at DESC LIMIT ${safeLimit} OFFSET ${safeOffset}`;
 
-    if (status && status !== "all") {
-      sql += " AND i.status = ?";
-      params.push(status);
-    }
-
-    if (search && search.trim()) {
-      sql += " AND (p.title LIKE ? OR u_buyer.first_name LIKE ? OR u_buyer.last_name LIKE ? OR i.name LIKE ? OR i.message LIKE ?)";
-      const term = `%${search.trim()}%`;
-      params.push(term, term, term, term, term);
-    }
-
-    sql += " ORDER BY i.updated_at DESC LIMIT ? OFFSET ?";
-    params.push(Number(limit), Number(offset));
-
-    const rows = await query(sql, params);
+    const rows = await query(sql, [agentId, ...filterParams]);
     return rows;
   },
 
@@ -307,20 +324,14 @@ const Inquiry = {
       WHERE i.agent_id = ?
     `;
 
-    const params = [agentId];
+    const { clause, params: filterParams } = buildInquiryFilter({
+      role: "agent",
+      status,
+      search,
+    });
+    sql += clause;
 
-    if (status && status !== "all") {
-      sql += " AND i.status = ?";
-      params.push(status);
-    }
-
-    if (search && search.trim()) {
-      sql += " AND (p.title LIKE ? OR u_buyer.first_name LIKE ? OR u_buyer.last_name LIKE ? OR i.name LIKE ? OR i.message LIKE ?)";
-      const term = `%${search.trim()}%`;
-      params.push(term, term, term, term, term);
-    }
-
-    const rows = await query(sql, params);
+    const rows = await query(sql, [agentId, ...filterParams]);
     return rows[0]?.total ? Number(rows[0].total) : 0;
   },
 

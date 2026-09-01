@@ -15,22 +15,20 @@ CREATE TABLE IF NOT EXISTS inquiries (
     CONSTRAINT fk_inquiry_property
         FOREIGN KEY (property_id)
         REFERENCES properties(id)
-        ON DELETE CASCADE,
+        ON DELETE RESTRICT,
 
     CONSTRAINT fk_inquiry_buyer
         FOREIGN KEY (buyer_id)
         REFERENCES users(id)
-        ON DELETE CASCADE,
+        ON DELETE RESTRICT,
 
     CONSTRAINT fk_inquiry_agent
         FOREIGN KEY (agent_id)
         REFERENCES users(id)
-        ON DELETE CASCADE,
+        ON DELETE RESTRICT,
 
-    INDEX idx_inquiry_buyer (buyer_id),
-    INDEX idx_inquiry_agent (agent_id),
+    INDEX idx_inquiry_buyer_updated (buyer_id, updated_at),
+    INDEX idx_inquiry_agent_updated (agent_id, updated_at),
     INDEX idx_inquiry_property (property_id),
-    INDEX idx_inquiry_status (status),
-    INDEX idx_inquiry_is_read (is_read),
-    INDEX idx_inquiry_created_at (created_at)
+    INDEX idx_inquiry_status (status)
 );

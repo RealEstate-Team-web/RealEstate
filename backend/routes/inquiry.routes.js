@@ -4,6 +4,7 @@ const { authenticate } = require("../middlewares/auth.middleware");
 const { requireRole } = require("../middlewares/role.middleware");
 const {
   validateSubmitInquiry,
+  validateInquiryMessage,
   validateInquiryIdParam,
 } = require("../middlewares/validation.middleware");
 
@@ -38,6 +39,7 @@ router.post(
   "/:id/messages",
   authenticate,
   validateInquiryIdParam,
+  validateInquiryMessage,
   inquiryController.replyToInquiry
 );
 

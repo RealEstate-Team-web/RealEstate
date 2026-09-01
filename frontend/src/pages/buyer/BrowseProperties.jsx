@@ -18,6 +18,7 @@ import {
   Maximize2,
 } from 'lucide-react';
 import { getFavorites, addFavorite, removeFavorite } from '../../services/favorite.service';
+import { getProperties } from '../../services/property.service';
 import { BookVisitModal } from '../../components/buyer/BookVisitModal';
 import { InquiryModal } from '../../components/buyer/InquiryModal';
 import { useToast } from '../../hooks/useToast';
@@ -33,6 +34,8 @@ export const BrowseProperties = () => {
   const [favsError, setFavsError] = useState(null);
   const [bookingProperty, setBookingProperty] = useState(null);
   const [inquireProperty, setInquireProperty] = useState(null);
+  const [apiProperties, setApiProperties] = useState([]);
+  const [loadingProperties, setLoadingProperties] = useState(false);
   const mutationVersionsRef = useRef(new Map());
   const { toastMessage, showToast } = useToast();
 
@@ -233,7 +236,65 @@ export const BrowseProperties = () => {
     }
   };
 
-  const activeProp = demoProperties.find((p) => p.id === selectedPropertyId) || demoProperties[0];
+  useEffect(() => {
+    let isMounted = true;
+    const fetchCatalog = async () => {
+      try {
+        setLoadingProperties(true);
+        const result = await getProperties({ limit: 20 });
+        if (!isMounted) return;
+        const list = Array.isArray(result?.properties)
+          ? result.properties
+          : Array.isArray(result)
+          ? result
+          : [];
+
+        if (list.length > 0) {
+          const mapped = list.map((p, idx) => ({
+            id: p.id,
+            title: p.title,
+            location: p.address
+              ? `${p.address}, ${p.city || ''}`
+              : p.city || 'Addis Ababa',
+            type: p.listingType || p.category || 'Property',
+            status:
+              (p.status || 'Active').charAt(0).toUpperCase() +
+              (p.status || 'Active').slice(1),
+            price:
+              typeof p.price === 'number'
+                ? `$${p.price.toLocaleString()}`
+                : p.price || '$0',
+            beds: p.bedrooms ?? '—',
+            baths: p.bathrooms ?? '—',
+            sqft: p.area ? `${p.area}m²` : '—',
+            lat: p.latitude || 8.98 + idx * 0.01,
+            lon: p.longitude || 38.75 + idx * 0.01,
+            pinTop: `${30 + ((idx * 15) % 50)}%`,
+            pinLeft: `${30 + ((idx * 20) % 50)}%`,
+            img:
+              p.cover_image ||
+              p.image_url ||
+              p.images?.[0] ||
+              'https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&q=80&w=400',
+          }));
+          setApiProperties(mapped);
+          setSelectedPropertyId(mapped[0].id);
+        }
+      } catch (err) {
+        console.warn('Using fallback demo properties for browsing:', err);
+      } finally {
+        if (isMounted) setLoadingProperties(false);
+      }
+    };
+
+    fetchCatalog();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const displayProperties = apiProperties.length > 0 ? apiProperties : demoProperties;
+  const activeProp = displayProperties.find((p) => p.id === selectedPropertyId) || displayProperties[0];
 
   return (
     <div className="space-y-6 font-sans">
@@ -350,7 +411,7 @@ export const BrowseProperties = () => {
 
               {/* Interactive Location Pin Markers Layer on top of Map */}
               <div className="absolute inset-0 pointer-events-auto">
-                {demoProperties.map((prop) => (
+                {displayProperties.map((prop) => (
                   <div
                     key={prop.id}
                     style={{ top: prop.pinTop, left: prop.pinLeft }}
@@ -419,7 +480,7 @@ export const BrowseProperties = () => {
                 : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
             }`}
           >
-            {demoProperties.map((prop) => {
+            {displayProperties.map((prop) => {
               const isFavorited = favoritedIds.has(prop.id);
               const isSelected = prop.id === selectedPropertyId;
 
