@@ -106,7 +106,7 @@ const AgentApproval = () => {
     <div className="space-y-5 font-sans">
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div className="min-w-0">
-          <p className="text-[11px] font-semibold uppercase tracking-wider text-[#4A9FF5] mb-1">
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-[#1D6FD3] mb-1">
             Approvals
           </p>
           <div className="flex items-center gap-2.5">
