@@ -372,6 +372,53 @@ const validateInquiryIdParam = (req, res, next) => {
   next();
 };
 
+const validateUpdateProfile = (req, res, next) => {
+  const errors = [];
+  const { firstName, lastName, phone } = req.body || {};
+
+  if (firstName !== undefined && firstName !== null && String(firstName).trim() !== '') {
+    if (typeof firstName !== "string")
+      errors.push("firstName must be a non-empty string");
+    else if (String(firstName).trim().length > 100)
+      errors.push("firstName must be at most 100 characters");
+  }
+  if (lastName !== undefined && lastName !== null && String(lastName).trim() !== '') {
+    if (typeof lastName !== "string")
+      errors.push("lastName must be a non-empty string");
+    else if (String(lastName).trim().length > 100)
+      errors.push("lastName must be at most 100 characters");
+  }
+  if (phone !== undefined && phone !== null && String(phone).trim() !== '') {
+    if (!phonePattern.test(String(phone).trim()))
+      errors.push("phone must be a valid phone number");
+  }
+
+  if (errors.length > 0) return next(validationError(errors));
+  next();
+};
+
+const validateChangePassword = (req, res, next) => {
+  const errors = [];
+  const { currentPassword, newPassword } = req.body || {};
+
+  if (!currentPassword || typeof currentPassword !== "string")
+    errors.push("currentPassword is required");
+
+  if (typeof newPassword !== "string" || newPassword.length < 8) {
+    errors.push("newPassword must be at least 8 characters");
+  } else {
+    if (!hasUppercase.test(newPassword))
+      errors.push("newPassword must contain at least one uppercase letter");
+    if (!hasLowercase.test(newPassword))
+      errors.push("newPassword must contain at least one lowercase letter");
+    if (!hasNumber.test(newPassword))
+      errors.push("newPassword must contain at least one number");
+  }
+
+  if (errors.length > 0) return next(validationError(errors));
+  next();
+};
+
 module.exports = {
   validateRegister,
   validateRegisterAgent,
@@ -381,6 +428,8 @@ module.exports = {
   validateUpdateCategory,
   validateForgotPassword,
   validateResetPassword,
+  validateUpdateProfile,
+  validateChangePassword,
   validateAddFavorite,
   validatePropertyIdParam,
   validateBookVisit,
