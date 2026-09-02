@@ -9,6 +9,8 @@ import {
   Home,
   BarChart3,
   Activity,
+  UserCircle,
+  Settings,
 } from 'lucide-react';
 
 const navItems = [
@@ -24,6 +26,8 @@ const navItems = [
   { label: 'Users', path: '/admin/users', icon: Users },
   { label: 'Reports', path: '/admin/reports', icon: BarChart3 },
   { label: 'Analytics', path: '/admin/analytics', icon: Activity },
+  { label: 'Profile', path: '/admin/profile', icon: UserCircle },
+  { label: 'Settings', path: '/admin/settings', icon: Settings },
 ];
 
 const AdminSidebar = ({ isOpen, onClose, pendingAgents = 0 }) => {
