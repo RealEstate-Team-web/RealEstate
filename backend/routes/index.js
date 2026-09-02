@@ -8,6 +8,7 @@ const favoriteRoutes = require("./favorite.routes");
 const visitRoutes = require("./visit.routes");
 const inquiryRoutes = require("./inquiry.routes");
 const agentRoutes = require("./agent.routes");
+const userRoutes = require("./user.routes");
 const router = express.Router();
 
 router.get("/", (req, res) => {
@@ -26,5 +27,6 @@ router.use("/properties", propertyRoutes);
 router.use("/favorites", favoriteRoutes);
 router.use("/visits", visitRoutes);
 router.use("/inquiries", inquiryRoutes);
+router.use("/", userRoutes);
 
 module.exports = router;
