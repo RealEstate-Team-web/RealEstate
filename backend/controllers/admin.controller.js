@@ -147,10 +147,25 @@ const activateUser = async (req, res, next) => {
   }
 };
 
+const searchEntities = async (req, res, next) => {
+  try {
+    const { q } = req.query;
+    const data = await adminService.searchEntities(q);
+    res.status(200).json({
+      success: true,
+      message: "Search results",
+      data,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getDashboard,
   getAnalytics,
   getReports,
+  searchEntities,
   getAgents,
   approveAgent,
   rejectAgent,
