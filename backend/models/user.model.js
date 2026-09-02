@@ -11,6 +11,11 @@ const User = {
     return rows[0];
   },
 
+  async findUserByPhone(phone) {
+    const rows = await query("SELECT id FROM users WHERE phone = ?", [phone]);
+    return rows[0];
+  },
+
   async listUsers({ role, status, page = 1, limit = 10 } = {}) {
     const conditions = [];
     const params = [];
@@ -110,6 +115,41 @@ const User = {
     );
   },
 
+
+  async updateProfile(userId, { firstName, lastName, phone }) {
+    const existing = await query("SELECT first_name, last_name, phone FROM users WHERE id = ?", [userId]);
+    const row = existing[0];
+    const result = await query(
+      `UPDATE users
+       SET first_name = ?, last_name = ?, phone = ?, updated_at = NOW()
+       WHERE id = ?`,
+      [
+        firstName !== undefined && String(firstName).trim() !== '' ? String(firstName).trim() : row.first_name,
+        lastName !== undefined && String(lastName).trim() !== '' ? String(lastName).trim() : row.last_name,
+        phone !== undefined && String(phone).trim() !== '' ? String(phone).trim() : row.phone,
+        userId,
+      ],
+    );
+    return result.affectedRows;
+  },
+
+  async updateProfileImage(userId, profileImageUrl) {
+    await query(
+      "UPDATE users SET profile_image_url = ?, updated_at = NOW() WHERE id = ?",
+      [profileImageUrl, userId],
+    );
+  },
+
+  async findCredentialsByUserId(userId) {
+    const rows = await query(
+      `SELECT u.id, u.email, c.password_hash, c.password_changed_at
+       FROM users u
+       JOIN user_credentials c ON c.user_id = u.id
+       WHERE u.id = ?`,
+      [userId],
+    );
+    return rows[0];
+  },
 
   async findUserWithCredentials(email) {
     const rows = await query(
