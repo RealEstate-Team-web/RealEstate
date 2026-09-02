@@ -1,11 +1,12 @@
 const express = require("express");
-const { register, registerAgent, login, logout, completeAgentProfile, me } = require("../controllers/auth.controller");
+const { register, registerAgent, login, logout, completeAgentProfile, me, changePassword } = require("../controllers/auth.controller");
 const { forgot, reset } = require("../controllers/passwordReset.controller");
 const {
   validateRegister,
   validateRegisterAgent,
   validateCompleteAgentProfile,
   validateLogin,
+  validateChangePassword,
   validateForgotPassword,
   validateResetPassword,
 } = require("../middlewares/validation.middleware");
@@ -22,6 +23,7 @@ router.post("/forgot-password", forgotLimiter, validateForgotPassword, forgot);
 router.post("/reset-password", validateResetPassword, reset);
 router.post("/logout", authenticate, logout);
 router.get("/me", authenticate, me);
+router.put("/change-password", authenticate, validateChangePassword, changePassword);
 router.post(
   "/complete-agent-profile",
   authenticate,
