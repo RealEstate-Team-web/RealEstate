@@ -20,3 +20,6 @@ export const rejectAgent = (id) =>
 
 export const suspendAgent = (id) =>
   api.patch(`/admin/agents/${id}/suspend`).then((r) => r.data.data);
+
+export const searchEntities = (q) =>
+  api.get('/admin/search', { params: { q } }).then((r) => r.data.data);
