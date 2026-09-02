@@ -125,4 +125,20 @@ const me = (req, res) => {
   });
 };
 
-module.exports = { register, registerAgent, login, logout, completeAgentProfile, me };
+const changePassword = async (req, res, next) => {
+  try {
+    await authService.changePassword(
+      req.user.id,
+      req.body.currentPassword,
+      req.body.newPassword,
+    );
+    res.status(200).json({
+      success: true,
+      message: "Password updated successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { register, registerAgent, login, logout, completeAgentProfile, me, changePassword };
