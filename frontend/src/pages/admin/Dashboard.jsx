@@ -12,6 +12,7 @@ import KpiCard from '../../components/admin/KpiCard';
 import StatusDonutChart from '../../components/admin/StatusDonutChart';
 import StatusBadge from '../../components/common/StatusBadge';
 import Avatar from '../../components/common/Avatar';
+import DashboardSearch from '../../components/common/DashboardSearch';
 import { getDashboardStats } from '../../services/admin.service';
 
 const formatDate = (iso) => {
@@ -137,6 +138,9 @@ const Dashboard = () => {
           <p className="text-[13px] text-[#6B7280] mt-1">
             Users, agents, and platform activity at a glance
           </p>
+        </div>
+        <div className="flex-shrink-0 self-start">
+          <DashboardSearch role="admin" />
         </div>
       </div>
 
