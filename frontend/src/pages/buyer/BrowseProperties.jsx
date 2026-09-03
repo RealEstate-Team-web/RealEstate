@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { getFavorites, addFavorite, removeFavorite } from '../../services/favorite.service';
 import { getProperties } from '../../services/property.service';
+import { getPropertyImageUrl } from '../../utils/helpers';
 import { BookVisitModal } from '../../components/buyer/BookVisitModal';
 import { InquiryModal } from '../../components/buyer/InquiryModal';
 import { useToast } from '../../hooks/useToast';
@@ -274,7 +275,7 @@ export const BrowseProperties = () => {
             img:
               p.cover_image ||
               p.image_url ||
-              p.images?.[0] ||
+              getPropertyImageUrl(p) ||
               'https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&q=80&w=400',
           }));
           setApiProperties(mapped);

@@ -45,7 +45,7 @@ const propertyModel = {
             params.push(search, search);
         }
 
-        if (q) {
+        if (typeof q === 'string' && q.trim()) {
             const keyword = `%${q.trim()}%`;
             conditions.push(`
             (
@@ -131,19 +131,19 @@ const propertyModel = {
 
             p.bedrooms,
             p.bathrooms,
-            p.parking_spaces,
+            p.parking_spaces AS parking,
             p.area,
 
-            p.listing_type,
+            p.listing_type AS listingType,
             p.status,
 
             p.latitude,
             p.longitude,
 
             p.views,
-            p.created_at,
+            p.created_at AS createdAt,
 
-            p.category_id
+            p.category_id AS categoryId
 
             FROM properties p
 
@@ -194,7 +194,7 @@ const propertyModel = {
             featuredLimit = fallback;
         } else {
             const parsed = Number(limit);
-            featuredLimit = Number.isFinite(parsed)
+            featuredLimit = Number.isInteger(parsed)
                 ? Math.min(Math.max(parsed, 1), 50)
                 : fallback;
         }
@@ -209,15 +209,15 @@ const propertyModel = {
             p.country,
             p.bedrooms,
             p.bathrooms,
-            p.parking_spaces,
+            p.parking_spaces AS parking,
             p.area,
-            p.listing_type,
+            p.listing_type AS listingType,
             p.status,
             p.latitude,
             p.longitude,
             p.views,
-            p.created_at,
-            p.category_id
+            p.created_at AS createdAt,
+            p.category_id AS categoryId
             FROM properties p
             WHERE p.status = 'available'
             ORDER BY p.views DESC, p.created_at DESC
@@ -260,12 +260,17 @@ const propertyModel = {
 
         // Fetch images
         const imageRows = await query(
-            `SELECT image_url AS url, is_cover, sort_order FROM property_images WHERE property_id = ? ORDER BY is_cover DESC, sort_order ASC, id ASC`,
+            `SELECT image_url AS imageUrl, public_id AS publicId, sort_order AS sortOrder, is_cover AS isCover FROM property_images WHERE property_id = ? ORDER BY is_cover DESC, sort_order ASC, id ASC`,
             [id]
         );
 
         const images = imageRows.length > 0
-            ? imageRows.map(img => img.url)
+            ? imageRows.map(img => ({
+                imageUrl: img.imageUrl,
+                publicId: img.publicId,
+                sortOrder: img.sortOrder,
+                isCover: !!img.isCover,
+            }))
             : [];
 
         // Fetch amenities

@@ -22,6 +22,15 @@ const propertyService = require("../services/property.service");
     } = req.query;
 
 
+    if (q !== undefined && typeof q !== 'string') {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid query parameter: q must be a string",
+        data: null,
+      });
+    }
+
+
     const page = Math.max(
       Number(req.query.page) || 1,
       1
@@ -59,6 +68,7 @@ const propertyService = require("../services/property.service");
 
     res.status(200).json({
       success: true,
+      message: "Properties fetched successfully",
       data: result,
     });
 
@@ -81,6 +91,7 @@ const propertyService = require("../services/property.service");
 
     res.status(200).json({
       success: true,
+      message: "Featured properties fetched successfully",
       data: result,
     });
 
@@ -103,6 +114,7 @@ const propertyService = require("../services/property.service");
 
     res.status(200).json({
       success: true,
+      message: "Property fetched successfully",
       data: property,
     });
 

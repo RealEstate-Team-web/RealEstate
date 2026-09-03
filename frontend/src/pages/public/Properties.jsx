@@ -16,6 +16,7 @@ import {
 
 import PropertyCard from "../../components/property/PropertyCard";
 
+import { getPropertyImageUrl } from "../../utils/helpers";
 import { DEMO_PROPERTIES } from "../../utils/property.details.mock.data.js";
 
 
@@ -43,11 +44,7 @@ const normalizeProperties = (response) => {
 
 const getPropertyImage = (property) => {
   return (
-    property.image ||
-    property.imageUrl ||
-    property.image_url ||
-    property.images?.[0]?.url ||
-    property.images?.[0] ||
+    getPropertyImageUrl(property) ||
     "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1000&q=85"
   );
 };
