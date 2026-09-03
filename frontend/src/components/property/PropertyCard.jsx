@@ -6,30 +6,14 @@ import {
   CarFront,
   MapPin,
 } from "lucide-react";
+import { getPropertyImageUrl } from "../../utils/helpers";
 
 const FALLBACK_IMAGE =
   "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80";
 
 const getImage = (property) => {
-  if (property.image) return property.image;
-
-  if (property.image_url) return property.image_url;
-
-  if (property.cover_image) return property.cover_image;
-
-  if (Array.isArray(property.images) && property.images.length > 0) {
-    const firstImage = property.images[0];
-
-    if (typeof firstImage === "string") {
-      return firstImage;
-    }
-
-    if (firstImage?.url) {
-      return firstImage.url;
-    }
-  }
-
-  return FALLBACK_IMAGE;
+  const url = getPropertyImageUrl(property);
+  return url || FALLBACK_IMAGE;
 };
 
 const getLocation = (property) => {

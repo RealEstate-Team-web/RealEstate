@@ -32,6 +32,18 @@ const assertOwner = (property, agentId) => {
 };
 
 
+ const getFeaturedProperties = async (
+  { limit } = {}
+) => {
+  const properties =
+    await propertyModel.findFeatured(
+      { limit }
+    );
+
+  return properties;
+};
+
+
  const getPropertyById = async (
   id
 ) => {
@@ -129,6 +141,7 @@ const assertOwner = (property, agentId) => {
 };
 module.exports = {
     getProperties,
+    getFeaturedProperties,
     getPropertyById,
     createProperty,
     updateProperty,

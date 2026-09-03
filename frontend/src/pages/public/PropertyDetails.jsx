@@ -27,6 +27,7 @@ import { PropertyMap } from "./PropertyMap.jsx";
 import PageLoader from "../../components/common/Loader.jsx";
 import { submitInquiry } from "../../services/inquiry.service";
 import useAuth from "../../hooks/useAuth";
+import { getPropertyImageList } from "../../utils/helpers";
 const PropertyDetails = ({
   propertyData = null,
   nearbyData = null,
@@ -130,15 +131,9 @@ const PropertyDetails = ({
       ? nearbyData
       : NEARBY_PROPERTIES;
 
-  const rawImages = Array.isArray(property?.images)
-    ? property.images.filter(Boolean)
-    : property?.img || property?.image || property?.image_url
-      ? [property?.img || property?.image || property?.image_url]
-      : [];
-
   const images =
-    rawImages.length > 0
-      ? rawImages
+    getPropertyImageList(property).length > 0
+      ? getPropertyImageList(property)
       : ["https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80"];
 
   const amenities = Array.isArray(property?.amenities)

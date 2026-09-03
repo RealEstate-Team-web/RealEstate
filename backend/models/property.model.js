@@ -8,6 +8,7 @@ const propertyModel = {
     async findProperties({
         city,
         location,
+        q,
         minPrice,
         maxPrice,
         categoryId,
@@ -42,6 +43,19 @@ const propertyModel = {
             const search = `%${location}%`;
 
             params.push(search, search);
+        }
+
+        if (typeof q === 'string' && q.trim()) {
+            const keyword = `%${q.trim()}%`;
+            conditions.push(`
+            (
+                p.title LIKE ?
+                OR p.description LIKE ?
+                OR p.city LIKE ?
+                OR p.address LIKE ?
+            )
+            `);
+            params.push(keyword, keyword, keyword, keyword);
         }
 
         if (minPrice) {
@@ -117,19 +131,19 @@ const propertyModel = {
 
             p.bedrooms,
             p.bathrooms,
-            p.parking_spaces,
+            p.parking_spaces AS parking,
             p.area,
 
-            p.listing_type,
+            p.listing_type AS listingType,
             p.status,
 
             p.latitude,
             p.longitude,
 
             p.views,
-            p.created_at,
+            p.created_at AS createdAt,
 
-            p.category_id
+            p.category_id AS categoryId
 
             FROM properties p
 
@@ -172,6 +186,50 @@ const propertyModel = {
     },
 
 
+    // Get featured (available) properties ordered by popularity/nonewness
+    async findFeatured({ limit = 6 } = {}) {
+        const fallback = 6;
+        let featuredLimit;
+        if (limit == null) {
+            featuredLimit = fallback;
+        } else {
+            const parsed = Number(limit);
+            featuredLimit = Number.isInteger(parsed)
+                ? Math.min(Math.max(parsed, 1), 50)
+                : fallback;
+        }
+
+        const sql = `
+            SELECT
+            p.id,
+            p.title,
+            p.price,
+            p.address,
+            p.city,
+            p.country,
+            p.bedrooms,
+            p.bathrooms,
+            p.parking_spaces AS parking,
+            p.area,
+            p.listing_type AS listingType,
+            p.status,
+            p.latitude,
+            p.longitude,
+            p.views,
+            p.created_at AS createdAt,
+            p.category_id AS categoryId
+            FROM properties p
+            WHERE p.status = 'available'
+            ORDER BY p.views DESC, p.created_at DESC
+            LIMIT ?
+        `;
+
+        const properties = await query(sql, [featuredLimit]);
+
+        return properties;
+    },
+
+
     // Get one property with images and agent details
     async findPropertyById(id) {
         const sql = `
@@ -186,7 +244,7 @@ const propertyModel = {
                 u.profile_image_url AS agentPhoto,
                 ap.agency_name AS agencyName,
                 ap.bio AS agentBio,
-                ap.experience AS agentExperience,
+                ap.experience_years AS agentExperience,
                 ap.office_address AS agentOfficeAddress
             FROM properties p
             LEFT JOIN users u ON u.id = p.agent_id
@@ -202,12 +260,17 @@ const propertyModel = {
 
         // Fetch images
         const imageRows = await query(
-            `SELECT image_url AS url, is_cover, sort_order FROM property_images WHERE property_id = ? ORDER BY is_cover DESC, sort_order ASC, id ASC`,
+            `SELECT image_url AS imageUrl, public_id AS publicId, sort_order AS sortOrder, is_cover AS isCover FROM property_images WHERE property_id = ? ORDER BY is_cover DESC, sort_order ASC, id ASC`,
             [id]
         );
 
         const images = imageRows.length > 0
-            ? imageRows.map(img => img.url)
+            ? imageRows.map(img => ({
+                imageUrl: img.imageUrl,
+                publicId: img.publicId,
+                sortOrder: img.sortOrder,
+                isCover: !!img.isCover,
+            }))
             : [];
 
         // Fetch amenities

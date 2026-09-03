@@ -6,6 +6,7 @@ const propertyService = require("../services/property.service");
 ) => {
   try {
     const {
+      q,
       city,
       location,
       minPrice,
@@ -19,6 +20,15 @@ const propertyService = require("../services/property.service");
       listingType,
       sort = "newest",
     } = req.query;
+
+
+    if (q !== undefined && typeof q !== 'string') {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid query parameter: q must be a string",
+        errors: ["q must be a string"],
+      });
+    }
 
 
     const page = Math.max(
@@ -38,6 +48,7 @@ const propertyService = require("../services/property.service");
 
     const result =
       await propertyService.getProperties({
+        q,
         city,
         location,
         minPrice,
@@ -57,6 +68,41 @@ const propertyService = require("../services/property.service");
 
     res.status(200).json({
       success: true,
+      message: "Properties fetched successfully",
+      data: result,
+    });
+
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+ const getFeaturedProperties = async (
+  req,
+  res,
+  next
+) => {
+  try {
+    if (req.query.limit !== undefined) {
+      const parsed = Number(req.query.limit);
+      if (!Number.isInteger(parsed) || parsed < 1 || parsed > 50) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid query parameter: limit must be an integer between 1 and 50",
+          errors: ["limit must be an integer between 1 and 50"],
+        });
+      }
+    }
+
+    const result =
+      await propertyService.getFeaturedProperties({
+        limit: req.query.limit,
+      });
+
+    res.status(200).json({
+      success: true,
+      message: "Featured properties fetched successfully",
       data: result,
     });
 
@@ -79,6 +125,7 @@ const propertyService = require("../services/property.service");
 
     res.status(200).json({
       success: true,
+      message: "Property fetched successfully",
       data: property,
     });
 
@@ -159,6 +206,7 @@ const propertyService = require("../services/property.service");
 };
 module.exports = {
     getProperties,
+    getFeaturedProperties,
     getPropertyById,
     createProperty,
     updateProperty,
