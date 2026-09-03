@@ -34,8 +34,8 @@ const AgentApproval = () => {
 
   useEffect(() => {
     let active = true;
-    setLoading(true);
     (async () => {
+      setLoading(true);
       try {
         const term = searchTerm.trim();
         const [s, a] = await Promise.all([
@@ -59,11 +59,13 @@ const AgentApproval = () => {
   }, [searchTerm]);
 
   const reload = async () => {
+    const termAtStart = searchTerm;
     const term = searchTerm.trim();
     const [s, a] = await Promise.all([
       getDashboardStats(),
       getAgents({ status: term ? undefined : 'pending', q: term || undefined }),
     ]);
+    if (searchTerm !== termAtStart) return;
     setStats(s);
     setAgents(a);
   };

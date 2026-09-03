@@ -57,8 +57,8 @@ const UserManagement = () => {
 
   useEffect(() => {
     const requestId = ++requestIdRef.current;
-    setLoading(true);
     (async () => {
+      setLoading(true);
       try {
         const result = await getAdminUsers({ page: 1, limit: PAGE_SIZE, q: searchTerm || undefined });
         if (requestId !== requestIdRef.current) return;
@@ -77,8 +77,11 @@ const UserManagement = () => {
 
   const reload = async () => {
     const requestId = ++requestIdRef.current;
-    const result = await getAdminUsers({ page, limit: PAGE_SIZE, q: searchTerm || undefined });
+    const termAtStart = searchTerm;
+    const pageAtStart = page;
+    const result = await getAdminUsers({ page: pageAtStart, limit: PAGE_SIZE, q: termAtStart || undefined });
     if (requestId !== requestIdRef.current) return;
+    if (searchTerm !== termAtStart || page !== pageAtStart) return;
     setUsers(result.users || []);
     setPagination(result.pagination || null);
     setStats(result.stats || null);
