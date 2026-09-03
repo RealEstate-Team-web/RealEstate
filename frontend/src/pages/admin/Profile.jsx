@@ -61,7 +61,8 @@ const Profile = () => {
     setSuccess(null);
   };
 
-  const handleSave = async () => {
+  const handleSave = async (e) => {
+    if (e) e.preventDefault();
     setError(null);
     setSuccess(null);
 

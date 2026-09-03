@@ -314,7 +314,7 @@ async function searchEntities(raw) {
     ),
     query(
       `SELECT u.id, u.first_name AS name, u.last_name AS lastName, u.email,
-              ap.agency_name
+              ap.agency_name AS agencyName
        FROM agent_profiles ap
        JOIN users u ON u.id = ap.user_id
        WHERE u.first_name LIKE ? OR u.last_name LIKE ? OR ap.agency_name LIKE ? OR ap.license_number LIKE ?
@@ -323,7 +323,7 @@ async function searchEntities(raw) {
       [like, like, like, like]
     ),
     query(
-      `SELECT id, title AS name, city, listing_type
+      `SELECT id, title AS name, city, listing_type AS listingType
        FROM properties
        WHERE title LIKE ? OR city LIKE ? OR address LIKE ?
        ORDER BY created_at DESC

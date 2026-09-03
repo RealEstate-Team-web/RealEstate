@@ -200,7 +200,7 @@ const DashboardSearch = ({ role = 'admin' }) => {
                       <div className="min-w-0 flex-1">
                         <p className="text-xs font-semibold text-slate-800 truncate">{item.name}</p>
                         <p className="text-[11px] text-slate-400 truncate">
-                          {item.email || item.agency_name || item.city || '—'}
+                          {item.email || item.agencyName || item.city || '—'}
                         </p>
                       </div>
                       <ArrowRight size={12} className="text-slate-300 shrink-0" />

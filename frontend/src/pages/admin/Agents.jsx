@@ -21,10 +21,9 @@ const formatDate = (iso) => {
 };
 
 const AgentApproval = () => {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const highlightId = searchParams.get('highlight');
-  const initialQ = searchParams.get('q') || '';
-  const [searchTerm, setSearchTerm] = useState(initialQ);
+  const searchTerm = searchParams.get('q') || '';
   const [stats, setStats] = useState(null);
   const [agents, setAgents] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -170,7 +169,15 @@ const AgentApproval = () => {
             <input
               type="text"
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={(e) =>
+                setSearchParams((prev) => {
+                  const next = new URLSearchParams(prev);
+                  const val = e.target.value;
+                  if (val) next.set('q', val);
+                  else next.delete('q');
+                  return next;
+                }, { replace: true })
+              }
               placeholder="Search agents..."
               aria-label="Search agents"
               className="w-full bg-[#F5F5FA] border border-[#E5E7EB] rounded-lg py-2 pl-9 pr-3 text-[13px] text-slate-700 placeholder-slate-400 focus:outline-none focus:border-[#4A9FF5] focus:bg-white transition"
@@ -230,13 +237,14 @@ const AgentApproval = () => {
                         <StatusBadge status={a.status}>{a.status}</StatusBadge>
                       </td>
                        <td className="py-0 px-4">
+                         {a.status === 'pending' ? (
                          <div className="flex items-center gap-2 whitespace-nowrap">
                            <button
                              type="button"
                              disabled={actionId === a.id}
 onClick={() => act(approveAgent, a.id, a.first_name, 'approved')}
-                              className="inline-flex items-center gap-1.5 h-[34px] px-[10px] rounded-md bg-[#E7F4EE] text-[13px] font-medium text-[#2F7A55] hover:bg-[#d3efe1] transition-colors disabled:opacity-50"
-                            >
+                               className="inline-flex items-center gap-1.5 h-[34px] px-[10px] rounded-md bg-[#E7F4EE] text-[13px] font-medium text-[#2F7A55] hover:bg-[#d3efe1] transition-colors disabled:opacity-50"
+                             >
                             {actionId === a.id ? (
                               <Loader2 size={19} className="animate-spin" />
                             ) : (
@@ -254,6 +262,9 @@ onClick={() => act(approveAgent, a.id, a.first_name, 'approved')}
                             Reject Account
                           </button>
                         </div>
+                         ) : (
+                           <span className="text-[#9CA3AF]">—</span>
+                         )}
                       </td>
                     </tr>
                   );

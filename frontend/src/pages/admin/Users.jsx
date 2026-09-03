@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import {
   Ban,
@@ -21,10 +21,9 @@ import {
 const PAGE_SIZE = 10;
 
 const UserManagement = () => {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const highlightId = searchParams.get('highlight');
-  const initialQ = searchParams.get('q') || '';
-  const [searchTerm, setSearchTerm] = useState(initialQ);
+  const searchTerm = searchParams.get('q') || '';
   const [users, setUsers] = useState([]);
   const [pagination, setPagination] = useState(null);
   const [stats, setStats] = useState(null);
@@ -36,48 +35,49 @@ const UserManagement = () => {
   const [confirmId, setConfirmId] = useState(null);
   const [refreshError, setRefreshError] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
+  const requestIdRef = useRef(0);
 
   const fetchUsers = async (pageNum) => {
+    const requestId = ++requestIdRef.current;
     setLoading(true);
     setError(null);
     try {
       const result = await getAdminUsers({ page: pageNum, limit: PAGE_SIZE, q: searchTerm || undefined });
+      if (requestId !== requestIdRef.current) return;
       setUsers(result.users || []);
       setPagination(result.pagination || null);
       setStats(result.stats || null);
       setPage(pageNum);
     } catch {
-      setError('Failed to load users');
+      if (requestId === requestIdRef.current) setError('Failed to load users');
     } finally {
-      setLoading(false);
+      if (requestId === requestIdRef.current) setLoading(false);
     }
   };
 
   useEffect(() => {
-    let active = true;
+    const requestId = ++requestIdRef.current;
     (async () => {
       try {
         const result = await getAdminUsers({ page: 1, limit: PAGE_SIZE, q: searchTerm || undefined });
-        if (!active) return;
+        if (requestId !== requestIdRef.current) return;
         setUsers(result.users || []);
         setPagination(result.pagination || null);
         setStats(result.stats || null);
         setPage(1);
         setError(null);
       } catch {
-        if (!active) return;
-        setError('Failed to load users');
+        if (requestId === requestIdRef.current) setError('Failed to load users');
       } finally {
-        if (active) setLoading(false);
+        if (requestId === requestIdRef.current) setLoading(false);
       }
     })();
-    return () => {
-      active = false;
-    };
   }, [searchTerm]);
 
   const reload = async () => {
+    const requestId = ++requestIdRef.current;
     const result = await getAdminUsers({ page, limit: PAGE_SIZE, q: searchTerm || undefined });
+    if (requestId !== requestIdRef.current) return;
     setUsers(result.users || []);
     setPagination(result.pagination || null);
     setStats(result.stats || null);
@@ -213,7 +213,15 @@ const UserManagement = () => {
             <input
               type="text"
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={(e) =>
+                setSearchParams((prev) => {
+                  const next = new URLSearchParams(prev);
+                  const val = e.target.value;
+                  if (val) next.set('q', val);
+                  else next.delete('q');
+                  return next;
+                }, { replace: true })
+              }
               placeholder="Search users..."
               aria-label="Search users"
               className="w-full bg-[#F5F5FA] border border-[#E5E7EB] rounded-lg py-2 pl-9 pr-3 text-[13px] text-slate-700 placeholder-slate-400 focus:outline-none focus:border-[#4A9FF5] focus:bg-white transition"

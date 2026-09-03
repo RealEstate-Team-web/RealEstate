@@ -36,10 +36,14 @@ const Settings = () => {
   const [agentApprovals, setAgentApprovals] = useState(initialPrefs.agentApprovals);
 
   useEffect(() => {
-    localStorage.setItem(
-      PREFS_KEY,
-      JSON.stringify({ emailNotifications, smsAlerts, agentApprovals })
-    );
+    try {
+      localStorage.setItem(
+        PREFS_KEY,
+        JSON.stringify({ emailNotifications, smsAlerts, agentApprovals })
+      );
+    } catch {
+      // Storage may be unavailable or full; keep in-memory preference state.
+    }
   }, [emailNotifications, smsAlerts, agentApprovals]);
 
   const handlePasswordChange = async () => {
