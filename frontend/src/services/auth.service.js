@@ -94,6 +94,11 @@ const resetPassword = (token, password) =>
     .post('/auth/reset-password', { token, password })
     .then((r) => r.data)
 
+const changePassword = ({ currentPassword, newPassword }) =>
+  api
+    .put('/auth/change-password', { currentPassword, newPassword })
+    .then((r) => r.data)
+
 const authService = {
   register,
   registerAgent,
@@ -103,6 +108,7 @@ const authService = {
   completeAgentProfile,
   requestPasswordReset,
   resetPassword,
+  changePassword,
 }
 
 export default authService

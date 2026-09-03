@@ -43,8 +43,8 @@ const getReports = async (req, res, next) => {
 
 const getAgents = async (req, res, next) => {
   try {
-    const { status } = req.query;
-    const data = await adminService.listAgents({ status });
+    const { status, q } = req.query;
+    const data = await adminService.listAgents({ status, q });
     res.status(200).json({
       success: true,
       message: "Agent list",
@@ -96,8 +96,8 @@ const suspendAgent = async (req, res, next) => {
 
 const listUsers = async (req, res, next) => {
   try {
-    const { role, status, page, limit } = req.query;
-    const result = await adminService.listUsers({ role, status, page, limit });
+    const { role, status, q, page, limit } = req.query;
+    const result = await adminService.listUsers({ role, status, q, page, limit });
     res.status(200).json({
       success: true,
       message: "User list",
@@ -147,10 +147,25 @@ const activateUser = async (req, res, next) => {
   }
 };
 
+const searchEntities = async (req, res, next) => {
+  try {
+    const { q } = req.query;
+    const data = await adminService.searchEntities(q);
+    res.status(200).json({
+      success: true,
+      message: "Search results",
+      data,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getDashboard,
   getAnalytics,
   getReports,
+  searchEntities,
   getAgents,
   approveAgent,
   rejectAgent,

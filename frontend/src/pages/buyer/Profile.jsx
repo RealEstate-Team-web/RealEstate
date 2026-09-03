@@ -27,7 +27,7 @@ export const Profile = () => {
           <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs text-center flex flex-col items-center">
             <div className="relative mb-4">
               <img
-                src={user?.avatar || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=300'}
+                src={user?.profileImageUrl || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=300'}
                 alt={user?.name || 'User Avatar'}
                 className="w-28 h-28 rounded-full object-cover border-4 border-slate-100 shadow-md"
               />

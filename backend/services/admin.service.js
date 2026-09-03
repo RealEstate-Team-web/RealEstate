@@ -2,6 +2,7 @@ const Agent = require("../models/agent.model");
 const User = require("../models/user.model");
 const Property = require("../models/property.model");
 const Visit = require("../models/visit.model");
+const { query } = require("../config/db.config");
 const { sendSuspensionEmail, sendActivationEmail } = require("../services/email.service");
 
 function normalizeRange(range) {
@@ -156,8 +157,14 @@ async function getAnalytics({ range } = {}) {
   };
 }
 
-async function listAgents({ status } = {}) {
-  return Agent.listAgents({ status });
+async function listAgents({ status, q } = {}) {
+  return Agent.listAgents({ status, q: sanitizeSearchTerm(q) });
+}
+
+function sanitizeSearchTerm(raw) {
+  if (raw === undefined || raw === null) return undefined;
+  const term = String(raw).trim();
+  return term ? term.slice(0, 60) : undefined;
 }
 
 async function approveAgent(id) {
@@ -230,7 +237,7 @@ function validateId(id) {
   return n;
 }
 
-async function listUsers({ role, status, page, limit } = {}) {
+async function listUsers({ role, status, q, page, limit } = {}) {
   if (role !== undefined && !["buyer", "agent", "admin"].includes(role)) {
     const error = new Error("Invalid role filter");
     error.status = 400;
@@ -242,7 +249,7 @@ async function listUsers({ role, status, page, limit } = {}) {
     throw error;
   }
   const paginated = validatePagination(page, limit);
-  return User.listUsers({ role, status, page: paginated.page, limit: paginated.limit });
+  return User.listUsers({ role, status, q: sanitizeSearchTerm(q), page: paginated.page, limit: paginated.limit });
 }
 
 async function suspendUser(id) {
@@ -288,9 +295,50 @@ async function activateUser(id) {
   return { id: user.id, status: "active" };
 }
 
+async function searchEntities(raw) {
+  const term = typeof raw === "string" ? raw.trim() : "";
+  if (!term) {
+    return { users: [], agents: [], properties: [] };
+  }
+
+  const like = `%${term}%`;
+
+  const [users, agents, properties] = await Promise.all([
+    query(
+      `SELECT id, first_name AS name, last_name AS lastName, email
+       FROM users
+       WHERE first_name LIKE ? OR last_name LIKE ? OR email LIKE ?
+       ORDER BY created_at DESC
+       LIMIT 5`,
+      [like, like, like]
+    ),
+    query(
+      `SELECT u.id, u.first_name AS name, u.last_name AS lastName, u.email,
+              ap.agency_name AS agencyName
+       FROM agent_profiles ap
+       JOIN users u ON u.id = ap.user_id
+       WHERE u.first_name LIKE ? OR u.last_name LIKE ? OR ap.agency_name LIKE ? OR ap.license_number LIKE ?
+       ORDER BY ap.created_at DESC
+       LIMIT 5`,
+      [like, like, like, like]
+    ),
+    query(
+      `SELECT id, title AS name, city, listing_type AS listingType
+       FROM properties
+       WHERE title LIKE ? OR city LIKE ? OR address LIKE ?
+       ORDER BY created_at DESC
+       LIMIT 5`,
+      [like, like, like]
+    ),
+  ]);
+
+  return { users, agents, properties };
+}
+
 module.exports = {
   getDashboardStats,
   getAnalytics,
+  searchEntities,
   listAgents,
   approveAgent,
   rejectAgent,

@@ -201,4 +201,33 @@ async function completeAgentProfile({
   return toSafeUser(user, agentProfileStatus);
 }
 
-module.exports = { register, registerAgent, login, completeAgentProfile, hashPassword };
+async function changePassword(userId, currentPassword, newPassword) {
+  const credentials = await User.findCredentialsByUserId(userId);
+  if (!credentials) {
+    const error = new Error("Account not found");
+    error.status = 404;
+    throw error;
+  }
+
+  const matches = await bcrypt.compare(currentPassword, credentials.password_hash);
+  if (!matches) {
+    const error = new Error("Current password is incorrect");
+    error.status = 400;
+    throw error;
+  }
+
+  const usesSamePassword = await bcrypt.compare(newPassword, credentials.password_hash);
+  if (usesSamePassword) {
+    const error = new Error("New password must be different from the current password");
+    error.status = 400;
+    throw error;
+  }
+
+  const passwordHash = await bcrypt.hash(newPassword, 10);
+  await pool.execute(
+    "UPDATE user_credentials SET password_hash = ?, password_changed_at = NOW() WHERE user_id = ?",
+    [passwordHash, userId],
+  );
+}
+
+module.exports = { register, registerAgent, login, completeAgentProfile, changePassword, hashPassword };

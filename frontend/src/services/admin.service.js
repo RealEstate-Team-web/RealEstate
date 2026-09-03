@@ -7,9 +7,9 @@ export const getAnalytics = ({ range } = {}) =>
     .get('/admin/analytics', { params: range ? { range } : {} })
     .then((r) => r.data.data);
 
-export const getAgents = (status) =>
+export const getAgents = ({ status, q } = {}) =>
   api
-    .get('/admin/agents', { params: status ? { status } : {} })
+    .get('/admin/agents', { params: { ...(status ? { status } : {}), ...(q ? { q } : {}) } })
     .then((r) => r.data.data);
 
 export const approveAgent = (id) =>
@@ -20,3 +20,6 @@ export const rejectAgent = (id) =>
 
 export const suspendAgent = (id) =>
   api.patch(`/admin/agents/${id}/suspend`).then((r) => r.data.data);
+
+export const searchEntities = (q) =>
+  api.get('/admin/search', { params: { q } }).then((r) => r.data.data);

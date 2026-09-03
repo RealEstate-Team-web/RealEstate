@@ -36,6 +36,8 @@ import Categories from '../pages/admin/Categories';
 import Users from '../pages/admin/Users';
 import AdminReports from '../pages/admin/Reports';
 import AdminAnalytics from '../pages/admin/Analytics';
+import AdminProfile from '../pages/admin/Profile';
+import AdminSettings from '../pages/admin/Settings';
 import { ROUTES } from '../utils/constants';
 
 export const AppRoutes = () => {
@@ -86,7 +88,7 @@ export const AppRoutes = () => {
 
 
       {/* Public pages — wrapped with Header + Footer */}
-      <Route path="/" element={<PublicRoute><Home /></PublicRoute>} />
+      <Route path="/" element={<PublicRoute allowAuthenticated><Home /></PublicRoute>} />
       <Route path="/properties" element={<PublicRoute><Properties /></PublicRoute>} />
       <Route path="/properties/:id" element={<PublicRoute><PropertyDetails /></PublicRoute>} />
       <Route path="/about" element={<PublicRoute><About /></PublicRoute>} />
@@ -139,6 +141,8 @@ export const AppRoutes = () => {
             <Route path="users" element={<Users />} />
             <Route path="reports" element={<AdminReports />} />
             <Route path="analytics" element={<AdminAnalytics />} />
+            <Route path="profile" element={<AdminProfile />} />
+            <Route path="settings" element={<AdminSettings />} />
             <Route path="*" element={<Navigate to={ROUTES.admin} replace />} />
           </Route>
         </Route>

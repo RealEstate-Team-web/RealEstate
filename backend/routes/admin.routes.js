@@ -5,6 +5,7 @@ const {
   getDashboard,
   getAnalytics,
   getReports,
+  searchEntities,
   getAgents,
   approveAgent,
   rejectAgent,
@@ -30,6 +31,7 @@ const router = express.Router();
 router.use(authenticate, requireRole("admin"));
 
 router.get("/", getDashboard);
+router.get("/search", searchEntities);
 router.get("/analytics", getAnalytics);
 router.get("/reports", getReports);
 router.get("/agents", getAgents);

@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
-import { Menu, Search, Bell, ChevronDown, LogOut } from 'lucide-react';
+import { Menu, Bell, ChevronDown, LogOut } from 'lucide-react';
 import { ROUTES } from '../../utils/constants';
+import DashboardSearch from '../common/DashboardSearch';
 
 const titleMap = {
   '/admin': 'Dashboard',
@@ -70,14 +71,7 @@ const AdminHeader = ({ onToggleSidebar }) => {
 
       {/* Center: search */}
       <div className="hidden md:flex items-center flex-1 max-w-[380px] mx-8">
-        <div className="relative w-full">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-          <input
-            type="text"
-            placeholder="Search properties, clients, etc..."
-            className="w-full bg-[#F5F5FA] border border-[#E5E7EB] focus:border-[#4A9FF5] focus:bg-white rounded-lg py-2.5 pl-10 pr-4 text-[13px] text-slate-700 placeholder-slate-400 focus:outline-none transition"
-          />
-        </div>
+        <DashboardSearch role="admin" />
       </div>
 
       {/* Right: notifications + user */}
@@ -97,7 +91,7 @@ const AdminHeader = ({ onToggleSidebar }) => {
             className="flex items-center space-x-2.5 p-1.5 pl-2 rounded-full hover:bg-slate-100 transition cursor-pointer border border-transparent hover:border-slate-200"
           >
             <img
-              src={user?.avatar || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200'}
+              src={user?.profileImageUrl || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200'}
               alt={displayName}
               className="w-9 h-9 rounded-full object-cover border border-slate-200"
             />
