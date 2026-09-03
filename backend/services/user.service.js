@@ -32,8 +32,10 @@ async function updateProfile(userId, fields) {
     throw error;
   }
 
-  if (fields.phone && String(fields.phone).trim() !== existing.phone) {
-    const duplicate = await User.findUserByPhone(fields.phone);
+  const phone = fields.phone ? String(fields.phone).trim() : fields.phone;
+
+  if (phone && phone !== existing.phone) {
+    const duplicate = await User.findUserByPhone(phone);
     if (duplicate && String(duplicate.id) !== String(userId)) {
       const error = new Error("Phone number already in use");
       error.status = 409;
@@ -41,7 +43,7 @@ async function updateProfile(userId, fields) {
     }
   }
 
-  await User.updateProfile(userId, fields);
+  await User.updateProfile(userId, { ...fields, phone });
 
   const updated = await User.findById(userId);
   return toSafeProfile(updated);

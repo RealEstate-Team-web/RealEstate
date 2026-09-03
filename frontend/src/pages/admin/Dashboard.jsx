@@ -139,7 +139,7 @@ const Dashboard = () => {
             Users, agents, and platform activity at a glance
           </p>
         </div>
-        <div className="flex-shrink-0 self-start">
+        <div className="shrink-0 self-start">
           <DashboardSearch role="admin" />
         </div>
       </div>

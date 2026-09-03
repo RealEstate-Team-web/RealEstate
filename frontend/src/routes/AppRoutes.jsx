@@ -88,7 +88,7 @@ export const AppRoutes = () => {
 
 
       {/* Public pages — wrapped with Header + Footer */}
-      <Route path="/" element={<PublicRoute><Home /></PublicRoute>} />
+      <Route path="/" element={<PublicRoute allowAuthenticated><Home /></PublicRoute>} />
       <Route path="/properties" element={<PublicRoute><Properties /></PublicRoute>} />
       <Route path="/properties/:id" element={<PublicRoute><PropertyDetails /></PublicRoute>} />
       <Route path="/about" element={<PublicRoute><About /></PublicRoute>} />

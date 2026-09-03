@@ -34,8 +34,9 @@ const Agent = {
     );
   },
 
-  async listAgents({ status } = {}) {
+  async listAgents({ status, q } = {}) {
     const params = [];
+    const conditions = [];
     let sql = `
       SELECT ap.id, ap.agency_name AS agency, ap.license_number AS licenseNumber,
              ap.experience_years AS experienceYears, ap.specialization, ap.city,
@@ -46,8 +47,16 @@ const Agent = {
       JOIN users u ON u.id = ap.user_id`;
 
     if (status) {
-      sql += " WHERE ap.verification_status = ?";
+      conditions.push("ap.verification_status = ?");
       params.push(status);
+    }
+    if (q) {
+      const term = `%${q}%`;
+      conditions.push("(u.first_name LIKE ? OR u.last_name LIKE ? OR u.email LIKE ? OR ap.agency_name LIKE ? OR ap.license_number LIKE ?)");
+      params.push(term, term, term, term, term);
+    }
+    if (conditions.length) {
+      sql += " WHERE " + conditions.join(" AND ");
     }
 
     sql += " ORDER BY ap.created_at DESC";

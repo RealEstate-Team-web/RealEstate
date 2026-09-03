@@ -31,6 +31,7 @@ const Profile = () => {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const [form, setForm] = useState({ firstName: '', lastName: '', phone: '' });
+  const [fieldErrors, setFieldErrors] = useState({ firstName: '', lastName: '', phone: '' });
 
   useEffect(() => {
     let active = true;
@@ -55,6 +56,7 @@ const Profile = () => {
 
   const handleChange = (field) => (e) => {
     setForm((prev) => ({ ...prev, [field]: e.target.value }));
+    setFieldErrors((prev) => ({ ...prev, [field]: '' }));
     setError(null);
     setSuccess(null);
   };
@@ -62,6 +64,21 @@ const Profile = () => {
   const handleSave = async () => {
     setError(null);
     setSuccess(null);
+
+    const errors = {};
+    const firstName = form.firstName.trim();
+    const lastName = form.lastName.trim();
+    const phone = form.phone.trim();
+
+    if (firstName.length > 100) errors.firstName = 'First name must be at most 100 characters';
+    if (lastName.length > 100) errors.lastName = 'Last name must be at most 100 characters';
+    if (phone && !/^\+?[0-9]{7,15}$/.test(phone)) errors.phone = 'Enter a valid phone number';
+
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
+      return;
+    }
+
     setSaving(true);
     try {
       const updated = await updateProfile({
@@ -227,25 +244,35 @@ const Profile = () => {
             </h3>
           </div>
 
-          <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
+          <form className="space-y-4" onSubmit={handleSave}>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-600 uppercase mb-1">First Name</label>
+                <label htmlFor="firstName" className="block text-xs font-semibold text-slate-600 uppercase mb-1">First Name</label>
                 <input
+                  id="firstName"
                   type="text"
                   value={form.firstName}
                   onChange={handleChange('firstName')}
+                  aria-invalid={!!fieldErrors.firstName}
                   className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3.5 text-xs text-slate-800 focus:outline-none focus:border-[#4A9FF5] font-medium transition"
                 />
+                {fieldErrors.firstName && (
+                  <p className="text-[11px] text-[#B23B36] mt-1">{fieldErrors.firstName}</p>
+                )}
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-600 uppercase mb-1">Last Name</label>
+                <label htmlFor="lastName" className="block text-xs font-semibold text-slate-600 uppercase mb-1">Last Name</label>
                 <input
+                  id="lastName"
                   type="text"
                   value={form.lastName}
                   onChange={handleChange('lastName')}
+                  aria-invalid={!!fieldErrors.lastName}
                   className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3.5 text-xs text-slate-800 focus:outline-none focus:border-[#4A9FF5] font-medium transition"
                 />
+                {fieldErrors.lastName && (
+                  <p className="text-[11px] text-[#B23B36] mt-1">{fieldErrors.lastName}</p>
+                )}
               </div>
             </div>
 
@@ -264,22 +291,26 @@ const Profile = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-600 uppercase mb-1">Phone Number</label>
+              <label htmlFor="phone" className="block text-xs font-semibold text-slate-600 uppercase mb-1">Phone Number</label>
               <div className="relative">
                 <Phone className="absolute left-3.5 top-3 text-slate-400" size={16} />
                 <input
+                  id="phone"
                   type="text"
                   value={form.phone}
                   onChange={handleChange('phone')}
+                  aria-invalid={!!fieldErrors.phone}
                   className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-xs text-slate-800 focus:outline-none focus:border-[#4A9FF5] font-medium transition"
                 />
               </div>
+              {fieldErrors.phone && (
+                <p className="text-[11px] text-[#B23B36] mt-1">{fieldErrors.phone}</p>
+              )}
             </div>
 
             <div className="pt-4 border-t border-slate-100 flex justify-end">
               <button
-                type="button"
-                onClick={handleSave}
+                type="submit"
                 disabled={saving}
                 className="flex items-center space-x-2 bg-[#4A9FF5] hover:bg-[#3A8FE5] text-white px-5 py-2.5 rounded-xl text-xs font-bold transition cursor-pointer shadow-[0_4px_12px_rgba(74,159,245,0.25)] disabled:opacity-50"
               >

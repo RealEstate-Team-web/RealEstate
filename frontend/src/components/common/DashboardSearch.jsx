@@ -9,7 +9,7 @@ const ROUTE_MAP = {
   admin: {
     users: '/admin/users',
     agents: '/admin/agents',
-    properties: '/admin/categories',
+    properties: '/admin/properties',
   },
 };
 
@@ -22,29 +22,39 @@ const DashboardSearch = ({ role = 'admin' }) => {
   const containerRef = useRef(null);
   const inputRef = useRef(null);
   const debounceRef = useRef(null);
+  const requestIdRef = useRef(0);
 
   const [query, setQuery] = useState('');
   const [results, setResults] = useState(null);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
+  const [error, setError] = useState(null);
 
   const routes = ROUTE_MAP[role] || ROUTE_MAP.admin;
   const labels = LABEL_MAP[role] || LABEL_MAP.admin;
 
   const fetchResults = useCallback(async (term) => {
+    const requestId = ++requestIdRef.current;
     if (!term.trim()) {
-      setResults(null);
-      setLoading(false);
+      if (requestId === requestIdRef.current) {
+        setResults(null);
+        setError(null);
+        setLoading(false);
+      }
       return;
     }
     setLoading(true);
+    setError(null);
     try {
       const data = await searchEntities(term);
+      if (requestId !== requestIdRef.current) return;
       setResults(data);
     } catch {
+      if (requestId !== requestIdRef.current) return;
       setResults(null);
+      setError('Search failed. Please try again.');
     } finally {
-      setLoading(false);
+      if (requestId === requestIdRef.current) setLoading(false);
     }
   }, []);
 
@@ -52,6 +62,7 @@ const DashboardSearch = ({ role = 'admin' }) => {
     const value = e.target.value;
     setQuery(value);
     setOpen(true);
+    setError(null);
     setLoading(true);
 
     if (debounceRef.current) clearTimeout(debounceRef.current);
@@ -59,22 +70,24 @@ const DashboardSearch = ({ role = 'admin' }) => {
   };
 
   const handleClear = () => {
+    requestIdRef.current += 1;
     setQuery('');
     setResults(null);
+    setError(null);
     setOpen(false);
     setLoading(false);
     if (debounceRef.current) clearTimeout(debounceRef.current);
     inputRef.current?.focus();
   };
 
-  const handleSelect = (path) => {
+  const handleSelect = (path, term, itemId) => {
     setOpen(false);
-    navigate(path);
+    navigate(`${path}?q=${encodeURIComponent(term)}&highlight=${itemId}`);
   };
 
   const handleViewAll = (path, term) => {
     setOpen(false);
-    navigate(`${path}?search=${encodeURIComponent(term)}`);
+    navigate(`${path}?q=${encodeURIComponent(term)}`);
   };
 
   useEffect(() => {
@@ -107,7 +120,7 @@ const DashboardSearch = ({ role = 'admin' }) => {
     : 0;
 
   const hasResults = results && totalResults > 0;
-  const showDropdown = open && (loading || hasResults || (query.trim() && !loading));
+  const showDropdown = open && (loading || hasResults || error || (query.trim() && !loading));
 
   const sections = [
     { key: 'users', icon: Users, color: 'text-[#4A9FF5]', bg: 'bg-[#E7F0FB]' },
@@ -126,11 +139,13 @@ const DashboardSearch = ({ role = 'admin' }) => {
           onChange={handleChange}
           onFocus={() => query.trim() && setOpen(true)}
           placeholder="Search users, agents, properties..."
+          aria-label="Search dashboard"
           className="w-full bg-white border border-slate-200 rounded-xl py-2.5 pl-9 pr-9 text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-[#4A9FF5] focus:ring-1 focus:ring-[#4A9FF5]/30 transition font-medium"
         />
         {query && (
           <button
             onClick={handleClear}
+            aria-label="Clear search"
             className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition cursor-pointer"
           >
             <X size={14} />
@@ -147,7 +162,13 @@ const DashboardSearch = ({ role = 'admin' }) => {
             </div>
           )}
 
-          {!loading && !hasResults && query.trim() && (
+          {!loading && error && query.trim() && (
+            <div className="py-6 text-center text-xs text-rose-600">
+              {error}
+            </div>
+          )}
+
+          {!loading && !hasResults && !error && query.trim() && (
             <div className="py-6 text-center text-xs text-slate-400">
               No results for &ldquo;{query}&rdquo;
             </div>
@@ -173,7 +194,7 @@ const DashboardSearch = ({ role = 'admin' }) => {
                   {items.map((item) => (
                     <button
                       key={item.id}
-                      onClick={() => handleSelect(routes[key])}
+                      onClick={() => handleSelect(routes[key], query, item.id)}
                       className="w-full text-left px-4 py-2.5 hover:bg-slate-50 transition flex items-center gap-3 cursor-pointer"
                     >
                       <div className="min-w-0 flex-1">

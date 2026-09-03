@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import {
   Ban,
   CheckCircle,
   ChevronLeft,
   ChevronRight,
   Loader2,
+  Search,
   ShieldCheck,
   Users as UsersIcon,
 } from 'lucide-react';
@@ -19,6 +21,10 @@ import {
 const PAGE_SIZE = 10;
 
 const UserManagement = () => {
+  const [searchParams] = useSearchParams();
+  const highlightId = searchParams.get('highlight');
+  const initialQ = searchParams.get('q') || '';
+  const [searchTerm, setSearchTerm] = useState(initialQ);
   const [users, setUsers] = useState([]);
   const [pagination, setPagination] = useState(null);
   const [stats, setStats] = useState(null);
@@ -35,12 +41,12 @@ const UserManagement = () => {
     setLoading(true);
     setError(null);
     try {
-      const result = await getAdminUsers({ page: pageNum, limit: PAGE_SIZE });
+      const result = await getAdminUsers({ page: pageNum, limit: PAGE_SIZE, q: searchTerm || undefined });
       setUsers(result.users || []);
       setPagination(result.pagination || null);
       setStats(result.stats || null);
       setPage(pageNum);
-    } catch (err) {
+    } catch {
       setError('Failed to load users');
     } finally {
       setLoading(false);
@@ -51,14 +57,14 @@ const UserManagement = () => {
     let active = true;
     (async () => {
       try {
-        const result = await getAdminUsers({ page: 1, limit: PAGE_SIZE });
+        const result = await getAdminUsers({ page: 1, limit: PAGE_SIZE, q: searchTerm || undefined });
         if (!active) return;
         setUsers(result.users || []);
         setPagination(result.pagination || null);
         setStats(result.stats || null);
         setPage(1);
         setError(null);
-      } catch (err) {
+      } catch {
         if (!active) return;
         setError('Failed to load users');
       } finally {
@@ -68,10 +74,10 @@ const UserManagement = () => {
     return () => {
       active = false;
     };
-  }, []);
+  }, [searchTerm]);
 
   const reload = async () => {
-    const result = await getAdminUsers({ page, limit: PAGE_SIZE });
+    const result = await getAdminUsers({ page, limit: PAGE_SIZE, q: searchTerm || undefined });
     setUsers(result.users || []);
     setPagination(result.pagination || null);
     setStats(result.stats || null);
@@ -198,9 +204,22 @@ const UserManagement = () => {
       </div>
 
       <div className="bg-white border border-[#E5E7EB] rounded-lg shadow-[0_2px_8px_rgba(15,23,42,0.06)] overflow-hidden">
-        <h2 className="text-[17px] font-semibold text-[#111827] px-4 py-3">
-          All Users
-        </h2>
+        <div className="flex items-center justify-between px-4 py-3 gap-3">
+          <h2 className="text-[17px] font-semibold text-[#111827]">
+            All Users
+          </h2>
+          <div className="relative w-full max-w-xs">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" size={15} />
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search users..."
+              aria-label="Search users"
+              className="w-full bg-[#F5F5FA] border border-[#E5E7EB] rounded-lg py-2 pl-9 pr-3 text-[13px] text-slate-700 placeholder-slate-400 focus:outline-none focus:border-[#4A9FF5] focus:bg-white transition"
+            />
+          </div>
+        </div>
         <div className="overflow-x-auto">
           <table className="w-full text-left text-[13px] text-[#111827] min-w-[820px]">
             <thead>
@@ -224,12 +243,16 @@ const UserManagement = () => {
               ) : (
                 users.map((u) => {
                   const isActive = u.status === 'active';
+                  const isHighlighted = highlightId && String(u.id) === String(highlightId);
                   const name = `${u.firstName} ${u.lastName}`.trim() || u.email;
                   const number = pagination
                     ? (pagination.page - 1) * pagination.limit + users.indexOf(u) + 1
                     : users.indexOf(u) + 1;
                   return (
-                    <tr key={u.id} className="h-[50px] hover:bg-[#F9FAFB] transition-colors">
+                    <tr
+                      key={u.id}
+                      className={`h-[50px] hover:bg-[#F9FAFB] transition-colors ${isHighlighted ? 'bg-[#E7F0FB]/60' : ''}`}
+                    >
                       <td className="py-0 px-4 text-[#374151] whitespace-nowrap">{number}</td>
                       <td className="py-0 px-4 font-medium truncate">{name}</td>
                       <td className="py-0 px-4 text-[#374151] truncate">{u.email}</td>

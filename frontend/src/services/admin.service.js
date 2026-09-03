@@ -7,9 +7,9 @@ export const getAnalytics = ({ range } = {}) =>
     .get('/admin/analytics', { params: range ? { range } : {} })
     .then((r) => r.data.data);
 
-export const getAgents = (status) =>
+export const getAgents = ({ status, q } = {}) =>
   api
-    .get('/admin/agents', { params: status ? { status } : {} })
+    .get('/admin/agents', { params: { ...(status ? { status } : {}), ...(q ? { q } : {}) } })
     .then((r) => r.data.data);
 
 export const approveAgent = (id) =>

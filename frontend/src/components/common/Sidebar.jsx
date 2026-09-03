@@ -1,4 +1,4 @@
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import {
   LayoutDashboard,
@@ -43,7 +43,7 @@ export const Sidebar = ({ isOpen, onClose }) => {
       {/* Top Header & Brand Logo */}
       <div>
         <div className="flex items-center justify-between h-20 px-6 border-b border-slate-800/80">
-          <div className="flex items-center space-x-3">
+          <Link to="/" className="flex items-center space-x-3 group" aria-label="NestHome home">
             <div className="w-10 h-10 bg-amber-500/10 text-amber-500 rounded-xl border border-amber-500/20 flex items-center justify-center shadow-inner">
               <Home size={22} className="stroke-[2.5]" />
             </div>
@@ -51,7 +51,7 @@ export const Sidebar = ({ isOpen, onClose }) => {
               <h1 className="font-bold text-white text-lg tracking-tight leading-tight">NestHome</h1>
               <p className="text-[11px] text-slate-400 font-medium">Real Estate</p>
             </div>
-          </div>
+          </Link>
           {/* Mobile Close Button */}
           <button
             onClick={onClose}
@@ -110,7 +110,7 @@ export const Sidebar = ({ isOpen, onClose }) => {
         {/* User Mini Profile Box */}
         <div className="bg-slate-900/90 border border-slate-800 rounded-xl p-3 flex items-center space-x-3">
           <img
-            src={user?.avatar || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200'}
+            src={user?.profileImageUrl || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200'}
             alt={user?.name || user?.firstName || 'User Avatar'}
             className="w-10 h-10 rounded-full object-cover border border-slate-700"
           />

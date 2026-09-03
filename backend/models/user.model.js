@@ -16,7 +16,7 @@ const User = {
     return rows[0];
   },
 
-  async listUsers({ role, status, page = 1, limit = 10 } = {}) {
+  async listUsers({ role, status, q, page = 1, limit = 10 } = {}) {
     const conditions = [];
     const params = [];
     if (role) {
@@ -26,6 +26,11 @@ const User = {
     if (status) {
       conditions.push("status = ?");
       params.push(status);
+    }
+    if (q) {
+      const term = `%${q}%`;
+      conditions.push("(first_name LIKE ? OR last_name LIKE ? OR email LIKE ? OR phone LIKE ?)");
+      params.push(term, term, term, term);
     }
     const where = conditions.length ? " WHERE " + conditions.join(" AND ") : "";
 

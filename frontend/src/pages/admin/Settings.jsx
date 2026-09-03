@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Settings as SettingsIcon,
   Lock,
@@ -9,6 +9,19 @@ import {
 } from 'lucide-react';
 import authService from '../../services/auth.service';
 
+const PREFS_KEY = 'adminNotificationPrefs';
+const DEFAULT_PREFS = { emailNotifications: true, smsAlerts: true, agentApprovals: true };
+
+const readPrefs = () => {
+  try {
+    const raw = localStorage.getItem(PREFS_KEY);
+    if (!raw) return DEFAULT_PREFS;
+    return { ...DEFAULT_PREFS, ...JSON.parse(raw) };
+  } catch {
+    return DEFAULT_PREFS;
+  }
+};
+
 const Settings = () => {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -17,9 +30,17 @@ const Settings = () => {
   const [passwordError, setPasswordError] = useState(null);
   const [passwordSuccess, setPasswordSuccess] = useState(null);
 
-  const [emailNotifications, setEmailNotifications] = useState(true);
-  const [smsAlerts, setSmsAlerts] = useState(true);
-  const [agentApprovals, setAgentApprovals] = useState(true);
+  const initialPrefs = readPrefs();
+  const [emailNotifications, setEmailNotifications] = useState(initialPrefs.emailNotifications);
+  const [smsAlerts, setSmsAlerts] = useState(initialPrefs.smsAlerts);
+  const [agentApprovals, setAgentApprovals] = useState(initialPrefs.agentApprovals);
+
+  useEffect(() => {
+    localStorage.setItem(
+      PREFS_KEY,
+      JSON.stringify({ emailNotifications, smsAlerts, agentApprovals })
+    );
+  }, [emailNotifications, smsAlerts, agentApprovals]);
 
   const handlePasswordChange = async () => {
     setPasswordError(null);
@@ -27,6 +48,22 @@ const Settings = () => {
 
     if (newPassword !== confirmPassword) {
       setPasswordError('New passwords do not match');
+      return;
+    }
+    if (newPassword.length < 8) {
+      setPasswordError('New password must be at least 8 characters');
+      return;
+    }
+    if (!/[A-Z]/.test(newPassword)) {
+      setPasswordError('New password must contain at least one uppercase letter');
+      return;
+    }
+    if (!/[a-z]/.test(newPassword)) {
+      setPasswordError('New password must contain at least one lowercase letter');
+      return;
+    }
+    if (!/[0-9]/.test(newPassword)) {
+      setPasswordError('New password must contain at least one number');
       return;
     }
 

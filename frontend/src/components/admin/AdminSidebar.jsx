@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import {
   LayoutDashboard,
@@ -48,7 +48,7 @@ const AdminSidebar = ({ isOpen, onClose, pendingAgents = 0 }) => {
       {/* Brand */}
       <div>
         <div className="flex items-center justify-between h-[68px] px-4 border-b border-white/5">
-          <div className="flex items-center space-x-2.5">
+          <Link to="/" className="flex items-center space-x-2.5 group" aria-label="NestHome home">
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 bg-amber-500/10 text-amber-500 rounded-xl border border-amber-500/20 flex items-center justify-center shadow-inner">
                 <Home size={22} className="stroke-[2.5]" />
@@ -62,7 +62,7 @@ const AdminSidebar = ({ isOpen, onClose, pendingAgents = 0 }) => {
                 </p>
               </div>
             </div>
-          </div>
+          </Link>
           <button
             onClick={onClose}
             className="lg:hidden p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition cursor-pointer"
@@ -125,7 +125,7 @@ const AdminSidebar = ({ isOpen, onClose, pendingAgents = 0 }) => {
           <div className="relative">
             <img
               src={
-                user?.avatar ||
+                user?.profileImageUrl ||
                 "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200"
               }
               alt={displayName}
