@@ -2,6 +2,108 @@
 
 Project-wide guidance for AI agents and developers working in this repository.
 
+---
+
+# AGENT CONTRACT (read first — these are enforceable, not advisory)
+
+This contract sits at the top because the rest of this file is engineering
+philosophy. The rules below are binding. Read them in full before any non-trivial
+change; then read `PROGRESS.md` (the single source of truth for status), the
+task/card brief, and the relevant `Documentation/` design docs.
+
+## 0. Git safety (never waived)
+
+- Do NOT commit, push, or open/merge a pull request without an explicit
+  user go-ahead in the current turn.
+- Never target the wrong branch: always confirm the branch matches the task
+  before working; push with `git push origin HEAD:<branch>` and verify.
+- A commit must contain only the files for its single purpose. Do not sweep
+  unrelated working-tree changes (e.g. `.gitignore`, `.env`, stray doc edits)
+  into a feature commit.
+
+## 1. Source of truth
+
+- `PROGRESS.md` is the **only** source of truth for implementation status.
+  Read it first; never re-scan the whole repo for status. Update it after a
+  task/merge, with the trigger and owner explicit.
+- `Documentation/database_redesigned.md` = schema; `Documentation/API Design.md`
+  = API; `Documentation/Sprints/CURRENT-SPRINT.md` = sprint-scope classification
+  ONLY during PR review, never for implementation status.
+
+## 2. Pre-implementation gate (non-trivial changes)
+
+A change is **non-trivial** if it DOES ANY of: creates a new file, new endpoint,
+new model/table/migration, new dependency, or changes > 50 lines.
+
+Before editing a non-trivial change, state a 5-bullet plan in the turn:
+1. Files to change
+2. API/DB contract touched (endpoint/method/table)
+3. Security/ownership implications
+4. Tests or verification (commands + expected exit)
+5. Risks / what could break
+
+**Trivial fast-path** (single-file, < 50 lines, no new file/endpoint/dependency):
+skip the plan, but still state the intent in one line.
+
+## 3. Reuse before duplicate (anti-duplicate)
+
+- Before adding a service/controller/model function or handler, grep for an
+  existing one with the same shape: `grep -rn "functionName\|routeName" src/`.
+- If a near-identical function already exists, REUSE it (add a parameter) —
+  do not copy it. If duplication is genuinely required, justify it in the
+  commit message.
+- Do not create a parallel handler/service for an endpoint that differs only
+  by one parameter or filter.
+
+## 4. Anti-patterns (from real findings in this repo — do not repeat)
+
+- **Parallel service/handler:** e.g. a `searchProperties` controller+service
+  that duplicates `getProperties`. Add `q` to the existing handler instead.
+- **Wrong column / missing migration:** e.g. querying `ap.experience` when the
+  column is `ap.experience_years`; or a model querying `property_images` /
+  `amenities` / `property_amenities` before their migrations existed. Verify
+  column names against the migration files and `database_redesigned.md`.
+- **Lint-violating effect:** `setState()` called synchronously in a React
+  effect body triggers `react-hooks/set-state-in-effect`. Run the linter;
+  move setState inside the async callback or derive from URL/state.
+- **Route ordering:** a static path like `/search` or `/featured` declared
+  AFTER `/:id` gets captured as an ID. Declare static GET routes first.
+- **Stale list data:** applying an async result even though the query or page
+  changed while awaiting. Track request order (ref/id) and re-check the current
+  query/page before applying.
+- **Hardcoded reference data:** a dropdown/list hardcoding category IDs instead
+  of calling the categories endpoint.
+- **Unrelated changes in a feature commit:** committing `.gitignore` or doc
+  noise with feature code.
+- **Unfinished DB foundation:** declaring an API "done" when the tables it
+  queries have no migration. A feature is not done until its schema exists.
+
+## 5. Definition of done (gate before declaring complete)
+
+Before "done", the agent MUST:
+1. Run the relevant check (`npm run lint` frontend, `node --check` / `npm run
+   migrate` backend) and include the exit result.
+2. Grep for duplicate function/service/route names (rule 3) and confirm reuse.
+3. Confirm no secrets (`.env`, keys) and no unrelated files in the diff.
+4. Confirm the SQL is parameterized and FKs exist for new tables.
+5. Confirm the endpoint is exercised (curl/unit) OR state why not.
+
+## 6. Audit trail
+
+- Every commit message and PR body MUST reference the Trello card id (e.g.
+  `[S1-04]` / the shortUrl id) so ownership and progress are traceable.
+- State which developer owns the files you changed (from the card / ownership).
+
+## 7. Stale-rule clause
+
+- If a rule here conflicts with the live code or a higher-priority instruction,
+  do NOT silently override. Surface the conflict to the user and confirm.
+- Philosophy sections (§1–§23) are guidance; the AGENT CONTRACT above wins on
+  conflict. Where the contract is silent, apply §22 Priority Order
+  (security > data integrity > correctness > … > speed).
+
+---
+
 ## Project
 
 Real Estate Website — full-stack marketplace (buyers browse/visit, agents list properties, admin approves agents and manages the platform).
@@ -967,8 +1069,11 @@ Every Pull Request review must:
 
 Before reviewing a Pull Request, use these documents:
 
-1. Documentation/Sprints/CURRENT-SPRINT.md
-2. The sprint document referenced by CURRENT-SPRINT.md
+1. `PROGRESS.md` — the single source of truth for implementation status
+   (what is done/pending). Do not infer status from git history alone.
+2. Documentation/Sprints/CURRENT-SPRINT.md — for **sprint-scope classification
+   only** (Required/Supporting/Out of scope/Unrelated). It is NOT an
+   implementation-status document.
 3. Documentation/database_redesigned.md
 4. Documentation/API Design.md
 5. Documentation/Coding-Standards.md
@@ -985,6 +1090,9 @@ Do not invent project requirements.
 The current sprint is defined by:
 
 Documentation/Sprints/CURRENT-SPRINT.md
+
+Use it ONLY to classify whether a change is in/out of the current sprint's
+scope. It does not replace `PROGRESS.md` for status.
 
 A Pull Request must be evaluated against the current sprint.
 
