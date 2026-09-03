@@ -22,6 +22,7 @@ export const getPropertyImageUrl = (property, fallback = "") => {
 
 // Build a flat array of image URL strings from a property. Used by galleries/thumbnails.
 export const getPropertyImageList = (property) => {
+  // 1) Try the array form first (preserves multi-image galleries)
   const base = Array.isArray(property?.images) ? property.images : [];
   const list = base
     .map((item) => {
@@ -31,9 +32,9 @@ export const getPropertyImageList = (property) => {
       return "";
     })
     .filter(Boolean);
-
   if (list.length > 0) return list;
 
-  const single = property?.img || property?.image || property?.image_url;
+  // 2) Fall back to the same single-URL chain as getPropertyImageUrl, wrapped as a 1-element list
+  const single = getPropertyImageUrl(property);
   return single ? [single] : [];
 };

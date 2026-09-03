@@ -26,7 +26,7 @@ const propertyService = require("../services/property.service");
       return res.status(400).json({
         success: false,
         message: "Invalid query parameter: q must be a string",
-        data: null,
+        errors: ["q must be a string"],
       });
     }
 
@@ -84,6 +84,17 @@ const propertyService = require("../services/property.service");
   next
 ) => {
   try {
+    if (req.query.limit !== undefined) {
+      const parsed = Number(req.query.limit);
+      if (!Number.isInteger(parsed) || parsed < 1 || parsed > 50) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid query parameter: limit must be an integer between 1 and 50",
+          errors: ["limit must be an integer between 1 and 50"],
+        });
+      }
+    }
+
     const result =
       await propertyService.getFeaturedProperties({
         limit: req.query.limit,
