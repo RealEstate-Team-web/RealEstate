@@ -8,6 +8,7 @@ const propertyModel = {
     async findProperties({
         city,
         location,
+        q,
         minPrice,
         maxPrice,
         categoryId,
@@ -42,6 +43,19 @@ const propertyModel = {
             const search = `%${location}%`;
 
             params.push(search, search);
+        }
+
+        if (q) {
+            const keyword = `%${q.trim()}%`;
+            conditions.push(`
+            (
+                p.title LIKE ?
+                OR p.description LIKE ?
+                OR p.city LIKE ?
+                OR p.address LIKE ?
+            )
+            `);
+            params.push(keyword, keyword, keyword, keyword);
         }
 
         if (minPrice) {
@@ -172,6 +186,50 @@ const propertyModel = {
     },
 
 
+    // Get featured (available) properties ordered by popularity/nonewness
+    async findFeatured({ limit = 6 } = {}) {
+        const fallback = 6;
+        let featuredLimit;
+        if (limit == null) {
+            featuredLimit = fallback;
+        } else {
+            const parsed = Number(limit);
+            featuredLimit = Number.isFinite(parsed)
+                ? Math.min(Math.max(parsed, 1), 50)
+                : fallback;
+        }
+
+        const sql = `
+            SELECT
+            p.id,
+            p.title,
+            p.price,
+            p.address,
+            p.city,
+            p.country,
+            p.bedrooms,
+            p.bathrooms,
+            p.parking_spaces,
+            p.area,
+            p.listing_type,
+            p.status,
+            p.latitude,
+            p.longitude,
+            p.views,
+            p.created_at,
+            p.category_id
+            FROM properties p
+            WHERE p.status = 'available'
+            ORDER BY p.views DESC, p.created_at DESC
+            LIMIT ?
+        `;
+
+        const properties = await query(sql, [featuredLimit]);
+
+        return properties;
+    },
+
+
     // Get one property with images and agent details
     async findPropertyById(id) {
         const sql = `
@@ -186,7 +244,7 @@ const propertyModel = {
                 u.profile_image_url AS agentPhoto,
                 ap.agency_name AS agencyName,
                 ap.bio AS agentBio,
-                ap.experience AS agentExperience,
+                ap.experience_years AS agentExperience,
                 ap.office_address AS agentOfficeAddress
             FROM properties p
             LEFT JOIN users u ON u.id = p.agent_id

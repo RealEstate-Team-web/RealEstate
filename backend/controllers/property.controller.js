@@ -6,6 +6,7 @@ const propertyService = require("../services/property.service");
 ) => {
   try {
     const {
+      q,
       city,
       location,
       minPrice,
@@ -38,6 +39,7 @@ const propertyService = require("../services/property.service");
 
     const result =
       await propertyService.getProperties({
+        q,
         city,
         location,
         minPrice,
@@ -54,6 +56,28 @@ const propertyService = require("../services/property.service");
         limit,
       });
 
+
+    res.status(200).json({
+      success: true,
+      data: result,
+    });
+
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+ const getFeaturedProperties = async (
+  req,
+  res,
+  next
+) => {
+  try {
+    const result =
+      await propertyService.getFeaturedProperties({
+        limit: req.query.limit,
+      });
 
     res.status(200).json({
       success: true,
@@ -159,6 +183,7 @@ const propertyService = require("../services/property.service");
 };
 module.exports = {
     getProperties,
+    getFeaturedProperties,
     getPropertyById,
     createProperty,
     updateProperty,

@@ -5,6 +5,7 @@ const { requireRole } = require("../middlewares/role.middleware");
 
 const {
   getProperties,
+  getFeaturedProperties,
   getPropertyById,
   createProperty,
   updateProperty,
@@ -16,6 +17,18 @@ const router = express.Router();
 
 router.get(
   "/",
+  getProperties
+);
+
+
+router.get(
+  "/featured",
+  getFeaturedProperties
+);
+
+
+router.get(
+  "/search",
   getProperties
 );
 
