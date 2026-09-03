@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Clock, UserCheck, Ban, CheckCircle, XCircle, Loader2, Search, ShieldCheck } from 'lucide-react';
 import KpiCard from '../../components/admin/KpiCard';
@@ -31,6 +31,7 @@ const AgentApproval = () => {
   const [success, setSuccess] = useState(null);
   const [actionId, setActionId] = useState(null);
   const [confirmAction, setConfirmAction] = useState(null);
+  const reloadRequestIdRef = useRef(0);
 
   useEffect(() => {
     let active = true;
@@ -59,12 +60,14 @@ const AgentApproval = () => {
   }, [searchTerm]);
 
   const reload = async () => {
+    const requestId = ++reloadRequestIdRef.current;
     const termAtStart = searchTerm;
     const term = searchTerm.trim();
     const [s, a] = await Promise.all([
       getDashboardStats(),
       getAgents({ status: term ? undefined : 'pending', q: term || undefined }),
     ]);
+    if (requestId !== reloadRequestIdRef.current) return;
     if (searchTerm !== termAtStart) return;
     setStats(s);
     setAgents(a);
