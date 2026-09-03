@@ -57,6 +57,7 @@ const UserManagement = () => {
 
   useEffect(() => {
     const requestId = ++requestIdRef.current;
+    setLoading(true);
     (async () => {
       try {
         const result = await getAdminUsers({ page: 1, limit: PAGE_SIZE, q: searchTerm || undefined });

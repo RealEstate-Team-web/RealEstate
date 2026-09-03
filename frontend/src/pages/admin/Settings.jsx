@@ -34,6 +34,7 @@ const Settings = () => {
   const [emailNotifications, setEmailNotifications] = useState(initialPrefs.emailNotifications);
   const [smsAlerts, setSmsAlerts] = useState(initialPrefs.smsAlerts);
   const [agentApprovals, setAgentApprovals] = useState(initialPrefs.agentApprovals);
+  const [storageStatus, setStorageStatus] = useState('saved');
 
   useEffect(() => {
     try {
@@ -41,8 +42,10 @@ const Settings = () => {
         PREFS_KEY,
         JSON.stringify({ emailNotifications, smsAlerts, agentApprovals })
       );
+      setStorageStatus('saved');
     } catch {
       // Storage may be unavailable or full; keep in-memory preference state.
+      setStorageStatus('error');
     }
   }, [emailNotifications, smsAlerts, agentApprovals]);
 
@@ -233,8 +236,17 @@ const Settings = () => {
         {/* Footer */}
         <div className="p-6 bg-slate-50/50 flex items-center justify-between rounded-b-2xl">
           <div className="flex items-center space-x-2 text-xs text-emerald-700 font-semibold">
-            <CheckCircle size={16} />
-            <span>Notification preferences saved locally</span>
+            {storageStatus === 'saved' ? (
+              <>
+                <CheckCircle size={16} />
+                <span>Notification preferences saved locally</span>
+              </>
+            ) : (
+              <>
+                <AlertCircle size={16} />
+                <span>Preferences active, but couldn't save to this browser</span>
+              </>
+            )}
           </div>
         </div>
       </div>

@@ -30,9 +30,11 @@ const AgentApproval = () => {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const [actionId, setActionId] = useState(null);
+  const [confirmAction, setConfirmAction] = useState(null);
 
   useEffect(() => {
     let active = true;
+    setLoading(true);
     (async () => {
       try {
         const term = searchTerm.trim();
@@ -205,7 +207,7 @@ const AgentApproval = () => {
                 </tr>
               ) : (
                  agents.map((a) => {
-                   const isHighlighted = highlightId && String(a.id) === String(highlightId);
+                   const isHighlighted = highlightId && String(a.userId) === String(highlightId);
                    return (
                     <tr key={a.id} className={`h-[50px] hover:bg-[#F9FAFB] transition-colors ${isHighlighted ? 'bg-[#E7F0FB]/60' : ''}`}>
                       <td className="py-0 px-4">
@@ -237,25 +239,53 @@ const AgentApproval = () => {
                         <StatusBadge status={a.status}>{a.status}</StatusBadge>
                       </td>
                        <td className="py-0 px-4">
-                         {a.status === 'pending' ? (
+                         {a.status === 'pending' && actionId === a.id ? (
+                           <div className="flex items-center gap-2 whitespace-nowrap">
+                             <Loader2 size={17} className="animate-spin text-[#4FAF83]" />
+                             <span className="text-[12px] text-[#6B7280]">Updating…</span>
+                           </div>
+                         ) : confirmAction?.id === a.id ? (
+                           <div className="flex items-center gap-2 whitespace-nowrap">
+                             <span className="text-[12px] font-medium text-[#374151]">
+                               {confirmAction.action === 'approve' ? 'Approve?' : 'Reject?'}
+                             </span>
+                             <button
+                               type="button"
+                               disabled={actionId === a.id}
+                               onClick={() => {
+                                 const action = confirmAction.action;
+                                 setConfirmAction(null);
+                                 if (action === 'approve') act(approveAgent, a.id, a.first_name, 'approved');
+                                 else act(rejectAgent, a.id, a.first_name, 'rejected');
+                               }}
+                               className="inline-flex items-center gap-1.5 h-[30px] px-3 rounded-md bg-[#2F7A55] text-[12px] font-medium text-white hover:bg-[#256b49] transition-colors disabled:opacity-50"
+                             >
+                               Yes
+                             </button>
+                             <button
+                               type="button"
+                               disabled={actionId === a.id}
+                               onClick={() => setConfirmAction(null)}
+                               className="h-[30px] px-3 rounded-md bg-[#edf2fa] border border-[#d6deeb] text-[12px] font-medium text-[#374151] hover:bg-[#F3F4F8] transition-colors disabled:opacity-50"
+                             >
+                               No
+                             </button>
+                           </div>
+                         ) : a.status === 'pending' ? (
                          <div className="flex items-center gap-2 whitespace-nowrap">
                            <button
                              type="button"
                              disabled={actionId === a.id}
-onClick={() => act(approveAgent, a.id, a.first_name, 'approved')}
+onClick={() => setConfirmAction({ id: a.id, action: 'approve' })}
                                className="inline-flex items-center gap-1.5 h-[34px] px-[10px] rounded-md bg-[#E7F4EE] text-[13px] font-medium text-[#2F7A55] hover:bg-[#d3efe1] transition-colors disabled:opacity-50"
                              >
-                            {actionId === a.id ? (
-                              <Loader2 size={19} className="animate-spin" />
-                            ) : (
-                              <CheckCircle size={19} className="text-[#2F7A55]" />
-                            )}
-                            Approve Account
+                             <CheckCircle size={19} className="text-[#2F7A55]" />
+                             Approve Account
                           </button>
                           <button
                             type="button"
                             disabled={actionId === a.id}
-                            onClick={() => act(rejectAgent, a.id, a.first_name, 'rejected')}
+                            onClick={() => setConfirmAction({ id: a.id, action: 'reject' })}
                             className="inline-flex items-center gap-1.5 h-[34px] px-[10px] rounded-md bg-[#FBEAE9] text-[13px] font-medium text-[#B23B36] hover:bg-[#f5d8d6] transition-colors disabled:opacity-50"
                           >
                             <XCircle size={19} className="text-[#B23B36]" />
