@@ -81,6 +81,7 @@ const Agent = {
        FROM agent_profiles ap
        JOIN users u ON u.id = ap.user_id
        WHERE ap.verification_status = 'approved'
+         AND u.status = 'active'
        ORDER BY ap.experience_years DESC, ap.created_at DESC
        LIMIT ?`,
       [safeLimit],
