@@ -21,6 +21,9 @@ import RoleRoute from './RoleRoute';
 import AgentLayout from '../hooks/layouts/AgentLayout';
 import AgentDashboard from '../pages/agent/Dashboard';
 import AgentProfile from '../pages/agent/Profile';
+import AgentProperties from '../pages/agent/Properties';
+import AgentAddProperty from '../pages/agent/AddProperty';
+import AgentEditProperty from '../pages/agent/EditProperty';
 
 import DashboardLayout from '../hooks/layouts/DashboardLayout';
 import Dashboard from '../pages/buyer/Dashboard';
@@ -92,12 +95,12 @@ export const AppRoutes = () => {
 
       {/* Public pages — wrapped with Header + Footer */}
       <Route path="/" element={<PublicRoute allowAuthenticated><Home /></PublicRoute>} />
-      <Route path="/properties" element={<PublicRoute><Properties /></PublicRoute>} />
-      <Route path="/properties/:id" element={<PublicRoute><PropertyDetails /></PublicRoute>} />
-      <Route path="/about" element={<PublicRoute><About /></PublicRoute>} />
-      <Route path="/agents" element={<PublicRoute><PublicAgents /></PublicRoute>} />
-      <Route path="/contact" element={<PublicRoute><Contact /></PublicRoute>} />
-      <Route path="*" element={<PublicRoute><NotFound /></PublicRoute>} />
+      <Route path="/properties" element={<PublicRoute allowAuthenticated><Properties /></PublicRoute>} />
+      <Route path="/properties/:id" element={<PublicRoute allowAuthenticated><PropertyDetails /></PublicRoute>} />
+      <Route path="/about" element={<PublicRoute allowAuthenticated><About /></PublicRoute>} />
+      <Route path="/agents" element={<PublicRoute allowAuthenticated><PublicAgents /></PublicRoute>} />
+      <Route path="/contact" element={<PublicRoute allowAuthenticated><Contact /></PublicRoute>} />
+      <Route path="*" element={<PublicRoute allowAuthenticated><NotFound /></PublicRoute>} />
       {/* Protected Agent Complete Profile Route */}
       <Route
         path={ROUTES.completeAgentProfile}
@@ -129,6 +132,9 @@ export const AppRoutes = () => {
         <Route element={<RoleRoute roles="agent" />}>
           <Route path={ROUTES.agent} element={<AgentLayout />}>
             <Route index element={<AgentDashboard />} />
+            <Route path="properties" element={<AgentProperties />} />
+            <Route path="properties/new" element={<AgentAddProperty />} />
+            <Route path="properties/edit/:id" element={<AgentEditProperty />} />
             <Route path="profile" element={<AgentProfile />} />
             <Route path="*" element={<Navigate to={ROUTES.agent} replace />} />
           </Route>

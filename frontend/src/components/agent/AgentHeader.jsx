@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
-import { Menu, Bell, ChevronDown, LogOut } from 'lucide-react';
+import { Menu, Bell, ChevronDown, LogOut, Search } from 'lucide-react';
 import { ROUTES } from '../../utils/constants';
 
 const titleMap = {
@@ -10,10 +10,14 @@ const titleMap = {
   '/agent/settings': 'Settings',
   '/agent/properties': 'My Properties',
   '/agent/properties/new': 'Add Property',
-  '/agent/properties/completed': 'Sold / Rented',
   '/agent/visits': 'Visit Requests',
   '/agent/messages': 'Customer Messages',
   '/agent/analytics': 'Analytics',
+};
+
+const getTitle = (pathname) => {
+  if (pathname.startsWith('/agent/properties/edit')) return 'Edit Property';
+  return titleMap[pathname] || 'Dashboard';
 };
 
 const AgentHeader = ({ onToggleSidebar }) => {
@@ -22,11 +26,20 @@ const AgentHeader = ({ onToggleSidebar }) => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [prevPath, setPrevPath] = useState(location.pathname);
+  const searchFromUrl =
+    new URLSearchParams(location.search).get('search') || '';
+  const [searchQuery, setSearchQuery] = useState(searchFromUrl);
+  const [prevSearchFromUrl, setPrevSearchFromUrl] = useState(searchFromUrl);
   const dropdownRef = useRef(null);
 
   if (prevPath !== location.pathname) {
     setPrevPath(location.pathname);
     setOpen(false);
+  }
+
+  if (prevSearchFromUrl !== searchFromUrl) {
+    setPrevSearchFromUrl(searchFromUrl);
+    setSearchQuery(searchFromUrl);
   }
 
   useEffect(() => {
@@ -51,12 +64,25 @@ const AgentHeader = ({ onToggleSidebar }) => {
     user?.name ||
     [user?.firstName, user?.lastName].filter(Boolean).join(' ') ||
     'Agent';
-  const title = titleMap[location.pathname] || 'Dashboard';
+  const title = getTitle(location.pathname);
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    const q = searchQuery.trim();
+
+    const params = new URLSearchParams(location.search);
+    params.delete('search');
+    params.delete('page');
+    if (q) params.set('search', q);
+
+    const query = params.toString();
+    navigate(query ? `${ROUTES.agentProperties}?${query}` : ROUTES.agentProperties);
+  };
 
   return (
-    <header className="sticky top-0 z-30 h-[68px] bg-white border-b border-[#E5E7EB] px-5 flex items-center justify-between font-sans">
+    <header className="sticky top-0 z-30 h-[68px] bg-white border-b border-[#E5E7EB] px-5 flex items-center justify-between gap-4 font-sans">
       {/* Left: menu + page title */}
-      <div className="flex items-center space-x-3">
+      <div className="flex items-center space-x-3 shrink-0">
         <button
           onClick={onToggleSidebar}
           className="lg:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100 transition cursor-pointer"
@@ -66,6 +92,28 @@ const AgentHeader = ({ onToggleSidebar }) => {
         </button>
         <h1 className="text-[19px] font-semibold text-[#111827] tracking-tight">{title}</h1>
       </div>
+
+      {/* Search (hidden on small screens) */}
+      <form
+        onSubmit={handleSearchSubmit}
+        className="hidden md:flex flex-1 max-w-xs items-center bg-[#F3F4F6] border border-transparent focus-within:border-[#4A9FF5] focus-within:bg-white rounded-full px-3.5 h-9 transition"
+      >
+        <button
+          type="submit"
+          aria-label="Submit property search"
+          className="shrink-0 text-slate-400 hover:text-[#4A9FF5] transition cursor-pointer"
+        >
+          <Search size={16} />
+        </button>
+        <input
+          type="search"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Search my properties..."
+          aria-label="Search my properties"
+          className="w-full ml-2 bg-transparent text-[13px] text-[#111827] placeholder:text-slate-400 outline-none"
+        />
+      </form>
 
       {/* Right: notifications + user */}
       <div className="flex items-center space-x-4">

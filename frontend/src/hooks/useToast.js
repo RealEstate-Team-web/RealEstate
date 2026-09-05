@@ -6,20 +6,22 @@ import { useState, useRef, useEffect, useCallback } from 'react';
  */
 export const useToast = (defaultDuration = 3000) => {
   const [toastMessage, setToastMessage] = useState(null);
+  const [toastTone, setToastTone] = useState('success');
   const timerRef = useRef(null);
 
   const showToast = useCallback(
-    (message, duration = defaultDuration) => {
+    (message, { tone = 'success', duration = defaultDuration } = {}) => {
       if (timerRef.current) {
         clearTimeout(timerRef.current);
       }
       setToastMessage(message);
+      setToastTone(tone);
       timerRef.current = setTimeout(() => {
         setToastMessage(null);
         timerRef.current = null;
       }, duration);
     },
-    [defaultDuration]
+    [defaultDuration],
   );
 
   useEffect(() => {
@@ -30,7 +32,7 @@ export const useToast = (defaultDuration = 3000) => {
     };
   }, []);
 
-  return { toastMessage, showToast };
+  return { toastMessage, toastTone, showToast };
 };
 
 export default useToast;
