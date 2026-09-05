@@ -268,6 +268,16 @@ const uploadPropertyImages = async (
 
   assertOwner(property, agentId);
 
+  const existingImageCount =
+    await propertyModel.countImages(propertyId);
+  if (existingImageCount + files.length > MAX_TOTAL_IMAGES) {
+    const error = new Error(
+      `A property can have at most ${MAX_TOTAL_IMAGES} images`,
+    );
+    error.statusCode = 400;
+    throw error;
+  }
+
   const results = await Promise.allSettled(
     files.map((file) =>
       uploadPropertyImage(file.buffer, {

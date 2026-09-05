@@ -636,6 +636,14 @@ const propertyModel = {
         });
     },
 
+    async countImages(propertyId) {
+        const [rows] = await query(
+            "SELECT COUNT(*) AS count FROM property_images WHERE property_id = ?",
+            [propertyId],
+        );
+        return Number(rows[0]?.count || 0);
+    },
+
     // Ensure amenity names exist and link them to a property (replaces prior links)
     async syncPropertyAmenities(propertyId, amenityNames, executor = query) {
         const byKey = new Map();
