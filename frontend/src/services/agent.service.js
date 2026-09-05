@@ -12,4 +12,11 @@ export const getPublicAgents = async (limit = 30) => {
   };
 };
 
+// Get dashboard KPIs for the authenticated agent
+export const getAgentDashboardStats = async () => {
+  const { data } = await api.get("/agent/dashboard");
+
+  return data.data;
+};
+
 export default api;

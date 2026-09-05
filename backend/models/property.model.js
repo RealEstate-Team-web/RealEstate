@@ -691,6 +691,24 @@ const propertyModel = {
         );
     },
 
+    async countByAgent(agentId) {
+        const rows = await query(
+            `SELECT
+                 COUNT(*) AS total,
+                 SUM(CASE WHEN p.status = 'available' THEN 1 ELSE 0 END) AS active,
+                 SUM(CASE WHEN p.status IN ('sold', 'rented') THEN 1 ELSE 0 END) AS closed
+             FROM properties p
+             WHERE p.agent_id = ?`,
+            [agentId]
+        );
+        const row = rows[0] || {};
+        return {
+            total: Number(row.total) || 0,
+            active: Number(row.active) || 0,
+            closed: Number(row.closed) || 0,
+        };
+    },
+
     async countByCategory() {
         return query(`
             SELECT c.id, c.name, COUNT(p.id) AS count

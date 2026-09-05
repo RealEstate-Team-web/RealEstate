@@ -335,6 +335,17 @@ const Inquiry = {
     return rows[0]?.total ? Number(rows[0].total) : 0;
   },
 
+  async countUnreadByAgentId(agentId) {
+    const rows = await query(
+      `SELECT COUNT(*) AS count
+       FROM inquiries
+       WHERE agent_id = ?
+         AND is_read = FALSE`,
+      [agentId],
+    );
+    return Number(rows[0]?.count) || 0;
+  },
+
   async markAsRead(id, agentId) {
     const sql = `
       UPDATE inquiries
