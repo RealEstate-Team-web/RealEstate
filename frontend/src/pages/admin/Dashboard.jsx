@@ -92,22 +92,31 @@ const Dashboard = () => {
     },
     {
       title: 'Total Properties',
-      value: '—',
-      indicator: <span className="text-[#9CA3AF]">No data yet</span>,
+      value: stats.totalProperties ?? '—',
+      indicator: <span className="text-[#4FAF83]">Live</span>,
       icon: Building2,
       iconBg: 'bg-[#FBF3DD] text-[#E7B85A]',
     },
     {
-      title: 'Pending Properties',
-      value: '—',
-      indicator: <span className="text-[#9CA3AF]">No data yet</span>,
+      title: 'Draft Properties',
+      value: stats.propertiesByStatus?.draft ?? '—',
+      indicator: (
+        <span className="text-[#9CA3AF]">
+          {stats.propertiesByStatus?.draft ?? '—'}{' '}
+          {(stats.propertiesByStatus?.draft ?? 0) === 1 ? 'draft' : 'drafts'}
+        </span>
+      ),
       icon: Building,
       iconBg: 'bg-[#FBEAE9] text-[#D96B67]',
     },
     {
       title: 'Scheduled Visits',
-      value: '—',
-      indicator: <span className="text-[#9CA3AF]">No data yet</span>,
+      value: stats.scheduledVisits ?? '—',
+      indicator: (
+        <span className="text-[#9CA3AF]">
+          {stats.scheduledVisits ?? '—'} scheduled
+        </span>
+      ),
       icon: CalendarCheck,
       iconBg: 'bg-slate-100 text-slate-500',
     },
