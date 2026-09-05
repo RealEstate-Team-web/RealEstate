@@ -36,14 +36,14 @@ const {
 
 
     const page = Math.max(
-      Number(req.query.page) || 1,
+      Math.trunc(Number(req.query.page) || 1),
       1
     );
 
 
     const limit = Math.min(
       Math.max(
-        Number(req.query.limit) || 12,
+        Math.trunc(Number(req.query.limit) || 12),
         1
       ),
       50
@@ -175,13 +175,13 @@ const {
       typeof req.query.sort === "string" ? req.query.sort : "newest";
 
     const page = Math.max(
-      Number(req.query.page) || 1,
+      Math.trunc(Number(req.query.page) || 1),
       1
     );
 
     const limit = Math.min(
       Math.max(
-        Number(req.query.limit) || 8,
+        Math.trunc(Number(req.query.limit) || 8),
         1
       ),
       50
