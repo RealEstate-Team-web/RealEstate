@@ -148,8 +148,8 @@ const propertyModel = {
             (
                 SELECT image_url
                 FROM property_images
-                WHERE property_id = p.id AND is_cover = 1
-                ORDER BY id ASC
+                WHERE property_id = p.id
+                ORDER BY is_cover DESC, sort_order ASC, id ASC
                 LIMIT 1
             ) AS coverImage
 
@@ -229,8 +229,8 @@ const propertyModel = {
             (
                 SELECT image_url
                 FROM property_images
-                WHERE property_id = p.id AND is_cover = 1
-                ORDER BY id ASC
+                WHERE property_id = p.id
+                ORDER BY is_cover DESC, sort_order ASC, id ASC
                 LIMIT 1
             ) AS coverImage
             FROM properties p
@@ -536,8 +536,7 @@ const propertyModel = {
                 (SELECT image_url
                  FROM property_images
                  WHERE property_id = p.id
-                   AND is_cover = 1
-                 ORDER BY sort_order ASC, id ASC
+                 ORDER BY is_cover DESC, sort_order ASC, id ASC
                  LIMIT 1) AS coverImage,
                 (SELECT COUNT(*)
                  FROM inquiries i
