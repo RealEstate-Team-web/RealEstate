@@ -215,6 +215,7 @@ const PROPERTY_LISTING_TYPES = ["sale", "rent"];
 
 const toOptionalNumber = (value) => {
   if (value === undefined || value === null) return undefined;
+  if (typeof value !== "number" && typeof value !== "string") return NaN;
   const parsed = Number(value);
   return Number.isFinite(parsed) ? parsed : NaN;
 };
@@ -310,6 +311,10 @@ function validatePropertyInput(body, { partial = false } = {}) {
 
   const nonNegativeInteger = (fieldName, value) => {
     if (!hasValue(value)) return;
+    if (typeof value !== "number" && typeof value !== "string") {
+      errors.push(`${fieldName} must be an integer between 0 and 1000`);
+      return;
+    }
     const parsed = Number(value);
     if (!Number.isInteger(parsed) || parsed < 0 || parsed > 1000) {
       errors.push(`${fieldName} must be an integer between 0 and 1000`);
