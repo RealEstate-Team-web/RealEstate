@@ -141,7 +141,7 @@ const Dashboard = () => {
 
       {/* Load error banner */}
       {error && (
-        <div className="flex items-start gap-2 bg-[#FBEAE9] border border-[#E5B3B0] rounded-xl px-4 py-3 text-[13px] text-[#B34A44]">
+        <div role="alert" className="flex items-start gap-2 bg-[#FBEAE9] border border-[#E5B3B0] rounded-xl px-4 py-3 text-[13px] text-[#B34A44]">
           <AlertCircle size={16} className="shrink-0 mt-0.5" />
           <span>{error}</span>
         </div>
