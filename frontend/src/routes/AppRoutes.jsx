@@ -17,7 +17,10 @@ import PublicAgents from "../pages/public/PublicAgent";
 import PublicRoute from './PublicRoute';
 import PrivateRoute from './PrivateRoute';
 import RoleRoute from './RoleRoute';
-import RolePlaceholder from '../components/RolePlaceholder';
+
+import AgentLayout from '../hooks/layouts/AgentLayout';
+import AgentDashboard from '../pages/agent/Dashboard';
+import AgentProfile from '../pages/agent/Profile';
 
 import DashboardLayout from '../hooks/layouts/DashboardLayout';
 import Dashboard from '../pages/buyer/Dashboard';
@@ -122,15 +125,14 @@ export const AppRoutes = () => {
           </Route>
         </Route>
 
-        {/* Agent Module placeholder (built separately) */}
-        <Route
-          path={`${ROUTES.agent}/*`}
-          element={
-            <RoleRoute roles="agent">
-              <RolePlaceholder />
-            </RoleRoute>
-          }
-        />
+        {/* Agent Module */}
+        <Route element={<RoleRoute roles="agent" />}>
+          <Route path={ROUTES.agent} element={<AgentLayout />}>
+            <Route index element={<AgentDashboard />} />
+            <Route path="profile" element={<AgentProfile />} />
+            <Route path="*" element={<Navigate to={ROUTES.agent} replace />} />
+          </Route>
+        </Route>
 
         {/* Admin Module */}
         <Route element={<RoleRoute roles="admin" />}>
