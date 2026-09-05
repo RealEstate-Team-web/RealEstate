@@ -112,12 +112,9 @@ const MapPicker = ({ latitude, longitude, onChange }) => {
   );
   const [prevCoords, setPrevCoords] = useState([latitude, longitude]);
 
-  if (
-    hasStoredCoords &&
-    (latitude !== prevCoords?.[0] || longitude !== prevCoords?.[1])
-  ) {
+  if (latitude !== prevCoords?.[0] || longitude !== prevCoords?.[1]) {
     setPrevCoords([latitude, longitude]);
-    setPosition([latitude, longitude]);
+    setPosition(hasStoredCoords ? [latitude, longitude] : DEFAULT_CENTER);
   }
 
   const handlePick = (coords) => {
@@ -142,17 +139,19 @@ const MapPicker = ({ latitude, longitude, onChange }) => {
         />
         <MapCenterSync position={position} />
         <MapClickHandler onPick={handlePick} />
-        <Marker
-          position={[position[0], position[1]]}
-          icon={pinIcon}
-          draggable
-          eventHandlers={{
-            dragend(event) {
-              const { lat, lng } = event.target.getLatLng();
-              handlePick({ latitude: Number(lat.toFixed(7)), longitude: Number(lng.toFixed(7)) });
-            },
-          }}
-        />
+        {hasStoredCoords && (
+          <Marker
+            position={[position[0], position[1]]}
+            icon={pinIcon}
+            draggable
+            eventHandlers={{
+              dragend(event) {
+                const { lat, lng } = event.target.getLatLng();
+                handlePick({ latitude: Number(lat.toFixed(7)), longitude: Number(lng.toFixed(7)) });
+              },
+            }}
+          />
+        )}
       </MapContainer>
       <p className="text-xs text-slate-500 bg-white px-3 py-2 flex items-center space-x-1.5">
         <MapPin size={13} className="text-[#4A9FF5]" />
@@ -304,8 +303,8 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
     if (stepIndex === 3) {
       ['bedrooms', 'bathrooms', 'parkingSpaces'].forEach((field) => {
         const value = numberOrUndefined(form[field]);
-        if (value !== undefined && (!Number.isInteger(value) || value < 0)) {
-          push(field, 'Must be a positive whole number');
+        if (value !== undefined && (!Number.isInteger(value) || value <= 0)) {
+          push(field, 'Must be a positive whole number (no decimals or zero)');
         }
       });
     }
@@ -325,10 +324,17 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
 
   const handleBack = () => setStep((prev) => Math.max(prev - 1, 0));
 
+  const effectiveStatusFor = (pressedStatus) => {
+    const existingStatus = isEdit ? initial?.status : undefined;
+    return isEdit &&
+      existingStatus &&
+      existingStatus !== 'draft' &&
+      existingStatus !== 'available'
+      ? existingStatus
+      : pressedStatus;
+  };
+
   const buildPayload = (pressedStatus) => {
-  const existingStatus = isEdit ? initial?.status : undefined;
-  const preserveStatus =
-    isEdit && existingStatus && existingStatus !== 'draft' && existingStatus !== 'available';
   return {
     title: form.title.trim(),
     description: form.description.trim(),
@@ -344,7 +350,7 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
     address: form.address.trim() || undefined,
     latitude: numberOrUndefined(form.latitude),
     longitude: numberOrUndefined(form.longitude),
-    status: preserveStatus ? existingStatus : pressedStatus,
+    status: effectiveStatusFor(pressedStatus),
     amenities: amenities.length ? amenities : undefined,
   };
 };
@@ -395,7 +401,7 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
         }
       }
 
-      onSaved(status, uploadNotice);
+      onSaved(effectiveStatusFor(status), uploadNotice);
     } catch (err) {
       setSubmitError(getApiError(err));
     } finally {
@@ -908,7 +914,7 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
         {steps.map((item, index) => {
           const complete = index < step;
           const active = index === step;
-          const locked = index >= step;
+          const locked = index > step;
           return (
             <li key={item.key} className="flex items-center shrink-0">
               <button

@@ -72,12 +72,18 @@ const EditProperty = () => {
   const loading = loadedId !== id;
 
   const handleSaved = (status, notice) => {
-    const base = status === 'draft' ? 'Draft updated successfully.' : 'Property updated and published!';
+    const base =
+      status === 'draft'
+        ? 'Draft updated successfully.'
+        : status === 'available'
+          ? 'Property updated and published!'
+          : 'Property updated successfully.';
     if (notice) {
       setSaveFailed(true);
       showToast(`${base} ${notice}`, { tone: 'error', duration: 12000 });
       return;
     }
+    setSaveFailed(false);
     showToast(base);
     redirectRef.current = setTimeout(() => navigate(ROUTES.agentProperties), 1100);
   };
