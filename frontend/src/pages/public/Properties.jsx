@@ -17,7 +17,6 @@ import {
 import PropertyCard from "../../components/property/PropertyCard";
 
 import { getPropertyImageUrl } from "../../utils/helpers";
-import { DEMO_PROPERTIES } from "../../utils/property.details.mock.data.js";
 
 
 const normalizeProperties = (response) => {
@@ -101,7 +100,7 @@ const formatPrice = (price) => {
 
 
 
-const filterMockProperties = (properties, filters) => {
+const filterProperties = (properties, filters) => {
   let filtered = [...properties];
 
   /*
@@ -230,10 +229,13 @@ const Properties = () => {
     "";
 
   const [properties, setProperties] =
-    useState(DEMO_PROPERTIES);
+    useState([]);
 
   const [loading, setLoading] =
-    useState(false);
+    useState(true);
+
+  const [loadError, setLoadError] =
+    useState("");
 
   const [search, setSearch] =
     useState(initialSearch);
@@ -316,11 +318,11 @@ const Properties = () => {
   const loadProperties = useCallback(
     async (filters = {}) => {
       setLoading(true);
+      setLoadError("");
 
       try {
         let apiProperties = [];
 
-        
         if (filters.search?.trim()) {
           const response =
             await searchProperties(
@@ -332,7 +334,7 @@ const Properties = () => {
 
 
           apiProperties =
-            filterMockProperties(
+            filterProperties(
               apiProperties,
               filters
             );
@@ -341,7 +343,7 @@ const Properties = () => {
           return;
         }
 
-    
+
         const response =
           await getProperties({
             categoryId:
@@ -360,22 +362,19 @@ const Properties = () => {
         apiProperties =
           normalizeProperties(response);
 
-        
+
         setProperties(apiProperties);
       } catch (error) {
- 
+
         console.warn(
-          "Property API unavailable. Using demo data.",
+          "Property API request failed.",
           error
         );
 
-        const mockProperties =
-          filterMockProperties(
-            DEMO_PROPERTIES,
-            filters
-          );
-
-        setProperties(mockProperties);
+        setProperties([]);
+        setLoadError(
+          "We couldn't load properties. Please try again in a moment."
+        );
       } finally {
         setLoading(false);
       }
@@ -830,6 +829,26 @@ const Properties = () => {
                 )
               )}
 
+            </div>
+
+          ) : loadError ? (
+
+            /* ERROR */
+
+            <div className="relative overflow-hidden rounded-2xl border border-rose-200 bg-rose-50 px-5 py-16 text-center shadow-[0_8px_30px_rgba(16,42,52,0.04)] sm:py-20">
+              <h3 className="text-[18px] font-bold text-rose-700">
+                Something went wrong
+              </h3>
+              <p className="mx-auto mt-2 max-w-[420px] text-[12px] leading-5 text-rose-700/80">
+                {loadError}
+              </p>
+              <button
+                type="button"
+                onClick={clearFilters}
+                className="mt-5 cursor-pointer rounded-lg bg-[#0F9690] px-5 py-2.5 text-[11px] font-semibold text-white shadow-[0_6px_18px_rgba(15,150,144,0.16)] transition-all hover:-translate-y-0.5 hover:bg-[#0D827D]"
+              >
+                Reset filters
+              </button>
             </div>
 
           ) : properties.length === 0 ? (
