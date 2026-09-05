@@ -239,6 +239,7 @@ const Properties = () => {
               key={tab.key}
               type="button"
               onClick={() => selectStatus(tab.key)}
+              aria-pressed={active}
               className={`px-4 py-2 rounded-full text-[13px] font-semibold transition cursor-pointer ${
                 active
                   ? 'bg-[#4A9FF5] text-white shadow-[0_3px_10px_rgba(74,159,245,0.3)]'
@@ -375,13 +376,13 @@ const Properties = () => {
                     <td className="px-4 py-3 text-center">
                       <span className="inline-flex items-center justify-center space-x-1 text-slate-600">
                         <Eye size={13} className="text-slate-400" />
-                        <span>{property.views}</span>
+                        <span>{property.views ?? '—'}</span>
                       </span>
                     </td>
                     <td className="px-4 py-3 text-center">
                       <span className="inline-flex items-center justify-center space-x-1 text-slate-600">
                         <Users size={13} className="text-slate-400" />
-                        <span>{property.leads}</span>
+                        <span>{property.leads ?? '—'}</span>
                       </span>
                     </td>
                     <td className="px-4 py-3 text-right">
