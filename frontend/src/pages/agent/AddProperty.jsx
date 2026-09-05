@@ -29,6 +29,7 @@ const AddProperty = () => {
       return;
     }
     setSaved(true);
+    setSaveFailed(false);
     showToast(base);
     redirectRef.current = setTimeout(() => navigate(ROUTES.agentProperties), 1100);
   };
