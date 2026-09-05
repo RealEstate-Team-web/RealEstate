@@ -18,5 +18,6 @@ export const ROUTES = {
   resetPassword: '/reset-password',
   buyer: '/buyer',
   agent: '/agent',
+  agentProperties: '/agent/properties',
   admin: '/admin',
 }

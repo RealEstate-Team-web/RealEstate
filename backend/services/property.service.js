@@ -1,4 +1,13 @@
 const propertyModel = require("../models/property.model");
+const { withTransaction } = require("../config/db.config");
+const { uploadPropertyImage, destroyImage } = require("./upload.service");
+
+// Wrap a transactional connection so callers can `await executor(sql, params)`
+// and get back the first result array — matches mysql2's `pool.execute` shape.
+const makeExecutor = (connection) => async (sql, params) => {
+  const [rows] = await connection.execute(sql, params);
+  return rows;
+};
 
 const assertOwner = (property, agentId) => {
   if (agentId != null && Number(property.agent_id) !== Number(agentId)) {
@@ -6,6 +15,12 @@ const assertOwner = (property, agentId) => {
     error.statusCode = 403;
     throw error;
   }
+};
+
+const notFoundError = () => {
+  const error = new Error("Property not found");
+  error.statusCode = 404;
+  return error;
 };
 
  const getProperties = async (
@@ -45,7 +60,8 @@ const assertOwner = (property, agentId) => {
 
 
  const getPropertyById = async (
-  id
+  id,
+  user = null
 ) => {
   const property =
     await propertyModel.findPropertyById(
@@ -53,16 +69,49 @@ const assertOwner = (property, agentId) => {
     );
 
   if (!property) {
-    const error = new Error(
-      "Property not found"
-    );
+    throw notFoundError();
+  }
 
-    error.statusCode = 404;
+  if (property.status === "draft") {
+    const isOwner =
+      user &&
+      user.role === "agent" &&
+      Number(user.id) === Number(property.agent_id);
+    const isAdmin =
+      user && user.role === "admin";
 
-    throw error;
+    if (!isOwner && !isAdmin) {
+      throw notFoundError();
+    }
   }
 
   return property;
+};
+
+
+ const getMyProperties = async (
+  agentId,
+  filters
+) => {
+  const result =
+    await propertyModel.findPropertiesByAgent({
+      agentId,
+      ...filters,
+    });
+
+  return {
+    properties: result.properties,
+
+    pagination: {
+      page: filters.page,
+      limit: filters.limit,
+      total: result.total,
+
+      totalPages: Math.ceil(
+        result.total / filters.limit
+      ),
+    },
+  };
 };
 
 
@@ -79,9 +128,23 @@ const assertOwner = (property, agentId) => {
     throw error;
   }
 
-  return propertyModel.createProperty(
-    data
-  );
+  return withTransaction(async (connection) => {
+    const executor = makeExecutor(connection);
+
+    const propertyId =
+      await propertyModel.createProperty(
+        data,
+        executor
+      );
+
+    await propertyModel.syncPropertyAmenities(
+      propertyId,
+      data.amenities,
+      executor
+    );
+
+    return propertyId;
+  });
 };
 
 
@@ -91,30 +154,42 @@ const assertOwner = (property, agentId) => {
   agentId
 ) => {
   const property =
-    await propertyModel.findPropertyById(
+    await propertyModel.findPropertyOwner(
       id
     );
 
   if (!property) {
-    const error = new Error(
-      "Property not found"
-    );
-
-    error.statusCode = 404;
-
-    throw error;
+    throw notFoundError();
   }
 
   assertOwner(property, agentId);
 
-  return propertyModel.updateProperty(
-    id,
-    data
-  );
+  const { amenities, ...fields } = data;
+
+  return withTransaction(async (connection) => {
+    const executor = makeExecutor(connection);
+
+    const updated =
+      await propertyModel.updateProperty(
+        id,
+        fields,
+        executor
+      );
+
+    if (data.amenities !== undefined) {
+      await propertyModel.syncPropertyAmenities(
+        id,
+        data.amenities,
+        executor
+      );
+    }
+
+    return updated;
+  });
 };
 
 
- const deleteProperty = async (
+ const duplicateProperty = async (
   id,
   agentId
 ) => {
@@ -124,26 +199,160 @@ const assertOwner = (property, agentId) => {
     );
 
   if (!property) {
-    const error = new Error(
-      "Property not found"
-    );
-
-    error.statusCode = 404;
-
-    throw error;
+    throw notFoundError();
   }
 
   assertOwner(property, agentId);
 
-  return propertyModel.deleteProperty(
-    id
+  return withTransaction(async (connection) => {
+    const executor = makeExecutor(connection);
+
+    const copyId =
+      await propertyModel.createProperty(
+        {
+          agentId,
+          categoryId: property.category_id,
+          title: `${property.title} (Copy)`,
+          description: property.description,
+          listingType: property.listingType || property.listing_type,
+          price: Number(property.price),
+          bedrooms: property.bedrooms ?? null,
+          bathrooms: property.bathrooms ?? null,
+          parkingSpaces:
+            property.parking ?? property.parking_spaces ?? null,
+          area: property.area ?? null,
+          country: property.country,
+          city: property.city,
+          address: property.address ?? null,
+          latitude: property.latitude ?? null,
+          longitude: property.longitude ?? null,
+          status: "draft",
+        },
+        executor
+      );
+
+    await propertyModel.syncPropertyAmenities(
+      copyId,
+      property.amenities,
+      executor
+    );
+
+    return copyId;
+  });
+};
+
+
+ const MAX_TOTAL_IMAGES = 10;
+
+const uploadPropertyImages = async (
+  propertyId,
+  files,
+  agentId
+) => {
+  if (!files || files.length === 0) {
+    const error = new Error(
+      "At least one image is required"
+    );
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const property =
+    await propertyModel.findPropertyOwner(
+      propertyId
+    );
+
+  if (!property) {
+    throw notFoundError();
+  }
+
+  assertOwner(property, agentId);
+
+  const existingImageCount =
+    await propertyModel.countImages(propertyId);
+  if (existingImageCount + files.length > MAX_TOTAL_IMAGES) {
+    const error = new Error(
+      `A property can have at most ${MAX_TOTAL_IMAGES} images`,
+    );
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const results = await Promise.allSettled(
+    files.map((file) =>
+      uploadPropertyImage(file.buffer, {
+        folder: `real-estate/properties/${propertyId}`,
+      }),
+    ),
   );
+
+  const uploadedImages = results
+    .filter((result) => result.status === "fulfilled")
+    .map((result) => result.value);
+
+  const failed = results.find((result) => result.status === "rejected");
+  if (failed) {
+    // Roll back every successfully uploaded Cloudinary asset so a partial
+    // batch never leaks orphan files.
+    await Promise.all(
+      uploadedImages.map((image) => destroyImage(image.publicId)),
+    );
+    throw failed.reason;
+  }
+
+  try {
+    const persistedImages = await propertyModel.insertPropertyImages(
+      propertyId,
+      uploadedImages,
+      MAX_TOTAL_IMAGES,
+    );
+    return persistedImages;
+  } catch (error) {
+    // Roll back the successfully uploaded Cloudinary assets so we don't
+    // leak orphan files when the DB insert fails.
+    await Promise.all(
+      uploadedImages.map((image) => destroyImage(image.publicId)),
+    );
+    throw error;
+  }
+};
+
+
+ const deleteProperty = async (
+  id,
+  agentId
+) => {
+  const property =
+    await propertyModel.findPropertyOwner(
+      id
+    );
+
+  if (!property) {
+    throw notFoundError();
+  }
+
+  assertOwner(property, agentId);
+
+  // Capture Cloudinary public ids before the property row / image rows are
+  // removed so no orphan assets leak in the media library.
+  const publicIds = await propertyModel.findPropertyImages(id);
+
+  const deleted = await propertyModel.deleteProperty(id);
+
+  if (publicIds.length > 0) {
+    await Promise.all(publicIds.map((publicId) => destroyImage(publicId)));
+  }
+
+  return deleted;
 };
 module.exports = {
     getProperties,
     getFeaturedProperties,
     getPropertyById,
+    getMyProperties,
     createProperty,
     updateProperty,
+    duplicateProperty,
+    uploadPropertyImages,
     deleteProperty,
 };

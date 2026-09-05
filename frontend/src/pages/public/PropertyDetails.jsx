@@ -20,23 +20,20 @@ import {
 
 import PropertyCard from "../../components/property/PropertyCard";
 import {
-  NEARBY_PROPERTIES,
-  DEMO_PROPERTIES,
-} from "../../utils/property.details.mock.data";
+  getPropertyById,
+  getProperties,
+} from "../../services/property.service";
 import { PropertyMap } from "./PropertyMap.jsx";
 import PageLoader from "../../components/common/Loader.jsx";
 import { submitInquiry } from "../../services/inquiry.service";
 import useAuth from "../../hooks/useAuth";
 import { getPropertyImageList } from "../../utils/helpers";
-const PropertyDetails = ({
-  propertyData = null,
-  nearbyData = null,
-}) => {
+const PropertyDetails = () => {
   const { id } = useParams();
   const { user } = useAuth();
 
-  const [property, setProperty] = useState(propertyData);
-  const [loading, setLoading] = useState(!propertyData);
+  const [property, setProperty] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [activeImage, setActiveImage] = useState(0);
   const [saved, setSaved] = useState(false);
@@ -44,56 +41,90 @@ const PropertyDetails = ({
   const [messageSent, setMessageSent] = useState(false);
   const [sendingMessage, setSendingMessage] = useState(false);
   const [messageError, setMessageError] = useState("");
+  const [nearbyProperties, setNearbyProperties] = useState([]);
 
-  // Load property data from API or fallback to demo data
+  // Load property data from the API
   useEffect(() => {
-    setMessageSent(false);
-    setMessage("");
-    setMessageError("");
-    setActiveImage(0);
+    let active = true;
+
+    const resetInquiryState = () => {
+      setMessageSent(false);
+      setMessage("");
+      setMessageError("");
+      setActiveImage(0);
+    };
 
     const loadProperty = async () => {
-      if (propertyData) {
-        setProperty(propertyData);
-        setLoading(false);
-        return;
-      }
-
       if (!id) {
+        resetInquiryState();
         setError("Invalid property ID");
         setLoading(false);
         return;
       }
 
       try {
+        resetInquiryState();
         setLoading(true);
         setError("");
 
-        const response = await fetch(`/api/properties/${id}`);
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch property details");
-        }
-
-        const data = await response.json();
-        setProperty(data.data || data);
-      } catch {
-        const fallback = DEMO_PROPERTIES.find(
-          (item) => String(item.id) === String(id)
+        const loaded = await getPropertyById(id);
+        if (!active) return;
+        setProperty(loaded);
+      } catch (err) {
+        if (!active) return;
+        resetInquiryState();
+        console.error("Property load error:", err);
+        setError(
+          err?.status === 404
+            ? "Property not found"
+            : "We couldn't load this property. Please try again.",
         );
-
-        if (fallback) {
-          setProperty(fallback);
-        } else {
-          setError("Property not found");
-        }
       } finally {
-        setLoading(false);
+        if (active) setLoading(false);
       }
     };
 
     loadProperty();
-  }, [id, propertyData]);
+
+    return () => {
+      active = false;
+    };
+  }, [id]);
+
+  // Load real nearby properties
+  useEffect(() => {
+    if (!property?.id) return;
+
+    const city =
+      property.city && String(property.city).trim()
+        ? property.city
+        : undefined;
+
+    let active = true;
+
+    const loadNearby = async () => {
+      try {
+        const result = await getProperties({
+          sort: "newest",
+          city,
+          limit: 5,
+        });
+        const list = (Array.isArray(result?.properties) ? result.properties : [])
+          .filter((item) => String(item.id) !== String(property.id))
+          .slice(0, 4);
+        if (active) setNearbyProperties(list);
+      } catch (error) {
+        console.error("Nearby properties error:", error);
+        if (active) setNearbyProperties([]);
+      }
+    };
+
+    loadNearby();
+
+    return () => {
+      active = false;
+    };
+  }, [property?.id, property?.city]);
 
   if (loading) {
     return (
@@ -125,11 +156,6 @@ const PropertyDetails = ({
       </div>
     );
   }
-
-  const nearbyProperties =
-    Array.isArray(nearbyData) && nearbyData.length > 0
-      ? nearbyData
-      : NEARBY_PROPERTIES;
 
   const images =
     getPropertyImageList(property).length > 0
@@ -233,10 +259,10 @@ const PropertyDetails = ({
     } catch (err) {
       console.error("Failed to send inquiry:", err);
       const errMsg =
-        err.response?.data?.message ||
-        (Array.isArray(err.response?.data?.errors)
-          ? err.response.data.errors.join(", ")
-          : err.message) ||
+        err?.message ||
+        (Array.isArray(err?.errors)
+          ? err.errors.join(", ")
+          : "") ||
         "Failed to send your request. Please try again.";
       setMessageError(errMsg);
     } finally {

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Home } from "lucide-react";
 
 const LOADING_MESSAGES = [
@@ -8,11 +8,59 @@ const LOADING_MESSAGES = [
   "Preparing your experience...",
 ];
 
+const FADE_OUT_MS = 350;
+const SHOW_DELAY_MS = 200;
+
 const PageLoader = ({ loading = true }) => {
   const [messageIndex, setMessageIndex] = useState(0);
-  const [finishing, setFinishing] = useState(false);
+  const [phase, setPhase] = useState("hidden");
+  // Mirror the phase in a ref so the fade-out effect can drive its
+  // timers purely from `loading` changes without rescheduling when
+  // `phase` flips internally.
+  const phaseRef = useRef("hidden");
 
   useEffect(() => {
+    if (loading) {
+      if (phaseRef.current === "fading") {
+        // A loading transition arrived mid-fade: promote back to visible
+        // instead of leaving the overlay stuck at opacity 0.
+        phaseRef.current = "visible";
+        setPhase("visible");
+        return undefined;
+      }
+
+      const timer = setTimeout(() => {
+        if (phaseRef.current === "hidden") {
+          phaseRef.current = "visible";
+          setPhase("visible");
+        }
+      }, SHOW_DELAY_MS);
+
+      return () => clearTimeout(timer);
+    }
+
+    if (phaseRef.current === "visible") {
+      const fadeTimer = setTimeout(() => {
+        phaseRef.current = "fading";
+        setPhase("fading");
+      }, 0);
+      const hideTimer = setTimeout(() => {
+        phaseRef.current = "hidden";
+        setPhase("hidden");
+      }, FADE_OUT_MS);
+
+      return () => {
+        clearTimeout(fadeTimer);
+        clearTimeout(hideTimer);
+      };
+    }
+
+    return undefined;
+  }, [loading]);
+
+  useEffect(() => {
+    if (phase !== "visible") return;
+
     const interval = setInterval(() => {
       setMessageIndex(
         (current) => (current + 1) % LOADING_MESSAGES.length
@@ -20,18 +68,16 @@ const PageLoader = ({ loading = true }) => {
     }, 1800);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [phase]);
 
-  useEffect(() => {
-    if (!loading) {
-      setFinishing(true);
-    }
-  }, [loading]);
+  if (phase === "hidden") return null;
 
   return (
     <div
+      role="status"
+      aria-live="polite"
       className={`fixed inset-0 z-[9999] flex items-center justify-center bg-[#0D1F27] transition-opacity duration-300 ${
-        finishing ? "pointer-events-none opacity-0" : "opacity-100"
+        phase === "fading" ? "pointer-events-none opacity-0" : "opacity-100"
       }`}
     >
       <div className="flex flex-col items-center">

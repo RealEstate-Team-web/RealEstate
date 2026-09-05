@@ -1,4 +1,8 @@
 const propertyService = require("../services/property.service");
+const {
+  PROPERTY_STATUSES,
+  PROPERTY_LISTING_TYPES,
+} = require("../middlewares/validation.middleware");
  const getProperties = async (
   req,
   res,
@@ -32,14 +36,14 @@ const propertyService = require("../services/property.service");
 
 
     const page = Math.max(
-      Number(req.query.page) || 1,
+      Math.trunc(Number(req.query.page) || 1),
       1
     );
 
 
     const limit = Math.min(
       Math.max(
-        Number(req.query.limit) || 12,
+        Math.trunc(Number(req.query.limit) || 12),
         1
       ),
       50
@@ -120,13 +124,87 @@ const propertyService = require("../services/property.service");
   try {
     const property =
       await propertyService.getPropertyById(
-        req.params.id
+        req.params.id,
+        req.user
       );
 
     res.status(200).json({
       success: true,
       message: "Property fetched successfully",
       data: property,
+    });
+
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+ const getMyProperties = async (
+  req,
+  res,
+  next
+) => {
+  try {
+    const {
+      status,
+      listingType,
+    } = req.query;
+
+    if (status !== undefined && !PROPERTY_STATUSES.includes(status)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid query parameter: status",
+        errors: [`status must be one of: ${PROPERTY_STATUSES.join(", ")}`],
+      });
+    }
+
+    if (listingType !== undefined && !PROPERTY_LISTING_TYPES.includes(listingType)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid query parameter: listingType",
+        errors: [`listingType must be one of: ${PROPERTY_LISTING_TYPES.join(", ")}`],
+      });
+    }
+
+    const q =
+      typeof req.query.q === "string" ? req.query.q : undefined;
+    const location =
+      typeof req.query.location === "string" ? req.query.location : undefined;
+    const sort =
+      typeof req.query.sort === "string" ? req.query.sort : "newest";
+
+    const page = Math.max(
+      Math.trunc(Number(req.query.page) || 1),
+      1
+    );
+
+    const limit = Math.min(
+      Math.max(
+        Math.trunc(Number(req.query.limit) || 8),
+        1
+      ),
+      50
+    );
+
+    const result =
+      await propertyService.getMyProperties(
+        req.user.id,
+        {
+          status,
+          q,
+          listingType,
+          location,
+          sort,
+          page,
+          limit,
+        }
+      );
+
+    res.status(200).json({
+      success: true,
+      message: "My properties fetched successfully",
+      data: result,
     });
 
   } catch (error) {
@@ -204,11 +282,65 @@ const propertyService = require("../services/property.service");
     next(error);
   }
 };
+
+
+ const duplicateProperty = async (
+  req,
+  res,
+  next
+) => {
+  try {
+    const propertyId =
+      await propertyService.duplicateProperty(
+        req.params.id,
+        req.user.id
+      );
+
+    res.status(201).json({
+      success: true,
+      message: "Property duplicated successfully",
+      data: {
+        id: propertyId,
+      },
+    });
+
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+ const uploadPropertyImages = async (
+  req,
+  res,
+  next
+) => {
+  try {
+    const images =
+      await propertyService.uploadPropertyImages(
+        req.params.id,
+        req.files,
+        req.user.id
+      );
+
+    res.status(201).json({
+      success: true,
+      message: "Property images uploaded successfully",
+      data: images,
+    });
+
+  } catch (error) {
+    next(error);
+  }
+};
 module.exports = {
     getProperties,
     getFeaturedProperties,
     getPropertyById,
+    getMyProperties,
     createProperty,
     updateProperty,
+    duplicateProperty,
+    uploadPropertyImages,
     deleteProperty,
 };

@@ -331,6 +331,17 @@ const Visit = {
     );
   },
 
+  async countScheduledByAgentId(agentId) {
+    const rows = await query(
+      `SELECT COUNT(*) AS count
+       FROM visit_bookings
+       WHERE agent_id = ?
+         AND status IN ('pending', 'approved')`,
+      [agentId],
+    );
+    return Number(rows[0]?.count) || 0;
+  },
+
   async countByDay(days) {
     return query(
       `SELECT DATE(created_at) AS date, COUNT(*) AS count

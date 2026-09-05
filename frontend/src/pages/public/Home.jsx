@@ -2,19 +2,24 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   Search,
-  Star,
-  Quote,
   ArrowRight,
 } from "lucide-react";
 
 import { getLanding } from "../../services/property.service";
+import { getPublicAgents } from "../../services/agent.service";
 import PropertyCard from "../../components/property/PropertyCard";
-import {DEMO_PROPERTIES,AGENTS,TESTIMONIALS} from "../../utils/property.details.mock.data.js";
+import AgentCard from "../../components/agent/AgentCard";
+import AgentCardSkeleton from "../../components/agent/AgentCardSkeleton";
 
 
 
 const Home = () => {
   const [properties, setProperties] = useState([]);
+  const [propertiesLoading, setPropertiesLoading] = useState(true);
+  const [propertiesError, setPropertiesError] = useState("");
+  const [agents, setAgents] = useState([]);
+  const [agentsLoading, setAgentsLoading] = useState(true);
+  const [agentsError, setAgentsError] = useState("");
   const [location, setLocation] = useState("");
   const [type, setType] = useState("");
   const [price, setPrice] = useState("");
@@ -29,16 +34,39 @@ const Home = () => {
 
       if (data?.properties?.length) {
         setProperties(data.properties);
+        setPropertiesError("");
       } else {
-        setProperties(DEMO_PROPERTIES);
+        setProperties([]);
       }
     } catch (error) {
       console.error("Landing error:", error);
-      setProperties(DEMO_PROPERTIES);
+      setProperties([]);
+      setPropertiesError("We couldn't load featured properties. Please try again.");
+    } finally {
+      setPropertiesLoading(false);
     }
   };
 
   load();
+
+}, []);
+
+ useEffect(() => {
+  const loadAgents = async () => {
+    try {
+      const { agents: agentList } = await getPublicAgents(5);
+      setAgents(Array.isArray(agentList) ? agentList : []);
+      setAgentsError("");
+    } catch (error) {
+      console.error("Agents error:", error);
+      setAgents([]);
+      setAgentsError("We couldn't load our agents. Please try again.");
+    } finally {
+      setAgentsLoading(false);
+    }
+  };
+
+  loadAgents();
 
 }, []);
 
@@ -62,10 +90,7 @@ const Home = () => {
     navigate(`/properties?${params.toString()}`);
   };
 
-  const displayedProperties =
-    properties.length > 0
-      ? properties
-      : DEMO_PROPERTIES;
+  const displayedProperties = properties;
 
   return (
     <div className="w-full min-w-0 overflow-x-hidden bg-white">
@@ -171,20 +196,47 @@ const Home = () => {
 
           <div className="flex w-full justify-center">
 
-            <div className="grid w-full grid-cols-1 justify-items-center gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-
-              {displayedProperties.map((property) => (
-                <div
-                  key={property.id}
-                  className="w-full max-w-[300px]"
-                >
-                  <div className="h-full rounded-2xl transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_14px_35px_rgba(15,150,144,0.15)]">
-                    <PropertyCard property={property} />
+            {propertiesLoading ? (
+              <div className="grid w-full grid-cols-1 justify-items-center gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                {[1, 2, 3, 4].map((item) => (
+                  <div
+                    key={item}
+                    className="w-full max-w-[300px] overflow-hidden rounded-2xl border border-slate-200 bg-white"
+                  >
+                    <div className="h-[200px] animate-pulse bg-slate-100" />
+                    <div className="space-y-2 p-4">
+                      <div className="h-3 w-3/4 animate-pulse rounded bg-slate-100" />
+                      <div className="h-3 w-1/2 animate-pulse rounded bg-slate-100" />
+                      <div className="h-3 w-1/3 animate-pulse rounded bg-slate-100" />
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
+            ) : propertiesError ? (
+              <div className="w-full max-w-md rounded-2xl border border-rose-200 bg-rose-50 px-5 py-10 text-center text-sm text-rose-700">
+                {propertiesError}
+              </div>
+            ) : displayedProperties.length === 0 ? (
+              <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white px-5 py-10 text-center text-sm text-slate-500">
+                No featured properties yet. Check back soon.
+              </div>
+            ) : (
+              <div className="grid w-full grid-cols-1 justify-items-center gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
 
-            </div>
+                {displayedProperties.map((property) => (
+                  <div
+                    key={property.id}
+                    className="w-full max-w-[300px]"
+                  >
+                    <div className="h-full rounded-2xl transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_14px_35px_rgba(15,150,144,0.15)]">
+                      <PropertyCard property={property} />
+                    </div>
+                  </div>
+                ))}
+
+              </div>
+            )}
+
           </div>
 
           {/*VIEW ALL*/}
@@ -204,109 +256,46 @@ const Home = () => {
         </div>
       </section>
 
-      {/*  AGENTS & TESTIMONIALS SECTION */}
+      {/*  FEATURED AGENTS SECTION */}
       <section id="agents" className="w-full border-t border-slate-200 bg-[#F8FAFC]">
-        <div className="mx-auto grid max-w-[1240px] grid-cols-1 gap-10 px-4 py-14 sm:px-6 lg:grid-cols-12 lg:px-8 lg:py-20">
+        <div className="mx-auto w-full max-w-[1240px] px-4 py-14 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
 
-          {/* Agents */}
-          <div className="lg:col-span-7">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-[#0F9690]">
+            Our Team
+          </span>
 
-            <span className="text-[10px] font-bold uppercase tracking-wider text-[#0F9690]">
-              Our Team
-            </span>
+          <h2 className="mb-7 mt-1 text-2xl font-bold text-[#162831] sm:text-3xl">
+            Featured Agents
+          </h2>
 
-            <h2 className="mb-7 mt-1 text-2xl font-bold text-[#162831] sm:text-3xl">
-              Featured Agents
-            </h2>
-
+          {agentsLoading ? (
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-5">
-
-              {AGENTS.map((agent) => (
-                <div
-                  key={agent.name}
-                  className="rounded-xl border border-slate-200 bg-white p-3 text-center transition-transform duration-200 hover:-translate-y-1 hover:shadow-md"
-                >
-
-                  <img
-                    src={agent.photo}
-                    alt={agent.name}
-                    className="mx-auto h-16 w-16 rounded-full border-2 border-[#0F9690] object-cover p-0.5"
-                  />
-
-                  <h4 className="mt-2 line-clamp-1 text-xs font-bold text-[#162831]">
-                    {agent.name}
-                  </h4>
-
-                  <div className="my-1 flex justify-center text-[#E6A23C]">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <Star
-                        key={star}
-                        className="h-3 w-3 fill-current"
-                      />
-                    ))}
-                  </div>
-
-                  <p className="text-[10px] text-slate-500">
-                    {agent.role}
-                  </p>
-
-                </div>
+              {[1, 2, 3, 4, 5].map((item) => (
+                <AgentCardSkeleton key={item} variant="compact" />
               ))}
-
             </div>
-
-            <div className="mt-8">
-              <Link
-                to="/register"
-                className="inline-flex items-center gap-2 rounded-lg bg-[#E69500] px-6 py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-[#D48800]"
-              >
-                Become an Agent
-                <ArrowRight className="h-3.5 w-3.5" />
-              </Link>
-            </div>
-
-          </div>
-
-          {/* Testimonials */}
-          <div className="lg:col-span-5">
-
-            <span className="text-[10px] font-bold uppercase tracking-wider text-[#0F9690]">
-              Reviews
-            </span>
-
-            <h2 className="mb-7 mt-1 text-2xl font-bold text-[#162831] sm:text-3xl">
-              Testimonials
-            </h2>
-
-            <div className="space-y-4">
-
-              {TESTIMONIALS.map((testimonial) => (
-                <div
-                  key={testimonial.author}
-                  className="rounded-xl bg-[#0D827D] p-5 text-white shadow-sm transition hover:shadow-md"
-                >
-
-                  <Quote className="mb-2 h-5 w-5 opacity-40" />
-
-                  <p className="text-xs leading-relaxed text-white/90">
-                    "{testimonial.text}"
-                  </p>
-
-                  <div className="mt-3 border-t border-white/10 pt-2.5 flex items-center justify-between">
-                    <p className="text-xs font-bold">
-                      {testimonial.author}
-                    </p>
-
-                    <p className="text-[11px] text-white/70">
-                      {testimonial.role}
-                    </p>
-                  </div>
-
-                </div>
+          ) : agents.length > 0 ? (
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-5">
+              {agents.map((agent) => (
+                <AgentCard key={agent.id} agent={agent} variant="compact" />
               ))}
-
             </div>
+          ) : agentsError ? (
+            <p className="text-sm text-slate-500">{agentsError}</p>
+          ) : (
+            <p className="text-sm text-slate-500">
+              No featured agents yet.
+            </p>
+          )}
 
+          <div className="mt-8">
+            <Link
+              to="/register"
+              className="inline-flex items-center gap-2 rounded-lg bg-[#E69500] px-6 py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-[#D48800]"
+            >
+              Become an Agent
+              <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
           </div>
 
         </div>

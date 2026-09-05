@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Building2,
@@ -11,6 +12,7 @@ import {
 import KpiCard from '../../components/admin/KpiCard';
 import { useAuth } from '../../hooks/useAuth';
 import { ROUTES } from '../../utils/constants';
+import { getAgentDashboardStats } from '../../services/agent.service';
 
 const NoData = ({ label = 'No data yet' }) => (
   <div className="flex-1 flex items-center justify-center py-10">
@@ -35,39 +37,63 @@ const Dashboard = () => {
     'Agent';
   const agentIncomplete = user?.agentProfileStatus === 'incomplete';
 
+  const [stats, setStats] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    let active = true;
+    getAgentDashboardStats()
+      .then((data) => {
+        if (active) setStats(data);
+      })
+      .catch((err) => {
+        if (active) setError(err?.message || 'We couldn\'t load your dashboard. Please try again.');
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const indicatorFor = (value) =>
+    value > 0 ? null : <span className="text-[#9CA3AF]">No data yet</span>;
+
   const kpis = [
     {
       title: 'Total Properties',
-      value: '—',
-      indicator: <span className="text-[#9CA3AF]">No data yet</span>,
+      value: stats?.totalProperties ?? '—',
+      indicator: loading ? <span className="text-[#9CA3AF]">Loading…</span> : indicatorFor(stats?.totalProperties ?? 0),
       icon: Building2,
       iconBg: 'bg-[#E7F0FB] text-[#4A9FF5]',
     },
     {
       title: 'Active Listings',
-      value: '—',
-      indicator: <span className="text-[#9CA3AF]">No data yet</span>,
+      value: stats?.activeListings ?? '—',
+      indicator: loading ? <span className="text-[#9CA3AF]">Loading…</span> : indicatorFor(stats?.activeListings ?? 0),
       icon: BadgeCheck,
       iconBg: 'bg-[#E6F4EC] text-[#2F7A55]',
     },
     {
       title: 'Sold / Rented',
-      value: '—',
-      indicator: <span className="text-[#9CA3AF]">No data yet</span>,
+      value: stats?.soldRented ?? '—',
+      indicator: loading ? <span className="text-[#9CA3AF]">Loading…</span> : indicatorFor(stats?.soldRented ?? 0),
       icon: CheckCircle2,
       iconBg: 'bg-[#FBF3DD] text-[#E7B85A]',
     },
     {
       title: 'Scheduled Visits',
-      value: '—',
-      indicator: <span className="text-[#9CA3AF]">No data yet</span>,
+      value: stats?.scheduledVisits ?? '—',
+      indicator: loading ? <span className="text-[#9CA3AF]">Loading…</span> : indicatorFor(stats?.scheduledVisits ?? 0),
       icon: CalendarCheck,
       iconBg: 'bg-[#FBEAE9] text-[#D96B67]',
     },
     {
       title: 'Unread Messages',
-      value: '—',
-      indicator: <span className="text-[#9CA3AF]">No data yet</span>,
+      value: stats?.unreadMessages ?? '—',
+      indicator: loading ? <span className="text-[#9CA3AF]">Loading…</span> : indicatorFor(stats?.unreadMessages ?? 0),
       icon: MessageSquare,
       iconBg: 'bg-slate-100 text-slate-500',
     },
@@ -113,7 +139,15 @@ const Dashboard = () => {
         </div>
       )}
 
-      {/* KPI placeholder cards */}
+      {/* Load error banner */}
+      {error && (
+        <div role="alert" className="flex items-start gap-2 bg-[#FBEAE9] border border-[#E5B3B0] rounded-xl px-4 py-3 text-[13px] text-[#B34A44]">
+          <AlertCircle size={16} className="shrink-0 mt-0.5" />
+          <span>{error}</span>
+        </div>
+      )}
+
+      {/* KPI cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4">
         {kpis.map((k) => (
           <KpiCard

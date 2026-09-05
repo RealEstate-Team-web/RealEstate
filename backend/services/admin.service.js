@@ -57,6 +57,11 @@ function mapStatusToMeta(status) {
   );
 }
 
+function countByStatus(rows, status) {
+  const found = rows.find((r) => r.status === status);
+  return found ? Number(found.count) : 0;
+}
+
 function statusBreakdown(byStatusRows) {
   const counts = { pending: 0, approved: 0, rejected: 0 };
   byStatusRows.forEach((row) => {
@@ -73,11 +78,25 @@ function statusBreakdown(byStatusRows) {
 }
 
 async function getDashboardStats() {
-  const [usersTotal] = await Agent.countUsers();
-  const [agentsTotal] = await Agent.countAgents();
-  const byStatusRows = await Agent.countByVerificationStatus();
-  const [suspended] = await Agent.countSuspendedUsers();
-  const recentAgents = await Agent.recentAgents(5);
+  const [
+    [usersTotal],
+    [agentsTotal],
+    byStatusRows,
+    [suspended],
+    recentAgents,
+    propertyCount,
+    propertyByStatus,
+    visitByStatus,
+  ] = await Promise.all([
+    Agent.countUsers(),
+    Agent.countAgents(),
+    Agent.countByVerificationStatus(),
+    Agent.countSuspendedUsers(),
+    Agent.recentAgents(5),
+    Property.countProperties(),
+    Property.countByStatus(),
+    Visit.countByStatus(),
+  ]);
 
   const pending = byStatusRows.find((r) => r.verification_status === "pending");
   const approved = byStatusRows.find((r) => r.verification_status === "approved");
@@ -92,28 +111,43 @@ async function getDashboardStats() {
     suspendedUsers: Number(suspended.count),
     recentAgents,
     statusBreakdown: statusBreakdown(byStatusRows),
+    totalProperties: propertyCount,
+    propertiesByStatus: {
+      draft: countByStatus(propertyByStatus, "draft"),
+      available: countByStatus(propertyByStatus, "available"),
+      sold: countByStatus(propertyByStatus, "sold"),
+      rented: countByStatus(propertyByStatus, "rented"),
+    },
+    scheduledVisits: countByStatus(visitByStatus, "approved"),
   };
 }
 
 async function getAnalytics({ range } = {}) {
   const days = normalizeRange(range);
 
-  const [usersTotal] = await Agent.countUsers();
-  const [agentsTotal] = await Agent.countAgents();
-  const roleCounts = await User.countByRole();
-  const propByStatus = await Property.countByStatus();
-  const propByCategory = await Property.countByCategory();
-  const visitByStatus = await Visit.countByStatus();
-  const registrations = await User.countRegistrationsByDay(days);
-  const checkins = await Visit.countByDay(days);
-
-  const countOf = (rows, key, value) => {
-    const found = rows.find((r) => r[key] === value);
-    return found ? Number(found.count) : 0;
-  };
-
-  const totalProperties = await Property.countProperties();
-  const totalVisits = await Visit.countVisits();
+  const [
+    [usersTotal],
+    [agentsTotal],
+    roleCounts,
+    propByStatus,
+    propByCategory,
+    visitByStatus,
+    registrations,
+    checkins,
+    totalProperties,
+    totalVisits,
+  ] = await Promise.all([
+    Agent.countUsers(),
+    Agent.countAgents(),
+    User.countByRole(),
+    Property.countByStatus(),
+    Property.countByCategory(),
+    Visit.countByStatus(),
+    User.countRegistrationsByDay(days),
+    Visit.countByDay(days),
+    Property.countProperties(),
+    Visit.countVisits(),
+  ]);
 
   const roleCountMap = new Map(roleCounts.map((r) => [r.role, Number(r.count)]));
 
@@ -133,12 +167,12 @@ async function getAnalytics({ range } = {}) {
       agents: Number(agentsTotal.count),
       buyers: roleCountMap.get("buyer") || 0,
       properties: totalProperties,
-      availableProperties: countOf(propByStatus, "status", "available"),
+      availableProperties: countByStatus(propByStatus, "available"),
       visits: totalVisits,
-      pendingVisits: countOf(visitByStatus, "status", "pending"),
-      approvedVisits: countOf(visitByStatus, "status", "approved"),
-      completedVisits: countOf(visitByStatus, "status", "completed"),
-      cancelledVisits: countOf(visitByStatus, "status", "cancelled"),
+      pendingVisits: countByStatus(visitByStatus, "pending"),
+      approvedVisits: countByStatus(visitByStatus, "approved"),
+      completedVisits: countByStatus(visitByStatus, "completed"),
+      cancelledVisits: countByStatus(visitByStatus, "cancelled"),
     },
     registrationsTrend: buildTrendSeries(registrations, days),
     checkinsTrend: buildTrendSeries(checkins, days),

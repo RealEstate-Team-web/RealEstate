@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { Menu, X, Home, LayoutDashboard, LogOut } from "lucide-react";
+import { Menu, X, Home, LogOut } from "lucide-react";
 import useAuth from "../../hooks/useAuth";
 import { ROLE_DASHBOARDS, ROUTES } from "../../utils/constants";
 
@@ -11,6 +11,44 @@ const NAV_LINKS = [
   { to: "/agents", label: "Agents" },
   { to: "/contact", label: "Contact Us" },
 ];
+
+const getUserName = (user) => {
+  if (!user) return "";
+
+  const full = `${user.firstName || ""} ${user.lastName || ""}`.trim();
+  return full || user.name || user.fullName || user.email || "Account";
+};
+
+const getUserInitial = (user) => {
+  const name = getUserName(user);
+  return (name?.charAt(0) || "A").toUpperCase();
+};
+
+const UserAvatar = ({ user, size = "sm" }) => {
+  const dimension =
+    size === "sm" ? "h-8 w-8 text-[12px]" : "h-10 w-10 text-sm";
+  const photo = user?.profileImageUrl || user?.profile_image_url;
+
+  if (photo) {
+    return (
+      <img
+        src={photo}
+        alt=""
+        aria-hidden="true"
+        className={`${dimension} shrink-0 rounded-full object-cover border border-slate-200`}
+      />
+    );
+  }
+
+  return (
+    <div
+      aria-hidden="true"
+      className={`${dimension} shrink-0 rounded-full border border-[#0F9690] bg-[#E8F7F5] flex items-center justify-center font-extrabold text-[#0F9690]`}
+    >
+      {getUserInitial(user)}
+    </div>
+  );
+};
 
 const Header = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -45,7 +83,14 @@ const Header = () => {
             <NavLink
               key={link.label}
               to={link.to}
-              className="text-[14px] font-medium transition-colors text-[#475569] hover:text-[#0F9690]"
+              end={link.to === "/"}
+              className={({ isActive }) =>
+                `text-[14px] font-medium transition-colors ${
+                  isActive
+                    ? "text-[#0F9690] font-semibold"
+                    : "text-[#475569] hover:text-[#0F9690]"
+                }`
+              }
             >
               {link.label}
             </NavLink>
@@ -58,10 +103,13 @@ const Header = () => {
             <>
               <Link
                 to={dashboardPath}
-                className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-[#162831] border border-border px-3.5 py-1.5 rounded-md hover:bg-slate-50 transition-colors"
+                className="flex items-center gap-2.5 rounded-full border border-slate-200 bg-white py-1 pl-1 pr-3 hover:border-[#0F9690]/40 hover:shadow-sm transition-all"
+                aria-label={`Open ${getUserName(user)} dashboard`}
               >
-                <LayoutDashboard className="w-3.5 h-3.5" />
-                Dashboard
+                <UserAvatar user={user} />
+                <span className="text-[13px] font-semibold text-[#162831] max-w-[140px] truncate">
+                  {getUserName(user)}
+                </span>
               </Link>
               <button
                 onClick={handleLogout}
@@ -103,14 +151,21 @@ const Header = () => {
       {mobileOpen && (
         <div className="md:hidden bg-white border-t border-border px-4 py-4 space-y-3 shadow-md">
           {NAV_LINKS.map((link) => (
-            <Link
+            <NavLink
               key={link.label}
               to={link.to}
+              end={link.to === "/"}
               onClick={() => setMobileOpen(false)}
-              className="block text-[14px] font-medium text-[#475569] hover:text-[#0F9690] py-1.5"
+              className={({ isActive }) =>
+                `block text-[14px] font-medium py-1.5 transition-colors ${
+                  isActive
+                    ? "text-[#0F9690] font-semibold"
+                    : "text-[#475569] hover:text-[#0F9690]"
+                }`
+              }
             >
               {link.label}
-            </Link>
+            </NavLink>
           ))}
           <div className="pt-3 border-t border-border flex flex-col gap-2">
             {isAuthenticated ? (
@@ -118,9 +173,10 @@ const Header = () => {
                 <Link
                   to={dashboardPath}
                   onClick={() => setMobileOpen(false)}
-                  className="w-full text-center text-[14px] font-semibold text-[#162831] border border-border py-2 rounded-md"
+                  className="flex items-center gap-3 w-full text-left text-[14px] font-semibold text-[#162831] border border-slate-200 py-2 px-3 rounded-md hover:border-[#0F9690]/40 hover:bg-slate-50 transition-colors"
                 >
-                  Dashboard
+                  <UserAvatar user={user} size="sm" />
+                  <span className="min-w-0 truncate">{getUserName(user)}</span>
                 </Link>
                 <button
                   onClick={handleLogout}
