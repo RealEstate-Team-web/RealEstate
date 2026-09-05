@@ -320,10 +320,14 @@ function validatePropertyInput(body, { partial = false } = {}) {
   nonNegativeInteger("bathrooms", bathrooms);
   nonNegativeInteger("parkingSpaces", parkingSpaces);
 
-  if (hasValue(area)) {
-    const areaValue = toOptionalNumber(area);
-    if (Number.isNaN(areaValue) || areaValue <= 0 || areaValue > 10000000) {
+  if (area !== undefined && area !== null) {
+    if (area === "") {
       errors.push("area must be a positive number no larger than 10,000,000");
+    } else {
+      const areaValue = toOptionalNumber(area);
+      if (Number.isNaN(areaValue) || areaValue <= 0 || areaValue > 10000000) {
+        errors.push("area must be a positive number no larger than 10,000,000");
+      }
     }
   }
 
@@ -349,25 +353,33 @@ function validatePropertyInput(body, { partial = false } = {}) {
     }
   }
 
-  if (hasValue(latitude)) {
-    const latitudeValue = toOptionalNumber(latitude);
-    if (Number.isNaN(latitudeValue) || latitudeValue < -90 || latitudeValue > 90) {
+  if (latitude !== undefined && latitude !== null) {
+    if (latitude === "") {
       errors.push("latitude must be between -90 and 90");
+    } else {
+      const latitudeValue = toOptionalNumber(latitude);
+      if (Number.isNaN(latitudeValue) || latitudeValue < -90 || latitudeValue > 90) {
+        errors.push("latitude must be between -90 and 90");
+      }
     }
   }
 
-  if (hasValue(longitude)) {
-    const longitudeValue = toOptionalNumber(longitude);
-    if (
-      Number.isNaN(longitudeValue) ||
-      longitudeValue < -180 ||
-      longitudeValue > 180
-    ) {
+  if (longitude !== undefined && longitude !== null) {
+    if (longitude === "") {
       errors.push("longitude must be between -180 and 180");
+    } else {
+      const longitudeValue = toOptionalNumber(longitude);
+      if (
+        Number.isNaN(longitudeValue) ||
+        longitudeValue < -180 ||
+        longitudeValue > 180
+      ) {
+        errors.push("longitude must be between -180 and 180");
+      }
     }
   }
 
-  if (status !== undefined && status !== null) {
+  if (status !== undefined) {
     if (!PROPERTY_STATUSES.includes(status)) {
       errors.push("status must be one of 'draft', 'available', 'sold', 'rented'");
     }
@@ -631,6 +643,8 @@ const validateChangePassword = (req, res, next) => {
 };
 
 module.exports = {
+  PROPERTY_STATUSES,
+  PROPERTY_LISTING_TYPES,
   validateRegister,
   validateRegisterAgent,
   validateCompleteAgentProfile,

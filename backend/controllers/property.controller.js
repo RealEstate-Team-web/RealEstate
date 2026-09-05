@@ -1,4 +1,8 @@
 const propertyService = require("../services/property.service");
+const {
+  PROPERTY_STATUSES,
+  PROPERTY_LISTING_TYPES,
+} = require("../middlewares/validation.middleware");
  const getProperties = async (
   req,
   res,
@@ -120,24 +124,9 @@ const propertyService = require("../services/property.service");
   try {
     const property =
       await propertyService.getPropertyById(
-        req.params.id
+        req.params.id,
+        req.user
       );
-
-    if (property.status === "draft") {
-      const isOwner =
-        req.user &&
-        req.user.role === "agent" &&
-        Number(req.user.id) === Number(property.agent_id);
-      const isAdmin =
-        req.user && req.user.role === "admin";
-
-      if (!isOwner && !isAdmin) {
-        return res.status(404).json({
-          success: false,
-          message: "Property not found",
-        });
-      }
-    }
 
     res.status(200).json({
       success: true,
@@ -162,22 +151,19 @@ const propertyService = require("../services/property.service");
       listingType,
     } = req.query;
 
-    const validStatuses = ["draft", "available", "sold", "rented"];
-    const validListingTypes = ["sale", "rent"];
-
-    if (status !== undefined && !validStatuses.includes(status)) {
+    if (status !== undefined && !PROPERTY_STATUSES.includes(status)) {
       return res.status(400).json({
         success: false,
         message: "Invalid query parameter: status",
-        errors: [`status must be one of: ${validStatuses.join(", ")}`],
+        errors: [`status must be one of: ${PROPERTY_STATUSES.join(", ")}`],
       });
     }
 
-    if (listingType !== undefined && !validListingTypes.includes(listingType)) {
+    if (listingType !== undefined && !PROPERTY_LISTING_TYPES.includes(listingType)) {
       return res.status(400).json({
         success: false,
         message: "Invalid query parameter: listingType",
-        errors: [`listingType must be one of: ${validListingTypes.join(", ")}`],
+        errors: [`listingType must be one of: ${PROPERTY_LISTING_TYPES.join(", ")}`],
       });
     }
 
@@ -340,9 +326,7 @@ const propertyService = require("../services/property.service");
     res.status(201).json({
       success: true,
       message: "Property images uploaded successfully",
-      data: {
-        images,
-      },
+      data: images,
     });
 
   } catch (error) {

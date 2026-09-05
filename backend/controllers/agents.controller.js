@@ -1,9 +1,18 @@
 const agentModel = require("../models/agent.model");
 
+const DEFAULT_LIMIT = 30;
+const MAX_LIMIT = 50;
+
+const normalizeLimit = (raw) => {
+  const parsed = Number(raw);
+  if (!Number.isInteger(parsed) || parsed < 1) return DEFAULT_LIMIT;
+  return Math.min(parsed, MAX_LIMIT);
+};
+
 // GET /api/agents — public list of approved agents
 const getPublicAgents = async (req, res, next) => {
   try {
-    const limit = Number(req.query.limit) || 30;
+    const limit = normalizeLimit(req.query.limit);
 
     const rows = await agentModel.listApprovedAgents(limit);
 

@@ -151,7 +151,7 @@ const propertyModel = {
                 WHERE property_id = p.id AND is_cover = 1
                 ORDER BY id ASC
                 LIMIT 1
-            ) AS cover_image
+            ) AS coverImage
 
             FROM properties p
 
@@ -232,7 +232,7 @@ const propertyModel = {
                 WHERE property_id = p.id AND is_cover = 1
                 ORDER BY id ASC
                 LIMIT 1
-            ) AS cover_image
+            ) AS coverImage
             FROM properties p
             WHERE p.status = 'available'
             ORDER BY p.views DESC, p.created_at DESC
@@ -538,7 +538,7 @@ const propertyModel = {
                  WHERE property_id = p.id
                    AND is_cover = 1
                  ORDER BY sort_order ASC, id ASC
-                 LIMIT 1) AS cover_image,
+                 LIMIT 1) AS coverImage,
                 (SELECT COUNT(*)
                  FROM inquiries i
                  WHERE i.property_id = p.id) AS leads
@@ -591,8 +591,8 @@ const propertyModel = {
     // the property's existing image count so the order stays stable.
     // Runs in a transaction with a locking count so concurrent uploads
     // cannot produce overlapping sort_order values or multiple covers.
-    async insertPropertyImages(propertyId, images) {
-        if (!images || images.length === 0) return;
+    async insertPropertyImages(propertyId, images, maxTotal = Infinity) {
+        if (!images || images.length === 0) return [];
 
         return withTransaction(async (connection) => {
             const executor = async (sql, params) => (await connection.execute(sql, params))[0];
@@ -602,6 +602,14 @@ const propertyModel = {
                 [propertyId],
             );
             const existingCount = Number(countRow.count);
+
+            if (existingCount + images.length > maxTotal) {
+                const error = new Error(
+                    `A property can have at most ${maxTotal} images`,
+                );
+                error.statusCode = 400;
+                throw error;
+            }
 
             const rows = images.map((image, index) => [
                 propertyId,
@@ -619,6 +627,13 @@ const propertyModel = {
                  VALUES ${placeholders}`,
                 params
             );
+
+            return rows.map((row) => ({
+                imageUrl: row[1],
+                publicId: row[2],
+                sortOrder: row[3],
+                isCover: row[4],
+            }));
         });
     },
 

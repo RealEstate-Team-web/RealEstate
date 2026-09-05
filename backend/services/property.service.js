@@ -60,7 +60,8 @@ const notFoundError = () => {
 
 
  const getPropertyById = async (
-  id
+  id,
+  user = null
 ) => {
   const property =
     await propertyModel.findPropertyById(
@@ -69,6 +70,19 @@ const notFoundError = () => {
 
   if (!property) {
     throw notFoundError();
+  }
+
+  if (property.status === "draft") {
+    const isOwner =
+      user &&
+      user.role === "agent" &&
+      Number(user.id) === Number(property.agent_id);
+    const isAdmin =
+      user && user.role === "admin";
+
+    if (!isOwner && !isAdmin) {
+      throw notFoundError();
+    }
   }
 
   return property;
@@ -243,24 +257,16 @@ const uploadPropertyImages = async (
     throw error;
   }
 
-  const [existingImages, property] = await Promise.all([
-    propertyModel.countPropertyImages(propertyId),
-    propertyModel.findPropertyOwner(propertyId),
-  ]);
+  const property =
+    await propertyModel.findPropertyOwner(
+      propertyId
+    );
 
   if (!property) {
     throw notFoundError();
   }
 
   assertOwner(property, agentId);
-
-  if (existingImages + files.length > MAX_TOTAL_IMAGES) {
-    const error = new Error(
-      `A property can have at most ${MAX_TOTAL_IMAGES} images`,
-    );
-    error.statusCode = 400;
-    throw error;
-  }
 
   const results = await Promise.allSettled(
     files.map((file) =>
@@ -285,7 +291,12 @@ const uploadPropertyImages = async (
   }
 
   try {
-    await propertyModel.insertPropertyImages(propertyId, uploadedImages);
+    const persistedImages = await propertyModel.insertPropertyImages(
+      propertyId,
+      uploadedImages,
+      MAX_TOTAL_IMAGES,
+    );
+    return persistedImages;
   } catch (error) {
     // Roll back the successfully uploaded Cloudinary assets so we don't
     // leak orphan files when the DB insert fails.
@@ -294,8 +305,6 @@ const uploadPropertyImages = async (
     );
     throw error;
   }
-
-  return uploadedImages;
 };
 
 

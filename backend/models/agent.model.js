@@ -64,6 +64,9 @@ const Agent = {
   },
 
   async listApprovedAgents(limit = 30) {
+    const parsed = Number(limit);
+    const safeLimit =
+      Number.isInteger(parsed) && parsed > 0 ? Math.min(parsed, 50) : 30;
     return query(
       `SELECT u.id AS userId, u.first_name, u.last_name, u.email, u.phone,
               u.profile_image_url AS photo, u.status AS userStatus,
@@ -80,7 +83,7 @@ const Agent = {
        WHERE ap.verification_status = 'approved'
        ORDER BY ap.experience_years DESC, ap.created_at DESC
        LIMIT ?`,
-      [limit],
+      [safeLimit],
     );
   },
 
