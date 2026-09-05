@@ -46,5 +46,18 @@ const verifyImageMagic = (req, res, next) => {
   next();
 };
 
+const verifyImagesMagic = (req, res, next) => {
+  const files = req.files || [];
+  for (const file of files) {
+    if (!fileHasAllowedMagic(file.buffer)) {
+      const error = new Error("Uploaded file is not a valid image");
+      error.status = 400;
+      return next(error);
+    }
+  }
+  next();
+};
+
 module.exports = upload;
 module.exports.verifyImageMagic = verifyImageMagic;
+module.exports.verifyImagesMagic = verifyImagesMagic;
