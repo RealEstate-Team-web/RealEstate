@@ -8,6 +8,7 @@ const favoriteRoutes = require("./favorite.routes");
 const visitRoutes = require("./visit.routes");
 const inquiryRoutes = require("./inquiry.routes");
 const agentRoutes = require("./agent.routes");
+const agentsRoutes = require("./agents.routes");
 const userRoutes = require("./user.routes");
 const router = express.Router();
 
@@ -22,6 +23,7 @@ router.use("/health", healthRoutes);
 router.use("/auth", authRoutes);
 router.use("/admin", adminRoutes);
 router.use("/agent", agentRoutes);
+router.use("/agents", agentsRoutes);
 router.use("/categories", categoryRoutes);
 router.use("/properties", propertyRoutes);
 router.use("/favorites", favoriteRoutes);

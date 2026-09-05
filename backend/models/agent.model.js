@@ -63,6 +63,27 @@ const Agent = {
     return query(sql, params);
   },
 
+  async listApprovedAgents(limit = 30) {
+    return query(
+      `SELECT u.id AS userId, u.first_name, u.last_name, u.email, u.phone,
+              u.profile_image_url AS photo, u.status AS userStatus,
+              ap.agency_name AS agency, ap.specialization, ap.city,
+              ap.experience_years AS experienceYears, ap.verification_status AS status,
+              (
+                SELECT COUNT(*)
+                FROM properties p
+                WHERE p.agent_id = u.id
+                  AND p.status = 'available'
+              ) AS propertyCount
+       FROM agent_profiles ap
+       JOIN users u ON u.id = ap.user_id
+       WHERE ap.verification_status = 'approved'
+       ORDER BY ap.experience_years DESC, ap.created_at DESC
+       LIMIT ?`,
+      [limit],
+    );
+  },
+
   async findById(id) {
     const rows = await query(
       `SELECT ap.id, ap.agency_name AS agency, ap.license_number AS licenseNumber,

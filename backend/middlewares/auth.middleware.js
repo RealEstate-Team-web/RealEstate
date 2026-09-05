@@ -10,6 +10,29 @@ async function getAgentProfileStatus(userId) {
   return rows[0][0] ? rows[0][0].verification_status : "incomplete";
 }
 
+async function findSessionUser(token) {
+  const payload = jwt.verify(token, process.env.JWT_SECRET);
+
+  const user = await User.findUserByEmail(payload.email);
+
+  if (!user) return null;
+
+  const agentProfileStatus =
+    user.role === "agent" ? await getAgentProfileStatus(user.id) : null;
+
+  return {
+    id: user.id,
+    firstName: user.first_name,
+    lastName: user.last_name,
+    email: user.email,
+    phone: user.phone,
+    role: user.role,
+    status: user.status,
+    profileImageUrl: user.profile_image_url || null,
+    agentProfileStatus,
+  };
+}
+
 const authenticate = async (req, res, next) => {
   const header = req.headers.authorization;
 
@@ -19,39 +42,20 @@ const authenticate = async (req, res, next) => {
     return next(error);
   }
 
-  const token = header.split(" ")[1];
-
   try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = await findSessionUser(header.split(" ")[1]);
 
-    const user = await User.findUserByEmail(payload.email);
-
-    if (!user) {
+    if (!req.user) {
       const error = new Error("Authentication required");
       error.status = 401;
       return next(error);
     }
 
-    if (user.status === "suspended") {
+    if (req.user.status === "suspended") {
       const error = new Error("Account is suspended");
       error.status = 403;
       return next(error);
     }
-
-    const agentProfileStatus =
-      user.role === "agent" ? await getAgentProfileStatus(user.id) : null;
-
-    req.user = {
-      id: user.id,
-      firstName: user.first_name,
-      lastName: user.last_name,
-      email: user.email,
-      phone: user.phone,
-      role: user.role,
-      status: user.status,
-      profileImageUrl: user.profile_image_url || null,
-      agentProfileStatus,
-    };
 
     next();
   } catch (error) {
@@ -65,4 +69,22 @@ const authenticate = async (req, res, next) => {
   }
 };
 
-module.exports = { authenticate };
+// Populates req.user when a valid token is present; otherwise continues anonymously.
+const authenticateOptional = async (req, res, next) => {
+  const header = req.headers.authorization;
+
+  if (!header || !header.startsWith("Bearer ")) return next();
+
+  try {
+    const user = await findSessionUser(header.split(" ")[1]);
+    if (user && user.status !== "suspended") {
+      req.user = user;
+    }
+  } catch {
+    // Ignore invalid or expired tokens on optional routes.
+  }
+
+  next();
+};
+
+module.exports = { authenticate, authenticateOptional };
