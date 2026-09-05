@@ -316,7 +316,8 @@ const Properties = () => {
 
 
   const loadProperties = useCallback(
-    async (filters = {}) => {
+    async (filters = {}, options = {}) => {
+      const { isCancelled } = options;
       setLoading(true);
       setLoadError("");
 
@@ -328,6 +329,8 @@ const Properties = () => {
             await searchProperties(
               filters.search.trim()
             );
+
+          if (isCancelled?.()) return;
 
           apiProperties =
             normalizeProperties(response);
@@ -359,12 +362,16 @@ const Properties = () => {
               filters.sort || undefined,
           });
 
+        if (isCancelled?.()) return;
+
         apiProperties =
           normalizeProperties(response);
 
 
         setProperties(apiProperties);
       } catch (error) {
+
+        if (isCancelled?.()) return;
 
         console.warn(
           "Property API request failed.",
@@ -376,7 +383,7 @@ const Properties = () => {
           "We couldn't load properties. Please try again in a moment."
         );
       } finally {
-        setLoading(false);
+        if (!isCancelled?.()) setLoading(false);
       }
     },
     []
@@ -384,6 +391,8 @@ const Properties = () => {
 
  
   useEffect(() => {
+    let active = true;
+
     const urlSearch =
       searchParams.get("search") ||
       searchParams.get("city") ||
@@ -413,7 +422,13 @@ const Properties = () => {
       minPrice: urlMinPrice,
       maxPrice: urlMaxPrice,
       sort: urlSort,
+    }, {
+      isCancelled: () => !active,
     });
+
+    return () => {
+      active = false;
+    };
   }, [
     searchParams,
     loadProperties,

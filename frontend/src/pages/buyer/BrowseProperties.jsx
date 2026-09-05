@@ -273,6 +273,7 @@ export const BrowseProperties = () => {
             pinTop: `${30 + ((idx * 15) % 50)}%`,
             pinLeft: `${30 + ((idx * 20) % 50)}%`,
             img:
+              p.coverImage ||
               p.cover_image ||
               p.image_url ||
               getPropertyImageUrl(p) ||

@@ -8,6 +8,8 @@ import {
 import { getLanding } from "../../services/property.service";
 import { getPublicAgents } from "../../services/agent.service";
 import PropertyCard from "../../components/property/PropertyCard";
+import AgentCard from "../../components/agent/AgentCard";
+import AgentCardSkeleton from "../../components/agent/AgentCardSkeleton";
 
 
 
@@ -17,6 +19,7 @@ const Home = () => {
   const [propertiesError, setPropertiesError] = useState("");
   const [agents, setAgents] = useState([]);
   const [agentsLoading, setAgentsLoading] = useState(true);
+  const [agentsError, setAgentsError] = useState("");
   const [location, setLocation] = useState("");
   const [type, setType] = useState("");
   const [price, setPrice] = useState("");
@@ -53,9 +56,11 @@ const Home = () => {
     try {
       const { agents: agentList } = await getPublicAgents(5);
       setAgents(Array.isArray(agentList) ? agentList : []);
+      setAgentsError("");
     } catch (error) {
       console.error("Agents error:", error);
       setAgents([]);
+      setAgentsError("We couldn't load our agents. Please try again.");
     } finally {
       setAgentsLoading(false);
     }
@@ -266,54 +271,17 @@ const Home = () => {
           {agentsLoading ? (
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-5">
               {[1, 2, 3, 4, 5].map((item) => (
-                <div
-                  key={item}
-                  className="rounded-xl border border-slate-200 bg-white p-3 text-center"
-                >
-                  <div className="mx-auto h-16 w-16 animate-pulse rounded-full bg-slate-100" />
-                  <div className="mx-auto mt-3 h-3 w-2/3 animate-pulse rounded bg-slate-100" />
-                  <div className="mx-auto mt-2 h-2 w-1/2 animate-pulse rounded bg-slate-100" />
-                </div>
+                <AgentCardSkeleton key={item} variant="compact" />
               ))}
             </div>
           ) : agents.length > 0 ? (
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-5">
-
               {agents.map((agent) => (
-                <div
-                  key={agent.id}
-                  className="rounded-xl border border-slate-200 bg-white p-3 text-center transition-transform duration-200 hover:-translate-y-1 hover:shadow-md"
-                >
-
-                  {agent.photo ? (
-                    <img
-                      src={agent.photo}
-                      alt={agent.name}
-                      className="mx-auto h-16 w-16 rounded-full border-2 border-[#0F9690] object-cover p-0.5"
-                    />
-                  ) : (
-                    <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border-2 border-[#0F9690] bg-[#F3FAF9] p-0.5 text-lg font-extrabold text-[#0F9690]">
-                      {agent.name?.charAt(0) || "A"}
-                    </div>
-                  )}
-
-                  <h4 className="mt-2 line-clamp-1 text-xs font-bold text-[#162831]">
-                    {agent.name}
-                  </h4>
-
-                  <p className="mt-1 text-[10px] text-slate-500">
-                    {agent.role}
-                  </p>
-
-                  <p className="mt-1 text-[10px] font-semibold text-[#0F9690]">
-                    {agent.propertyCount ?? 0}{" "}
-                    {agent.propertyCount === 1 ? "property" : "properties"}
-                  </p>
-
-                </div>
+                <AgentCard key={agent.id} agent={agent} variant="compact" />
               ))}
-
             </div>
+          ) : agentsError ? (
+            <p className="text-sm text-slate-500">{agentsError}</p>
           ) : (
             <p className="text-sm text-slate-500">
               No featured agents yet.

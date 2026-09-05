@@ -74,6 +74,8 @@ const PageLoader = ({ loading = true }) => {
 
   return (
     <div
+      role="status"
+      aria-live="polite"
       className={`fixed inset-0 z-[9999] flex items-center justify-center bg-[#0D1F27] transition-opacity duration-300 ${
         phase === "fading" ? "pointer-events-none opacity-0" : "opacity-100"
       }`}

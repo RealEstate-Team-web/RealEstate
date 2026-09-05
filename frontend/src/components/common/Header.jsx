@@ -42,6 +42,7 @@ const UserAvatar = ({ user, size = "sm" }) => {
 
   return (
     <div
+      aria-hidden="true"
       className={`${dimension} shrink-0 rounded-full border border-[#0F9690] bg-[#E8F7F5] flex items-center justify-center font-extrabold text-[#0F9690]`}
     >
       {getUserInitial(user)}

@@ -5,7 +5,7 @@ export const getPropertyImageUrl = (property, fallback = "") => {
   if (!property) return fallback;
 
   const legacy =
-    property.image || property.imageUrl || property.cover_image || property.image_url;
+    property.image || property.imageUrl || property.coverImage || property.cover_image || property.image_url;
   if (typeof legacy === "string") return legacy;
 
   const items = Array.isArray(property.images) ? property.images : [property.images];

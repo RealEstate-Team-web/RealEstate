@@ -82,9 +82,7 @@ export const uploadPropertyImages = async (propertyId, files) => {
   const formData = new FormData();
   files.forEach((file) => formData.append('images', file));
 
-  const { data } = await api.post(`/properties/${propertyId}/images`, formData, {
-    headers: { 'Content-Type': 'multipart/form-data' },
-  });
+  const { data } = await api.post(`/properties/${propertyId}/images`, formData);
 
   return data.data;
 };

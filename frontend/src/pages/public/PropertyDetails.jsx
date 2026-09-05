@@ -70,10 +70,15 @@ const PropertyDetails = () => {
         const loaded = await getPropertyById(id);
         if (!active) return;
         setProperty(loaded);
-      } catch {
+      } catch (err) {
         if (!active) return;
         resetInquiryState();
-        setError("Property not found");
+        console.error("Property load error:", err);
+        setError(
+          err?.status === 404
+            ? "Property not found"
+            : "We couldn't load this property. Please try again.",
+        );
       } finally {
         if (active) setLoading(false);
       }
@@ -90,11 +95,20 @@ const PropertyDetails = () => {
   useEffect(() => {
     if (!property?.id) return;
 
+    const city =
+      property.city && String(property.city).trim()
+        ? property.city
+        : undefined;
+
     let active = true;
 
     const loadNearby = async () => {
       try {
-        const result = await getProperties({ sort: "newest" });
+        const result = await getProperties({
+          sort: "newest",
+          city,
+          limit: 5,
+        });
         const list = (Array.isArray(result?.properties) ? result.properties : [])
           .filter((item) => String(item.id) !== String(property.id))
           .slice(0, 4);
@@ -110,7 +124,7 @@ const PropertyDetails = () => {
     return () => {
       active = false;
     };
-  }, [property?.id]);
+  }, [property?.id, property?.city]);
 
   if (loading) {
     return (

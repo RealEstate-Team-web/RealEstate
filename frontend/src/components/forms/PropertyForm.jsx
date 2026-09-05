@@ -193,7 +193,10 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
   const [existingImages] = useState(initial?.images || []);
   const [pendingImages, setPendingImages] = useState([]);
   const [sizeRejection, setSizeRejection] = useState(0);
+  const [typeRejection, setTypeRejection] = useState(0);
+  const [budgetRejection, setBudgetRejection] = useState(0);
   const previewUrlsRef = useRef([]);
+  const createdIdRef = useRef(null);
 
   useEffect(() => {
     getCategories()
@@ -209,10 +212,14 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
   );
 
   useEffect(() => {
-    if (!sizeRejection) return undefined;
-    const timer = setTimeout(() => setSizeRejection(0), 5000);
+    if (!sizeRejection && !typeRejection && !budgetRejection) return undefined;
+    const timer = setTimeout(() => {
+      setSizeRejection(0);
+      setTypeRejection(0);
+      setBudgetRejection(0);
+    }, 5000);
     return () => clearTimeout(timer);
-  }, [sizeRejection]);
+  }, [sizeRejection, typeRejection, budgetRejection]);
 
   const setField = (name, value) => {
     setForm((prev) => ({ ...prev, [name]: value }));
@@ -224,11 +231,14 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
   };
 
   const addPendingImages = (fileList) => {
-    const accepted = Array.from(fileList).filter((file) => ACCEPTED_IMAGE_TYPES.includes(file.type));
+    const allFiles = Array.from(fileList);
+    const unsupported = allFiles.filter((file) => !ACCEPTED_IMAGE_TYPES.includes(file.type));
+    const accepted = allFiles.filter((file) => ACCEPTED_IMAGE_TYPES.includes(file.type));
     const oversized = accepted.filter((file) => file.size > MAX_IMAGE_BYTES);
     const withinLimit = accepted.filter((file) => file.size <= MAX_IMAGE_BYTES);
     const room = MAX_IMAGES - existingImages.length - pendingImages.length;
     const budget = withinLimit.slice(0, Math.max(0, room));
+    const excludedCount = Math.max(0, withinLimit.length - budget.length);
 
     const withPreviews = budget.map((file) => {
       const preview = URL.createObjectURL(file);
@@ -239,8 +249,10 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
     setPendingImages((prev) => [...prev, ...withPreviews]);
 
     if (oversized.length) setSizeRejection(oversized.length);
+    if (unsupported.length) setTypeRejection(unsupported.length);
+    if (excludedCount) setBudgetRejection(excludedCount);
 
-    return { rejectedSize: oversized.length };
+    return { rejectedSize: oversized.length, rejectedUnsupported: unsupported.length, excluded: excludedCount };
   };
 
   const removePendingImage = (previewUrl) => {
@@ -365,8 +377,12 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
       if (isEdit) {
         await updateProperty(initial.id, payload);
         propertyId = initial.id;
+      } else if (createdIdRef.current) {
+        await updateProperty(createdIdRef.current, payload);
+        propertyId = createdIdRef.current;
       } else {
         const created = await createProperty(payload);
+        createdIdRef.current = created.id;
         propertyId = created.id;
       }
 
@@ -694,6 +710,26 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
                   : `${sizeRejection} images were skipped because each exceeds 5MB.`}
               </p>
             )}
+            {typeRejection > 0 && (
+              <p
+                role="alert"
+                className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-[12px] text-red-700"
+              >
+                {typeRejection === 1
+                  ? '1 image was skipped because it is not a JPG, PNG, or WebP file.'
+                  : `${typeRejection} images were skipped because they are not JPG, PNG, or WebP files.`}
+              </p>
+            )}
+            {budgetRejection > 0 && (
+              <p
+                role="alert"
+                className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-[12px] text-amber-800"
+              >
+                {budgetRejection === 1
+                  ? `1 image was skipped because the ${MAX_IMAGES}-image limit was reached.`
+                  : `${budgetRejection} images were skipped because the ${MAX_IMAGES}-image limit was reached.`}
+              </p>
+            )}
             <div
               onDragOver={(e) => e.preventDefault()}
               onDrop={(e) => {
@@ -709,13 +745,13 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
               <p className="text-xs text-slate-500 mt-0.5 mb-3">
                 JPG, PNG or WebP · up to 5MB each · {MAX_IMAGES} max
               </p>
-              <label className="cursor-pointer inline-flex items-center justify-center h-9 px-4 rounded-lg bg-[#4A9FF5] text-white text-[13px] font-medium hover:bg-[#3d8be0] transition">
+              <label className="cursor-pointer inline-flex items-center justify-center h-9 px-4 rounded-lg bg-[#4A9FF5] text-white text-[13px] font-medium hover:bg-[#3d8be0] transition focus-within:ring-2 focus-within:ring-[#4A9FF5]/40 focus-within:ring-offset-2">
                 Browse files
                 <input
                   type="file"
                   accept="image/jpeg,image/png,image/webp"
                   multiple
-                  className="hidden"
+                  className="sr-only"
                   disabled={maxReached}
                   onChange={(e) => {
                     if (e.target.files && e.target.files.length) {
@@ -872,12 +908,18 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
         {steps.map((item, index) => {
           const complete = index < step;
           const active = index === step;
+          const locked = index >= step;
           return (
             <li key={item.key} className="flex items-center shrink-0">
               <button
                 type="button"
+                disabled={locked}
                 onClick={() => index < step && setStep(index)}
-                className="flex items-center space-x-2 py-1.5 px-2.5 rounded-lg transition cursor-pointer"
+                aria-current={active ? 'step' : undefined}
+                title={locked ? `Step ${index + 1}: ${item.label} is not available yet` : undefined}
+                className={`flex items-center space-x-2 py-1.5 px-2.5 rounded-lg transition ${
+                  locked ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'
+                }`}
               >
                 <span
                   className={`w-7 h-7 rounded-full flex items-center justify-center border-2 text-[12px] font-bold transition ${

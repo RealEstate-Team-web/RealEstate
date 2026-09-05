@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate, useParams, Link } from 'react-router-dom';
-import { Check, Loader2, ArrowLeft, AlertTriangle } from 'lucide-react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { Loader2, ArrowLeft } from 'lucide-react';
 import { useToast } from '../../hooks/useToast';
 import PropertyForm from '../../components/forms/PropertyForm';
+import SaveNotice from '../../components/agent/SaveNotice';
 import { getPropertyById } from '../../services/property.service';
 import { ROUTES } from '../../utils/constants';
 
@@ -83,35 +84,7 @@ const EditProperty = () => {
 
   return (
     <div className="space-y-5 font-sans pb-10">
-      {toastMessage && (
-        <div
-          role={toastTone === 'error' ? 'alert' : 'status'}
-          aria-live="polite"
-          className={`fixed bottom-6 right-6 z-50 px-4 py-3 rounded-xl shadow-xl flex items-center space-x-2 text-xs font-medium ${
-            toastTone === 'error' ? 'bg-rose-600 text-white' : 'bg-slate-900 text-white'
-          }`}
-        >
-          {toastTone === 'error' ? (
-            <AlertTriangle size={16} className="shrink-0" />
-          ) : (
-            <Check size={16} className="text-emerald-400 shrink-0" />
-          )}
-          <span>{toastMessage}</span>
-        </div>
-      )}
-
-      {saveFailed && (
-        <div role="alert" className="rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs px-4 py-3 flex items-center space-x-2">
-          <AlertTriangle size={15} className="shrink-0" />
-          <span>
-            The property was saved, but some images failed to upload.{' '}
-            <Link to={ROUTES.agentProperties} className="underline font-semibold hover:text-rose-900">
-              Open My Properties
-            </Link>{' '}
-            to add images later.
-          </span>
-        </div>
-      )}
+      <SaveNotice toastMessage={toastMessage} toastTone={toastTone} saveFailed={saveFailed} />
 
       <div className="flex items-center justify-between">
         <div>
@@ -122,7 +95,7 @@ const EditProperty = () => {
         </div>
         <button
           type="button"
-          onClick={() => navigate('/agent/properties')}
+          onClick={() => navigate(ROUTES.agentProperties)}
           className="inline-flex items-center gap-1.5 h-9 px-3.5 rounded-lg border border-slate-200 bg-white text-[13px] font-semibold text-slate-600 hover:border-slate-300 transition cursor-pointer"
         >
           <ArrowLeft size={15} />
@@ -142,7 +115,7 @@ const EditProperty = () => {
           {loadError}
           <button
             type="button"
-            onClick={() => navigate('/agent/properties')}
+            onClick={() => navigate(ROUTES.agentProperties)}
             className="ml-3 underline font-semibold cursor-pointer"
           >
             Back to My Properties
@@ -154,7 +127,7 @@ const EditProperty = () => {
         <PropertyForm
           initial={initial}
           onSaved={handleSaved}
-          onCancel={() => navigate('/agent/properties')}
+          onCancel={() => navigate(ROUTES.agentProperties)}
         />
       )}
     </div>

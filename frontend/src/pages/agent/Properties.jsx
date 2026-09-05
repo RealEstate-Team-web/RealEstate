@@ -99,7 +99,7 @@ const Properties = () => {
         if (isCancelled?.()) return;
         setLoadError('Failed to load your properties. Please try again.');
       } finally {
-        setLoadedKey(fetchKey);
+        if (!isCancelled?.()) setLoadedKey(fetchKey);
       }
     },
     [fetchKey],
@@ -325,9 +325,9 @@ const Properties = () => {
                     <td className="px-4 py-3">
                       <div className="flex items-center space-x-3">
                         <div className="w-20 h-14 rounded-lg overflow-hidden bg-slate-100 border border-slate-200 shrink-0">
-                          {property.cover_image ? (
+                          {property.coverImage ? (
                             <img
-                              src={property.cover_image}
+                              src={property.coverImage}
                               alt={property.title}
                               className="w-full h-full object-cover"
                             />

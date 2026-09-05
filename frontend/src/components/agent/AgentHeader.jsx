@@ -70,9 +70,12 @@ const AgentHeader = ({ onToggleSidebar }) => {
     e.preventDefault();
     const q = searchQuery.trim();
 
-    const params = new URLSearchParams(location.search);
-    params.delete('search');
-    params.delete('page');
+    const isPropertiesRoute = location.pathname === ROUTES.agentProperties;
+    const params = new URLSearchParams();
+    if (isPropertiesRoute) {
+      const status = new URLSearchParams(location.search).get('status');
+      if (status) params.set('status', status);
+    }
     if (q) params.set('search', q);
 
     const query = params.toString();
@@ -94,26 +97,28 @@ const AgentHeader = ({ onToggleSidebar }) => {
       </div>
 
       {/* Search (hidden on small screens) */}
-      <form
-        onSubmit={handleSearchSubmit}
-        className="hidden md:flex flex-1 max-w-xs items-center bg-[#F3F4F6] border border-transparent focus-within:border-[#4A9FF5] focus-within:bg-white rounded-full px-3.5 h-9 transition"
-      >
-        <button
-          type="submit"
-          aria-label="Submit property search"
-          className="shrink-0 text-slate-400 hover:text-[#4A9FF5] transition cursor-pointer"
+      {location.pathname !== ROUTES.agentProperties && (
+        <form
+          onSubmit={handleSearchSubmit}
+          className="hidden md:flex flex-1 max-w-xs items-center bg-[#F3F4F6] border border-transparent focus-within:border-[#4A9FF5] focus-within:bg-white rounded-full px-3.5 h-9 transition"
         >
-          <Search size={16} />
-        </button>
-        <input
-          type="search"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Search my properties..."
-          aria-label="Search my properties"
-          className="w-full ml-2 bg-transparent text-[13px] text-[#111827] placeholder:text-slate-400 outline-none"
-        />
-      </form>
+          <button
+            type="submit"
+            aria-label="Submit property search"
+            className="shrink-0 text-slate-400 hover:text-[#4A9FF5] transition cursor-pointer"
+          >
+            <Search size={16} />
+          </button>
+          <input
+            type="search"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search my properties..."
+            aria-label="Search my properties"
+            className="w-full ml-2 bg-transparent text-[13px] text-[#111827] placeholder:text-slate-400 outline-none"
+          />
+        </form>
+      )}
 
       {/* Right: notifications + user */}
       <div className="flex items-center space-x-4">
