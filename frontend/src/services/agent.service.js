@@ -18,5 +18,3 @@ export const getAgentDashboardStats = async () => {
 
   return data.data;
 };
-
-export default api;
