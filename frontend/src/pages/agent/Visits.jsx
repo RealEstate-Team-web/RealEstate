@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import {
   Calendar,
   Clock,
@@ -38,9 +38,11 @@ export const AgentVisits = () => {
 
   const { toastMessage, showToast } = useToast();
   const itemsPerPage = 6;
+  const latestRequestIdRef = useRef(0);
 
   const loadVisits = useCallback(
-    async (isMountedRef = { current: true }) => {
+    async () => {
+      const requestId = ++latestRequestIdRef.current;
       try {
         setLoading(true);
         setError('');
@@ -52,18 +54,18 @@ export const AgentVisits = () => {
           sort: sortBy,
         };
         const response = await getAgentVisitRequests(params);
-        if (!isMountedRef.current) return;
+        if (latestRequestIdRef.current !== requestId) return;
 
         setVisits(Array.isArray(response?.data) ? response.data : []);
         if (response?.pagination) {
           setPagination(response.pagination);
         }
       } catch (err) {
-        if (!isMountedRef.current) return;
+        if (latestRequestIdRef.current !== requestId) return;
         console.error('Failed to load visit requests:', err);
         setError(err.response?.data?.message || err.message || 'Failed to load visit requests');
       } finally {
-        if (isMountedRef.current) {
+        if (latestRequestIdRef.current === requestId) {
           setLoading(false);
         }
       }
@@ -72,11 +74,7 @@ export const AgentVisits = () => {
   );
 
   useEffect(() => {
-    const mountedRef = { current: true };
-    loadVisits(mountedRef);
-    return () => {
-      mountedRef.current = false;
-    };
+    loadVisits();
   }, [loadVisits]);
 
   useEffect(() => {
