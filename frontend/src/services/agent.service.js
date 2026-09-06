@@ -18,3 +18,21 @@ export const getAgentDashboardStats = async () => {
 
   return data.data;
 };
+
+// Get the authenticated agent's profile (user fields + agent_profiles fields)
+export const getAgentProfile = async () => {
+  const { data } = await api.get("/agent/profile");
+  return data?.data?.profile ?? null;
+};
+
+// Update the authenticated agent's profile
+export const updateAgentProfile = async (payload) => {
+  const { data } = await api.put("/agent/profile", payload);
+  return data?.data?.profile ?? null;
+};
+
+// Get analytics summary for the authenticated agent
+export const getAgentAnalytics = async () => {
+  const { data } = await api.get("/agent/analytics");
+  return data?.data ?? null;
+};
