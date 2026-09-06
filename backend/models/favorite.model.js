@@ -1,4 +1,4 @@
-const { query } = require("../config/db.config");
+const { query, toDateKey } = require("../config/db.config");
 
 const Favorite = {
   async listByUser(userId) {
@@ -69,6 +69,52 @@ const Favorite = {
       [userId]
     );
     return rows[0]?.count ? Number(rows[0].count) : 0;
+  },
+
+  async countByAgent(agentId) {
+    const rows = await query(
+      `SELECT COUNT(*) AS count
+       FROM favorites f
+       JOIN properties p ON p.id = f.property_id
+       WHERE p.agent_id = ?`,
+      [agentId]
+    );
+    return rows[0]?.count ? Number(rows[0].count) : 0;
+  },
+
+  async countByAgentDay(agentId, days) {
+    const rows = await query(
+      `SELECT DATE(f.created_at) AS date, COUNT(*) AS count
+       FROM favorites f
+       JOIN properties p ON p.id = f.property_id
+       WHERE p.agent_id = ?
+         AND f.created_at >= DATE_SUB(CURDATE(), INTERVAL ? DAY)
+       GROUP BY DATE(f.created_at)
+       ORDER BY date ASC`,
+      [agentId, Number(days)]
+    );
+    return rows.map((row) => ({
+      date: toDateKey(row.date),
+      count: Number(row.count) || 0,
+    }));
+  },
+
+  async countByAgentProperties(agentId, propertyIds) {
+    if (!Array.isArray(propertyIds) || propertyIds.length === 0) return [];
+    const placeholders = propertyIds.map(() => "?").join(", ");
+    const rows = await query(
+      `SELECT f.property_id AS propertyId, COUNT(*) AS count
+       FROM favorites f
+       JOIN properties p ON p.id = f.property_id
+       WHERE p.agent_id = ?
+         AND f.property_id IN (${placeholders})
+       GROUP BY f.property_id`,
+      [agentId, ...propertyIds]
+    );
+    return rows.map((row) => ({
+      propertyId: Number(row.propertyId),
+      count: Number(row.count) || 0,
+    }));
   },
 };
 
