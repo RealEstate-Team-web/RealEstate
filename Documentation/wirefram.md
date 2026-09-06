@@ -306,7 +306,6 @@
 * **Actions:**
 * Approve Visit
 * Reject Visit
-* Reschedule Visit
 
 
 

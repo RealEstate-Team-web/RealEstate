@@ -21,7 +21,7 @@ const primaryNavItems = [
 ];
 
 const secondaryNavItems = [
-  { label: 'Visit Requests', path: '/agent/visits', icon: CalendarCheck, disabled: true },
+  { label: 'Visit Requests', path: '/agent/visits', icon: CalendarCheck, disabled: false },
   { label: 'Customer Messages', path: '/agent/messages', icon: MessageSquare, disabled: true },
   { label: 'Analytics', path: '/agent/analytics', icon: BarChart3, disabled: true },
   { label: 'Profile', path: '/agent/profile', icon: UserCircle, disabled: false },

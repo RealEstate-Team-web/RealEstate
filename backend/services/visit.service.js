@@ -142,9 +142,76 @@ async function rescheduleVisit(buyerId, visitId, { visitDate, visitTime, notes }
   };
 }
 
+async function getAgentVisitRequests(agentId, query = {}) {
+  const page = Math.max(1, parseInt(query.page, 10) || 1);
+  const limit = Math.max(1, Math.min(50, parseInt(query.limit, 10) || 10));
+  const offset = (page - 1) * limit;
+  const status = query.status || "all";
+  const search = query.search || "";
+  const sort = query.sort === "latest" ? "latest" : "soonest";
+
+  const [visits, total] = await Promise.all([
+    Visit.findByAgentId(agentId, { status, search, sort, limit, offset }),
+    Visit.countByAgentId(agentId, { status, search }),
+  ]);
+
+  return {
+    visits,
+    pagination: {
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit) || 1,
+    },
+  };
+}
+
+async function transitionVisitStatus(agentId, visitId, { newStatus, action }) {
+  const visit = await Visit.findById(visitId);
+  if (!visit) {
+    const error = new Error("Visit request not found");
+    error.status = 404;
+    throw error;
+  }
+
+  if (String(visit.agentId) !== String(agentId)) {
+    const error = new Error("You are not authorized to manage this visit request");
+    error.status = 403;
+    throw error;
+  }
+
+  const affected =
+    visit.status === "pending"
+      ? await Visit.updateStatusForAgent(visitId, agentId, newStatus, ["pending"])
+      : 0;
+
+  if (affected === 0) {
+    const error = new Error(`Visit request cannot be ${action} in its current state`);
+    error.status = 409;
+    throw error;
+  }
+
+  const updatedVisit = await Visit.findById(visitId);
+  return {
+    message: `Visit request ${action} successfully`,
+    visit: updatedVisit,
+  };
+}
+
+async function approveVisit(agentId, visitId) {
+  return transitionVisitStatus(agentId, visitId, { newStatus: "approved", action: "approved" });
+}
+
+async function rejectVisit(agentId, visitId) {
+  return transitionVisitStatus(agentId, visitId, { newStatus: "cancelled", action: "rejected" });
+}
+
 module.exports = {
   bookVisit,
   getBuyerVisits,
   cancelVisit,
   rescheduleVisit,
+  getAgentVisitRequests,
+  approveVisit,
+  rejectVisit,
 };

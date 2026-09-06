@@ -66,9 +66,57 @@ const rescheduleVisit = async (req, res, next) => {
   }
 };
 
+const getAgentVisitRequests = async (req, res, next) => {
+  try {
+    const agentId = req.user.id;
+    const result = await visitService.getAgentVisitRequests(agentId, req.query);
+    res.status(200).json({
+      success: true,
+      message: "Visit requests retrieved successfully",
+      data: result.visits,
+      pagination: result.pagination,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const approveVisit = async (req, res, next) => {
+  try {
+    const agentId = req.user.id;
+    const { id } = req.params;
+    const result = await visitService.approveVisit(agentId, id);
+    res.status(200).json({
+      success: true,
+      message: result.message,
+      data: result.visit,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const rejectVisit = async (req, res, next) => {
+  try {
+    const agentId = req.user.id;
+    const { id } = req.params;
+    const result = await visitService.rejectVisit(agentId, id);
+    res.status(200).json({
+      success: true,
+      message: result.message,
+      data: result.visit,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   bookVisit,
   getBuyerVisits,
   cancelVisit,
   rescheduleVisit,
+  getAgentVisitRequests,
+  approveVisit,
+  rejectVisit,
 };

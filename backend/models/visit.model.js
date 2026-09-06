@@ -352,6 +352,110 @@ const Visit = {
       [days],
     );
   },
+
+  async findByAgentId(agentId, { status, search, sort, limit, offset } = {}) {
+    const params = [agentId];
+    let sql = `
+      SELECT 
+        v.id,
+        v.property_id AS propertyId,
+        v.buyer_id AS buyerId,
+        v.agent_id AS agentId,
+        DATE_FORMAT(v.visit_date, '%Y-%m-%d') AS visitDate,
+        TIME_FORMAT(v.visit_time, '%H:%i') AS visitTime,
+        v.status,
+        v.notes,
+        v.created_at AS createdAt,
+        v.updated_at AS updatedAt,
+        p.title AS propertyTitle,
+        p.price AS propertyPrice,
+        p.address AS propertyAddress,
+        p.city AS propertyCity,
+        p.bedrooms,
+        p.bathrooms,
+        p.area,
+        p.status AS propertyStatus,
+        u_buyer.first_name AS buyerFirstName,
+        u_buyer.last_name AS buyerLastName,
+        u_buyer.email AS buyerEmail,
+        u_buyer.phone AS buyerPhone,
+        u_buyer.profile_image_url AS buyerAvatar,
+        (
+          SELECT pi.image_url 
+          FROM property_images pi 
+          WHERE pi.property_id = p.id 
+          ORDER BY pi.is_cover DESC, pi.sort_order ASC, pi.id ASC 
+          LIMIT 1
+        ) AS propertyImage
+      FROM visit_bookings v
+      JOIN properties p ON p.id = v.property_id
+      JOIN users u_buyer ON u_buyer.id = v.buyer_id
+      WHERE v.agent_id = ?
+    `;
+
+    if (status && status !== "all") {
+      sql += " AND v.status = ?";
+      params.push(status);
+    }
+
+    if (search && search.trim()) {
+      sql += " AND (p.title LIKE ? OR p.city LIKE ? OR u_buyer.first_name LIKE ? OR u_buyer.last_name LIKE ?)";
+      const term = `%${search.trim()}%`;
+      params.push(term, term, term, term);
+    }
+
+    const sortDirection = sort === "latest" ? "DESC" : "ASC";
+    sql += ` ORDER BY v.visit_date ${sortDirection}, v.visit_time ${sortDirection}, v.created_at DESC`;
+
+    if (limit !== undefined && offset !== undefined) {
+      sql += " LIMIT ? OFFSET ?";
+      params.push(Number(limit), Number(offset));
+    }
+
+    return query(sql, params);
+  },
+
+  async countByAgentId(agentId, { status, search } = {}) {
+    const params = [agentId];
+    let sql = `
+      SELECT COUNT(*) AS total
+      FROM visit_bookings v
+      JOIN properties p ON p.id = v.property_id
+      JOIN users u_buyer ON u_buyer.id = v.buyer_id
+      WHERE v.agent_id = ?
+    `;
+
+    if (status && status !== "all") {
+      sql += " AND v.status = ?";
+      params.push(status);
+    }
+
+    if (search && search.trim()) {
+      sql += " AND (p.title LIKE ? OR p.city LIKE ? OR u_buyer.first_name LIKE ? OR u_buyer.last_name LIKE ?)";
+      const term = `%${search.trim()}%`;
+      params.push(term, term, term, term);
+    }
+
+    const rows = await query(sql, params);
+    return rows[0]?.total ? Number(rows[0].total) : 0;
+  },
+
+  async updateStatusForAgent(id, agentId, newStatus, allowedFromStatuses) {
+    if (!Array.isArray(allowedFromStatuses) || allowedFromStatuses.length === 0) {
+      const error = new Error("allowedFromStatuses must be a non-empty array");
+      error.status = 400;
+      throw error;
+    }
+    const placeholders = allowedFromStatuses.map(() => "?").join(", ");
+    const sql = `
+      UPDATE visit_bookings
+      SET status = ?, updated_at = CURRENT_TIMESTAMP
+      WHERE id = ? AND agent_id = ? AND status IN (${placeholders})
+    `;
+    const params = [newStatus, id, agentId, ...allowedFromStatuses];
+    const result = await query(sql, params);
+    return result.affectedRows;
+  },
 };
 
 module.exports = Visit;

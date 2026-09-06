@@ -12,9 +12,21 @@ export const cancelVisit = (visitId) =>
 export const rescheduleVisit = (visitId, payload) =>
   api.patch(`/visits/${visitId}/reschedule`, payload).then((r) => r.data.data);
 
+export const getAgentVisitRequests = (params = {}) =>
+  api.get('/agent/visit-requests', { params }).then((r) => r.data);
+
+export const approveVisit = (visitId) =>
+  api.patch(`/agent/visits/${visitId}/approve`).then((r) => r.data.data);
+
+export const rejectVisit = (visitId) =>
+  api.patch(`/agent/visits/${visitId}/reject`).then((r) => r.data.data);
+
 export default {
   getVisits,
   bookVisit,
   cancelVisit,
   rescheduleVisit,
+  getAgentVisitRequests,
+  approveVisit,
+  rejectVisit,
 };

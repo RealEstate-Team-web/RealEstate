@@ -13,6 +13,8 @@ import {
   RefreshCw,
   Edit2,
   Trash2,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react';
 import { getVisits, cancelVisit } from '../../services/visit.service';
 import BookVisitModal from '../../components/buyer/BookVisitModal';
@@ -158,6 +160,16 @@ export const ScheduledVisits = () => {
   };
 
   const totalPages = pagination.totalPages || 1;
+
+  const getVisiblePageWindow = (currentPage, totalPages, windowSize = 5) => {
+    const half = Math.floor(windowSize / 2);
+    let start = Math.max(1, currentPage - half);
+    const end = Math.min(totalPages, start + windowSize - 1);
+    start = Math.max(1, end - windowSize + 1);
+    const pages = [];
+    for (let p = start; p <= end; p++) pages.push(p);
+    return pages;
+  };
 
   return (
     <div className="space-y-6 font-sans">
@@ -479,7 +491,16 @@ export const ScheduledVisits = () => {
       {/* Pagination Controls */}
       {!loading && !error && totalPages > 1 && (
         <div className="mt-8 flex items-center justify-center space-x-2">
-          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+          <button
+            type="button"
+            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+            disabled={currentPage <= 1}
+            aria-label="Previous page"
+            className="px-3 py-1.5 text-xs font-bold rounded-lg bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed flex items-center"
+          >
+            <ChevronLeft size={14} />
+          </button>
+          {getVisiblePageWindow(currentPage, totalPages).map((page) => (
             <button
               key={page}
               type="button"
@@ -493,6 +514,15 @@ export const ScheduledVisits = () => {
               {page}
             </button>
           ))}
+          <button
+            type="button"
+            onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+            disabled={currentPage >= totalPages}
+            aria-label="Next page"
+            className="px-3 py-1.5 text-xs font-bold rounded-lg bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed flex items-center"
+          >
+            <ChevronRight size={14} />
+          </button>
         </div>
       )}
 
