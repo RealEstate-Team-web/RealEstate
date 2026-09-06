@@ -101,6 +101,58 @@ const Agent = {
     return rows[0];
   },
 
+  async findByUserId(userId) {
+    const rows = await query(
+      `SELECT ap.id, ap.user_id AS userId, ap.agency_name AS agency,
+              ap.license_number AS licenseNumber, ap.experience_years AS experienceYears,
+              ap.specialization, ap.office_address AS officeAddress,
+              ap.city, ap.bio, ap.verification_status AS status,
+              ap.created_at, ap.updated_at,
+              u.first_name, u.last_name, u.email, u.phone,
+              u.status AS userStatus, u.profile_image_url AS profileImageUrl,
+              u.created_at AS userCreatedAt
+       FROM agent_profiles ap
+       JOIN users u ON u.id = ap.user_id
+       WHERE ap.user_id = ?`,
+      [userId],
+    );
+    return rows[0];
+  },
+
+  async updateProfile(userId, fields, conn) {
+    const allowed = [
+      "agency_name",
+      "specialization",
+      "office_address",
+      "city",
+      "bio",
+    ];
+    const sets = [];
+    const params = [];
+    for (const key of allowed) {
+      if (fields[key] === undefined) continue;
+      const raw = fields[key];
+      const value =
+        raw === null || (typeof raw === "string" && raw.trim() === "")
+          ? null
+          : String(raw).trim();
+      sets.push(`${key} = ?`);
+      params.push(value);
+    }
+    if (sets.length === 0) return 0;
+    sets.push("updated_at = NOW()");
+    params.push(userId);
+    const execute = async (sql, values = []) => {
+      const [result] = conn ? await conn.execute(sql, values) : [await query(sql, values)];
+      return result;
+    };
+    const result = await execute(
+      `UPDATE agent_profiles SET ${sets.join(", ")} WHERE user_id = ?`,
+      params,
+    );
+    return result.affectedRows;
+  },
+
   async setVerificationStatus(id, status) {
     const result = await query(
       "UPDATE agent_profiles SET verification_status = ?, updated_at = NOW() WHERE id = ? AND verification_status = 'pending'",

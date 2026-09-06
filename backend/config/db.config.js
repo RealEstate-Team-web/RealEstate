@@ -17,6 +17,20 @@ async function query(sql, params = []) {
   return rows;
 }
 
+function toDateKey(value) {
+  if (typeof value === "string") {
+    const match = value.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (match) return `${match[1]}-${match[2]}-${match[3]}`;
+  }
+  if (value instanceof Date && !Number.isNaN(value.getTime())) {
+    const year = value.getFullYear();
+    const month = String(value.getMonth() + 1).padStart(2, "0");
+    const day = String(value.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }
+  return null;
+}
+
 async function withTransaction(callback) {
   const connection = await pool.getConnection();
   let isTransactionActive = false;
@@ -41,4 +55,4 @@ async function withTransaction(callback) {
   }
 }
 
-module.exports = { pool, query, withTransaction };
+module.exports = { pool, query, withTransaction, toDateKey };
