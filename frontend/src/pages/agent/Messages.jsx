@@ -67,7 +67,7 @@ const formatPrice = (amount) => {
 
 const Messages = () => {
   const { user } = useAuth();
-  const { toastMessage, showToast } = useToast();
+  const { toastMessage, toastTone, showToast } = useToast();
   const messagesEndRef = useRef(null);
 
   const [inquiries, setInquiries] = useState([]);
@@ -86,8 +86,8 @@ const Messages = () => {
   const [statusFilter, setStatusFilter] = useState("all");
   const [threadReloadKey, setThreadReloadKey] = useState(0);
   const [page, setPage] = useState(1);
+  const [refreshKey, setRefreshKey] = useState(0);
   const loadRequestIdRef = useRef(0);
-  const lastQueryRef = useRef("");
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -103,7 +103,6 @@ const Messages = () => {
         const params = { limit: 50, page: nextPage };
         if (statusFilter !== "all") params.status = statusFilter;
         if (debouncedSearch) params.search = debouncedSearch;
-        const queryToken = `${statusFilter}|${debouncedSearch}`;
 
         const response = await getAgentInquiries(params);
         if (!isMountedRef.current || requestId !== loadRequestIdRef.current) return;
@@ -111,11 +110,7 @@ const Messages = () => {
         const list = Array.isArray(response?.data) ? response.data : [];
         if (response?.pagination) setPagination(response.pagination);
 
-        const isFreshQuery = queryToken !== lastQueryRef.current;
-        lastQueryRef.current = queryToken;
-        const isPageOne = nextPage === 1 || isFreshQuery;
-
-        if (isPageOne) {
+        if (nextPage === 1) {
           setInquiries(list);
           if (list.length > 0) {
             setActiveInquiryId((current) => {
@@ -140,35 +135,22 @@ const Messages = () => {
   );
 
   useEffect(() => {
-    const timer = setTimeout(() => setDebouncedSearch(searchQuery.trim()), 300);
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchQuery.trim());
+      setPage(1);
+    }, 300);
     return () => clearTimeout(timer);
   }, [searchQuery]);
-
-  const loadMoreRef = useRef(loadInquiries);
-  useEffect(() => {
-    loadMoreRef.current = loadInquiries;
-  }, [loadInquiries]);
-
-  useEffect(() => {
-    if (page > 1) {
-      const mountedRef = { current: true };
-      (async () => {
-        await loadMoreRef.current(page, mountedRef);
-      })();
-      return () => { mountedRef.current = false; };
-    }
-    return undefined;
-  }, [page]);
 
   useEffect(() => {
     const mountedRef = { current: true };
     (async () => {
-      await loadInquiries(1, mountedRef);
+      await loadInquiries(page, mountedRef);
     })();
     return () => {
       mountedRef.current = false;
     };
-  }, [loadInquiries]);
+  }, [page, refreshKey, loadInquiries]);
 
   useEffect(() => {
     if (!activeInquiryId) {
@@ -272,7 +254,7 @@ const Messages = () => {
         ),
       );
     } catch (err) {
-      showToast(err.message || "Failed to send message");
+      showToast(err.message || "Failed to send message", { tone: "error" });
     } finally {
       setSending(false);
     }
@@ -303,8 +285,17 @@ const Messages = () => {
   return (
     <div className="space-y-6 font-sans">
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-xl flex items-center space-x-2 text-xs font-medium">
-          <CheckCircle2 size={16} className="text-emerald-400 shrink-0" />
+        <div
+          className={`fixed bottom-6 right-6 z-50 px-4 py-3 rounded-xl shadow-xl flex items-center space-x-2 text-xs font-medium ${
+            toastTone === "error" ? "bg-rose-600 text-white" : "bg-slate-900 text-white"
+          }`}
+          role={toastTone === "error" ? "alert" : "status"}
+        >
+          {toastTone === "error" ? (
+            <AlertCircle size={16} className="shrink-0" />
+          ) : (
+            <CheckCircle2 size={16} className="text-emerald-400 shrink-0" />
+          )}
           <span>{toastMessage}</span>
         </div>
       )}
@@ -320,7 +311,10 @@ const Messages = () => {
         </div>
         <button
           type="button"
-          onClick={() => loadInquiries()}
+          onClick={() => {
+            setPage(1);
+            setRefreshKey((k) => k + 1);
+          }}
           disabled={loading}
           className="self-start sm:self-auto px-3.5 py-2 text-xs font-semibold bg-white border border-slate-200 rounded-xl text-slate-700 hover:bg-slate-50 shadow-xs transition cursor-pointer flex items-center space-x-2 disabled:opacity-50"
         >
@@ -392,7 +386,10 @@ const Messages = () => {
                   <button
                     key={tab.key}
                     type="button"
-                    onClick={() => setStatusFilter(tab.key)}
+                    onClick={() => {
+                      setStatusFilter(tab.key);
+                      setPage(1);
+                    }}
                     className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold transition cursor-pointer shrink-0 ${
                       statusFilter === tab.key
                         ? "bg-blue-600 text-white shadow-xs"

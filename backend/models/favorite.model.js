@@ -91,7 +91,7 @@ const Favorite = {
          AND f.created_at >= DATE_SUB(CURDATE(), INTERVAL ? DAY)
        GROUP BY DATE(f.created_at)
        ORDER BY date ASC`,
-      [agentId, Number(days)]
+      [agentId, Math.max(0, Number(days) - 1)]
     );
     return rows.map((row) => ({
       date: toDateKey(row.date),

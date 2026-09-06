@@ -354,7 +354,7 @@ const Inquiry = {
          AND created_at >= DATE_SUB(CURDATE(), INTERVAL ? DAY)
        GROUP BY DATE(created_at)
        ORDER BY date ASC`,
-      [agentId, Number(days)]
+      [agentId, Math.max(0, Number(days) - 1)]
     );
     return rows.map((row) => ({
       date: toDateKey(row.date),

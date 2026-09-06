@@ -646,19 +646,25 @@ const validateUpdateAgentProfile = (req, res, next) => {
 
   const { firstName, lastName, phone, agencyName, specialization, officeAddress, city, bio } = body;
 
-  if (firstName !== undefined && firstName !== null && String(firstName).trim() !== "") {
+  if (firstName === null) {
+    errors.push("firstName must be a non-empty string");
+  } else if (firstName !== undefined && String(firstName).trim() !== "") {
     if (typeof firstName !== "string")
       errors.push("firstName must be a non-empty string");
     else if (String(firstName).trim().length > 100)
       errors.push("firstName must be at most 100 characters");
   }
-  if (lastName !== undefined && lastName !== null && String(lastName).trim() !== "") {
+  if (lastName === null) {
+    errors.push("lastName must be a non-empty string");
+  } else if (lastName !== undefined && String(lastName).trim() !== "") {
     if (typeof lastName !== "string")
       errors.push("lastName must be a non-empty string");
     else if (String(lastName).trim().length > 100)
       errors.push("lastName must be at most 100 characters");
   }
-  if (phone !== undefined && phone !== null && String(phone).trim() !== "") {
+  if (phone === null) {
+    errors.push("phone must be a string");
+  } else if (phone !== undefined && String(phone).trim() !== "") {
     if (typeof phone !== "string")
       errors.push("phone must be a string");
     else if (!phonePattern.test(String(phone).trim()))

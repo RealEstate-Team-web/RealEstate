@@ -377,17 +377,27 @@ const Analytics = () => {
     );
   };
 
-  const renderSortableTh = (colKey, label, alignClass = "") => (
-    <th className={`px-4 py-3 font-semibold ${alignClass}`}>
-      <button
-        type="button"
-        onClick={() => toggleSort(colKey)}
-        className="inline-flex items-center gap-1 uppercase tracking-wider text-[11px] text-slate-500 hover:text-[#111827] transition cursor-pointer"
+  const renderSortableTh = (colKey, label, alignClass = "") => {
+    const isActive = sortKey === colKey;
+    const sortLabel = isActive
+      ? `${label}, sorted ${sortDir === "asc" ? "ascending" : "descending"}`
+      : `${label}, unsorted`;
+    return (
+      <th
+        className={`px-4 py-3 font-semibold ${alignClass}`}
+        aria-sort={isActive ? (sortDir === "asc" ? "ascending" : "descending") : undefined}
       >
-        {label} <SortIcon colKey={colKey} />
-      </button>
-    </th>
-  );
+        <button
+          type="button"
+          onClick={() => toggleSort(colKey)}
+          aria-label={sortLabel}
+          className="inline-flex items-center gap-1 uppercase tracking-wider text-[11px] text-slate-500 hover:text-[#111827] transition cursor-pointer"
+        >
+          {label} <SortIcon colKey={colKey} />
+        </button>
+      </th>
+    );
+  };
 
   const availableStatuses = useMemo(
     () => Array.from(new Set(topProperties.map((p) => p.status))),

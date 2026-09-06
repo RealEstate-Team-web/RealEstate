@@ -427,10 +427,11 @@ const Profile = () => {
                     value={form.firstName}
                     onChange={handleChange("firstName")}
                     aria-invalid={!!fieldErrors.firstName}
+                    aria-describedby={fieldErrors.firstName ? "firstNameError" : undefined}
                     className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3.5 text-xs text-slate-800 focus:outline-none focus:border-[#4A9FF5] font-medium transition"
                   />
                   {fieldErrors.firstName && (
-                    <p className="text-[11px] text-[#B23B36] mt-1">
+                    <p id="firstNameError" className="text-[11px] text-[#B23B36] mt-1">
                       {fieldErrors.firstName}
                     </p>
                   )}
@@ -448,10 +449,11 @@ const Profile = () => {
                     value={form.lastName}
                     onChange={handleChange("lastName")}
                     aria-invalid={!!fieldErrors.lastName}
+                    aria-describedby={fieldErrors.lastName ? "lastNameError" : undefined}
                     className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3.5 text-xs text-slate-800 focus:outline-none focus:border-[#4A9FF5] font-medium transition"
                   />
                   {fieldErrors.lastName && (
-                    <p className="text-[11px] text-[#B23B36] mt-1">
+                    <p id="lastNameError" className="text-[11px] text-[#B23B36] mt-1">
                       {fieldErrors.lastName}
                     </p>
                   )}
@@ -502,11 +504,12 @@ const Profile = () => {
                     value={form.phone}
                     onChange={handleChange("phone")}
                     aria-invalid={!!fieldErrors.phone}
+                    aria-describedby={fieldErrors.phone ? "phoneError" : undefined}
                     className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-xs text-slate-800 focus:outline-none focus:border-[#4A9FF5] font-medium transition"
                   />
                 </div>
                 {fieldErrors.phone && (
-                  <p className="text-[11px] text-[#B23B36] mt-1">
+                  <p id="phoneError" className="text-[11px] text-[#B23B36] mt-1">
                     {fieldErrors.phone}
                   </p>
                 )}
@@ -531,11 +534,12 @@ const Profile = () => {
                       value={form.agencyName}
                       onChange={handleChange("agencyName")}
                       aria-invalid={!!fieldErrors.agencyName}
+                      aria-describedby={fieldErrors.agencyName ? "agencyNameError" : undefined}
                       className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-xs text-slate-800 focus:outline-none focus:border-[#4A9FF5] font-medium transition"
                     />
                   </div>
                   {fieldErrors.agencyName && (
-                    <p className="text-[11px] text-[#B23B36] mt-1">
+                    <p id="agencyNameError" className="text-[11px] text-[#B23B36] mt-1">
                       {fieldErrors.agencyName}
                     </p>
                   )}
@@ -558,11 +562,12 @@ const Profile = () => {
                       value={form.specialization}
                       onChange={handleChange("specialization")}
                       aria-invalid={!!fieldErrors.specialization}
+                      aria-describedby={fieldErrors.specialization ? "specializationError" : undefined}
                       className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-xs text-slate-800 focus:outline-none focus:border-[#4A9FF5] font-medium transition"
                     />
                   </div>
                   {fieldErrors.specialization && (
-                    <p className="text-[11px] text-[#B23B36] mt-1">
+                    <p id="specializationError" className="text-[11px] text-[#B23B36] mt-1">
                       {fieldErrors.specialization}
                     </p>
                   )}
@@ -585,11 +590,12 @@ const Profile = () => {
                       value={form.city}
                       onChange={handleChange("city")}
                       aria-invalid={!!fieldErrors.city}
+                      aria-describedby={fieldErrors.city ? "cityError" : undefined}
                       className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-xs text-slate-800 focus:outline-none focus:border-[#4A9FF5] font-medium transition"
                     />
                   </div>
                   {fieldErrors.city && (
-                    <p className="text-[11px] text-[#B23B36] mt-1">
+                    <p id="cityError" className="text-[11px] text-[#B23B36] mt-1">
                       {fieldErrors.city}
                     </p>
                   )}
@@ -607,10 +613,11 @@ const Profile = () => {
                     value={form.officeAddress}
                     onChange={handleChange("officeAddress")}
                     aria-invalid={!!fieldErrors.officeAddress}
+                    aria-describedby={fieldErrors.officeAddress ? "officeAddressError" : undefined}
                     className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3.5 text-xs text-slate-800 focus:outline-none focus:border-[#4A9FF5] font-medium transition"
                   />
                   {fieldErrors.officeAddress && (
-                    <p className="text-[11px] text-[#B23B36] mt-1">
+                    <p id="officeAddressError" className="text-[11px] text-[#B23B36] mt-1">
                       {fieldErrors.officeAddress}
                     </p>
                   )}
@@ -630,12 +637,13 @@ const Profile = () => {
                   value={form.bio}
                   onChange={handleChange("bio")}
                   aria-invalid={!!fieldErrors.bio}
+                  aria-describedby={fieldErrors.bio ? "bioError" : undefined}
                   className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3.5 text-xs text-slate-800 focus:outline-none focus:border-[#4A9FF5] font-medium transition resize-none"
                   placeholder="Tell buyers about your experience, focus areas, and approach."
                 />
                 <div className="flex items-center justify-between mt-1">
                   {fieldErrors.bio ? (
-                    <p className="text-[11px] text-[#B23B36]">
+                    <p id="bioError" className="text-[11px] text-[#B23B36]">
                       {fieldErrors.bio}
                     </p>
                   ) : (
