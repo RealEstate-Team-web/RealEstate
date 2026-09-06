@@ -4,7 +4,10 @@ const inquiryController = require("../controllers/inquiry.controller");
 const visitController = require("../controllers/visit.controller");
 const { authenticate } = require("../middlewares/auth.middleware");
 const { requireRole } = require("../middlewares/role.middleware");
-const { validateVisitIdParam } = require("../middlewares/validation.middleware");
+const {
+  validateVisitIdParam,
+  validateUpdateAgentProfile,
+} = require("../middlewares/validation.middleware");
 
 const router = express.Router();
 
@@ -14,6 +17,31 @@ router.get(
   authenticate,
   requireRole("agent"),
   agentController.getDashboard
+);
+
+// GET /api/agent/profile - Get the authenticated agent's profile
+router.get(
+  "/profile",
+  authenticate,
+  requireRole("agent"),
+  agentController.getProfile
+);
+
+// PUT /api/agent/profile - Update the authenticated agent's profile
+router.put(
+  "/profile",
+  authenticate,
+  requireRole("agent"),
+  validateUpdateAgentProfile,
+  agentController.updateProfile
+);
+
+// GET /api/agent/analytics - Agent analytics summary
+router.get(
+  "/analytics",
+  authenticate,
+  requireRole("agent"),
+  agentController.getAnalytics
 );
 
 // GET /api/agent/inquiries - Get all inquiries received for the agent's properties
