@@ -121,10 +121,17 @@ const User = {
   },
 
 
-  async updateProfile(userId, { firstName, lastName, phone }) {
-    const existing = await query("SELECT first_name, last_name, phone FROM users WHERE id = ?", [userId]);
+  async updateProfile(userId, { firstName, lastName, phone }, conn) {
+    const execute = async (sql, params = []) => {
+      const [rows] = conn ? await conn.execute(sql, params) : [await query(sql, params)];
+      return rows;
+    };
+    const existing = await execute(
+      "SELECT first_name, last_name, phone FROM users WHERE id = ?",
+      [userId],
+    );
     const row = existing[0];
-    const result = await query(
+    const result = await execute(
       `UPDATE users
        SET first_name = ?, last_name = ?, phone = ?, updated_at = NOW()
        WHERE id = ?`,

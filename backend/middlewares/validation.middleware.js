@@ -625,6 +625,89 @@ const validateUpdateProfile = (req, res, next) => {
   next();
 };
 
+const validateUpdateAgentProfile = (req, res, next) => {
+  const errors = [];
+  const body = req.body || {};
+  const ALLOWED = new Set([
+    "firstName",
+    "lastName",
+    "phone",
+    "agencyName",
+    "specialization",
+    "officeAddress",
+    "city",
+    "bio",
+  ]);
+  for (const key of Object.keys(body)) {
+    if (!ALLOWED.has(key)) {
+      errors.push(`Field "${key}" is not editable`);
+    }
+  }
+
+  const { firstName, lastName, phone, agencyName, specialization, officeAddress, city, bio } = body;
+
+  if (firstName === null) {
+    errors.push("firstName must be a non-empty string");
+  } else if (firstName !== undefined && String(firstName).trim() !== "") {
+    if (typeof firstName !== "string")
+      errors.push("firstName must be a non-empty string");
+    else if (String(firstName).trim().length > 100)
+      errors.push("firstName must be at most 100 characters");
+  }
+  if (lastName === null) {
+    errors.push("lastName must be a non-empty string");
+  } else if (lastName !== undefined && String(lastName).trim() !== "") {
+    if (typeof lastName !== "string")
+      errors.push("lastName must be a non-empty string");
+    else if (String(lastName).trim().length > 100)
+      errors.push("lastName must be at most 100 characters");
+  }
+  if (phone === null) {
+    errors.push("phone must be a string");
+  } else if (phone !== undefined && String(phone).trim() !== "") {
+    if (typeof phone !== "string")
+      errors.push("phone must be a string");
+    else if (!phonePattern.test(String(phone).trim()))
+      errors.push("phone must be a valid phone number");
+  }
+  if (agencyName !== undefined && agencyName !== null) {
+    if (typeof agencyName !== "string")
+      errors.push("agencyName must be a string");
+    else {
+      const trimmed = String(agencyName).trim();
+      if (trimmed.length > 150)
+        errors.push("agencyName must be at most 150 characters");
+    }
+  }
+  if (specialization !== undefined && specialization !== null) {
+    if (typeof specialization !== "string")
+      errors.push("specialization must be a string");
+    else if (String(specialization).trim().length > 100)
+      errors.push("specialization must be at most 100 characters");
+  }
+  if (officeAddress !== undefined && officeAddress !== null) {
+    if (typeof officeAddress !== "string")
+      errors.push("officeAddress must be a string");
+    else if (String(officeAddress).trim().length > 255)
+      errors.push("officeAddress must be at most 255 characters");
+  }
+  if (city !== undefined && city !== null) {
+    if (typeof city !== "string")
+      errors.push("city must be a string");
+    else if (String(city).trim().length > 100)
+      errors.push("city must be at most 100 characters");
+  }
+  if (bio !== undefined && bio !== null && String(bio).trim() !== "") {
+    if (typeof bio !== "string")
+      errors.push("bio must be a string");
+    else if (String(bio).trim().length > 1000)
+      errors.push("bio must be at most 1000 characters");
+  }
+
+  if (errors.length > 0) return next(validationError(errors));
+  next();
+};
+
 const validateChangePassword = (req, res, next) => {
   const errors = [];
   const { currentPassword, newPassword } = req.body || {};
@@ -659,6 +742,7 @@ module.exports = {
   validateForgotPassword,
   validateResetPassword,
   validateUpdateProfile,
+  validateUpdateAgentProfile,
   validateChangePassword,
   validateAddFavorite,
   validatePropertyIdParam,

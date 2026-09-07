@@ -1,4 +1,4 @@
-const { query, withTransaction } = require("../config/db.config");
+const { query, withTransaction, toDateKey } = require("../config/db.config");
 
 /**
  * Shared filter builder for inquiries lists and counts
@@ -344,6 +344,37 @@ const Inquiry = {
       [agentId],
     );
     return Number(rows[0]?.count) || 0;
+  },
+
+  async countByAgentDay(agentId, days) {
+    const rows = await query(
+      `SELECT DATE(created_at) AS date, COUNT(*) AS count
+       FROM inquiries
+       WHERE agent_id = ?
+         AND created_at >= DATE_SUB(CURDATE(), INTERVAL ? DAY)
+       GROUP BY DATE(created_at)
+       ORDER BY date ASC`,
+      [agentId, Math.max(0, Number(days) - 1)]
+    );
+    return rows.map((row) => ({
+      date: toDateKey(row.date),
+      count: Number(row.count) || 0,
+    }));
+  },
+
+  async countByStatusForAgent(agentId) {
+    const rows = await query(
+      `SELECT status, COUNT(*) AS count
+       FROM inquiries
+       WHERE agent_id = ?
+       GROUP BY status`,
+      [agentId]
+    );
+    const counts = {};
+    rows.forEach((row) => {
+      counts[row.status] = Number(row.count) || 0;
+    });
+    return counts;
   },
 
   async markAsRead(id, agentId) {

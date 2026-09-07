@@ -645,6 +645,110 @@ GET
 
 ---
 
+## Get Agent Profile
+
+GET
+
+```
+/api/agent/profile
+```
+
+Permission
+
+Agent (authenticated, `role = agent`).
+
+Request
+
+None.
+
+Success response — `200 OK`
+
+```
+{
+  "success": true,
+  "message": "Agent profile retrieved",
+  "data": {
+    "profile": {
+      "id": 21,
+      "firstName": "S2",
+      "lastName": "Tester",
+      "email": "s2test.1788595216@test.com",
+      "phone": "+251911000199",
+      "role": "agent",
+      "userStatus": "active",
+      "profileImageUrl": null,
+      "memberSince": "2026-09-05T08:00:16.000Z",
+      "agency": "Test Realty Updated",
+      "licenseNumber": "LIC-TEST9",
+      "experienceYears": 1,
+      "specialization": "Residential",
+      "officeAddress": "Bole, Addis Ababa",
+      "city": "Addis Ababa",
+      "bio": "Updated bio for testing the agent profile API.",
+      "verificationStatus": "pending"
+    }
+  }
+}
+```
+
+Error responses
+
+- `401` — authentication required (missing or invalid token).
+- `403` — insufficient permissions (non-agent).
+- `404` — agent profile not found for the authenticated user.
+
+---
+
+## Update Agent Profile
+
+PUT
+
+```
+/api/agent/profile
+```
+
+Permission
+
+Agent (authenticated, `role = agent`).
+
+Request fields (all optional; undefined fields are preserved)
+
+```
+{
+  "firstName": "S2",
+  "lastName": "Tester",
+  "phone": "+251911000199",
+  "agencyName": "Test Realty Updated",
+  "specialization": "Residential",
+  "officeAddress": "Bole, Addis Ababa",
+  "city": "Addis Ababa",
+  "bio": "Updated bio for testing the agent profile API."
+}
+```
+
+- `firstName`, `lastName`, `phone` — non-null, trimmed string; `firstName`/`lastName` at most 100 chars, `phone` must match `^\+?[0-9]{7,15}$`. Null/blank identity values are rejected or preserved, never written as `NULL`.
+- `agencyName` — at most 150 chars; `specialization` — at most 100 chars; `officeAddress` — at most 255 chars; `city` — at most 100 chars; `bio` — at most 1000 chars. Blank optional profile fields clear the stored value.
+- Unknown fields are rejected.
+
+Success response — `200 OK`
+
+```
+{
+  "success": true,
+  "message": "Agent profile updated",
+  "data": { "profile": { /* same shape as Get Agent Profile */ } }
+}
+```
+
+Error responses
+
+- `400` — validation failed. Body: `{ "message": "Validation failed", "errors": ["firstName must be a non-empty string", ...] }`.
+- `401` — authentication required (missing or invalid token).
+- `403` — insufficient permissions (non-agent).
+- `404` — agent profile not found for the authenticated user.
+
+---
+
 ## Analytics
 
 GET
