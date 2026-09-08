@@ -9,6 +9,7 @@ import {
   BarChart3,
   UserCircle,
   Settings,
+  Bell,
   LogOut,
   ChevronDown,
   X,
@@ -21,11 +22,12 @@ const primaryNavItems = [
 ];
 
 const secondaryNavItems = [
-  { label: 'Visit Requests', path: '/agent/visits', icon: CalendarCheck, disabled: false },
-  { label: 'Customer Messages', path: '/agent/messages', icon: MessageSquare, disabled: false },
-  { label: 'Analytics', path: '/agent/analytics', icon: BarChart3, disabled: false },
-  { label: 'Profile', path: '/agent/profile', icon: UserCircle, disabled: false },
-  { label: 'Settings', path: '/agent/settings', icon: Settings, disabled: true },
+  { label: 'Notifications', path: ROUTES.agentNotifications, icon: Bell, disabled: false },
+  { label: 'Visit Requests', path: ROUTES.agentVisits, icon: CalendarCheck, disabled: false },
+  { label: 'Customer Messages', path: ROUTES.agentMessages, icon: MessageSquare, disabled: false },
+  { label: 'Analytics', path: ROUTES.agentAnalytics, icon: BarChart3, disabled: false },
+  { label: 'Profile', path: ROUTES.agentProfile, icon: UserCircle, disabled: false },
+  { label: 'Settings', path: ROUTES.agentSettings, icon: Settings, disabled: false },
 ];
 
 const propertySubLinks = [

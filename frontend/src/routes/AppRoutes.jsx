@@ -27,6 +27,8 @@ import AgentEditProperty from '../pages/agent/EditProperty';
 import AgentVisits from '../pages/agent/Visits';
 import AgentAnalytics from '../pages/agent/Analytics';
 import AgentMessages from '../pages/agent/Messages';
+import AgentSettings from '../pages/agent/Settings';
+import AgentNotifications from '../pages/agent/Notifications';
 
 import DashboardLayout from '../hooks/layouts/DashboardLayout';
 import Dashboard from '../pages/buyer/Dashboard';
@@ -142,6 +144,8 @@ export const AppRoutes = () => {
             <Route path="messages" element={<AgentMessages />} />
             <Route path="analytics" element={<AgentAnalytics />} />
             <Route path="profile" element={<AgentProfile />} />
+            <Route path="settings" element={<AgentSettings />} />
+            <Route path="notifications" element={<AgentNotifications />} />
             <Route path="*" element={<Navigate to={ROUTES.agent} replace />} />
           </Route>
         </Route>

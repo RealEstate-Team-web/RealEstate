@@ -19,5 +19,11 @@ export const ROUTES = {
   buyer: '/buyer',
   agent: '/agent',
   agentProperties: '/agent/properties',
+  agentVisits: '/agent/visits',
+  agentMessages: '/agent/messages',
+  agentAnalytics: '/agent/analytics',
+  agentProfile: '/agent/profile',
+  agentSettings: '/agent/settings',
+  agentNotifications: '/agent/notifications',
   admin: '/admin',
 }
