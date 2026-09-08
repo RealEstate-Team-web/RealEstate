@@ -3,11 +3,14 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { Menu, Bell, ChevronDown, LogOut, Search } from 'lucide-react';
 import { ROUTES } from '../../utils/constants';
+import { getAgentInquiries } from '../../services/inquiry.service';
+import { getAgentVisitRequests } from '../../services/visit.service';
 
 const titleMap = {
   '/agent': 'Dashboard',
   '/agent/profile': 'Profile',
   '/agent/settings': 'Settings',
+  '/agent/notifications': 'Notifications',
   '/agent/properties': 'My Properties',
   '/agent/properties/new': 'Add Property',
   '/agent/visits': 'Visit Requests',
@@ -30,7 +33,27 @@ const AgentHeader = ({ onToggleSidebar }) => {
     new URLSearchParams(location.search).get('search') || '';
   const [searchQuery, setSearchQuery] = useState(searchFromUrl);
   const [prevSearchFromUrl, setPrevSearchFromUrl] = useState(searchFromUrl);
+  const [unreadCount, setUnreadCount] = useState(0);
   const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    let active = true;
+    Promise.all([getAgentInquiries({ status: 'pending', page: 1, limit: 50 }), getAgentVisitRequests({ status: 'pending' })])
+      .then(([inquiryRes, visitRes]) => {
+        if (!active) return;
+        const inquiryTotal = Number.isFinite(inquiryRes?.pagination?.total) ? inquiryRes.pagination.total : 0;
+        const visitTotal = Number.isFinite(visitRes?.pagination?.total) ? visitRes.pagination.total : 0;
+        const inquiryCount = inquiryTotal || (Array.isArray(inquiryRes?.data) ? inquiryRes.data.length : 0);
+        const visitCount = visitTotal || (Array.isArray(visitRes?.data) ? visitRes.data.length : 0);
+        setUnreadCount(inquiryCount + visitCount);
+      })
+      .catch(() => {
+        if (active) setUnreadCount(0);
+      });
+    return () => {
+      active = false;
+    };
+  }, [location.pathname]);
 
   if (prevPath !== location.pathname) {
     setPrevPath(location.pathname);
@@ -123,12 +146,17 @@ const AgentHeader = ({ onToggleSidebar }) => {
       {/* Right: notifications + user */}
       <div className="flex items-center space-x-4">
         <button
-          onClick={() => navigate(ROUTES.agent)}
+          onClick={() => navigate(ROUTES.agentNotifications)}
           className="relative p-2.5 rounded-full text-slate-500 hover:bg-slate-100 hover:text-[#4A9FF5] transition cursor-pointer"
           title="Notifications"
+          aria-label={`Notifications${unreadCount > 0 ? `, ${unreadCount} unread` : ''}`}
         >
           <Bell size={20} />
-          <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-[#D96B67] rounded-full border-2 border-white" />
+          {unreadCount > 0 && (
+            <span className="absolute top-1 right-1 min-w-[16px] h-4 px-1 bg-[#D96B67] text-white text-[9px] font-bold rounded-full border-2 border-white flex items-center justify-center">
+              {unreadCount > 99 ? '99+' : unreadCount}
+            </span>
+          )}
         </button>
 
         <div className="relative" ref={dropdownRef}>
