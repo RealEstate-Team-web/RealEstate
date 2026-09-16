@@ -88,6 +88,12 @@ export const Notifications = () => {
     setNotifications((prev) => prev.map((n) => ({ ...n, unread: false })));
   };
 
+  const handleToggleRead = (id) => {
+    setNotifications((prev) =>
+      prev.map((n) => (n.id === id ? { ...n, unread: !n.unread } : n))
+    );
+  };
+
   const filteredNotifications = notifications.filter((n) => {
     if (filterType === 'unread') return n.unread;
     if (filterType === 'visits') return n.type.includes('visit');
@@ -132,41 +138,59 @@ export const Notifications = () => {
 
       {/* Notifications List Container */}
       <div className="bg-white border border-slate-200/80 rounded-xl divide-y divide-slate-100 shadow-2xs overflow-hidden">
-        {filteredNotifications.map((notif) => (
-          <div
-            key={notif.id}
-            className={`p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-50/70 transition ${
-              notif.unread ? 'bg-blue-50/20' : ''
-            }`}
-          >
-            <div className="flex items-start sm:items-center space-x-3.5 min-w-0">
-              {/* Unread Status Dot */}
-              <div className="w-3 shrink-0 pt-1 sm:pt-0 flex justify-center">
-                {notif.unread ? (
-                  <span className="w-2.5 h-2.5 rounded-full bg-blue-600 shadow-2xs" title="Unread"></span>
-                ) : (
-                  <span className="text-[10px] text-slate-400 font-medium sm:hidden">(Read)</span>
-                )}
-              </div>
-
-              {/* Event Icon */}
-              <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl border flex items-center justify-center shrink-0 ${notif.color}`}>
-                <notif.icon size={18} />
-              </div>
-
-              {/* Message Details */}
-              <div className="min-w-0">
-                <h4 className="text-xs font-bold text-slate-900">{notif.title}</h4>
-                <p className="text-xs text-slate-500 mt-0.5 leading-normal">{notif.description}</p>
-              </div>
+        {filteredNotifications.length === 0 ? (
+          <div className="p-12 text-center flex flex-col items-center justify-center space-y-3">
+            <div className="w-12 h-12 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center">
+              <CheckCircle size={24} />
             </div>
-
-            {/* Time */}
-            <span className="text-[11px] font-semibold text-slate-400 shrink-0 self-end sm:self-center pl-6 sm:pl-0">
-              {notif.time}
-            </span>
+            <div>
+              <h4 className="text-sm font-bold text-slate-900">No notifications found</h4>
+              <p className="text-xs text-slate-500 mt-0.5">
+                {filterType === 'unread'
+                  ? "You're all caught up! There are no unread notifications."
+                  : 'No notification records match this filter category.'}
+              </p>
+            </div>
           </div>
-        ))}
+        ) : (
+          filteredNotifications.map((notif) => (
+            <div
+              key={notif.id}
+              onClick={() => handleToggleRead(notif.id)}
+              className={`p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-50/70 transition cursor-pointer ${
+                notif.unread ? 'bg-blue-50/20' : ''
+              }`}
+              title="Click to toggle read status"
+            >
+              <div className="flex items-start sm:items-center space-x-3.5 min-w-0">
+                {/* Unread Status Dot */}
+                <div className="w-3 shrink-0 pt-1 sm:pt-0 flex justify-center">
+                  {notif.unread ? (
+                    <span className="w-2.5 h-2.5 rounded-full bg-blue-600 shadow-2xs" title="Unread"></span>
+                  ) : (
+                    <span className="text-[10px] text-slate-400 font-medium sm:hidden">(Read)</span>
+                  )}
+                </div>
+
+                {/* Event Icon */}
+                <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl border flex items-center justify-center shrink-0 ${notif.color}`}>
+                  <notif.icon size={18} />
+                </div>
+
+                {/* Message Details */}
+                <div className="min-w-0">
+                  <h4 className="text-xs font-bold text-slate-900">{notif.title}</h4>
+                  <p className="text-xs text-slate-500 mt-0.5 leading-normal">{notif.description}</p>
+                </div>
+              </div>
+
+              {/* Time */}
+              <span className="text-[11px] font-semibold text-slate-400 shrink-0 self-end sm:self-center pl-6 sm:pl-0">
+                {notif.time}
+              </span>
+            </div>
+          ))
+        )}
       </div>
     </div>
   );
