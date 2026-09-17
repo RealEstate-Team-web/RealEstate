@@ -1,22 +1,13 @@
-import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
-import {
-  Menu,
-  Search,
-  Bell,
-  ChevronDown,
-  User,
-  LogOut
-} from 'lucide-react';
+import { Menu, Search, Bell } from 'lucide-react';
 import { ROUTES } from '../../utils/constants';
+import UserDropdown from './UserDropdown';
 
 export const Navbar = ({ onToggleSidebar }) => {
   const { user, logout } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
-
-  const [showUserDropdown, setShowUserDropdown] = useState(false);
 
   const getPageTitle = (pathname) => {
     switch (pathname) {
@@ -87,59 +78,16 @@ export const Navbar = ({ onToggleSidebar }) => {
         </button>
 
         {/* User Profile Dropdown Menu */}
-        <div className="relative">
-          <button
-            onClick={() => setShowUserDropdown(!showUserDropdown)}
-            className="flex items-center space-x-3 p-1.5 pl-2.5 rounded-full hover:bg-slate-100 transition cursor-pointer border border-transparent hover:border-slate-200"
-          >
-            <img
-              src={user?.profileImageUrl || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200'}
-              alt={user?.name || user?.firstName || 'User'}
-              className="w-9 h-9 rounded-full object-cover border border-slate-300 shadow-xs"
-            />
-            <div className="hidden sm:block text-left">
-              <p className="text-xs font-semibold text-slate-800 leading-snug">{user?.name || `${user?.firstName || ''} ${user?.lastName || ''}`.trim() || 'User'}</p>
-              <p className="text-[11px] font-medium text-slate-500 capitalize">{user?.role || 'Buyer'}</p>
-            </div>
-            <ChevronDown size={16} className="text-slate-400" />
-          </button>
-
-          {/* User Dropdown Overlay */}
-          {showUserDropdown && (
-            <div className="absolute right-0 mt-2 w-64 bg-white border border-slate-200 rounded-2xl shadow-xl py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
-              <div className="px-4 py-3 border-b border-slate-100 bg-slate-50/50">
-                <p className="text-sm font-bold text-slate-900">{user?.name || `${user?.firstName || ''} ${user?.lastName || ''}`.trim()}</p>
-                <p className="text-xs text-slate-500 truncate">{user?.email}</p>
-              </div>
-
-              <div className="py-1">
-                <button
-                  onClick={() => {
-                    navigate('/buyer/profile');
-                    setShowUserDropdown(false);
-                  }}
-                  className="w-full px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 flex items-center space-x-2 transition"
-                >
-                  <User size={16} className="text-slate-400" />
-                  <span>My Profile</span>
-                </button>
-              </div>
-
-              <div className="py-1 border-t border-slate-100">
-                <button
-                  onClick={() => {
-                    logout();
-                    navigate(ROUTES.login);
-                  }}
-                  className="w-full px-4 py-2 text-sm text-rose-600 hover:bg-rose-50 flex items-center space-x-2 font-medium transition cursor-pointer"
-                >
-                  <LogOut size={16} />
-                  <span>Logout</span>
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
+        <UserDropdown
+          user={user}
+          roleLabel={user?.role || 'Buyer'}
+          profilePath="/buyer/profile"
+          onNavigate={navigate}
+          onLogout={() => {
+            logout();
+            navigate(ROUTES.login);
+          }}
+        />
       </div>
     </header>
   );
