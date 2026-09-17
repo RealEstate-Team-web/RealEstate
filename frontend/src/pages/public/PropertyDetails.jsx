@@ -660,26 +660,14 @@ const PropertyDetails = () => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3 border-b border-slate-100 py-5">
-                <div className="rounded-xl bg-[#F3FAF9] p-3 text-center">
-                  <p className="text-lg font-extrabold text-[#162831]">
-                    {agent?.experienceYears ?? "—"}
-                  </p>
+              <div className="rounded-xl bg-[#F3FAF9] p-3 text-center">
+                <p className="text-lg font-extrabold text-[#162831]">
+                  {agent?.experienceYears ?? "—"}
+                </p>
 
-                  <p className="mt-1 text-[10px] text-slate-500">
-                    Years Experience
-                  </p>
-                </div>
-
-                <div className="rounded-xl bg-[#F3FAF9] p-3 text-center">
-                  <p className="text-lg font-extrabold text-[#162831]">
-                    {agent?.totalProperties ?? "—"}
-                  </p>
-
-                  <p className="mt-1 text-[10px] text-slate-500">
-                    Properties
-                  </p>
-                </div>
+                <p className="mt-1 text-[10px] text-slate-500">
+                  Years Experience
+                </p>
               </div>
 
               <div className="space-y-4 border-b border-slate-100 py-5">
@@ -711,18 +699,6 @@ const PropertyDetails = () => {
                   {agent?.bio ||
                     "No agent information is available."}
                 </p>
-              </div>
-
-              <div className="space-y-2">
-
-                {agent?.id && (
-                  <Link
-                    to={`/agents/${agent.id}`}
-                    className="flex h-11 w-full items-center justify-center rounded-xl bg-[#162831] text-sm font-bold text-white hover:bg-[#223D49]"
-                  >
-                    View Full Profile
-                  </Link>
-                )}
               </div>
 
               <div className="mt-5 border-t border-slate-100 pt-5">
