@@ -286,12 +286,12 @@ Complete buyer account dashboard pages.
 
 **Checklist**
 
-- [ ] Profile API
-- [ ] Profile page
-- [ ] Settings page
-- [ ] Notifications placeholder
-- [ ] Authorization checks
-- [ ] Responsive testing
+- [x] Profile API
+- [x] Profile page
+- [x] Settings page
+- [x] Notifications placeholder
+- [x] Authorization checks
+- [x] Responsive testing
 
 ---
 
