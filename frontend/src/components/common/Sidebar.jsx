@@ -10,8 +10,7 @@ import {
   User,
   Settings,
   LogOut,
-  X,
-  Home
+  X
 } from 'lucide-react';
 
 export const Sidebar = ({ isOpen, onClose }) => {
@@ -43,13 +42,17 @@ export const Sidebar = ({ isOpen, onClose }) => {
       {/* Top Header & Brand Logo */}
       <div>
         <div className="flex items-center justify-between h-20 px-6 border-b border-slate-800/80">
-          <Link to="/" className="flex items-center space-x-3 group" aria-label="NestHome home">
-            <div className="w-10 h-10 bg-amber-500/10 text-amber-500 rounded-xl border border-amber-500/20 flex items-center justify-center shadow-inner">
-              <Home size={22} className="stroke-[2.5]" />
+          <Link to="/" className="flex items-center space-x-3 group" aria-label="ቤትኛ (Betnya) home">
+            <div className="w-10 h-10 bg-white rounded-xl border border-slate-700 flex items-center justify-center shadow-inner p-0.5">
+              <img
+                src="/logo.png"
+                alt="ቤትኛ (Betnya) logo"
+                className="h-full w-full rounded-lg object-contain"
+              />
             </div>
             <div>
-              <h1 className="font-bold text-white text-lg tracking-tight leading-tight">NestHome</h1>
-              <p className="text-[11px] text-slate-400 font-medium">Real Estate</p>
+              <h1 className="font-bold text-white text-lg tracking-tight leading-tight">ቤትኛ (Betnya)</h1>
+              <p className="text-[11px] text-slate-400 font-medium">ይጎብኙ፣ ይምረጡ፣ ይግዙ</p>
             </div>
           </Link>
           {/* Mobile Close Button */}

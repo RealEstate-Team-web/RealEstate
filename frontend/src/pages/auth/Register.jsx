@@ -10,7 +10,7 @@ const Register = () => {
             Create Your Account
           </h1>
           <p className="mt-2 text-[14px] text-ink">
-            Sign up to start your real estate journey with Dream Home Estates.
+            Sign up to start your real estate journey with Betnya.
           </p>
         </div>
         <RegisterForm />

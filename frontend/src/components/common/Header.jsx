@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { Menu, X, Home, LogOut } from "lucide-react";
+import { Menu, X, LogOut } from "lucide-react";
 import useAuth from "../../hooks/useAuth";
 import { ROLE_DASHBOARDS, ROUTES } from "../../utils/constants";
 
@@ -69,11 +69,18 @@ const Header = () => {
         
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2.5 shrink-0">
-          <div className="w-8 h-8 rounded-md bg-[#0F9690] flex items-center justify-center text-white shadow-xs">
-            <Home className="w-4.5 h-4.5" />
-          </div>
-          <span className="font-bold text-[17px] tracking-tight text-[#162831]">
-            NestHome Real Estate
+          <img
+            src="/logo.png"
+            alt="ቤትኛ (Betnya) logo"
+            className="w-9 h-9 rounded-md object-contain"
+          />
+          <span className="flex flex-col leading-tight">
+            <span className="font-bold text-[17px] tracking-tight text-[#162831]">
+              ቤትኛ (Betnya)
+            </span>
+            <span className="text-[10px] font-medium tracking-wide text-[#647983]">
+              ይጎብኙ፣ ይምረጡ፣ ይግዙ
+            </span>
           </span>
         </Link>
 

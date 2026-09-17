@@ -6,9 +6,9 @@ const AGENTS = [
   {
     firstName: "Sara",
     lastName: "Tamrat",
-    email: "sara.tamrat@nesthome.com",
+    email: "sara.tamrat@betnya.com",
     phone: "0900000101",
-    agencyName: "NestHome Realty",
+    agencyName: "Betnya Realty",
     licenseNumber: "LIC-1001",
     experienceYears: 5,
     city: "Addis Ababa",
@@ -16,9 +16,9 @@ const AGENTS = [
   {
     firstName: "Daniel",
     lastName: "Tesfaye",
-    email: "daniel.tesfaye@nesthome.com",
+    email: "daniel.tesfaye@betnya.com",
     phone: "0900000102",
-    agencyName: "NestHome Realty",
+    agencyName: "Betnya Realty",
     licenseNumber: "LIC-1002",
     experienceYears: 3,
     city: "Bahir Dar",
@@ -26,7 +26,7 @@ const AGENTS = [
   {
     firstName: "Liya",
     lastName: "Bekele",
-    email: "liya.bekele@nesthome.com",
+    email: "liya.bekele@betnya.com",
     phone: "0900000103",
     agencyName: "Skyline Properties",
     licenseNumber: "LIC-1003",
@@ -36,7 +36,7 @@ const AGENTS = [
   {
     firstName: "Mekdes",
     lastName: "Alemu",
-    email: "mekdes.alemu@nesthome.com",
+    email: "mekdes.alemu@betnya.com",
     phone: "0900000104",
     agencyName: "Skyline Properties",
     licenseNumber: "LIC-1004",
@@ -46,7 +46,7 @@ const AGENTS = [
   {
     firstName: "Hana",
     lastName: "Bekele",
-    email: "hana.bekele@nesthome.com",
+    email: "hana.bekele@betnya.com",
     phone: "0900000105",
     agencyName: "Urban Nest",
     licenseNumber: "LIC-1005",

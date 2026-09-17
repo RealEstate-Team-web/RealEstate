@@ -1,6 +1,6 @@
-# Real Estate Backend
+# Betnya (ቤትኛ) — Backend
 
-Node.js + Express.js + MySQL backend API for the Real Estate Website.
+Node.js + Express.js + MySQL backend API for the Betnya real estate website.
 
 ## Prerequisites
 

@@ -6,7 +6,6 @@ import {
   Tag,
   Users,
   X,
-  Home,
   BarChart3,
   Activity,
   UserCircle,
@@ -48,17 +47,21 @@ const AdminSidebar = ({ isOpen, onClose, pendingAgents = 0 }) => {
       {/* Brand */}
       <div>
         <div className="flex items-center justify-between h-[68px] px-4 border-b border-white/5">
-          <Link to="/" className="flex items-center space-x-2.5 group" aria-label="NestHome home">
+          <Link to="/" className="flex items-center space-x-2.5 group" aria-label="ቤትኛ (Betnya) home">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-amber-500/10 text-amber-500 rounded-xl border border-amber-500/20 flex items-center justify-center shadow-inner">
-                <Home size={22} className="stroke-[2.5]" />
+              <div className="w-10 h-10 bg-white rounded-xl border border-slate-700 flex items-center justify-center shadow-inner p-0.5">
+                <img
+                  src="/logo.png"
+                  alt="ቤትኛ (Betnya) logo"
+                  className="h-full w-full rounded-lg object-contain"
+                />
               </div>
               <div>
                 <h1 className="font-bold text-white text-lg tracking-tight leading-tight">
-                  NestHome
+                  ቤትኛ (Betnya)
                 </h1>
                 <p className="text-[11px] text-slate-400 font-medium">
-                  Real Estate
+                  ይጎብኙ ይምረጡ ይግዙ
                 </p>
               </div>
             </div>
