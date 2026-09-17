@@ -156,11 +156,20 @@ export const Notifications = () => {
           filteredNotifications.map((notif) => (
             <div
               key={notif.id}
+              role="button"
+              tabIndex={0}
               onClick={() => handleToggleRead(notif.id)}
-              className={`p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-50/70 transition cursor-pointer ${
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  handleToggleRead(notif.id);
+                }
+              }}
+              aria-pressed={!notif.unread}
+              className={`p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-50/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 cursor-pointer ${
                 notif.unread ? 'bg-blue-50/20' : ''
               }`}
-              title="Click to toggle read status"
+              title={notif.unread ? 'Mark as read' : 'Mark as unread'}
             >
               <div className="flex items-start sm:items-center space-x-3.5 min-w-0">
                 {/* Unread Status Dot */}
