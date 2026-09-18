@@ -32,10 +32,10 @@ const STATUS_TABS = [
 ];
 
 const statusStyles = {
-  draft: 'bg-slate-100 text-slate-600 border-slate-200',
-  available: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-  sold: 'bg-sky-50 text-sky-700 border-sky-200',
-  rented: 'bg-amber-50 text-amber-700 border-amber-200',
+  draft: 'bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700',
+  available: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-300 dark:border-emerald-500/20',
+  sold: 'bg-sky-50 text-sky-700 border-sky-200 dark:bg-sky-500/10 dark:text-sky-300 dark:border-sky-500/20',
+  rented: 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-500/10 dark:text-amber-300 dark:border-amber-500/20',
 };
 
 const formatPrice = (price) =>
@@ -191,8 +191,8 @@ const Properties = () => {
       {/* Toolbar */}
       <div className="flex flex-col sm:flex-row sm:items-center gap-3">
         <form onSubmit={applySearch} className="flex-1 flex items-center max-w-md">
-          <div className="flex items-center flex-1 bg-white border border-slate-200 focus-within:border-[#4A9FF5] rounded-lg px-3 h-10 transition">
-            <Search size={16} className="text-slate-400 shrink-0" />
+          <div className="flex items-center flex-1 bg-white border border-slate-200 focus-within:border-[#4A9FF5] rounded-lg px-3 h-10 transition dark:bg-[#111827] dark:border-slate-800">
+            <Search size={16} className="text-slate-400 shrink-0 dark:text-slate-500" />
             <input
               type="search"
               value={localSearch}
@@ -206,7 +206,7 @@ const Properties = () => {
                 type="button"
                 onClick={() => updateQuery({ search: '', page: 1 })}
                 aria-label="Clear search"
-                className="text-slate-400 hover:text-slate-600 cursor-pointer"
+                className="text-slate-400 hover:text-slate-600 cursor-pointer dark:text-slate-500 dark:hover:text-slate-300"
               >
                 <X size={14} />
               </button>
@@ -243,7 +243,7 @@ const Properties = () => {
               className={`px-4 py-2 rounded-full text-[13px] font-semibold transition cursor-pointer ${
                 active
                   ? 'bg-[#4A9FF5] text-white shadow-[0_3px_10px_rgba(74,159,245,0.3)]'
-                  : 'bg-white text-slate-600 border border-slate-200 hover:border-slate-300'
+                  : 'bg-white text-slate-600 border border-slate-200 hover:border-slate-300 dark:bg-[#111827] dark:text-slate-300 dark:border-slate-800 dark:hover:border-slate-700'
               }`}
             >
               {tab.label}
@@ -254,13 +254,13 @@ const Properties = () => {
 
       {/* Loading skeleton */}
       {loading && (
-        <div className="bg-white rounded-2xl border border-slate-200 divide-y divide-slate-100">
+        <div className="bg-white rounded-2xl border border-slate-200 divide-y divide-slate-100 dark:bg-[#111827] dark:border-slate-800 dark:divide-slate-800">
           {[0, 1, 2].map((i) => (
             <div key={i} className="p-4 flex items-center space-x-4 animate-pulse">
-              <div className="w-20 h-16 rounded-lg bg-slate-200" />
+              <div className="w-20 h-16 rounded-lg bg-slate-200 dark:bg-slate-700" />
               <div className="flex-1 space-y-2">
-                <div className="h-3 w-1/3 bg-slate-200 rounded" />
-                <div className="h-3 w-1/4 bg-slate-200 rounded" />
+                <div className="h-3 w-1/3 bg-slate-200 rounded dark:bg-slate-700" />
+                <div className="h-3 w-1/4 bg-slate-200 rounded dark:bg-slate-700" />
               </div>
             </div>
           ))}
@@ -270,7 +270,7 @@ const Properties = () => {
       {!loading && loadError && (
         <div
           role="alert"
-          className="rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs px-4 py-3 flex items-center space-x-2"
+          className="rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs px-4 py-3 flex items-center space-x-2 dark:bg-rose-500/10 dark:border-rose-500/30 dark:text-rose-300"
         >
           <AlertTriangle size={15} className="shrink-0" />
           <span>{loadError}</span>
@@ -279,14 +279,14 @@ const Properties = () => {
 
       {/* Empty state */}
       {!loading && !loadError && properties.length === 0 && (
-        <div className="bg-white rounded-2xl border border-slate-200 py-16 px-6 flex flex-col items-center text-center">
-          <div className="w-14 h-14 rounded-full bg-slate-100 flex items-center justify-center mb-4">
-            <Building2 size={26} className="text-slate-400" />
+        <div className="bg-white rounded-2xl border border-slate-200 py-16 px-6 flex flex-col items-center text-center dark:bg-[#111827] dark:border-slate-800">
+          <div className="w-14 h-14 rounded-full bg-slate-100 flex items-center justify-center mb-4 dark:bg-slate-800">
+            <Building2 size={26} className="text-slate-400 dark:text-slate-500" />
           </div>
-          <h3 className="text-[15px] font-bold text-[#101820]">
+          <h3 className="text-[15px] font-bold text-[#101820] dark:text-white">
             {q || activeStatus !== 'all' ? 'No matching properties' : 'No properties yet'}
           </h3>
-          <p className="text-xs text-slate-500 mt-1 max-w-sm">
+          <p className="text-xs text-slate-500 mt-1 max-w-sm dark:text-slate-400">
             {q || activeStatus !== 'all'
               ? 'Try a different search or status filter.'
               : 'Add your first listing to start receiving buyer inquiries.'}
@@ -306,11 +306,11 @@ const Properties = () => {
 
       {/* Table */}
       {!loading && !loadError && properties.length > 0 && (
-        <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+        <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden dark:bg-[#111827] dark:border-slate-800">
           <div className="overflow-x-auto">
             <table className="w-full text-[13px] min-w-[760px]">
               <thead>
-                <tr className="bg-slate-50 text-left text-[11px] uppercase tracking-wider text-slate-500">
+                <tr className="bg-slate-50 text-left text-[11px] uppercase tracking-wider text-slate-500 dark:bg-[#1E293B] dark:text-slate-400">
                   <th className="px-4 py-3 font-semibold">Property</th>
                   <th className="px-4 py-3 font-semibold">Location</th>
                   <th className="px-4 py-3 font-semibold">Price</th>
@@ -320,12 +320,12 @@ const Properties = () => {
                   <th className="px-4 py-3 font-semibold text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                 {properties.map((property) => (
-                  <tr key={property.id} className="hover:bg-slate-50/60 transition">
+                  <tr key={property.id} className="hover:bg-slate-50/60 transition dark:hover:bg-slate-800/60">
                     <td className="px-4 py-3">
                       <div className="flex items-center space-x-3">
-                        <div className="w-20 h-14 rounded-lg overflow-hidden bg-slate-100 border border-slate-200 shrink-0">
+                        <div className="w-20 h-14 rounded-lg overflow-hidden bg-slate-100 border border-slate-200 shrink-0 dark:bg-slate-800 dark:border-slate-700">
                           {property.coverImage ? (
                             <img
                               src={property.coverImage}
@@ -334,7 +334,7 @@ const Properties = () => {
                             />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center">
-                              <Building2 size={18} className="text-slate-300" />
+                              <Building2 size={18} className="text-slate-300 dark:text-slate-600" />
                             </div>
                           )}
                         </div>
@@ -342,11 +342,11 @@ const Properties = () => {
                           <button
                             type="button"
                             onClick={() => handleEdit(property.id)}
-                            className="font-semibold text-slate-800 hover:text-[#4A9FF5] text-left leading-snug cursor-pointer line-clamp-1"
+                            className="font-semibold text-slate-800 hover:text-[#4A9FF5] text-left leading-snug cursor-pointer line-clamp-1 dark:text-slate-100"
                           >
                             {property.title}
                           </button>
-                          <p className="text-[11px] text-slate-400 mt-0.5 capitalize">
+                          <p className="text-[11px] text-slate-400 mt-0.5 capitalize dark:text-slate-500">
                             {property.listingType === 'sale' ? 'For Sale' : 'For Rent'}
                             {property.bedrooms ? ` · ${property.bedrooms} bd` : ''}
                             {property.bathrooms ? ` · ${property.bathrooms} ba` : ''}
@@ -355,15 +355,15 @@ const Properties = () => {
                         </div>
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-slate-500">
+                    <td className="px-4 py-3 text-slate-500 dark:text-slate-400">
                       <div className="flex items-center space-x-1.5">
-                        <MapPin size={13} className="text-slate-400 shrink-0" />
+                        <MapPin size={13} className="text-slate-400 shrink-0 dark:text-slate-500" />
                         <span className="truncate max-w-[140px]">
                           {[property.city, property.country].filter(Boolean).join(', ') || '—'}
                         </span>
                       </div>
                     </td>
-                    <td className="px-4 py-3 font-semibold text-slate-800 whitespace-nowrap">
+                    <td className="px-4 py-3 font-semibold text-slate-800 whitespace-nowrap dark:text-slate-100">
                       {formatPrice(property.price)}
                     </td>
                     <td className="px-4 py-3">
@@ -374,14 +374,14 @@ const Properties = () => {
                       </span>
                     </td>
                     <td className="px-4 py-3 text-center">
-                      <span className="inline-flex items-center justify-center space-x-1 text-slate-600">
-                        <Eye size={13} className="text-slate-400" />
+                      <span className="inline-flex items-center justify-center space-x-1 text-slate-600 dark:text-slate-300">
+                        <Eye size={13} className="text-slate-400 dark:text-slate-500" />
                         <span>{property.views ?? '—'}</span>
                       </span>
                     </td>
                     <td className="px-4 py-3 text-center">
-                      <span className="inline-flex items-center justify-center space-x-1 text-slate-600">
-                        <Users size={13} className="text-slate-400" />
+                      <span className="inline-flex items-center justify-center space-x-1 text-slate-600 dark:text-slate-300">
+                        <Users size={13} className="text-slate-400 dark:text-slate-500" />
                         <span>{property.leads ?? '—'}</span>
                       </span>
                     </td>
@@ -391,7 +391,7 @@ const Properties = () => {
                           type="button"
                           onClick={() => handleEdit(property.id)}
                           title="Edit"
-                          className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-[#4A9FF5] hover:bg-[#4A9FF5]/10 transition cursor-pointer"
+                          className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-[#4A9FF5] hover:bg-[#4A9FF5]/10 transition cursor-pointer dark:text-slate-500"
                         >
                           <Pencil size={15} />
                         </button>
@@ -400,7 +400,7 @@ const Properties = () => {
                           onClick={() => handleDuplicate(property)}
                           disabled={busyId === property.id}
                           title="Duplicate as draft"
-                          className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-indigo-500 hover:bg-indigo-50 transition cursor-pointer disabled:opacity-50"
+                          className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-indigo-500 hover:bg-indigo-50 transition cursor-pointer disabled:opacity-50 dark:text-slate-500 dark:hover:bg-indigo-500/10"
                         >
                           {busyId === property.id ? (
                             <Loader2 size={15} className="animate-spin" />
@@ -416,7 +416,7 @@ const Properties = () => {
                           className={`w-8 h-8 rounded-lg flex items-center justify-center transition cursor-pointer disabled:opacity-50 ${
                             confirmDeleteId === property.id
                               ? 'bg-[#D96B67] text-white'
-                              : 'text-slate-400 hover:text-[#D96B67] hover:bg-rose-50'
+                              : 'text-slate-400 hover:text-[#D96B67] hover:bg-rose-50 dark:text-slate-500 dark:hover:bg-rose-500/10'
                           }`}
                         >
                           <Trash2 size={15} />
@@ -433,7 +433,7 @@ const Properties = () => {
 
       {/* 2-step delete confirm hint */}
       {confirmDeleteId && (
-        <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-rose-50 border border-rose-200 text-xs text-rose-700">
+        <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-rose-50 border border-rose-200 text-xs text-rose-700 dark:bg-rose-500/10 dark:border-rose-500/30 dark:text-rose-300">
           <AlertTriangle size={15} className="shrink-0" />
           <span className="flex-1">
             Press the red trash icon again to permanently delete this listing. This cannot be undone.
@@ -441,7 +441,7 @@ const Properties = () => {
           <button
             type="button"
             onClick={() => setConfirmDeleteId(null)}
-            className="px-3 py-1.5 rounded-lg border border-rose-200 bg-white text-rose-700 font-semibold hover:bg-rose-100 transition cursor-pointer"
+            className="px-3 py-1.5 rounded-lg border border-rose-200 bg-white text-rose-700 font-semibold hover:bg-rose-100 transition cursor-pointer dark:bg-[#111827] dark:border-rose-500/30 dark:text-rose-300 dark:hover:bg-rose-500/10"
           >
             Cancel
           </button>
@@ -451,7 +451,7 @@ const Properties = () => {
       {/* Pagination */}
       {!loading && !loadError && pagination.totalPages > 1 && (
         <div className="flex items-center justify-between">
-          <p className="text-[12px] text-slate-500">
+          <p className="text-[12px] text-slate-500 dark:text-slate-400">
             Page {page} of {pagination.totalPages} ·{' '}
             {pagination.total} {pagination.total === 1 ? 'property' : 'properties'}
           </p>
@@ -460,7 +460,7 @@ const Properties = () => {
               type="button"
               disabled={page <= 1}
               onClick={() => updateQuery({ page: page - 1 })}
-              className="px-3.5 h-9 rounded-lg bg-white border border-slate-200 text-[13px] font-semibold text-slate-600 hover:border-slate-300 disabled:opacity-40 transition cursor-pointer"
+              className="px-3.5 h-9 rounded-lg bg-white border border-slate-200 text-[13px] font-semibold text-slate-600 hover:border-slate-300 disabled:opacity-40 transition cursor-pointer dark:bg-[#111827] dark:border-slate-800 dark:text-slate-300 dark:hover:border-slate-700"
             >
               Previous
             </button>
@@ -468,7 +468,7 @@ const Properties = () => {
               type="button"
               disabled={page >= pagination.totalPages}
               onClick={() => updateQuery({ page: page + 1 })}
-              className="px-3.5 h-9 rounded-lg bg-white border border-slate-200 text-[13px] font-semibold text-slate-600 hover:border-slate-300 disabled:opacity-40 transition cursor-pointer"
+              className="px-3.5 h-9 rounded-lg bg-white border border-slate-200 text-[13px] font-semibold text-slate-600 hover:border-slate-300 disabled:opacity-40 transition cursor-pointer dark:bg-[#111827] dark:border-slate-800 dark:text-slate-300 dark:hover:border-slate-700"
             >
               Next
             </button>
@@ -478,7 +478,7 @@ const Properties = () => {
 
       {/* Tips footer */}
       {!loading && !loadError && properties.length > 0 && (
-        <div className="flex items-start gap-2.5 px-4 py-3.5 rounded-xl bg-sky-50 border border-sky-100 text-xs text-sky-800">
+        <div className="flex items-start gap-2.5 px-4 py-3.5 rounded-xl bg-sky-50 border border-sky-100 text-xs text-sky-800 dark:bg-sky-500/10 dark:border-sky-500/20 dark:text-sky-300">
           <Landmark size={15} className="shrink-0 mt-0.5" />
           <p>
             <span className="font-bold">Submission Note:</span> Listings are published immediately —
