@@ -138,23 +138,23 @@ export const ScheduledVisits = () => {
       case 'approved':
         return {
           label: 'Approved',
-          className: 'bg-emerald-100 text-emerald-800 border-emerald-200',
+          className: 'bg-emerald-100 text-emerald-800 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-300 dark:border-emerald-500/30',
         };
       case 'completed':
         return {
           label: 'Completed',
-          className: 'bg-blue-100 text-blue-800 border-blue-200',
+          className: 'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-500/10 dark:text-blue-300 dark:border-blue-500/30',
         };
       case 'cancelled':
         return {
           label: 'Cancelled',
-          className: 'bg-rose-100 text-rose-800 border-rose-200',
+          className: 'bg-rose-100 text-rose-800 border-rose-200 dark:bg-rose-500/10 dark:text-rose-300 dark:border-rose-500/30',
         };
       case 'pending':
       default:
         return {
           label: 'Pending Approval',
-          className: 'bg-amber-100 text-amber-800 border-amber-200',
+          className: 'bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-500/10 dark:text-amber-300 dark:border-amber-500/30',
         };
     }
   };
@@ -175,7 +175,7 @@ export const ScheduledVisits = () => {
     <div className="space-y-6 font-sans">
       {/* Toast Notification Alert */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-xl flex items-center space-x-2 text-xs font-medium animate-in fade-in slide-in-from-bottom-3 duration-200">
+        <div className="fixed bottom-6 right-6 z-50 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-xl flex items-center space-x-2 text-xs font-medium animate-in fade-in slide-in-from-bottom-3 duration-200 dark:bg-slate-800 dark:border dark:border-slate-700">
           <CheckCircle2 size={16} className="text-emerald-400 shrink-0" />
           <span>{toastMessage}</span>
         </div>
@@ -184,10 +184,10 @@ export const ScheduledVisits = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
+          <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight dark:text-white">
             My Scheduled Visits
           </h1>
-          <p className="text-xs text-slate-500 mt-1">
+          <p className="text-xs text-slate-500 mt-1 dark:text-slate-400">
             Track and manage your upcoming and past property viewings
           </p>
         </div>
@@ -195,7 +195,7 @@ export const ScheduledVisits = () => {
           type="button"
           onClick={() => loadVisits()}
           disabled={loading}
-          className="self-start sm:self-auto px-3.5 py-2 text-xs font-semibold bg-white border border-slate-200 rounded-xl text-slate-700 hover:bg-slate-50 shadow-2xs transition cursor-pointer flex items-center space-x-2 disabled:opacity-50"
+          className="self-start sm:self-auto px-3.5 py-2 text-xs font-semibold bg-white border border-slate-200 rounded-xl text-slate-700 hover:bg-slate-50 shadow-2xs transition cursor-pointer flex items-center space-x-2 disabled:opacity-50 dark:bg-[#111827] dark:border-slate-800 dark:text-slate-200 dark:hover:bg-slate-800/60"
         >
           <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
           <span>Refresh</span>
@@ -203,9 +203,9 @@ export const ScheduledVisits = () => {
       </div>
 
       {/* Controls & Filters Bar */}
-      <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-xs space-y-3">
+      <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-xs space-y-3 dark:bg-[#111827] dark:border-slate-800">
         {/* Status Filter Tabs */}
-        <div className="flex flex-wrap items-center gap-1.5 border-b border-slate-100 pb-3">
+        <div className="flex flex-wrap items-center gap-1.5 border-b border-slate-100 pb-3 dark:border-slate-800">
           {[
             { key: 'all', label: 'All Bookings' },
             { key: 'pending', label: 'Pending' },
@@ -222,7 +222,7 @@ export const ScheduledVisits = () => {
                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${
                   isActive
                     ? 'bg-blue-600 text-white shadow-xs'
-                    : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                    : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white'
                 }`}
               >
                 {tab.label}
@@ -234,25 +234,25 @@ export const ScheduledVisits = () => {
         {/* Search & Sort Controls */}
         <div className="flex flex-col sm:flex-row items-center gap-3">
           <div className="relative flex-1 w-full">
-            <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+            <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
             <input
               type="text"
               placeholder="Search by property, city, or agent name..."
               value={searchQuery}
               onChange={handleSearchChange}
-              className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition"
+              className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition dark:bg-[#1E293B] dark:border-slate-700 dark:text-white dark:placeholder:text-slate-400"
             />
           </div>
 
           <div className="flex items-center space-x-2 w-full sm:w-auto shrink-0">
-            <div className="flex items-center space-x-1.5 text-xs text-slate-500 shrink-0">
+            <div className="flex items-center space-x-1.5 text-xs text-slate-500 shrink-0 dark:text-slate-400">
               <ArrowUpDown size={14} />
               <span>Sort:</span>
             </div>
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition cursor-pointer"
+              className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition cursor-pointer dark:bg-[#1E293B] dark:border-slate-700 dark:text-white"
             >
               <option value="soonest">Date: Soonest First</option>
               <option value="latest">Date: Furthest First</option>
@@ -267,19 +267,19 @@ export const ScheduledVisits = () => {
           {[1, 2, 3, 4, 5, 6].map((i) => (
             <div
               key={i}
-              className="bg-white rounded-2xl border border-slate-100 p-5 space-y-4 animate-pulse shadow-xs"
+              className="bg-white rounded-2xl border border-slate-100 p-5 space-y-4 animate-pulse shadow-xs dark:bg-[#111827] dark:border-slate-800"
             >
               <div className="flex items-center space-x-3">
-                <div className="w-16 h-16 bg-slate-200 rounded-xl" />
+                <div className="w-16 h-16 bg-slate-200 rounded-xl dark:bg-slate-700" />
                 <div className="flex-1 space-y-2">
-                  <div className="h-4 bg-slate-200 rounded w-3/4" />
-                  <div className="h-3 bg-slate-200 rounded w-1/2" />
+                  <div className="h-4 bg-slate-200 rounded w-3/4 dark:bg-slate-700" />
+                  <div className="h-3 bg-slate-200 rounded w-1/2 dark:bg-slate-700" />
                 </div>
               </div>
-              <div className="h-10 bg-slate-100 rounded-xl" />
+              <div className="h-10 bg-slate-100 rounded-xl dark:bg-slate-700" />
               <div className="flex justify-between items-center pt-2">
-                <div className="h-4 bg-slate-200 rounded w-20" />
-                <div className="h-8 bg-slate-200 rounded w-24" />
+                <div className="h-4 bg-slate-200 rounded w-20 dark:bg-slate-700" />
+                <div className="h-8 bg-slate-200 rounded w-24 dark:bg-slate-700" />
               </div>
             </div>
           ))}
@@ -288,13 +288,13 @@ export const ScheduledVisits = () => {
 
       {/* Error State */}
       {!loading && error && (
-        <div className="bg-rose-50 border border-rose-200 rounded-2xl p-6 text-center space-y-3">
-          <div className="w-12 h-12 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center mx-auto">
+        <div className="bg-rose-50 border border-rose-200 rounded-2xl p-6 text-center space-y-3 dark:bg-rose-500/10 dark:border-rose-500/30">
+          <div className="w-12 h-12 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center mx-auto dark:bg-rose-500/15 dark:text-rose-300">
             <AlertCircle size={24} />
           </div>
           <div>
-            <h3 className="text-sm font-bold text-rose-900">Failed to Load Visits</h3>
-            <p className="text-xs text-rose-600 mt-0.5">{error}</p>
+            <h3 className="text-sm font-bold text-rose-900 dark:text-rose-300">Failed to Load Visits</h3>
+            <p className="text-xs text-rose-600 mt-0.5 dark:text-rose-400">{error}</p>
           </div>
           <button
             type="button"
@@ -308,13 +308,13 @@ export const ScheduledVisits = () => {
 
       {/* Empty State */}
       {!loading && !error && visits.length === 0 && (
-        <div className="bg-white border border-slate-100 rounded-2xl p-12 text-center space-y-4 shadow-xs">
-          <div className="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto">
+        <div className="bg-white border border-slate-100 rounded-2xl p-12 text-center space-y-4 shadow-xs dark:bg-[#111827] dark:border-slate-800">
+          <div className="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto dark:bg-blue-500/10 dark:text-blue-300">
             <Calendar size={28} />
           </div>
           <div>
-            <h3 className="text-base font-bold text-slate-900">No scheduled visits found</h3>
-            <p className="text-xs text-slate-500 max-w-sm mx-auto mt-1">
+            <h3 className="text-base font-bold text-slate-900 dark:text-white">No scheduled visits found</h3>
+            <p className="text-xs text-slate-500 max-w-sm mx-auto mt-1 dark:text-slate-400">
               {searchQuery || statusFilter !== 'all'
                 ? 'No visits matched your selected filters or search query.'
                 : "You haven't scheduled any property tours yet. Browse available listings and schedule your first visit!"}
@@ -328,7 +328,7 @@ export const ScheduledVisits = () => {
                 setSearchQuery('');
                 setCurrentPage(1);
               }}
-              className="px-4 py-2 text-xs font-semibold text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-xl transition cursor-pointer"
+              className="px-4 py-2 text-xs font-semibold text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-xl transition cursor-pointer dark:bg-blue-500/10 dark:hover:bg-blue-500/20 dark:text-blue-300"
             >
               Clear Filters
             </button>
@@ -348,7 +348,7 @@ export const ScheduledVisits = () => {
             return (
               <div
                 key={v.id}
-                className="bg-white rounded-2xl border border-slate-100 p-5 shadow-xs hover:shadow-md transition-all space-y-4 flex flex-col justify-between"
+                className="bg-white rounded-2xl border border-slate-100 p-5 shadow-xs hover:shadow-md transition-all space-y-4 flex flex-col justify-between dark:bg-[#111827] dark:border-slate-800"
               >
                 <div className="space-y-3.5">
                   {/* Card Header with Status Badge */}
@@ -358,7 +358,7 @@ export const ScheduledVisits = () => {
                     >
                       {badge.label}
                     </span>
-                    <span className="text-[11px] font-medium text-slate-400">
+                    <span className="text-[11px] font-medium text-slate-400 dark:text-slate-500">
                       ID: #{v.id}
                     </span>
                   </div>
@@ -369,10 +369,10 @@ export const ScheduledVisits = () => {
                       <img
                         src={v.propertyImage}
                         alt={v.propertyTitle}
-                        className="w-16 h-16 rounded-xl object-cover shrink-0 border border-slate-100"
+                        className="w-16 h-16 rounded-xl object-cover shrink-0 border border-slate-100 dark:border-slate-800"
                       />
                     ) : (
-                      <div className="w-16 h-16 rounded-xl bg-slate-100 flex items-center justify-center shrink-0 text-slate-400">
+                      <div className="w-16 h-16 rounded-xl bg-slate-100 flex items-center justify-center shrink-0 text-slate-400 dark:bg-slate-800 dark:text-slate-500">
                         <MapPin size={20} />
                       </div>
                     )}
@@ -380,8 +380,8 @@ export const ScheduledVisits = () => {
                       <h3 className="text-sm font-bold text-slate-900 truncate">
                         {v.propertyTitle}
                       </h3>
-                      <p className="text-xs text-slate-500 truncate flex items-center gap-1 mt-0.5">
-                        <MapPin size={12} className="text-slate-400 shrink-0" />
+                      <p className="text-xs text-slate-500 truncate flex items-center gap-1 mt-0.5 dark:text-slate-400">
+                        <MapPin size={12} className="text-slate-400 shrink-0 dark:text-slate-500" />
                         <span className="truncate">
                           {v.propertyAddress ? `${v.propertyAddress}, ` : ''}
                           {v.propertyCity}
@@ -396,19 +396,19 @@ export const ScheduledVisits = () => {
                   </div>
 
                   {/* Date & Time Slot Box */}
-                  <div className="bg-slate-50 border border-slate-200/70 rounded-xl p-3 grid grid-cols-2 gap-2 text-xs">
-                    <div className="flex items-center space-x-2 text-slate-700">
+                  <div className="bg-slate-50 border border-slate-200/70 rounded-xl p-3 grid grid-cols-2 gap-2 text-xs dark:bg-slate-800/60 dark:border-slate-800">
+                    <div className="flex items-center space-x-2 text-slate-700 dark:text-slate-200">
                       <Calendar size={15} className="text-blue-600 shrink-0" />
                       <div>
-                        <p className="text-[10px] text-slate-400 font-medium">Date</p>
-                        <p className="font-semibold text-slate-800">{v.visitDate}</p>
+                        <p className="text-[10px] text-slate-400 font-medium dark:text-slate-500">Date</p>
+                        <p className="font-semibold text-slate-800 dark:text-white">{v.visitDate}</p>
                       </div>
                     </div>
-                    <div className="flex items-center space-x-2 text-slate-700">
+                    <div className="flex items-center space-x-2 text-slate-700 dark:text-slate-200">
                       <Clock size={15} className="text-blue-600 shrink-0" />
                       <div>
-                        <p className="text-[10px] text-slate-400 font-medium">Time</p>
-                        <p className="font-semibold text-slate-800">{v.visitTime?.slice(0, 5)}</p>
+                        <p className="text-[10px] text-slate-400 font-medium dark:text-slate-500">Time</p>
+                        <p className="font-semibold text-slate-800 dark:text-white">{v.visitTime?.slice(0, 5)}</p>
                       </div>
                     </div>
                   </div>
@@ -423,15 +423,15 @@ export const ScheduledVisits = () => {
                           className="w-7 h-7 rounded-full object-cover shrink-0"
                         />
                       ) : (
-                        <div className="w-7 h-7 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-[10px] shrink-0">
+                        <div className="w-7 h-7 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-[10px] shrink-0 dark:bg-blue-500/10 dark:text-blue-300">
                           {v.agentFirstName?.[0] || 'A'}
                         </div>
                       )}
                       <div className="min-w-0 flex-1">
-                        <p className="text-xs font-semibold text-slate-800 truncate">
+                        <p className="text-xs font-semibold text-slate-800 truncate dark:text-white">
                           {v.agentFirstName} {v.agentLastName}
                         </p>
-                        <p className="text-[11px] text-slate-500 truncate">
+                        <p className="text-[11px] text-slate-500 truncate dark:text-slate-400">
                           {v.agencyName || 'Listing Agent'}
                         </p>
                       </div>
@@ -440,21 +440,21 @@ export const ScheduledVisits = () => {
 
                   {/* Notes Preview if available */}
                   {v.notes && (
-                    <div className="bg-amber-50/60 border border-amber-100 rounded-lg p-2.5 text-[11px] text-amber-900 leading-snug">
-                      <span className="font-semibold text-amber-800">Note: </span>
+                    <div className="bg-amber-50/60 border border-amber-100 rounded-lg p-2.5 text-[11px] text-amber-900 leading-snug dark:bg-amber-500/10 dark:border-amber-500/30 dark:text-amber-300">
+                      <span className="font-semibold text-amber-800 dark:text-amber-300">Note: </span>
                       {v.notes}
                     </div>
                   )}
                 </div>
 
                 {/* Card Actions */}
-                <div className="pt-3 border-t border-slate-100 flex items-center justify-end space-x-2">
+                <div className="pt-3 border-t border-slate-100 flex items-center justify-end space-x-2 dark:border-slate-800">
                   {isPendingOrApproved && (
                     <>
                       <button
                         type="button"
                         onClick={() => setCancelConfirmTarget(v)}
-                        className="px-3 py-1.5 text-xs font-semibold text-rose-600 hover:text-rose-700 hover:bg-rose-50 rounded-lg transition cursor-pointer flex items-center space-x-1"
+                        className="px-3 py-1.5 text-xs font-semibold text-rose-600 hover:text-rose-700 hover:bg-rose-50 rounded-lg transition cursor-pointer flex items-center space-x-1 dark:text-rose-400 dark:hover:bg-rose-500/10"
                       >
                         <Trash2 size={13} />
                         <span>Cancel</span>
@@ -462,7 +462,7 @@ export const ScheduledVisits = () => {
                       <button
                         type="button"
                         onClick={() => setRescheduleVisitTarget(v)}
-                        className="px-3 py-1.5 text-xs font-semibold text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition cursor-pointer flex items-center space-x-1"
+                        className="px-3 py-1.5 text-xs font-semibold text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition cursor-pointer flex items-center space-x-1 dark:text-blue-300 dark:hover:bg-blue-500/10"
                       >
                         <Edit2 size={13} />
                         <span>Reschedule</span>
@@ -471,13 +471,13 @@ export const ScheduledVisits = () => {
                   )}
 
                   {isCancelled && (
-                    <span className="text-xs font-medium text-slate-400 px-2">
+                    <span className="text-xs font-medium text-slate-400 px-2 dark:text-slate-500">
                       Visit Cancelled
                     </span>
                   )}
 
                   {isCompleted && (
-                    <span className="text-xs font-medium text-emerald-600 px-2 flex items-center gap-1">
+                    <span className="text-xs font-medium text-emerald-600 px-2 flex items-center gap-1 dark:text-emerald-400">
                       <CheckCircle2 size={14} /> Completed
                     </span>
                   )}
@@ -496,7 +496,7 @@ export const ScheduledVisits = () => {
             onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
             disabled={currentPage <= 1}
             aria-label="Previous page"
-            className="px-3 py-1.5 text-xs font-bold rounded-lg bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed flex items-center"
+            className="px-3 py-1.5 text-xs font-bold rounded-lg bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed flex items-center dark:bg-[#111827] dark:border-slate-800 dark:text-slate-300 dark:hover:bg-slate-800/60"
           >
             <ChevronLeft size={14} />
           </button>
@@ -508,7 +508,7 @@ export const ScheduledVisits = () => {
               className={`px-3.5 py-1.5 text-xs font-bold rounded-lg transition cursor-pointer ${
                 currentPage === page
                   ? 'bg-blue-600 text-white shadow-xs'
-                  : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
+                  : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 dark:bg-[#111827] dark:border-slate-800 dark:text-slate-300 dark:hover:bg-slate-800/60'
               }`}
             >
               {page}
@@ -519,7 +519,7 @@ export const ScheduledVisits = () => {
             onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
             disabled={currentPage >= totalPages}
             aria-label="Next page"
-            className="px-3 py-1.5 text-xs font-bold rounded-lg bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed flex items-center"
+            className="px-3 py-1.5 text-xs font-bold rounded-lg bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed flex items-center dark:bg-[#111827] dark:border-slate-800 dark:text-slate-300 dark:hover:bg-slate-800/60"
           >
             <ChevronRight size={14} />
           </button>
@@ -533,29 +533,29 @@ export const ScheduledVisits = () => {
             role="dialog"
             aria-modal="true"
             aria-labelledby="cancel-visit-title"
-            className="bg-white w-full max-w-md rounded-2xl shadow-2xl border border-slate-100 p-6 space-y-4 animate-in fade-in zoom-in-95 duration-200"
+            className="bg-white w-full max-w-md rounded-2xl shadow-2xl border border-slate-100 p-6 space-y-4 animate-in fade-in zoom-in-95 duration-200 dark:bg-[#111827] dark:border-slate-800"
           >
             <div className="flex items-center space-x-3 text-rose-600">
-              <div className="p-2.5 rounded-xl bg-rose-50">
+              <div className="p-2.5 rounded-xl bg-rose-50 dark:bg-rose-500/10">
                 <XCircle size={22} />
               </div>
-              <h3 id="cancel-visit-title" className="text-base font-bold text-slate-900">
+              <h3 id="cancel-visit-title" className="text-base font-bold text-slate-900 dark:text-white">
                 Cancel Property Visit
               </h3>
             </div>
-            <p className="text-xs text-slate-600 leading-relaxed">
+            <p className="text-xs text-slate-600 leading-relaxed dark:text-slate-300">
               Are you sure you want to cancel your scheduled visit for{' '}
-              <strong className="text-slate-800 font-semibold">
+              <strong className="text-slate-800 font-semibold dark:text-white">
                 "{cancelConfirmTarget.propertyTitle}"
               </strong>{' '}
               on {cancelConfirmTarget.visitDate} at {cancelConfirmTarget.visitTime}?
             </p>
-            <div className="flex items-center justify-end space-x-2.5 pt-3 border-t border-slate-100">
+            <div className="flex items-center justify-end space-x-2.5 pt-3 border-t border-slate-100 dark:border-slate-800">
               <button
                 type="button"
                 onClick={() => setCancelConfirmTarget(null)}
                 disabled={cancelling}
-                className="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition cursor-pointer"
+                className="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition cursor-pointer dark:text-slate-300 dark:hover:bg-slate-800"
               >
                 Keep Visit
               </button>

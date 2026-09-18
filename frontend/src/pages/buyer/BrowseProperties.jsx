@@ -302,7 +302,7 @@ export const BrowseProperties = () => {
     <div className="space-y-6 font-sans">
       {/* Toast Notification Alert */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-xl flex items-center space-x-2 text-xs font-medium animate-in fade-in slide-in-from-bottom-3 duration-200">
+        <div className="fixed bottom-6 right-6 z-50 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-xl flex items-center space-x-2 text-xs font-medium animate-in fade-in slide-in-from-bottom-3 duration-200 dark:bg-slate-800 dark:border dark:border-slate-700">
           <CheckCircle2 size={16} className="text-emerald-400 shrink-0" />
           <span>{toastMessage}</span>
         </div>
@@ -312,7 +312,7 @@ export const BrowseProperties = () => {
       {favsError && (
         <div
           role="alert"
-          className="rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs px-4 py-3 flex items-center justify-between gap-3 shadow-xs"
+          className="rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs px-4 py-3 flex items-center justify-between gap-3 shadow-xs dark:bg-amber-500/10 dark:border-amber-500/30 dark:text-amber-300"
         >
           <div className="flex items-center space-x-2">
             <AlertCircle size={16} className="text-amber-600 shrink-0" />
@@ -331,20 +331,20 @@ export const BrowseProperties = () => {
 
       {/* Title */}
       <div>
-        <h1 className="text-xl lg:text-2xl font-bold text-slate-900 tracking-tight">
-          Browse Properties <span className="text-slate-400 font-normal">(143 results)</span>
+        <h1 className="text-xl lg:text-2xl font-bold text-slate-900 tracking-tight dark:text-white">
+          Browse Properties <span className="text-slate-400 font-normal dark:text-slate-500">(143 results)</span>
         </h1>
       </div>
 
       {/* Control Bar matching Screenshot 2 */}
-      <div className="bg-white border border-slate-200/80 rounded-xl p-3 sm:p-4 shadow-2xs flex flex-wrap items-center justify-between gap-3">
+      <div className="bg-white border border-slate-200/80 rounded-xl p-3 sm:p-4 shadow-2xs flex flex-wrap items-center justify-between gap-3 dark:bg-[#111827] dark:border-slate-800">
         {/* Search */}
         <div className="relative flex-1 min-w-[240px]">
-          <Search className="absolute left-3.5 top-2.5 text-slate-400" size={16} />
+          <Search className="absolute left-3.5 top-2.5 text-slate-400 dark:text-slate-500" size={16} />
           <input
             type="text"
             placeholder="Search locations, keywords..."
-            className="w-full bg-slate-50 border border-slate-200 focus:border-blue-600 focus:bg-white rounded-lg py-2 pl-9 pr-3 text-xs text-slate-800 focus:outline-none"
+            className="w-full bg-slate-50 border border-slate-200 focus:border-blue-600 focus:bg-white rounded-lg py-2 pl-9 pr-3 text-xs text-slate-800 focus:outline-none dark:bg-[#1E293B] dark:border-slate-700 dark:text-white dark:placeholder:text-slate-400 dark:focus:bg-[#1E293B]"
           />
         </div>
 
@@ -357,8 +357,8 @@ export const BrowseProperties = () => {
 
         {/* Sort */}
         <div className="flex items-center space-x-2">
-          <span className="text-xs text-slate-400 font-medium hidden sm:inline">Sort by</span>
-          <select className="bg-slate-50 border border-slate-200 text-xs font-medium text-slate-700 rounded-lg px-2.5 py-2 focus:outline-none">
+          <span className="text-xs text-slate-400 font-medium hidden sm:inline dark:text-slate-500">Sort by</span>
+          <select className="bg-slate-50 border border-slate-200 text-xs font-medium text-slate-700 rounded-lg px-2.5 py-2 focus:outline-none dark:bg-[#1E293B] dark:border-slate-700 dark:text-white">
             <option>Date: Newest</option>
             <option>Price: Low to High</option>
             <option>Price: High to Low</option>
@@ -366,12 +366,12 @@ export const BrowseProperties = () => {
         </div>
 
         {/* View Toggles */}
-        <div className="flex items-center space-x-2 border-l border-slate-200 pl-3">
-          <div className="bg-slate-100 p-1 rounded-lg flex items-center space-x-1">
+        <div className="flex items-center space-x-2 border-l border-slate-200 pl-3 dark:border-slate-800">
+          <div className="bg-slate-100 p-1 rounded-lg flex items-center space-x-1 dark:bg-slate-800">
             <button
               onClick={() => setViewMode('split')}
               className={`p-1.5 rounded text-xs transition cursor-pointer ${
-                viewMode === 'split' ? 'bg-white text-blue-600 shadow-2xs font-semibold' : 'text-slate-500'
+                viewMode === 'split' ? 'bg-white text-blue-600 shadow-2xs font-semibold dark:bg-[#1E293B] dark:text-blue-300' : 'text-slate-500 dark:text-slate-400'
               }`}
               title="Split Map View"
             >
@@ -380,7 +380,7 @@ export const BrowseProperties = () => {
             <button
               onClick={() => setViewMode('grid')}
               className={`p-1.5 rounded text-xs transition cursor-pointer ${
-                viewMode === 'grid' ? 'bg-white text-blue-600 shadow-2xs font-semibold' : 'text-slate-500'
+                viewMode === 'grid' ? 'bg-white text-blue-600 shadow-2xs font-semibold dark:bg-[#1E293B] dark:text-blue-300' : 'text-slate-500 dark:text-slate-400'
               }`}
               title="Grid View"
             >
@@ -388,7 +388,7 @@ export const BrowseProperties = () => {
             </button>
           </div>
 
-          <button className="flex items-center space-x-1.5 bg-slate-900 hover:bg-slate-800 text-white px-3 py-2 rounded-lg text-xs font-medium transition cursor-pointer">
+          <button className="flex items-center space-x-1.5 bg-slate-900 hover:bg-slate-800 text-white px-3 py-2 rounded-lg text-xs font-medium transition cursor-pointer dark:bg-slate-800 dark:hover:bg-slate-700">
             <Layers size={14} />
             <span>Compare (2)</span>
           </button>
@@ -399,9 +399,9 @@ export const BrowseProperties = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* OpenStreetMap Map Provider Container with Place Pin Markers */}
         {viewMode === 'split' && (
-          <div className="lg:col-span-5 bg-white border border-slate-200/80 rounded-xl overflow-hidden min-h-[540px] relative shadow-2xs flex flex-col justify-between p-2.5">
+          <div className="lg:col-span-5 bg-white border border-slate-200/80 rounded-xl overflow-hidden min-h-[540px] relative shadow-2xs flex flex-col justify-between p-2.5 dark:bg-[#111827] dark:border-slate-800">
             {/* Map Canvas with Interactive OpenStreetMap Iframe */}
-            <div className="relative flex-1 rounded-lg overflow-hidden border border-slate-200">
+            <div className="relative flex-1 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-800">
               <iframe
                 title="Addis Ababa OpenStreetMap"
                 width="100%"
@@ -425,7 +425,7 @@ export const BrowseProperties = () => {
                       className={`px-2 py-1 rounded-md text-[10px] font-bold shadow-md transition-transform duration-200 flex items-center gap-1 border whitespace-nowrap ${
                         prop.id === selectedPropertyId
                           ? 'bg-blue-600 text-white border-white scale-110 ring-2 ring-blue-400/40'
-                          : 'bg-white/95 text-slate-800 border-slate-300 hover:bg-slate-900 hover:text-white hover:scale-105'
+                          : 'bg-white/95 text-slate-800 border-slate-300 hover:bg-slate-900 hover:text-white hover:scale-105 dark:bg-slate-800/95 dark:text-slate-100 dark:border-slate-700'
                       }`}
                     >
                       <MapPin size={11} className={prop.id === selectedPropertyId ? 'text-white' : 'text-blue-600'} />
@@ -434,7 +434,7 @@ export const BrowseProperties = () => {
                     {/* Pin Pointer Arrow */}
                     <div
                       className={`w-2 h-2 rotate-45 mx-auto -mt-1 border-r border-b ${
-                        prop.id === selectedPropertyId ? 'bg-blue-600 border-white' : 'bg-white border-slate-300'
+                        prop.id === selectedPropertyId ? 'bg-blue-600 border-white' : 'bg-white border-slate-300 dark:bg-slate-800 dark:border-slate-700'
                       }`}
                     ></div>
                   </div>
@@ -442,21 +442,21 @@ export const BrowseProperties = () => {
               </div>
 
               {/* Top Map Controls Tag */}
-              <div className="absolute top-2.5 left-2.5 z-10 bg-white/90 backdrop-blur-xs text-slate-800 text-[10px] font-semibold px-2.5 py-1 rounded border border-slate-200 shadow-2xs flex items-center gap-1">
+              <div className="absolute top-2.5 left-2.5 z-10 bg-white/90 backdrop-blur-xs text-slate-800 text-[10px] font-semibold px-2.5 py-1 rounded border border-slate-200 shadow-2xs flex items-center gap-1 dark:bg-slate-800/90 dark:text-slate-100 dark:border-slate-700">
                 <Navigation size={12} className="text-blue-600" /> Addis Ababa (Bole, Kazanchis, Yeka)
               </div>
             </div>
 
             {/* Selected Property Map Footer Card */}
-            <div className="mt-2.5 bg-slate-50 border border-slate-200 rounded-lg p-2.5 flex items-center space-x-3">
+            <div className="mt-2.5 bg-slate-50 border border-slate-200 rounded-lg p-2.5 flex items-center space-x-3 dark:bg-slate-800/60 dark:border-slate-800">
               <img
                 src={activeProp.img}
                 alt={activeProp.title}
                 className="w-11 h-11 rounded-md object-cover"
               />
               <div className="flex-1 min-w-0">
-                <h4 className="text-xs font-bold text-slate-900 truncate">{activeProp.title}</h4>
-                <p className="text-[10px] text-slate-500">{activeProp.location} • {activeProp.sqft}</p>
+                <h4 className="text-xs font-bold text-slate-900 truncate dark:text-white">{activeProp.title}</h4>
+                <p className="text-[10px] text-slate-500 dark:text-slate-400">{activeProp.location} • {activeProp.sqft}</p>
                 <p className="text-xs font-extrabold text-blue-600 mt-0.5">{activeProp.price}</p>
               </div>
               <button
@@ -490,13 +490,13 @@ export const BrowseProperties = () => {
                 <div
                   key={prop.id}
                   onClick={() => setSelectedPropertyId(prop.id)}
-                  className={`bg-white border rounded-2xl overflow-hidden shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between group cursor-pointer ${
-                    isSelected ? 'border-blue-600 ring-2 ring-blue-600/20 shadow-md' : 'border-slate-200/90 hover:border-slate-300'
+                  className={`bg-white border rounded-2xl overflow-hidden shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between group cursor-pointer dark:bg-[#111827] dark:border-slate-800 ${
+                    isSelected ? 'border-blue-600 ring-2 ring-blue-600/20 shadow-md' : 'border-slate-200/90 hover:border-slate-300 dark:border-slate-800 dark:hover:border-slate-700'
                   }`}
                 >
                   <div>
                     {/* Photo & Top Badges */}
-                    <div className="relative h-52 overflow-hidden bg-slate-100">
+                    <div className="relative h-52 overflow-hidden bg-slate-100 dark:bg-slate-800">
                       <img
                         src={prop.img}
                         alt={prop.title}
@@ -543,33 +543,33 @@ export const BrowseProperties = () => {
                     <div className="p-5 space-y-3">
                       <div>
                         <div className="flex items-start justify-between gap-2">
-                          <h3 className="font-bold text-slate-900 text-sm group-hover:text-blue-600 transition-colors line-clamp-1">
+                          <h3 className="font-bold text-slate-900 text-sm group-hover:text-blue-600 transition-colors line-clamp-1 dark:text-white">
                             {prop.title}
                           </h3>
                           {prop.type && (
-                            <span className="text-[10px] font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md shrink-0">
+                            <span className="text-[10px] font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md shrink-0 dark:text-slate-400 dark:bg-slate-800">
                               {prop.type}
                             </span>
                           )}
                         </div>
-                        <p className="text-xs text-slate-500 flex items-center gap-1.5 mt-1.5 line-clamp-1">
-                          <MapPin size={13} className="text-slate-400 shrink-0" />
+                        <p className="text-xs text-slate-500 flex items-center gap-1.5 mt-1.5 line-clamp-1 dark:text-slate-400">
+                          <MapPin size={13} className="text-slate-400 shrink-0 dark:text-slate-500" />
                           <span>{prop.location}</span>
                         </p>
                       </div>
 
                       {/* Specs Pills */}
-                      <div className="grid grid-cols-3 gap-2 pt-3 border-t border-slate-100 text-slate-600">
-                        <div className="flex items-center justify-center gap-1.5 py-1.5 px-2 bg-slate-50 border border-slate-100 rounded-xl text-[11px] font-semibold">
-                          <BedDouble size={13} className="text-slate-400 shrink-0" />
+                      <div className="grid grid-cols-3 gap-2 pt-3 border-t border-slate-100 text-slate-600 dark:border-slate-800 dark:text-slate-300">
+                        <div className="flex items-center justify-center gap-1.5 py-1.5 px-2 bg-slate-50 border border-slate-100 rounded-xl text-[11px] font-semibold dark:bg-slate-800/60 dark:border-slate-800">
+                          <BedDouble size={13} className="text-slate-400 shrink-0 dark:text-slate-500" />
                           <span className="truncate">{prop.beds} Beds</span>
                         </div>
-                        <div className="flex items-center justify-center gap-1.5 py-1.5 px-2 bg-slate-50 border border-slate-100 rounded-xl text-[11px] font-semibold">
-                          <Bath size={13} className="text-slate-400 shrink-0" />
+                        <div className="flex items-center justify-center gap-1.5 py-1.5 px-2 bg-slate-50 border border-slate-100 rounded-xl text-[11px] font-semibold dark:bg-slate-800/60 dark:border-slate-800">
+                          <Bath size={13} className="text-slate-400 shrink-0 dark:text-slate-500" />
                           <span className="truncate">{prop.baths} Baths</span>
                         </div>
-                        <div className="flex items-center justify-center gap-1.5 py-1.5 px-2 bg-slate-50 border border-slate-100 rounded-xl text-[11px] font-semibold">
-                          <Maximize2 size={13} className="text-slate-400 shrink-0" />
+                        <div className="flex items-center justify-center gap-1.5 py-1.5 px-2 bg-slate-50 border border-slate-100 rounded-xl text-[11px] font-semibold dark:bg-slate-800/60 dark:border-slate-800">
+                          <Maximize2 size={13} className="text-slate-400 shrink-0 dark:text-slate-500" />
                           <span className="truncate">{prop.sqft}</span>
                         </div>
                       </div>
@@ -584,10 +584,10 @@ export const BrowseProperties = () => {
                         e.stopPropagation();
                         setInquireProperty(prop);
                       }}
-                      className="py-2.5 px-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition cursor-pointer flex items-center justify-center gap-1.5 shadow-2xs"
+                      className="py-2.5 px-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition cursor-pointer flex items-center justify-center gap-1.5 shadow-2xs dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-200"
                       title="Send inquiry to listing agent"
                     >
-                      <MessageSquare size={13} className="text-slate-500 shrink-0" />
+                      <MessageSquare size={13} className="text-slate-500 shrink-0 dark:text-slate-400" />
                       <span>Inquire</span>
                     </button>
 
@@ -597,7 +597,7 @@ export const BrowseProperties = () => {
                         e.stopPropagation();
                         setBookingProperty(prop);
                       }}
-                      className="py-2.5 px-3 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200/80 rounded-xl text-xs font-bold transition cursor-pointer flex items-center justify-center gap-1.5 shadow-2xs"
+                      className="py-2.5 px-3 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200/80 rounded-xl text-xs font-bold transition cursor-pointer flex items-center justify-center gap-1.5 shadow-2xs dark:bg-blue-500/10 dark:hover:bg-blue-500/20 dark:text-blue-300 dark:border-blue-500/30"
                       title="Schedule a property tour"
                     >
                       <Calendar size={13} className="text-blue-600 shrink-0" />
@@ -620,14 +620,14 @@ export const BrowseProperties = () => {
 
           {/* Pagination */}
           <div className="mt-6 flex items-center justify-center space-x-2">
-            <button className="px-3 py-1 bg-white border border-slate-200 text-xs font-medium text-slate-600 rounded-md hover:bg-slate-50 cursor-pointer">
+            <button className="px-3 py-1 bg-white border border-slate-200 text-xs font-medium text-slate-600 rounded-md hover:bg-slate-50 cursor-pointer dark:bg-[#111827] dark:border-slate-800 dark:text-slate-300 dark:hover:bg-slate-800/60">
               Previous
             </button>
             <button className="px-3 py-1 bg-blue-600 text-xs font-bold text-white rounded-md">1</button>
-            <button className="px-3 py-1 bg-white border border-slate-200 text-xs font-medium text-slate-600 rounded-md hover:bg-slate-50 cursor-pointer">
+            <button className="px-3 py-1 bg-white border border-slate-200 text-xs font-medium text-slate-600 rounded-md hover:bg-slate-50 cursor-pointer dark:bg-[#111827] dark:border-slate-800 dark:text-slate-300 dark:hover:bg-slate-800/60">
               2
             </button>
-            <button className="px-3 py-1 bg-white border border-slate-200 text-xs font-medium text-slate-600 rounded-md hover:bg-slate-50 cursor-pointer">
+            <button className="px-3 py-1 bg-white border border-slate-200 text-xs font-medium text-slate-600 rounded-md hover:bg-slate-50 cursor-pointer dark:bg-[#111827] dark:border-slate-800 dark:text-slate-300 dark:hover:bg-slate-800/60">
               Next
             </button>
           </div>
