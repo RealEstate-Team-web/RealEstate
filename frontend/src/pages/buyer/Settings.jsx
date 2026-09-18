@@ -128,27 +128,27 @@ export const Settings = () => {
     <div className="space-y-6 font-sans">
       {/* Title */}
       <div>
-        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Account Settings</h1>
+        <h1 className="text-2xl font-bold text-slate-900 tracking-tight dark:text-white">Account Settings</h1>
       </div>
 
-      <div className="bg-white border border-slate-200/80 rounded-2xl divide-y divide-slate-100 shadow-xs">
+      <div className="bg-white border border-slate-200/80 rounded-2xl divide-y divide-slate-100 shadow-xs dark:bg-[#111827] dark:border-slate-800 dark:divide-slate-800">
         {/* Section 1: Notification Preferences */}
         <div className="p-6 space-y-4">
           <div className="flex items-center space-x-3 mb-2">
-            <div className="w-9 h-9 bg-blue-50 text-blue-700 rounded-xl flex items-center justify-center">
+            <div className="w-9 h-9 bg-blue-50 text-blue-700 rounded-xl flex items-center justify-center dark:bg-blue-500/10 dark:text-blue-300">
               <Bell size={20} />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-slate-900">Notification Preferences</h3>
-              <p className="text-xs text-slate-500">Choose how you receive updates about saved properties and visit alerts.</p>
+              <h3 className="text-sm font-bold text-slate-900 dark:text-white">Notification Preferences</h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Choose how you receive updates about saved properties and visit alerts.</p>
             </div>
           </div>
 
           <div className="space-y-3 pt-2">
-            <label className="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-200/60 cursor-pointer hover:bg-slate-100/50 transition">
+            <label className="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-200/60 cursor-pointer hover:bg-slate-100/50 transition dark:bg-slate-800/60 dark:border-slate-700 dark:hover:bg-slate-800">
               <div>
-                <p className="text-xs font-bold text-slate-800">Email Notifications</p>
-                <p className="text-[11px] text-slate-500">Receive visit confirmations and agent replies via email.</p>
+                <p className="text-xs font-bold text-slate-800 dark:text-white">Email Notifications</p>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">Receive visit confirmations and agent replies via email.</p>
               </div>
               <input
                 type="checkbox"
@@ -158,10 +158,10 @@ export const Settings = () => {
               />
             </label>
 
-            <label className="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-200/60 cursor-pointer hover:bg-slate-100/50 transition">
+            <label className="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-200/60 cursor-pointer hover:bg-slate-100/50 transition dark:bg-slate-800/60 dark:border-slate-700 dark:hover:bg-slate-800">
               <div>
-                <p className="text-xs font-bold text-slate-800">SMS / Phone Alerts</p>
-                <p className="text-[11px] text-slate-500">Get instant SMS reminders 1 hour before scheduled visits.</p>
+                <p className="text-xs font-bold text-slate-800 dark:text-white">SMS / Phone Alerts</p>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">Get instant SMS reminders 1 hour before scheduled visits.</p>
               </div>
               <input
                 type="checkbox"
@@ -171,10 +171,10 @@ export const Settings = () => {
               />
             </label>
 
-            <label className="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-200/60 cursor-pointer hover:bg-slate-100/50 transition">
+            <label className="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-200/60 cursor-pointer hover:bg-slate-100/50 transition dark:bg-slate-800/60 dark:border-slate-700 dark:hover:bg-slate-800">
               <div>
-                <p className="text-xs font-bold text-slate-800">Price Drop Alerts</p>
-                <p className="text-[11px] text-slate-500">Alert me when a saved favorite property reduces its price.</p>
+                <p className="text-xs font-bold text-slate-800 dark:text-white">Price Drop Alerts</p>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">Alert me when a saved favorite property reduces its price.</p>
               </div>
               <input
                 type="checkbox"
@@ -189,19 +189,19 @@ export const Settings = () => {
         {/* Section 2: Security & Password */}
         <div className="p-6 space-y-4">
           <div className="flex items-center space-x-3 mb-2">
-            <div className="w-9 h-9 bg-indigo-50 text-indigo-700 rounded-xl flex items-center justify-center">
+            <div className="w-9 h-9 bg-indigo-50 text-indigo-700 rounded-xl flex items-center justify-center dark:bg-indigo-500/10 dark:text-indigo-300">
               <Lock size={20} />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-slate-900">Security & Password</h3>
-              <p className="text-xs text-slate-500">Manage your account password and security credentials.</p>
+              <h3 className="text-sm font-bold text-slate-900 dark:text-white">Security & Password</h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Manage your account password and security credentials.</p>
             </div>
           </div>
 
           {passwordError && (
             <div
               role="alert"
-              className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-rose-700 text-xs flex items-center space-x-2"
+              className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-rose-700 text-xs flex items-center space-x-2 dark:bg-rose-500/10 dark:border-rose-500/30 dark:text-rose-300"
             >
               <AlertCircle size={15} className="shrink-0 text-rose-500" />
               <span>{passwordError}</span>
@@ -211,7 +211,7 @@ export const Settings = () => {
           {passwordSuccess && (
             <div
               role="alert"
-              className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-800 text-xs flex items-center space-x-2"
+              className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-800 text-xs flex items-center space-x-2 dark:bg-emerald-500/10 dark:border-emerald-500/30 dark:text-emerald-300"
             >
               <CheckCircle2 size={15} className="shrink-0 text-emerald-600" />
               <span>{passwordSuccess}</span>
@@ -221,7 +221,7 @@ export const Settings = () => {
           <form onSubmit={handlePasswordSubmit} className="space-y-4 pt-1">
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
-                <label htmlFor="settingsCurrentPassword" className="block text-xs font-semibold text-slate-600 uppercase mb-1">
+                <label htmlFor="settingsCurrentPassword" className="block text-xs font-semibold text-slate-600 uppercase mb-1 dark:text-slate-300">
                   Current Password
                 </label>
                 <input
@@ -232,12 +232,12 @@ export const Settings = () => {
                   onChange={(e) => setCurrentPassword(e.target.value)}
                   disabled={passwordLoading}
                   required
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3.5 text-xs text-slate-800 focus:outline-none focus:border-blue-700 font-medium transition disabled:opacity-60"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3.5 text-xs text-slate-800 focus:outline-none focus:border-blue-700 font-medium transition disabled:opacity-60 dark:bg-[#1E293B] dark:border-slate-700 dark:text-white dark:placeholder:text-slate-400"
                 />
               </div>
 
               <div>
-                <label htmlFor="settingsNewPassword" className="block text-xs font-semibold text-slate-600 uppercase mb-1">
+                <label htmlFor="settingsNewPassword" className="block text-xs font-semibold text-slate-600 uppercase mb-1 dark:text-slate-300">
                   New Password
                 </label>
                 <input
@@ -248,12 +248,12 @@ export const Settings = () => {
                   onChange={(e) => setNewPassword(e.target.value)}
                   disabled={passwordLoading}
                   required
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3.5 text-xs text-slate-800 focus:outline-none focus:border-blue-700 font-medium transition disabled:opacity-60"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3.5 text-xs text-slate-800 focus:outline-none focus:border-blue-700 font-medium transition disabled:opacity-60 dark:bg-[#1E293B] dark:border-slate-700 dark:text-white dark:placeholder:text-slate-400"
                 />
               </div>
 
               <div>
-                <label htmlFor="settingsConfirmPassword" className="block text-xs font-semibold text-slate-600 uppercase mb-1">
+                <label htmlFor="settingsConfirmPassword" className="block text-xs font-semibold text-slate-600 uppercase mb-1 dark:text-slate-300">
                   Confirm Password
                 </label>
                 <input
@@ -264,20 +264,20 @@ export const Settings = () => {
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   disabled={passwordLoading}
                   required
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3.5 text-xs text-slate-800 focus:outline-none focus:border-blue-700 font-medium transition disabled:opacity-60"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3.5 text-xs text-slate-800 focus:outline-none focus:border-blue-700 font-medium transition disabled:opacity-60 dark:bg-[#1E293B] dark:border-slate-700 dark:text-white dark:placeholder:text-slate-400"
                 />
               </div>
             </div>
 
             <div className="flex items-center justify-between pt-1">
-              <span className="text-[11px] text-slate-400">
+              <span className="text-[11px] text-slate-400 dark:text-slate-500">
                 Min 8 characters, at least 1 uppercase, 1 lowercase, and 1 number.
               </span>
 
               <button
                 type="submit"
                 disabled={passwordLoading || !currentPassword || !newPassword}
-                className="flex items-center space-x-1.5 bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed shadow-xs"
+                className="flex items-center space-x-1.5 bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed shadow-xs dark:bg-slate-800 dark:hover:bg-slate-700"
               >
                 {passwordLoading ? (
                   <>
@@ -298,39 +298,39 @@ export const Settings = () => {
         {/* Section 3: Regional & Currency Settings */}
         <div className="p-6 space-y-4">
           <div className="flex items-center space-x-3 mb-2">
-            <div className="w-9 h-9 bg-emerald-50 text-emerald-700 rounded-xl flex items-center justify-center">
+            <div className="w-9 h-9 bg-emerald-50 text-emerald-700 rounded-xl flex items-center justify-center dark:bg-emerald-500/10 dark:text-emerald-300">
               <Globe size={20} />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-slate-900">Regional Preferences</h3>
-              <p className="text-xs text-slate-500">Configure currency display and default search area.</p>
+              <h3 className="text-sm font-bold text-slate-900 dark:text-white">Regional Preferences</h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Configure currency display and default search area.</p>
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
             <div>
-              <label htmlFor="settingsCurrency" className="block text-xs font-semibold text-slate-600 uppercase mb-1">
+              <label htmlFor="settingsCurrency" className="block text-xs font-semibold text-slate-600 uppercase mb-1 dark:text-slate-300">
                 Display Currency
               </label>
               <select
                 id="settingsCurrency"
                 value={currency}
                 onChange={(e) => setCurrency(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3 text-xs font-semibold text-slate-700 focus:outline-none focus:border-blue-700"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3 text-xs font-semibold text-slate-700 focus:outline-none focus:border-blue-700 dark:bg-[#1E293B] dark:border-slate-700 dark:text-white"
               >
                 <option value="USD">USD ($) - United States Dollar</option>
                 <option value="ETB">ETB (ብር) - Ethiopian Birr</option>
               </select>
             </div>
             <div>
-              <label htmlFor="settingsArea" className="block text-xs font-semibold text-slate-600 uppercase mb-1">
+              <label htmlFor="settingsArea" className="block text-xs font-semibold text-slate-600 uppercase mb-1 dark:text-slate-300">
                 Default City / Area
               </label>
               <select
                 id="settingsArea"
                 value={defaultArea}
                 onChange={(e) => setDefaultArea(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3 text-xs font-semibold text-slate-700 focus:outline-none focus:border-blue-700"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3 text-xs font-semibold text-slate-700 focus:outline-none focus:border-blue-700 dark:bg-[#1E293B] dark:border-slate-700 dark:text-white"
               >
                 <option value="Addis Ababa, Ethiopia">Addis Ababa, Ethiopia</option>
                 <option value="Hawassa, Ethiopia">Hawassa, Ethiopia</option>
@@ -342,15 +342,15 @@ export const Settings = () => {
         </div>
 
         {/* Footer Actions */}
-        <div className="p-6 bg-slate-50/50 flex items-center justify-between">
-          <div className="flex items-center space-x-2 text-xs text-emerald-700 font-semibold">
+        <div className="p-6 bg-slate-50/50 flex items-center justify-between dark:bg-slate-800/30">
+          <div className="flex items-center space-x-2 text-xs text-emerald-700 font-semibold dark:text-emerald-300">
             {prefsSaved ? (
               <>
                 <CheckCircle2 size={16} />
                 <span>Preferences saved successfully!</span>
               </>
             ) : (
-              <span className="text-slate-400 font-normal">All preferences saved locally</span>
+              <span className="text-slate-400 font-normal dark:text-slate-500">All preferences saved locally</span>
             )}
           </div>
 

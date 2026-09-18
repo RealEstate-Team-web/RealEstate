@@ -155,14 +155,14 @@ export const Profile = () => {
     <div className="space-y-6 font-sans">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">My Profile</h1>
+        <h1 className="text-2xl font-bold text-slate-900 tracking-tight dark:text-white">My Profile</h1>
       </div>
 
       {/* Status Alerts */}
       {error && (
         <div
           role="alert"
-          className="p-4 bg-rose-50 border border-rose-200 rounded-2xl text-rose-700 text-xs flex items-center space-x-2.5 shadow-2xs"
+          className="p-4 bg-rose-50 border border-rose-200 rounded-2xl text-rose-700 text-xs flex items-center space-x-2.5 shadow-2xs dark:bg-rose-500/10 dark:border-rose-500/30 dark:text-rose-300"
         >
           <AlertCircle size={16} className="shrink-0 text-rose-500" />
           <span>{error}</span>
@@ -172,7 +172,7 @@ export const Profile = () => {
       {success && (
         <div
           role="alert"
-          className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl text-emerald-800 text-xs flex items-center space-x-2.5 shadow-2xs animate-in fade-in duration-200"
+          className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl text-emerald-800 text-xs flex items-center space-x-2.5 shadow-2xs animate-in fade-in duration-200 dark:bg-emerald-500/10 dark:border-emerald-500/30 dark:text-emerald-300"
         >
           <CheckCircle2 size={16} className="shrink-0 text-emerald-600" />
           <span>{success}</span>
@@ -183,7 +183,7 @@ export const Profile = () => {
         {/* Left Column: Avatar Card & Account Summary */}
         <div className="lg:col-span-4 space-y-6">
           {/* Avatar Header Box */}
-          <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs text-center flex flex-col items-center">
+          <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs text-center flex flex-col items-center dark:bg-[#111827] dark:border-slate-800">
             <div className="relative mb-4">
               <img
                 src={
@@ -191,7 +191,7 @@ export const Profile = () => {
                   'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=300'
                 }
                 alt={displayName}
-                className={`w-28 h-28 rounded-full object-cover border-4 border-slate-100 shadow-md ${
+                className={`w-28 h-28 rounded-full object-cover border-4 border-slate-100 shadow-md dark:border-slate-700 ${
                   uploadingImage ? 'opacity-50' : ''
                 }`}
               />
@@ -222,40 +222,40 @@ export const Profile = () => {
               />
             </div>
 
-            <h2 className="text-lg font-bold text-slate-900">{displayName}</h2>
-            <p className="text-xs text-slate-500 font-medium mt-0.5">{user?.email}</p>
+            <h2 className="text-lg font-bold text-slate-900 dark:text-white">{displayName}</h2>
+            <p className="text-xs text-slate-500 font-medium mt-0.5 dark:text-slate-400">{user?.email}</p>
 
-            <span className="mt-3 px-3 py-1 bg-emerald-50 text-emerald-800 text-xs font-bold rounded-full border border-emerald-200/60 inline-flex items-center gap-1">
+            <span className="mt-3 px-3 py-1 bg-emerald-50 text-emerald-800 text-xs font-bold rounded-full border border-emerald-200/60 inline-flex items-center gap-1 dark:bg-emerald-500/10 dark:text-emerald-300 dark:border-emerald-500/30">
               <CheckCircle size={14} /> Verified Buyer
             </span>
 
-            <div className="w-full mt-6 pt-6 border-t border-slate-100 space-y-3 text-left">
-              <div className="flex items-center justify-between text-xs text-slate-500">
+            <div className="w-full mt-6 pt-6 border-t border-slate-100 space-y-3 text-left dark:border-slate-800">
+              <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
                 <span>Account Role</span>
-                <span className="font-semibold text-slate-900 capitalize">{user?.role || 'Buyer'}</span>
+                <span className="font-semibold text-slate-900 capitalize dark:text-white">{user?.role || 'Buyer'}</span>
               </div>
-              <div className="flex items-center justify-between text-xs text-slate-500">
+              <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
                 <span>Member Since</span>
-                <span className="font-semibold text-slate-900 flex items-center gap-1">
-                  <Calendar size={13} className="text-slate-400" /> {memberSince}
+                <span className="font-semibold text-slate-900 flex items-center gap-1 dark:text-white">
+                  <Calendar size={13} className="text-slate-400 dark:text-slate-500" /> {memberSince}
                 </span>
               </div>
-              <div className="flex items-center justify-between text-xs text-slate-500">
+              <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
                 <span>Location</span>
-                <span className="font-semibold text-slate-900">Addis Ababa, ET</span>
+                <span className="font-semibold text-slate-900 dark:text-white">Addis Ababa, ET</span>
               </div>
             </div>
           </div>
 
           {/* Quick Security Badge Box */}
-          <div className="bg-blue-50/60 border border-blue-100 rounded-2xl p-5 shadow-xs">
+          <div className="bg-blue-50/60 border border-blue-100 rounded-2xl p-5 shadow-xs dark:bg-blue-500/10 dark:border-blue-500/30">
             <div className="flex items-start space-x-3">
               <div className="w-9 h-9 bg-blue-700 text-white rounded-xl flex items-center justify-center shrink-0 shadow-xs">
                 <ShieldCheck size={20} />
               </div>
               <div>
-                <h4 className="text-xs font-bold text-slate-900">Two-Factor Security Active</h4>
-                <p className="text-xs text-slate-500 mt-1">
+                <h4 className="text-xs font-bold text-slate-900 dark:text-white">Two-Factor Security Active</h4>
+                <p className="text-xs text-slate-500 mt-1 dark:text-slate-400">
                   Your account authentication and saved properties are protected with end-to-end security.
                 </p>
               </div>
@@ -264,9 +264,9 @@ export const Profile = () => {
         </div>
 
         {/* Right Column: Personal Information & Settings Form */}
-        <div className="lg:col-span-8 bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs space-y-6">
+        <div className="lg:col-span-8 bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs space-y-6 dark:bg-[#111827] dark:border-slate-800">
           <div>
-            <h3 className="text-base font-bold text-slate-900 pb-3 border-b border-slate-100">
+            <h3 className="text-base font-bold text-slate-900 pb-3 border-b border-slate-100 dark:text-white dark:border-slate-800">
               Personal Information
             </h3>
           </div>
@@ -274,7 +274,7 @@ export const Profile = () => {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label htmlFor="profileFirstName" className="block text-xs font-semibold text-slate-600 uppercase mb-1">
+                <label htmlFor="profileFirstName" className="block text-xs font-semibold text-slate-600 uppercase mb-1 dark:text-slate-300">
                   First Name <span className="text-rose-500">*</span>
                 </label>
                 <input
@@ -284,12 +284,12 @@ export const Profile = () => {
                   onChange={(e) => setFirstName(e.target.value)}
                   required
                   disabled={loading || saving}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3.5 text-xs text-slate-800 focus:outline-none focus:border-blue-700 font-medium transition disabled:opacity-60"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3.5 text-xs text-slate-800 focus:outline-none focus:border-blue-700 font-medium transition disabled:opacity-60 dark:bg-[#1E293B] dark:border-slate-700 dark:text-white dark:placeholder:text-slate-400"
                 />
               </div>
 
               <div>
-                <label htmlFor="profileLastName" className="block text-xs font-semibold text-slate-600 uppercase mb-1">
+                <label htmlFor="profileLastName" className="block text-xs font-semibold text-slate-600 uppercase mb-1 dark:text-slate-300">
                   Last Name <span className="text-rose-500">*</span>
                 </label>
                 <input
@@ -299,36 +299,36 @@ export const Profile = () => {
                   onChange={(e) => setLastName(e.target.value)}
                   required
                   disabled={loading || saving}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3.5 text-xs text-slate-800 focus:outline-none focus:border-blue-700 font-medium transition disabled:opacity-60"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3.5 text-xs text-slate-800 focus:outline-none focus:border-blue-700 font-medium transition disabled:opacity-60 dark:bg-[#1E293B] dark:border-slate-700 dark:text-white dark:placeholder:text-slate-400"
                 />
               </div>
             </div>
 
             <div>
-              <label htmlFor="profileEmail" className="block text-xs font-semibold text-slate-600 uppercase mb-1 flex items-center justify-between">
+              <label htmlFor="profileEmail" className="block text-xs font-semibold text-slate-600 uppercase mb-1 flex items-center justify-between dark:text-slate-300">
                 <span>Email Address</span>
-                <span className="text-[10px] text-slate-400 font-normal lowercase">(Primary account identifier)</span>
+                <span className="text-[10px] text-slate-400 font-normal lowercase dark:text-slate-500">(Primary account identifier)</span>
               </label>
               <div className="relative">
-                <Mail className="absolute left-3.5 top-3 text-slate-400" size={16} />
+                <Mail className="absolute left-3.5 top-3 text-slate-400 dark:text-slate-500" size={16} />
                 <input
                   id="profileEmail"
                   type="email"
                   value={user?.email || ''}
                   readOnly
                   disabled
-                  className="w-full bg-slate-100 border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-xs text-slate-500 font-medium cursor-not-allowed"
+                  className="w-full bg-slate-100 border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-xs text-slate-500 font-medium cursor-not-allowed dark:bg-slate-800 dark:border-slate-700 dark:text-slate-400"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label htmlFor="profilePhone" className="block text-xs font-semibold text-slate-600 uppercase mb-1">
+                <label htmlFor="profilePhone" className="block text-xs font-semibold text-slate-600 uppercase mb-1 dark:text-slate-300">
                   Phone Number
                 </label>
                 <div className="relative">
-                  <Phone className="absolute left-3.5 top-3 text-slate-400" size={16} />
+                  <Phone className="absolute left-3.5 top-3 text-slate-400 dark:text-slate-500" size={16} />
                   <input
                     id="profilePhone"
                     type="text"
@@ -336,17 +336,17 @@ export const Profile = () => {
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="+251 911 123 456"
                     disabled={loading || saving}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-xs text-slate-800 focus:outline-none focus:border-blue-700 font-medium transition disabled:opacity-60"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-xs text-slate-800 focus:outline-none focus:border-blue-700 font-medium transition disabled:opacity-60 dark:bg-[#1E293B] dark:border-slate-700 dark:text-white dark:placeholder:text-slate-400"
                   />
                 </div>
               </div>
 
               <div>
-                <label htmlFor="profileLocation" className="block text-xs font-semibold text-slate-600 uppercase mb-1">
+                <label htmlFor="profileLocation" className="block text-xs font-semibold text-slate-600 uppercase mb-1 dark:text-slate-300">
                   Preferred Location
                 </label>
                 <div className="relative">
-                  <Building className="absolute left-3.5 top-3 text-slate-400" size={16} />
+                  <Building className="absolute left-3.5 top-3 text-slate-400 dark:text-slate-500" size={16} />
                   <input
                     id="profileLocation"
                     type="text"
@@ -354,13 +354,13 @@ export const Profile = () => {
                     onChange={(e) => setPreferredLocation(e.target.value)}
                     placeholder="Bole, Addis Ababa"
                     disabled={loading || saving}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-xs text-slate-800 focus:outline-none focus:border-blue-700 font-medium transition disabled:opacity-60"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-xs text-slate-800 focus:outline-none focus:border-blue-700 font-medium transition disabled:opacity-60 dark:bg-[#1E293B] dark:border-slate-700 dark:text-white dark:placeholder:text-slate-400"
                   />
                 </div>
               </div>
             </div>
 
-            <div className="pt-4 border-t border-slate-100 flex items-center justify-end space-x-3">
+            <div className="pt-4 border-t border-slate-100 flex items-center justify-end space-x-3 dark:border-slate-800">
               <button
                 type="submit"
                 disabled={saving || loading}
