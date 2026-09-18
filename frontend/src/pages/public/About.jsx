@@ -50,7 +50,7 @@ const TEAM_STATS = [
 
 const About = () => {
   return (
-    <div className="w-full min-w-0 overflow-x-hidden bg-[#F7F9FA]">
+    <div className="w-full min-w-0 overflow-x-hidden bg-[#F7F9FA] dark:bg-[#0B1120]">
 
       {/* HERO*/}
       <section className="relative isolate min-h-[380px] w-full overflow-hidden sm:min-h-[430px] lg:min-h-[470px]">
@@ -103,13 +103,13 @@ const About = () => {
         </div>
 
         {/* Bottom Fade */}
-        <div className="pointer-events-none absolute bottom-0 left-0 h-24 w-full bg-gradient-to-t from-[#F7F9FA] to-transparent" />
+        <div className="pointer-events-none absolute bottom-0 left-0 h-24 w-full bg-gradient-to-t from-[#F7F9FA] to-transparent dark:from-[#0B1120]" />
 
       </section>
 
 
       {/* WHO WE ARE */}
-      <section className="relative w-full overflow-hidden bg-white px-4 sm:px-6 lg:px-8 py-14 sm:py-16 lg:py-20">
+      <section className="relative w-full overflow-hidden bg-white px-4 sm:px-6 lg:px-8 py-14 sm:py-16 lg:py-20 dark:bg-[#0E1626]">
 
         {/* Background glow */}
         <div className="pointer-events-none absolute -left-40 top-20 h-80 w-80 rounded-full bg-[#0F9690]/5 blur-[120px]" />
@@ -124,7 +124,7 @@ const About = () => {
               {/* Image Glow */}
               <div className="pointer-events-none absolute -inset-3 rounded-[24px] bg-[#0F9690]/7 blur-2xl" />
 
-              <div className="relative overflow-hidden rounded-2xl border border-[#E0E8EA] bg-[#EEF3F4] shadow-[0_15px_40px_rgba(16,42,52,0.10)]">
+              <div className="relative overflow-hidden rounded-2xl border border-[#E0E8EA] bg-[#EEF3F4] shadow-[0_15px_40px_rgba(16,42,52,0.10)] dark:border-slate-800 dark:bg-[#111827]">
 
                 <img
                   src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=85"
@@ -165,19 +165,19 @@ const About = () => {
               </span>
 
               <h2
-                className="mt-3 max-w-[580px] text-[29px] font-bold leading-[1.14] tracking-tight text-[#162831] sm:text-[34px] lg:text-[40px]"
+                className="mt-3 max-w-[580px] text-[29px] font-bold leading-[1.14] tracking-tight text-[#162831] sm:text-[34px] lg:text-[40px] dark:text-white"
                 style={{ fontFamily: "var(--font-display)" }}
               >
                 Your Journey to the Right Home Starts Here.
               </h2>
 
-              <p className="mt-4 max-w-[580px] text-[13px] leading-6 text-[#71818A] sm:text-[14px] sm:leading-7">
+              <p className="mt-4 max-w-[580px] text-[13px] leading-6 text-[#71818A] dark:text-slate-400 sm:text-[14px] sm:leading-7">
                 Betnya (ቤትኛ) is a real estate platform designed to
                 make finding properties easier for buyers, renters and
                 property seekers across Ethiopia and beyond.
               </p>
 
-              <p className="mt-3 max-w-[580px] text-[13px] leading-6 text-[#71818A] sm:text-[14px] sm:leading-7">
+              <p className="mt-3 max-w-[580px] text-[13px] leading-6 text-[#71818A] dark:text-slate-400 sm:text-[14px] sm:leading-7">
                 We bring property listings and real estate professionals
                 together in one modern, convenient platform — giving you
                 access to verified listings with the tools to find exactly
@@ -191,7 +191,7 @@ const About = () => {
                 {TEAM_STATS.map(({ value, label }, index) => (
                   <div
                     key={label}
-                    className="group rounded-xl border border-[#E1E9EC] bg-[#F8FAFA] p-3.5 transition-all duration-300 hover:-translate-y-1 hover:border-[#0F9690]/30 hover:bg-white hover:shadow-[0_10px_25px_rgba(15,150,144,0.08)] sm:p-4"
+                    className="group rounded-xl border border-[#E1E9EC] bg-[#F8FAFA] p-3.5 transition-all duration-300 hover:-translate-y-1 hover:border-[#0F9690]/30 hover:bg-white hover:shadow-[0_10px_25px_rgba(15,150,144,0.08)] sm:p-4 dark:border-slate-800 dark:bg-[#111827] dark:hover:bg-[#16202F]"
                     style={{
                       animation: `fadeUp .6s ${
                         0.2 + index * 0.08
@@ -206,7 +206,7 @@ const About = () => {
                       {value}
                     </p>
 
-                    <p className="mt-1.5 text-[10px] text-[#71818A] sm:text-[11px]">
+                    <p className="mt-1.5 text-[10px] text-[#71818A] sm:text-[11px] dark:text-slate-400">
                       {label}
                     </p>
 
@@ -223,7 +223,7 @@ const About = () => {
 
 
       {/* VALUES*/}
-      <section className="relative w-full overflow-hidden bg-[#F7F9FA] px-4 sm:px-6 lg:px-8 py-14 sm:py-16 lg:py-20">
+      <section className="relative w-full overflow-hidden bg-[#F7F9FA] px-4 sm:px-6 lg:px-8 py-14 sm:py-16 lg:py-20 dark:bg-[#0B1120]">
 
         {/* Glows */}
         <div className="pointer-events-none absolute right-0 top-0 h-80 w-80 rounded-full bg-[#0F9690]/5 blur-[120px]" />
@@ -240,13 +240,13 @@ const About = () => {
             </span>
 
             <h2
-              className="mt-3 text-[29px] font-bold leading-tight tracking-tight text-[#162831] sm:text-[35px] lg:text-[42px]"
+              className="mt-3 text-[29px] font-bold leading-tight tracking-tight text-[#162831] sm:text-[35px] lg:text-[42px] dark:text-white"
               style={{ fontFamily: "var(--font-display)" }}
             >
               Built Around You.
             </h2>
 
-            <p className="mt-3 text-[12px] leading-5 text-[#71818A] sm:text-[13px] sm:leading-6">
+            <p className="mt-3 text-[12px] leading-5 text-[#71818A] sm:text-[13px] sm:leading-6 dark:text-slate-400">
               Everything we do is centered around creating a better,
               simpler and more trustworthy property experience.
             </p>
@@ -260,7 +260,7 @@ const About = () => {
             {VALUES.map(({ icon: Icon, title, desc }, index) => (
               <div
                 key={title}
-                className="group relative min-w-0 overflow-hidden rounded-xl border border-[#E0E8EA] bg-white p-5 shadow-[0_4px_18px_rgba(20,40,50,0.025)] transition-all duration-300 hover:-translate-y-1.5 hover:border-[#0F9690]/25 hover:shadow-[0_14px_35px_rgba(15,150,144,0.09)] sm:p-6 lg:p-7"
+                className="group relative min-w-0 overflow-hidden rounded-xl border border-[#E0E8EA] bg-white p-5 shadow-[0_4px_18px_rgba(20,40,50,0.025)] transition-all duration-300 hover:-translate-y-1.5 hover:border-[#0F9690]/25 hover:shadow-[0_14px_35px_rgba(15,150,144,0.09)] sm:p-6 lg:p-7 dark:border-slate-800 dark:bg-[#111827]"
                 style={{
                   animation: `fadeUp .65s ${
                     index * 0.07
@@ -283,11 +283,11 @@ const About = () => {
                 </div>
 
 
-                <h3 className="relative mt-4 text-[15px] font-semibold text-[#162831] sm:text-[16px]">
+                <h3 className="relative mt-4 text-[15px] font-semibold text-[#162831] sm:text-[16px] dark:text-white">
                   {title}
                 </h3>
 
-                <p className="relative mt-2 text-[12px] leading-5 text-[#71818A] sm:text-[13px] sm:leading-6">
+                <p className="relative mt-2 text-[12px] leading-5 text-[#71818A] sm:text-[13px] sm:leading-6 dark:text-slate-400">
                   {desc}
                 </p>
 

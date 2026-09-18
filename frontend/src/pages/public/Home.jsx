@@ -93,7 +93,7 @@ const Home = () => {
   const displayedProperties = properties;
 
   return (
-    <div className="w-full min-w-0 overflow-x-hidden bg-white">
+    <div className="w-full min-w-0 overflow-x-hidden bg-white dark:bg-[#0B1120]">
 
       {/* HERO*/}
 
@@ -126,7 +126,7 @@ const Home = () => {
                 setLocation(e.target.value)
               }
               placeholder="Search by city or area..."
-              className="h-12 rounded-lg bg-white border border-slate-200 px-4 text-sm outline-none focus:border-[#0F9690]"
+              className="h-12 rounded-lg bg-white border border-slate-200 px-4 text-sm outline-none focus:border-[#0F9690] dark:bg-[#1E293B] dark:border-slate-700 dark:text-white dark:placeholder:text-slate-400"
             />
 
             <select
@@ -134,7 +134,7 @@ const Home = () => {
               onChange={(e) =>
                 setType(e.target.value)
               }
-              className="h-12 rounded-lg bg-white border border-slate-200 px-4 text-sm text-slate-600 outline-none focus:border-[#0F9690]"
+              className="h-12 rounded-lg bg-white border border-slate-200 px-4 text-sm text-slate-600 outline-none focus:border-[#0F9690] dark:bg-[#1E293B] dark:border-slate-700 dark:text-slate-200"
             >
               <option value="">Type</option>
               <option value="1">Apartment</option>
@@ -148,7 +148,7 @@ const Home = () => {
               onChange={(e) =>
                 setPrice(e.target.value)
               }
-              className="h-12 rounded-lg bg-white border border-slate-200 px-4 text-sm text-slate-600 outline-none focus:border-[#0F9690]"
+              className="h-12 rounded-lg bg-white border border-slate-200 px-4 text-sm text-slate-600 outline-none focus:border-[#0F9690] dark:bg-[#1E293B] dark:border-slate-700 dark:text-slate-200"
             >
               <option value="">Price Range</option>
               <option value="500000">Up to 500,000</option>
@@ -171,7 +171,7 @@ const Home = () => {
 
       {/* FEATURED PROPERTIES*/}
 
-      <section className="w-full bg-white px-4 py-14 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
+      <section className="w-full bg-white px-4 py-14 sm:px-6 sm:py-16 lg:px-8 lg:py-20 dark:bg-[#0B1120]">
 
         {/* Main centered container */}
         <div className="mx-auto w-full max-w-[1240px]">
@@ -183,11 +183,11 @@ const Home = () => {
               Featured Listings
             </span>
 
-            <h2 className="text-2xl font-bold tracking-tight text-[#162831] sm:text-3xl lg:text-4xl">
+            <h2 className="text-2xl font-bold tracking-tight text-[#162831] sm:text-3xl lg:text-4xl dark:text-white">
               Featured Properties
             </h2>
 
-            <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-500 sm:text-base">
+            <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-500 sm:text-base dark:text-slate-400">
               Explore handpicked premier listings from top verified agents.
             </p>
           </div>
@@ -201,23 +201,23 @@ const Home = () => {
                 {[1, 2, 3, 4].map((item) => (
                   <div
                     key={item}
-                    className="w-full max-w-[300px] overflow-hidden rounded-2xl border border-slate-200 bg-white"
+                    className="w-full max-w-[300px] overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-[#111827]"
                   >
-                    <div className="h-[200px] animate-pulse bg-slate-100" />
+                    <div className="h-[200px] animate-pulse bg-slate-100 dark:bg-slate-800" />
                     <div className="space-y-2 p-4">
-                      <div className="h-3 w-3/4 animate-pulse rounded bg-slate-100" />
-                      <div className="h-3 w-1/2 animate-pulse rounded bg-slate-100" />
-                      <div className="h-3 w-1/3 animate-pulse rounded bg-slate-100" />
+                      <div className="h-3 w-3/4 animate-pulse rounded bg-slate-100 dark:bg-slate-800" />
+                      <div className="h-3 w-1/2 animate-pulse rounded bg-slate-100 dark:bg-slate-800" />
+                      <div className="h-3 w-1/3 animate-pulse rounded bg-slate-100 dark:bg-slate-800" />
                     </div>
                   </div>
                 ))}
               </div>
             ) : propertiesError ? (
-              <div className="w-full max-w-md rounded-2xl border border-rose-200 bg-rose-50 px-5 py-10 text-center text-sm text-rose-700">
+              <div className="w-full max-w-md rounded-2xl border border-rose-200 bg-rose-50 px-5 py-10 text-center text-sm text-rose-700 dark:border-rose-900/50 dark:bg-rose-950/30 dark:text-rose-300">
                 {propertiesError}
               </div>
             ) : displayedProperties.length === 0 ? (
-              <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white px-5 py-10 text-center text-sm text-slate-500">
+              <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white px-5 py-10 text-center text-sm text-slate-500 dark:border-slate-800 dark:bg-[#111827] dark:text-slate-400">
                 No featured properties yet. Check back soon.
               </div>
             ) : (
@@ -257,14 +257,14 @@ const Home = () => {
       </section>
 
       {/*  FEATURED AGENTS SECTION */}
-      <section id="agents" className="w-full border-t border-slate-200 bg-[#F8FAFC]">
+      <section id="agents" className="w-full border-t border-slate-200 bg-[#F8FAFC] dark:border-slate-800 dark:bg-[#0E1626]">
         <div className="mx-auto w-full max-w-[1240px] px-4 py-14 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
 
           <span className="text-[10px] font-bold uppercase tracking-wider text-[#0F9690]">
             Our Team
           </span>
 
-          <h2 className="mb-7 mt-1 text-2xl font-bold text-[#162831] sm:text-3xl">
+          <h2 className="mb-7 mt-1 text-2xl font-bold text-[#162831] sm:text-3xl dark:text-white">
             Featured Agents
           </h2>
 
@@ -281,9 +281,9 @@ const Home = () => {
               ))}
             </div>
           ) : agentsError ? (
-            <p className="text-sm text-slate-500">{agentsError}</p>
+            <p className="text-sm text-slate-500 dark:text-slate-400">{agentsError}</p>
           ) : (
-            <p className="text-sm text-slate-500">
+            <p className="text-sm text-slate-500 dark:text-slate-400">
               No featured agents yet.
             </p>
           )}
