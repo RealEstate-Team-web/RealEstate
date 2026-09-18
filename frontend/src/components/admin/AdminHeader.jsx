@@ -36,17 +36,17 @@ const AdminHeader = ({ onToggleSidebar }) => {
   const title = titleMap[location.pathname] || 'Dashboard';
 
   return (
-    <header className="sticky top-0 z-30 h-[68px] bg-white border-b border-[#E5E7EB] px-5 flex items-center justify-between font-sans">
+    <header className="sticky top-0 z-30 h-[68px] bg-white border-b border-[#E5E7EB] px-5 flex items-center justify-between font-sans dark:bg-[#0E1626] dark:border-slate-800">
       {/* Left: menu + page title */}
       <div className="flex items-center space-x-3">
         <button
           onClick={onToggleSidebar}
-          className="lg:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100 transition cursor-pointer"
+          className="lg:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100 transition cursor-pointer dark:text-slate-300 dark:hover:bg-slate-800"
           aria-label="Open menu"
         >
           <Menu size={22} />
         </button>
-        <h1 className="text-[19px] font-semibold text-[#111827] tracking-tight">{title}</h1>
+        <h1 className="text-[19px] font-semibold text-[#111827] tracking-tight dark:text-white">{title}</h1>
       </div>
 
       {/* Center: search */}
@@ -58,11 +58,11 @@ const AdminHeader = ({ onToggleSidebar }) => {
       <div className="flex items-center space-x-4">
         <button
           onClick={() => navigate('/admin')}
-          className="relative p-2.5 rounded-full text-slate-500 hover:bg-slate-100 hover:text-[#4A9FF5] transition cursor-pointer"
+          className="relative p-2.5 rounded-full text-slate-500 hover:bg-slate-100 hover:text-[#4A9FF5] transition cursor-pointer dark:text-slate-400 dark:hover:bg-slate-800"
           title="Notifications"
         >
           <Bell size={20} />
-          <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-[#D96B67] rounded-full border-2 border-white" />
+          <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-[#D96B67] rounded-full border-2 border-white dark:border-[#0E1626]" />
         </button>
 
         <UserDropdown

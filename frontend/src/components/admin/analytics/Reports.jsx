@@ -48,14 +48,20 @@ import { RefreshCw } from 'lucide-react';
  * -------------------------------------------------------------------------- */
 
 const DEFAULT_KPI_TONES = {
-  info: { bg: 'bg-[#E7F0FB] text-[#4A9FF5]', bar: '#4A9FF5' },
-  success: { bg: 'bg-[#E7F4EE] text-[#4FAF83]', bar: '#4FAF83' },
-  warning: { bg: 'bg-[#FBF3DD] text-[#E7B85A]', bar: '#E7B85A' },
-  danger: { bg: 'bg-[#FBEAE9] text-[#D96B67]', bar: '#D96B67' },
-  neutral: { bg: 'bg-slate-100 text-slate-500', bar: '#9CA3AF' },
+  info: { bg: 'bg-[#E7F0FB] text-[#4A9FF5] dark:bg-blue-500/10 dark:text-blue-300', bar: '#4A9FF5' },
+  success: { bg: 'bg-[#E7F4EE] text-[#4FAF83] dark:bg-emerald-500/10 dark:text-emerald-300', bar: '#4FAF83' },
+  warning: { bg: 'bg-[#FBF3DD] text-[#E7B85A] dark:bg-amber-500/10 dark:text-amber-300', bar: '#E7B85A' },
+  danger: { bg: 'bg-[#FBEAE9] text-[#D96B67] dark:bg-rose-500/10 dark:text-rose-300', bar: '#D96B67' },
+  neutral: { bg: 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400', bar: '#9CA3AF' },
 };
 
 const DONUT_PALETTE = ['#4A9FF5', '#4FAF83', '#E7B85A', '#D96B67', '#9CA3AF', '#8B5CF6', '#EC4899', '#14B8A6'];
+
+function chartGridStroke() {
+  return typeof document !== 'undefined' && document.documentElement.classList.contains('dark')
+    ? '#334155'
+    : '#E5E7EB';
+}
 
 const DEFAULT_RANGES = [
   { value: '7', label: '7d' },
@@ -124,9 +130,9 @@ function KpiCard({ config, value, countUp }) {
   const displayed = useCountUp(value, countUp);
   const Icon = config.icon;
   return (
-    <div className="bg-white border border-[#E5E7EB] rounded-lg p-4 shadow-[0_2px_8px_rgba(15,23,42,0.06)] flex flex-col justify-between min-h-[118px] hover:shadow-[0_4px_14px_rgba(15,23,42,0.08)] transition-shadow">
+    <div className="bg-white border border-[#E5E7EB] rounded-lg p-4 shadow-[0_2px_8px_rgba(15,23,42,0.06)] flex flex-col justify-between min-h-[118px] hover:shadow-[0_4px_14px_rgba(15,23,42,0.08)] transition-shadow dark:bg-[#111827] dark:border-slate-800">
       <div className="flex items-start justify-between">
-        <p className="text-[13px] font-medium text-[#6B7280]">{config.label}</p>
+        <p className="text-[13px] font-medium text-[#6B7280] dark:text-slate-400">{config.label}</p>
         {Icon && (
           <span
             aria-hidden="true"
@@ -136,7 +142,7 @@ function KpiCard({ config, value, countUp }) {
           </span>
         )}
       </div>
-      <p className="text-[28px] font-bold text-[#111827] leading-none mt-2">
+      <p className="text-[28px] font-bold text-[#111827] leading-none mt-2 dark:text-white">
         {formatNumber(displayed, config.format)}
       </p>
     </div>
@@ -148,7 +154,7 @@ function RangePicker({ ranges, value, onChange }) {
     <div
       role="tablist"
       aria-label="Time range"
-      className="inline-flex items-center gap-0.5 bg-slate-100 rounded-lg p-0.5"
+      className="inline-flex items-center gap-0.5 bg-slate-100 rounded-lg p-0.5 dark:bg-slate-800"
     >
       {ranges.map((r) => {
         const active = r.value === value;
@@ -160,8 +166,8 @@ function RangePicker({ ranges, value, onChange }) {
             onClick={() => onChange(r.value)}
             className={`px-3 py-1.5 text-[12px] font-semibold rounded-md transition-colors ${
               active
-                ? 'bg-white text-[#111827] shadow-[0_1px_3px_rgba(15,23,42,0.12)]'
-                : 'text-[#6B7280] hover:text-[#111827]'
+                ? 'bg-white text-[#111827] shadow-[0_1px_3px_rgba(15,23,42,0.12)] dark:bg-[#1E293B] dark:text-white'
+                : 'text-[#6B7280] hover:text-[#111827] dark:text-slate-400 dark:hover:text-white'
             }`}
           >
             {r.label}
@@ -175,12 +181,12 @@ function RangePicker({ ranges, value, onChange }) {
 function ChartCard({ title, subtitle, action, children, className = '' }) {
   return (
     <div
-      className={`bg-white border border-[#E5E7EB] rounded-lg shadow-[0_2px_8px_rgba(15,23,42,0.06)] p-4 flex flex-col ${className}`}
+      className={`bg-white border border-[#E5E7EB] rounded-lg shadow-[0_2px_8px_rgba(15,23,42,0.06)] p-4 flex flex-col ${className} dark:bg-[#111827] dark:border-slate-800`}
     >
       <div className="flex items-start justify-between mb-3">
         <div>
-          <h3 className="text-[15px] font-semibold text-[#111827]">{title}</h3>
-          {subtitle && <p className="text-[12px] text-[#6B7280] mt-0.5">{subtitle}</p>}
+          <h3 className="text-[15px] font-semibold text-[#111827] dark:text-white">{title}</h3>
+          {subtitle && <p className="text-[12px] text-[#6B7280] mt-0.5 dark:text-slate-400">{subtitle}</p>}
         </div>
         {action}
       </div>
@@ -209,13 +215,13 @@ function ChartTooltip({ active, payload, label, formatter }) {
 }
 
 function Skeleton({ className = '' }) {
-  return <div className={`animate-pulse rounded-md bg-slate-200 ${className}`} />;
+  return <div className={`animate-pulse rounded-md bg-slate-200 ${className} dark:bg-slate-800`} />;
 }
 
 function EmptyState({ message }) {
   return (
     <div className="py-12 text-center">
-      <p className="text-[13px] text-[#9CA3AF]">{message || 'No data available yet.'}</p>
+      <p className="text-[13px] text-[#9CA3AF] dark:text-slate-500">{message || 'No data available yet.'}</p>
     </div>
   );
 }
@@ -223,7 +229,7 @@ function EmptyState({ message }) {
 function ErrorState({ message, onRetry }) {
   return (
     <div className="py-12 text-center">
-      <p className="text-[13px] text-[#D96B67] mb-3">{message || 'Failed to load data.'}</p>
+      <p className="text-[13px] text-[#D96B67] mb-3 dark:text-rose-300">{message || 'Failed to load data.'}</p>
       <button
         onClick={onRetry}
         className="inline-flex items-center gap-2 px-3.5 py-2 text-[12px] font-semibold text-white bg-[#4A9FF5] rounded-lg hover:bg-[#3b8de0] transition-colors"
@@ -370,7 +376,7 @@ const Reports = ({
     return (
       <div className={`space-y-5 font-sans ${className}`}>
         <Header eyebrow={eyebrow} icon={Icon} title={title} subtitle={subtitle} />
-        <div className="bg-white border border-[#E5E7EB] rounded-lg">
+        <div className="bg-white border border-[#E5E7EB] rounded-lg dark:bg-[#111827] dark:border-slate-800">
           <ErrorState message={error} onRetry={() => setReloadKey((k) => k + 1)} />
         </div>
       </div>
@@ -382,7 +388,7 @@ const Reports = ({
     return (
       <div className={`space-y-5 font-sans ${className}`}>
         <Header eyebrow={eyebrow} icon={Icon} title={title} subtitle={subtitle} />
-        <div className="bg-white border border-[#E5E7EB] rounded-lg">
+        <div className="bg-white border border-[#E5E7EB] rounded-lg dark:bg-[#111827] dark:border-slate-800">
           <EmptyState message={labels.emptyState} />
         </div>
       </div>
@@ -405,15 +411,15 @@ const Reports = ({
           )}
           <div className="flex items-center gap-2.5">
             {Icon && (
-              <span aria-hidden="true" className="w-10 h-10 rounded-xl bg-[#E7F0FB] text-[#4A9FF5] flex items-center justify-center shrink-0">
+              <span aria-hidden="true" className="w-10 h-10 rounded-xl bg-[#E7F0FB] text-[#4A9FF5] flex items-center justify-center shrink-0 dark:bg-blue-500/10 dark:text-blue-300">
                 <Icon size={20} />
               </span>
             )}
-            <h1 className="text-[24px] font-bold text-[#111827] tracking-tight">{title}</h1>
+            <h1 className="text-[24px] font-bold text-[#111827] tracking-tight dark:text-white">{title}</h1>
           </div>
-          {subtitle && <p className="text-[13px] text-[#6B7280] mt-1">{subtitle}</p>}
+          {subtitle && <p className="text-[13px] text-[#6B7280] mt-1 dark:text-slate-400">{subtitle}</p>}
           {summary && (
-            <p className="text-[12px] text-[#9CA3AF] mt-1">
+            <p className="text-[12px] text-[#9CA3AF] mt-1 dark:text-slate-500">
               {scope === 'self' ? 'Showing your activity. ' : 'Showing platform activity. '}
               {summary}
             </p>
@@ -456,7 +462,7 @@ const Reports = ({
                         <stop offset="100%" stopColor="#4A9FF5" stopOpacity={0} />
                       </linearGradient>
                     </defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" vertical={false} />
+                    <CartesianGrid strokeDasharray="3 3" stroke={chartGridStroke()} vertical={false} />
                     <XAxis dataKey="date" tick={{ fontSize: 11, fill: '#9CA3AF' }} tickLine={false} axisLine={false} minTickGap={24} />
                     <YAxis tick={{ fontSize: 11, fill: '#9CA3AF' }} tickLine={false} axisLine={false} allowDecimals={false} width={34} />
                     <Tooltip content={<ChartTooltip />} />
@@ -490,7 +496,7 @@ const Reports = ({
                         <stop offset="100%" stopColor="#4FAF83" stopOpacity={0} />
                       </linearGradient>
                     </defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" vertical={false} />
+                    <CartesianGrid strokeDasharray="3 3" stroke={chartGridStroke()} vertical={false} />
                     <XAxis dataKey="date" tick={{ fontSize: 11, fill: '#9CA3AF' }} tickLine={false} axisLine={false} minTickGap={24} />
                     <YAxis tick={{ fontSize: 11, fill: '#9CA3AF' }} tickLine={false} axisLine={false} allowDecimals={false} width={34} />
                     <Tooltip content={<ChartTooltip />} />
@@ -544,7 +550,7 @@ const Reports = ({
             <ChartCard title={chartLabels.items} subtitle="Count by item">
               <ResponsiveContainer width="100%" height={240}>
                 <BarChart data={items} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" vertical={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke={chartGridStroke()} vertical={false} />
                   <XAxis dataKey="name" tick={{ fontSize: 11, fill: '#9CA3AF' }} tickLine={false} axisLine={false} interval={0} angle={-20} textAnchor="end" height={50} />
                   <YAxis tick={{ fontSize: 11, fill: '#9CA3AF' }} tickLine={false} axisLine={false} allowDecimals={false} width={34} />
                   <Tooltip content={<ChartTooltip formatter={(v) => formatNumber(v)} />} cursor={{ fill: 'rgba(15,23,42,0.04)' }} />
@@ -567,19 +573,19 @@ const Reports = ({
             <EmptyState message="Nothing to show yet" />
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-[12px] text-[#111827]">
+              <table className="w-full text-left text-[12px] text-[#111827] dark:text-white">
                 <thead className="text-[#9CA3AF] font-semibold uppercase text-[10px] tracking-wider">
-                  <tr className="border-b border-slate-100">
+                  <tr className="border-b border-slate-100 dark:border-slate-800">
                     {tableConfig.columns.map((col) => (
                       <th key={col.key} className="py-2 px-2">{col.label}</th>
                     ))}
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                   {items.map((row) => (
-                    <tr key={row.id} className="hover:bg-slate-50 transition">
+                    <tr key={row.id} className="hover:bg-slate-50 transition dark:hover:bg-slate-800/60">
                       {tableConfig.columns.map((col) => (
-                        <td key={col.key} className="py-2.5 px-2 text-[#6B7280]">
+                        <td key={col.key} className="py-2.5 px-2 text-[#6B7280] dark:text-slate-400">
                           {col.accessor ? col.accessor(row) : row[col.key] ?? '—'}
                         </td>
                       ))}
@@ -606,13 +612,13 @@ function Header({ eyebrow, icon: Icon, title, subtitle }) {
         )}
         <div className="flex items-center gap-2.5">
           {Icon && (
-            <span aria-hidden="true" className="w-10 h-10 rounded-xl bg-[#E7F0FB] text-[#4A9FF5] flex items-center justify-center shrink-0">
+            <span aria-hidden="true" className="w-10 h-10 rounded-xl bg-[#E7F0FB] text-[#4A9FF5] flex items-center justify-center shrink-0 dark:bg-blue-500/10 dark:text-blue-300">
               <Icon size={20} />
             </span>
           )}
-          <h1 className="text-[24px] font-bold text-[#111827] tracking-tight">{title}</h1>
+          <h1 className="text-[24px] font-bold text-[#111827] tracking-tight dark:text-white">{title}</h1>
         </div>
-        {subtitle && <p className="text-[13px] text-[#6B7280] mt-1">{subtitle}</p>}
+        {subtitle && <p className="text-[13px] text-[#6B7280] mt-1 dark:text-slate-400">{subtitle}</p>}
       </div>
     </div>
   );
