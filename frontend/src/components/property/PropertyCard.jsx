@@ -97,11 +97,13 @@ const PropertyCard = ({ property }) => {
         hover:-translate-y-1
         hover:border-[#0F9690]/40
         hover:shadow-xl
+        dark:border-slate-800
+        dark:bg-[#111827]
       "
     >
       {/*  IMAGE  */}
 
-      <div className="relative h-[200px] w-full overflow-hidden bg-slate-100">
+      <div className="relative h-[200px] w-full overflow-hidden bg-slate-100 dark:bg-slate-800">
         <img
           src={image}
           alt={property.title || "Property"}
@@ -193,6 +195,7 @@ const PropertyCard = ({ property }) => {
             transition-colors
             duration-200
             group-hover:text-[#0F9690]
+            dark:text-white
           "
           title={property.title}
         >
@@ -212,6 +215,7 @@ const PropertyCard = ({ property }) => {
               truncate
               text-xs
               text-slate-500
+              dark:text-slate-400
             "
             title={location}
           >
@@ -230,6 +234,7 @@ const PropertyCard = ({ property }) => {
             border-t
             border-slate-100
             pt-4
+            dark:border-slate-800
           "
         >
 
@@ -243,6 +248,7 @@ const PropertyCard = ({ property }) => {
               gap-1
               text-xs
               text-slate-500
+              dark:text-slate-400
             "
           >
             <BedDouble className="h-5 w-5 text-[#0F9690]" />
@@ -262,6 +268,7 @@ const PropertyCard = ({ property }) => {
               gap-1
               text-xs
               text-slate-500
+              dark:text-slate-400
             "
           >
             <Bath className="h-5 w-5 text-[#0F9690]" />
@@ -281,6 +288,7 @@ const PropertyCard = ({ property }) => {
               gap-1
               text-xs
               text-slate-500
+              dark:text-slate-400
             "
           >
             <CarFront className="h-5 w-5 text-[#0F9690]" />
@@ -301,6 +309,7 @@ const PropertyCard = ({ property }) => {
               gap-1
               text-xs
               text-slate-500
+              dark:text-slate-400
             "
           >
             <Maximize2 className="h-5 w-5 text-[#0F9690]" />
