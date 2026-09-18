@@ -24,8 +24,8 @@ const CONTACT_INFO = [
   {
     icon: Mail,
     label: "Email Address",
-    value: "info@dreamhomeestates.com",
-    href: "mailto:info@dreamhomeestates.com",
+    value: "info@betnya.com",
+    href: "mailto:info@betnya.com",
   },
   {
     icon: Clock,
@@ -255,7 +255,7 @@ const Contact = () => {
                       </h3>
 
                       <p className="mt-3 max-w-[360px] text-[13px] leading-6 text-[#71818A]">
-                        Thank you for contacting Dream Home Estates.
+                        Thank you for contacting Betnya (ቤትኛ).
                         Our team will get back to you within 24 hours.
                       </p>
 

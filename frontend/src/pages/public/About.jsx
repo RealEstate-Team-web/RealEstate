@@ -88,9 +88,9 @@ const About = () => {
               className="text-[36px] font-bold leading-[1.05] tracking-tight text-white min-[480px]:text-[42px] sm:text-[50px] lg:text-[60px]"
               style={{ fontFamily: "var(--font-display)" }}
             >
-              About Dream Home
+              About Betnya
               <span className="block text-[#25B8B1]">
-                Estates.
+                (ቤትኛ)
               </span>
             </h1>
 
@@ -172,7 +172,7 @@ const About = () => {
               </h2>
 
               <p className="mt-4 max-w-[580px] text-[13px] leading-6 text-[#71818A] sm:text-[14px] sm:leading-7">
-                Dream Home Estates is a real estate platform designed to
+                Betnya (ቤትኛ) is a real estate platform designed to
                 make finding properties easier for buyers, renters and
                 property seekers across Ethiopia and beyond.
               </p>

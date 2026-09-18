@@ -10,7 +10,7 @@ export const Login = () => {
             Welcome Back
           </h1>
           <p className="mt-2 text-[14px] text-ink">
-            Sign in to access your Dream Home Estates account.
+            Sign in to access your Betnya account.
           </p>
         </div>
         <LoginForm />

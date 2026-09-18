@@ -10,7 +10,7 @@ const RegisterAgent = () => {
             Become an Agent
           </h1>
           <p className="mt-2 text-[14px] text-ink">
-            Sign up to list properties with Dream Home Estates.
+            Sign up to list properties with Betnya.
           </p>
         </div>
         <RegisterForm initialRole="agent" />

@@ -16,17 +16,21 @@ const Footer = () => {
               to="/"
               className="inline-flex items-center gap-2.5"
             >
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-[#0F9690] text-sm font-bold leading-none text-white">
-                D
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-md bg-[#0F9690] p-0.5">
+                <img
+                  src="/logo.png"
+                  alt="ቤትኛ (Betnya) logo"
+                  className="h-full w-full rounded object-contain"
+                />
               </div>
 
               <span className="text-[17px] font-bold leading-none tracking-tight text-white">
-                NestHome Real Estate
+                ቤትኛ (Betnya)
               </span>
             </Link>
 
             <p className="mt-3.5 max-w-[360px] text-[12px] leading-[1.55] text-[#8FA1AA]">
-              Discover quality properties and find your perfect home.
+              ይጎብኙ፣ ይምረጡ፣ ይግዙ — Visit, choose, and buy.
               Explore trusted listings, connect with experienced agents,
               and make your next property move with confidence.
             </p>
@@ -35,7 +39,7 @@ const Footer = () => {
             <div className="mt-5 space-y-2.5">
 
               <a
-                href="mailto:info@dreamhomeestates.com"
+                href="mailto:info@betnya.com"
                 className="flex items-center gap-3 text-[12px] leading-5 transition-colors hover:text-white"
               >
                 <Mail
@@ -45,7 +49,7 @@ const Footer = () => {
                 />
 
                 <span>
-                  info@dreamhomeestates.com
+                  info@betnya.com
                 </span>
               </a>
 
@@ -205,7 +209,7 @@ const Footer = () => {
             <div className="mt-4 flex gap-2">
 
               <a
-                href="https://www.facebook.com/dreamhomeestates"
+                href="https://www.facebook.com/betnyarealestate"
                 aria-label="Facebook"
                 className="flex h-8 w-8 items-center justify-center rounded-md border border-[#304650] text-[11px] font-semibold leading-none text-[#8FA1AA] transition-all hover:border-[#0F9690] hover:bg-[#0F9690] hover:text-white"
               >
@@ -213,7 +217,7 @@ const Footer = () => {
               </a>
 
               <a
-                href="https://www.linkedin.com/company/dream-home-estates"
+                href="https://www.linkedin.com/company/betnyarealestate"
                 aria-label="Instagram"
                 className="flex h-8 w-8 items-center justify-center rounded-md border border-[#304650] text-[10px] font-semibold leading-none text-[#8FA1AA] transition-all hover:border-[#0F9690] hover:bg-[#0F9690] hover:text-white"
               >
@@ -221,7 +225,7 @@ const Footer = () => {
               </a>
 
               <a
-                href="https://www.linkedin.com/company/dream-home-estates"
+                href="https://www.linkedin.com/company/betnyarealestate"
                 aria-label="LinkedIn"
                 className="flex h-8 w-8 items-center justify-center rounded-md border border-[#304650] text-[10px] font-semibold leading-none text-[#8FA1AA] transition-all hover:border-[#0F9690] hover:bg-[#0F9690] hover:text-white"
               >
@@ -239,7 +243,7 @@ const Footer = () => {
         <div className="flex flex-col gap-3 py-4 sm:flex-row sm:items-center sm:justify-between">
 
           <p className="text-[11px] leading-5 text-[#647983]">
-            © {new Date().getFullYear()} Dream Home Estates. All rights reserved.
+            © {new Date().getFullYear()} Betnya. All rights reserved.
           </p>
 
           <div className="flex flex-wrap items-center gap-x-5 gap-y-1.5">
