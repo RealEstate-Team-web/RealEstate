@@ -475,7 +475,7 @@ const Properties = () => {
 
  
   return (
-    <main className="w-full min-w-0 overflow-x-hidden bg-[#F7F9FA]">
+    <main className="w-full min-w-0 overflow-x-hidden bg-[#F7F9FA] dark:bg-[#0B1120]">
 
 
       <section className="relative isolate min-h-[370px] w-full overflow-hidden sm:min-h-[420px] lg:min-h-[450px]">
@@ -530,7 +530,7 @@ const Properties = () => {
 
         </div>
 
-        <div className="pointer-events-none absolute bottom-0 left-0 h-24 w-full bg-gradient-to-t from-[#F7F9FA] to-transparent" />
+        <div className="pointer-events-none absolute bottom-0 left-0 h-24 w-full bg-gradient-to-t from-[#F7F9FA] to-transparent dark:from-[#0B1120]" />
 
       </section>
 
@@ -543,7 +543,7 @@ const Properties = () => {
 
             <div className="pointer-events-none absolute -inset-2 rounded-2xl bg-[#0F9690]/5 blur-xl" />
 
-            <div className="relative rounded-2xl border border-[#DDE7EA] bg-white p-4 shadow-[0_12px_40px_rgba(16,42,52,.08)] sm:p-5 lg:p-6">
+            <div className="relative rounded-2xl border border-[#DDE7EA] bg-white p-4 shadow-[0_12px_40px_rgba(16,42,52,.08)] sm:p-5 lg:p-6 dark:border-slate-800 dark:bg-[#111827]">
 
               <form
                 onSubmit={handleFilter}
@@ -554,7 +554,7 @@ const Properties = () => {
 
                 <div className="min-w-0">
 
-                  <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-[#74858C]">
+                  <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-[#74858C] dark:text-slate-400">
                     Location
                   </label>
 
@@ -573,7 +573,7 @@ const Properties = () => {
                         )
                       }
                       placeholder="City / Location"
-                      className="box-border h-11 w-full min-w-0 rounded-lg border border-[#DCE5E8] bg-[#FAFCFC] pl-9 pr-3.5 text-[13px] text-[#162831] outline-none transition-all focus:border-[#0F9690] focus:bg-white focus:ring-4 focus:ring-[#0F9690]/10"
+                      className="box-border h-11 w-full min-w-0 rounded-lg border border-[#DCE5E8] bg-[#FAFCFC] pl-9 pr-3.5 text-[13px] text-[#162831] outline-none transition-all focus:border-[#0F9690] focus:bg-white focus:ring-4 focus:ring-[#0F9690]/10 dark:border-slate-700 dark:bg-[#1E293B] dark:text-white dark:placeholder:text-slate-400 dark:focus:bg-[#1E293B]"
                     />
 
                   </div>
@@ -584,7 +584,7 @@ const Properties = () => {
 
                 <div className="min-w-0">
 
-                  <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-[#74858C]">
+                  <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-[#74858C] dark:text-slate-400">
                     Property Type
                   </label>
 
@@ -595,7 +595,7 @@ const Properties = () => {
                         e.target.value
                       )
                     }
-                    className="box-border h-11 w-full min-w-0 cursor-pointer rounded-lg border border-[#DCE5E8] bg-[#FAFCFC] px-3.5 text-[13px] text-[#4C6069] outline-none transition-all focus:border-[#0F9690] focus:bg-white focus:ring-4 focus:ring-[#0F9690]/10"
+                    className="box-border h-11 w-full min-w-0 cursor-pointer rounded-lg border border-[#DCE5E8] bg-[#FAFCFC] px-3.5 text-[13px] text-[#4C6069] outline-none transition-all focus:border-[#0F9690] focus:bg-white focus:ring-4 focus:ring-[#0F9690]/10 dark:border-slate-700 dark:bg-[#1E293B] dark:text-slate-200 dark:focus:bg-[#1E293B]"
                   >
 
                     <option value="">
@@ -630,7 +630,7 @@ const Properties = () => {
 
                 <div className="min-w-0">
 
-                  <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-[#74858C]">
+                  <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-[#74858C] dark:text-slate-400">
                     Minimum Price
                   </label>
 
@@ -644,7 +644,7 @@ const Properties = () => {
                       )
                     }
                     placeholder="Min price"
-                    className="box-border h-11 w-full min-w-0 rounded-lg border border-[#DCE5E8] bg-[#FAFCFC] px-3.5 text-[13px] outline-none transition-all focus:border-[#0F9690] focus:bg-white focus:ring-4 focus:ring-[#0F9690]/10"
+                    className="box-border h-11 w-full min-w-0 rounded-lg border border-[#DCE5E8] bg-[#FAFCFC] px-3.5 text-[13px] outline-none transition-all focus:border-[#0F9690] focus:bg-white focus:ring-4 focus:ring-[#0F9690]/10 dark:border-slate-700 dark:bg-[#1E293B] dark:text-white dark:placeholder:text-slate-400 dark:focus:bg-[#1E293B]"
                   />
 
                 </div>
@@ -653,7 +653,7 @@ const Properties = () => {
 
                 <div className="min-w-0">
 
-                  <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-[#74858C]">
+                  <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-[#74858C] dark:text-slate-400">
                     Maximum Price
                   </label>
 
@@ -667,7 +667,7 @@ const Properties = () => {
                       )
                     }
                     placeholder="Max price"
-                    className="box-border h-11 w-full min-w-0 rounded-lg border border-[#DCE5E8] bg-[#FAFCFC] px-3.5 text-[13px] outline-none transition-all focus:border-[#0F9690] focus:bg-white focus:ring-4 focus:ring-[#0F9690]/10"
+                    className="box-border h-11 w-full min-w-0 rounded-lg border border-[#DCE5E8] bg-[#FAFCFC] px-3.5 text-[13px] outline-none transition-all focus:border-[#0F9690] focus:bg-white focus:ring-4 focus:ring-[#0F9690]/10 dark:border-slate-700 dark:bg-[#1E293B] dark:text-white dark:placeholder:text-slate-400 dark:focus:bg-[#1E293B]"
                   />
 
                 </div>
@@ -705,12 +705,12 @@ const Properties = () => {
 
               {/* Bottom controls */}
 
-              <div className="mt-4 flex flex-col gap-3 border-t border-[#EDF1F2] pt-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="mt-4 flex flex-col gap-3 border-t border-[#EDF1F2] pt-4 sm:flex-row sm:items-center sm:justify-between dark:border-slate-800">
 
                 <button
                   type="button"
                   onClick={clearFilters}
-                  className="flex w-fit cursor-pointer items-center gap-1.5 text-[10px] font-semibold text-[#7A898F] transition-colors hover:text-red-500"
+                  className="flex w-fit cursor-pointer items-center gap-1.5 text-[10px] font-semibold text-[#7A898F] transition-colors hover:text-red-500 dark:text-slate-400"
                 >
                   <X size={13} />
 
@@ -731,7 +731,7 @@ const Properties = () => {
                         e.target.value
                       )
                     }
-                    className="cursor-pointer rounded-lg border border-[#DCE5E8] bg-white px-3 py-2 text-[10px] font-semibold text-[#4C6069] outline-none transition-colors focus:border-[#0F9690]"
+                    className="cursor-pointer rounded-lg border border-[#DCE5E8] bg-white px-3 py-2 text-[10px] font-semibold text-[#4C6069] outline-none transition-colors focus:border-[#0F9690] dark:border-slate-700 dark:bg-[#1E293B] dark:text-slate-200"
                   >
 
                     <option value="newest">
@@ -779,7 +779,7 @@ const Properties = () => {
               </span>
 
               <h2
-                className="mt-2 text-[27px] font-bold tracking-tight text-[#162831] sm:text-[31px]"
+                className="mt-2 text-[27px] font-bold tracking-tight text-[#162831] sm:text-[31px] dark:text-white"
                 style={{
                   fontFamily:
                     "var(--font-display)",
@@ -788,7 +788,7 @@ const Properties = () => {
                 Latest Properties
               </h2>
 
-              <p className="mt-1 text-[11px] text-[#71818A] sm:text-[12px]">
+              <p className="mt-1 text-[11px] text-[#71818A] sm:text-[12px] dark:text-slate-400">
                 {properties.length}{" "}
                 {properties.length === 1
                   ? "property"
@@ -823,20 +823,20 @@ const Properties = () => {
                 (item) => (
                   <div
                     key={item}
-                    className="overflow-hidden rounded-xl border border-[#E3EAEC] bg-white"
+                    className="overflow-hidden rounded-xl border border-[#E3EAEC] bg-white dark:border-slate-800 dark:bg-[#111827]"
                   >
 
-                    <div className="h-[230px] animate-pulse bg-[#E8EFF1]" />
+                    <div className="h-[230px] animate-pulse bg-[#E8EFF1] dark:bg-slate-800" />
 
                     <div className="space-y-3 p-4">
 
-                      <div className="h-4 w-3/4 animate-pulse rounded bg-[#E8EFF1]" />
+                      <div className="h-4 w-3/4 animate-pulse rounded bg-[#E8EFF1] dark:bg-slate-700" />
 
-                      <div className="h-3 w-1/2 animate-pulse rounded bg-[#E8EFF1]" />
+                      <div className="h-3 w-1/2 animate-pulse rounded bg-[#E8EFF1] dark:bg-slate-700" />
 
-                      <div className="h-8 w-1/3 animate-pulse rounded bg-[#E8EFF1]" />
+                      <div className="h-8 w-1/3 animate-pulse rounded bg-[#E8EFF1] dark:bg-slate-700" />
 
-                      <div className="h-3 w-full animate-pulse rounded bg-[#E8EFF1]" />
+                      <div className="h-3 w-full animate-pulse rounded bg-[#E8EFF1] dark:bg-slate-700" />
 
                     </div>
 
@@ -850,11 +850,11 @@ const Properties = () => {
 
             /* ERROR */
 
-            <div className="relative overflow-hidden rounded-2xl border border-rose-200 bg-rose-50 px-5 py-16 text-center shadow-[0_8px_30px_rgba(16,42,52,0.04)] sm:py-20">
-              <h3 className="text-[18px] font-bold text-rose-700">
+            <div className="relative overflow-hidden rounded-2xl border border-rose-200 bg-rose-50 px-5 py-16 text-center shadow-[0_8px_30px_rgba(16,42,52,0.04)] sm:py-20 dark:border-rose-500/30 dark:bg-rose-950/30">
+              <h3 className="text-[18px] font-bold text-rose-700 dark:text-rose-300">
                 Something went wrong
               </h3>
-              <p className="mx-auto mt-2 max-w-[420px] text-[12px] leading-5 text-rose-700/80">
+              <p className="mx-auto mt-2 max-w-[420px] text-[12px] leading-5 text-rose-700/80 dark:text-rose-300/80">
                 {loadError}
               </p>
               <button
@@ -870,7 +870,7 @@ const Properties = () => {
 
             /* EMPTY */
 
-            <div className="relative overflow-hidden rounded-2xl border border-[#DDE7EA] bg-white px-5 py-16 text-center shadow-[0_8px_30px_rgba(16,42,52,.04)] sm:py-20">
+            <div className="relative overflow-hidden rounded-2xl border border-[#DDE7EA] bg-white px-5 py-16 text-center shadow-[0_8px_30px_rgba(16,42,52,.04)] sm:py-20 dark:border-slate-800 dark:bg-[#111827]">
 
               <div className="pointer-events-none absolute left-1/2 top-1/2 h-40 w-40 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#0F9690]/7 blur-[70px]" />
 
@@ -882,11 +882,11 @@ const Properties = () => {
 
                 </div>
 
-                <h3 className="mt-5 text-[18px] font-bold text-[#162831]">
+                <h3 className="mt-5 text-[18px] font-bold text-[#162831] dark:text-white">
                   No properties found
                 </h3>
 
-                <p className="mx-auto mt-2 max-w-[380px] text-[12px] leading-5 text-[#71818A]">
+                <p className="mx-auto mt-2 max-w-[380px] text-[12px] leading-5 text-[#71818A] dark:text-slate-400">
                   We couldn't find properties
                   matching your current filters.
                   Try another city, location,
@@ -963,11 +963,11 @@ const Properties = () => {
 
       {/* AGENT CTA */}
 
-      <section className="relative w-full overflow-hidden border-t border-[#E4EBED] bg-white px-4 py-12 sm:px-6 sm:py-14 md:px-8 lg:px-10">
+      <section className="relative w-full overflow-hidden border-t border-[#E4EBED] bg-white px-4 py-12 sm:px-6 sm:py-14 md:px-8 lg:px-10 dark:border-slate-800 dark:bg-[#0E1626]">
 
         <div className="pointer-events-none absolute left-1/2 top-1/2 h-60 w-60 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#0F9690]/5 blur-[100px]" />
 
-        <div className="relative mx-auto flex w-full max-w-[950px] flex-col items-center justify-between gap-6 rounded-2xl border border-[#DDE7EA] bg-[#F8FAFA] p-6 text-center shadow-[0_8px_30px_rgba(16,42,52,.04)] sm:p-8 md:flex-row md:text-left">
+        <div className="relative mx-auto flex w-full max-w-[950px] flex-col items-center justify-between gap-6 rounded-2xl border border-[#DDE7EA] bg-[#F8FAFA] p-6 text-center shadow-[0_8px_30px_rgba(16,42,52,.04)] sm:p-8 md:flex-row md:text-left dark:border-slate-800 dark:bg-[#111827]">
 
           <div className="min-w-0">
 
@@ -976,7 +976,7 @@ const Properties = () => {
             </span>
 
             <h2
-              className="mt-2 text-[22px] font-bold tracking-tight text-[#162831] sm:text-[25px]"
+              className="mt-2 text-[22px] font-bold tracking-tight text-[#162831] sm:text-[25px] dark:text-white"
               style={{
                 fontFamily:
                   "var(--font-display)",
@@ -985,7 +985,7 @@ const Properties = () => {
               Want to list your properties?
             </h2>
 
-            <p className="mt-1 text-[11px] leading-5 text-[#71818A] sm:text-[12px]">
+            <p className="mt-1 text-[11px] leading-5 text-[#71818A] sm:text-[12px] dark:text-slate-400">
               Join our network of professional
               real estate agents.
             </p>

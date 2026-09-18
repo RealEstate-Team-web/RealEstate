@@ -38,7 +38,7 @@ const PublicAgents = () => {
   }, []);
 
   return (
-    <div className="w-full min-w-0 overflow-x-hidden bg-white">
+    <div className="w-full min-w-0 overflow-x-hidden bg-white dark:bg-[#0B1120]">
 
       {/* HERO */}
 
@@ -78,7 +78,7 @@ const PublicAgents = () => {
 
       {/* AGENTS */}
 
-      <section className="bg-white px-5 py-16 sm:px-8 lg:px-10 lg:py-20">
+      <section className="bg-white px-5 py-16 sm:px-8 lg:px-10 lg:py-20 dark:bg-[#0E1626]">
 
         <div className="mx-auto w-full max-w-[1240px]">
 
@@ -88,11 +88,11 @@ const PublicAgents = () => {
               Our Team
             </span>
 
-            <h2 className="mt-2 text-3xl font-bold tracking-tight text-[#162831] sm:text-4xl">
+            <h2 className="mt-2 text-3xl font-bold tracking-tight text-[#162831] dark:text-white sm:text-4xl">
               Meet Our Agents
             </h2>
 
-            <p className="mt-4 text-sm leading-6 text-slate-500 sm:text-base">
+            <p className="mt-4 text-sm leading-6 text-slate-500 sm:text-base dark:text-slate-400">
               Our experienced agents are here to guide you through every step
               of your property journey.
             </p>
@@ -101,7 +101,7 @@ const PublicAgents = () => {
 
 
           {error && (
-            <p className="mx-auto max-w-xl rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-center text-sm text-red-600">
+            <p className="mx-auto max-w-xl rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-center text-sm text-red-600 dark:border-red-500/30 dark:bg-red-950/30 dark:text-red-300">
               {error}
             </p>
           )}
@@ -122,7 +122,7 @@ const PublicAgents = () => {
               ))}
             </div>
           ) : !error ? (
-            <p className="text-center text-sm text-slate-500">
+            <p className="text-center text-sm text-slate-500 dark:text-slate-400">
               No agents are available yet.
             </p>
           ) : null}
@@ -134,7 +134,7 @@ const PublicAgents = () => {
 
       {/* BECOME AN AGENT*/}
 
-      <section className="bg-[#F8FAFC] px-5 py-16 sm:px-8 lg:px-10">
+      <section className="bg-[#F8FAFC] px-5 py-16 sm:px-8 lg:px-10 dark:bg-[#0B1120]">
 
         <div className="mx-auto flex max-w-[1100px] flex-col items-center justify-between gap-7 text-center md:flex-row md:text-left">
 
