@@ -131,7 +131,7 @@ const DashboardSearch = ({ role = 'admin' }) => {
   return (
     <div ref={containerRef} className="relative w-full max-w-sm">
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" size={16} />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none dark:text-slate-500" size={16} />
         <input
           ref={inputRef}
           type="text"
@@ -140,13 +140,13 @@ const DashboardSearch = ({ role = 'admin' }) => {
           onFocus={() => query.trim() && setOpen(true)}
           placeholder="Search users, agents, properties..."
           aria-label="Search dashboard"
-          className="w-full bg-white border border-slate-200 rounded-xl py-2.5 pl-9 pr-9 text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-[#4A9FF5] focus:ring-1 focus:ring-[#4A9FF5]/30 transition font-medium"
+          className="w-full bg-white border border-slate-200 rounded-xl py-2.5 pl-9 pr-9 text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-[#4A9FF5] focus:ring-1 focus:ring-[#4A9FF5]/30 transition font-medium dark:bg-[#1E293B] dark:border-slate-700 dark:text-white dark:placeholder:text-slate-500"
         />
         {query && (
           <button
             onClick={handleClear}
             aria-label="Clear search"
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition cursor-pointer"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition cursor-pointer dark:text-slate-500 dark:hover:text-slate-300"
           >
             <X size={14} />
           </button>
@@ -154,22 +154,22 @@ const DashboardSearch = ({ role = 'admin' }) => {
       </div>
 
       {showDropdown && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-slate-200 rounded-2xl shadow-lg z-50 overflow-hidden max-h-80 overflow-y-auto">
+        <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-slate-200 rounded-2xl shadow-lg z-50 overflow-hidden max-h-80 overflow-y-auto dark:bg-[#111827] dark:border-slate-800">
           {loading && (
-            <div className="flex items-center justify-center py-6 text-xs text-slate-400">
-              <span className="animate-spin mr-2 h-4 w-4 border-2 border-slate-300 border-t-transparent rounded-full" />
+            <div className="flex items-center justify-center py-6 text-xs text-slate-400 dark:text-slate-400">
+              <span className="animate-spin mr-2 h-4 w-4 border-2 border-slate-300 border-t-transparent rounded-full dark:border-slate-600" />
               Searching...
             </div>
           )}
 
           {!loading && error && query.trim() && (
-            <div className="py-6 text-center text-xs text-rose-600">
+            <div className="py-6 text-center text-xs text-rose-600 dark:text-rose-400">
               {error}
             </div>
           )}
 
           {!loading && !hasResults && !error && query.trim() && (
-            <div className="py-6 text-center text-xs text-slate-400">
+            <div className="py-6 text-center text-xs text-slate-400 dark:text-slate-400">
               No results for &ldquo;{query}&rdquo;
             </div>
           )}
@@ -178,38 +178,38 @@ const DashboardSearch = ({ role = 'admin' }) => {
             const items = results[key] || [];
             if (items.length === 0) return null;
             return (
-              <div key={key} className="border-b border-slate-100 last:border-b-0">
-                <div className="flex items-center justify-between px-4 py-2 bg-slate-50/80">
+              <div key={key} className="border-b border-slate-100 last:border-b-0 dark:border-slate-800">
+                <div className="flex items-center justify-between px-4 py-2 bg-slate-50/80 dark:bg-[#1E293B]">
                   <div className="flex items-center gap-2">
-                    <span className={`w-5 h-5 rounded-md ${bg} ${color} flex items-center justify-center`}>
+                    <span className={`w-5 h-5 rounded-md ${bg} ${color} flex items-center justify-center dark:bg-white/10`}>
                       <Icon size={12} />
                     </span>
-                    <span className="text-[11px] font-semibold text-slate-600 uppercase tracking-wider">
+                    <span className="text-[11px] font-semibold text-slate-600 uppercase tracking-wider dark:text-slate-400">
                       {labels[key] || key}
                     </span>
                   </div>
-                  <span className="text-[10px] text-slate-400 font-medium">{items.length}</span>
+                  <span className="text-[10px] text-slate-400 font-medium dark:text-slate-500">{items.length}</span>
                 </div>
-                <div className="divide-y divide-slate-50">
+                <div className="divide-y divide-slate-50 dark:divide-slate-800">
                   {items.map((item) => (
                     <button
                       key={item.id}
                       onClick={() => handleSelect(routes[key], query, item.id)}
-                      className="w-full text-left px-4 py-2.5 hover:bg-slate-50 transition flex items-center gap-3 cursor-pointer"
+                      className="w-full text-left px-4 py-2.5 hover:bg-slate-50 transition flex items-center gap-3 cursor-pointer dark:hover:bg-slate-800/60"
                     >
                       <div className="min-w-0 flex-1">
-                        <p className="text-xs font-semibold text-slate-800 truncate">{item.name}</p>
-                        <p className="text-[11px] text-slate-400 truncate">
+                        <p className="text-xs font-semibold text-slate-800 truncate dark:text-white">{item.name}</p>
+                        <p className="text-[11px] text-slate-400 truncate dark:text-slate-400">
                           {item.email || item.agencyName || item.city || '—'}
                         </p>
                       </div>
-                      <ArrowRight size={12} className="text-slate-300 shrink-0" />
+                      <ArrowRight size={12} className="text-slate-300 shrink-0 dark:text-slate-600" />
                     </button>
                   ))}
                 </div>
                 <button
                   onClick={() => handleViewAll(routes[key], query)}
-                  className="w-full px-4 py-2 text-[11px] font-semibold text-[#4A9FF5] hover:bg-blue-50 transition text-center cursor-pointer"
+                  className="w-full px-4 py-2 text-[11px] font-semibold text-[#4A9FF5] hover:bg-blue-50 transition text-center cursor-pointer dark:hover:bg-blue-500/10"
                 >
                   View all {labels[key]?.toLowerCase()} results →
                 </button>
