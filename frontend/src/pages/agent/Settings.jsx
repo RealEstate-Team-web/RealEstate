@@ -51,7 +51,7 @@ const CONNECTED_ACCOUNTS = [
 ];
 
 const FIELD_STYLE =
-  'w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3.5 text-xs text-slate-800 focus:outline-none focus:border-[#4A9FF5] font-medium transition';
+  'w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3.5 text-xs text-slate-800 focus:outline-none focus:border-[#4A9FF5] font-medium transition dark:bg-[#1E293B] dark:border-slate-700 dark:text-white dark:placeholder:text-slate-400';
 
 const Settings = () => {
   const { toastMessage, toastTone, showToast } = useToast();
@@ -182,43 +182,43 @@ const Settings = () => {
         <div className="flex items-center gap-2.5">
           <span
             aria-hidden="true"
-            className="w-10 h-10 rounded-xl bg-[#E7F0FB] text-[#4A9FF5] flex items-center justify-center shrink-0"
+            className="w-10 h-10 rounded-xl bg-[#E7F0FB] text-[#4A9FF5] flex items-center justify-center shrink-0 dark:bg-blue-500/10"
           >
             <SettingsIcon size={20} />
           </span>
-          <h1 className="text-[24px] font-bold text-[#111827] tracking-tight">Account Settings</h1>
+          <h1 className="text-[24px] font-bold text-[#111827] tracking-tight dark:text-white">Account Settings</h1>
         </div>
-        <p className="text-[13px] text-[#6B7280] mt-1">
+        <p className="text-[13px] text-[#6B7280] mt-1 dark:text-slate-400">
           Manage your security, notifications and listing preferences
         </p>
       </div>
 
-      <div className="bg-white border border-[#E5E7EB] rounded-2xl divide-y divide-slate-100 shadow-[0_2px_8px_rgba(15,23,42,0.06)]">
+      <div className="bg-white border border-[#E5E7EB] rounded-2xl divide-y divide-slate-100 shadow-[0_2px_8px_rgba(15,23,42,0.06)] dark:bg-[#111827] dark:border-slate-800 dark:divide-slate-800">
         <div className="p-6 space-y-4">
           <div className="flex items-center space-x-3 mb-2">
-            <div className="w-9 h-9 bg-[#E6F4EC] text-[#2F7A55] rounded-xl flex items-center justify-center">
+            <div className="w-9 h-9 bg-[#E6F4EC] text-[#2F7A55] rounded-xl flex items-center justify-center dark:bg-emerald-500/10 dark:text-emerald-300">
               <Lock size={20} />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-slate-900">Security & Password</h3>
-              <p className="text-xs text-slate-500">Update your account password.</p>
+              <h3 className="text-sm font-bold text-slate-900 dark:text-white">Security & Password</h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Update your account password.</p>
             </div>
           </div>
 
           {passwordError && (
-            <div role="alert" className="flex items-center gap-2 bg-rose-50 border border-rose-200 text-rose-700 text-[13px] px-4 py-2.5 rounded-xl">
+            <div role="alert" className="flex items-center gap-2 bg-rose-50 border border-rose-200 text-rose-700 text-[13px] px-4 py-2.5 rounded-xl dark:bg-rose-500/10 dark:border-rose-500/30 dark:text-rose-300">
               <AlertCircle size={16} /> {passwordError}
             </div>
           )}
           {passwordSuccess && (
-            <div role="status" className="flex items-center gap-2 bg-emerald-50 border border-emerald-200 text-emerald-700 text-[13px] px-4 py-2.5 rounded-xl">
+            <div role="status" className="flex items-center gap-2 bg-emerald-50 border border-emerald-200 text-emerald-700 text-[13px] px-4 py-2.5 rounded-xl dark:bg-emerald-500/10 dark:border-emerald-500/30 dark:text-emerald-300">
               <CheckCircle2 size={16} /> {passwordSuccess}
             </div>
           )}
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
             <div>
-              <label className="block text-xs font-semibold text-slate-600 uppercase mb-1" htmlFor="currentPassword">
+              <label className="block text-xs font-semibold text-slate-600 uppercase mb-1 dark:text-slate-300" htmlFor="currentPassword">
                 Current Password
               </label>
               <input
@@ -232,7 +232,7 @@ const Settings = () => {
             </div>
             <div />
             <div>
-              <label className="block text-xs font-semibold text-slate-600 uppercase mb-1" htmlFor="newPassword">
+              <label className="block text-xs font-semibold text-slate-600 uppercase mb-1 dark:text-slate-300" htmlFor="newPassword">
                 New Password
               </label>
               <input
@@ -245,7 +245,7 @@ const Settings = () => {
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-slate-600 uppercase mb-1" htmlFor="confirmPassword">
+              <label className="block text-xs font-semibold text-slate-600 uppercase mb-1 dark:text-slate-300" htmlFor="confirmPassword">
                 Confirm New Password
               </label>
               <input
@@ -274,12 +274,12 @@ const Settings = () => {
 
         <div className="p-6 space-y-4">
           <div className="flex items-center space-x-3 mb-2">
-            <div className="w-9 h-9 bg-[#F5F0EB] text-[#E7B85A] rounded-xl flex items-center justify-center">
+            <div className="w-9 h-9 bg-[#F5F0EB] text-[#E7B85A] rounded-xl flex items-center justify-center dark:bg-amber-500/10 dark:text-amber-300">
               <Bell size={20} />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-slate-900">Notification Preferences</h3>
-              <p className="text-xs text-slate-500">Manage how you receive platform notifications.</p>
+              <h3 className="text-sm font-bold text-slate-900 dark:text-white">Notification Preferences</h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Manage how you receive platform notifications.</p>
             </div>
           </div>
 
@@ -291,11 +291,11 @@ const Settings = () => {
             ].map((item) => (
               <label
                 key={item.key}
-                className="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-200/60 cursor-pointer hover:bg-slate-100/50 transition"
+                className="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-200/60 cursor-pointer hover:bg-slate-100/50 transition dark:bg-slate-800/60 dark:border-slate-700 dark:hover:bg-slate-700/50"
               >
                 <div>
-                  <p className="text-xs font-bold text-slate-800">{item.title}</p>
-                  <p className="text-[11px] text-slate-500">{item.description}</p>
+                  <p className="text-xs font-bold text-slate-800 dark:text-slate-100">{item.title}</p>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400">{item.description}</p>
                 </div>
                 <input
                   type="checkbox"
@@ -309,36 +309,36 @@ const Settings = () => {
         </div>
       </div>
 
-      <div className="bg-white border border-[#E5E7EB] rounded-2xl shadow-[0_2px_8px_rgba(15,23,42,0.06)]">
+      <div className="bg-white border border-[#E5E7EB] rounded-2xl shadow-[0_2px_8px_rgba(15,23,42,0.06)] dark:bg-[#111827] dark:border-slate-800">
         <div className="p-6">
           <div className="flex items-center space-x-3 mb-4">
-            <div className="w-9 h-9 bg-[#EEF1F6] text-slate-500 rounded-xl flex items-center justify-center">
+            <div className="w-9 h-9 bg-[#EEF1F6] text-slate-500 rounded-xl flex items-center justify-center dark:bg-slate-800 dark:text-slate-300">
               <Link2 size={20} />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-slate-900">Linked Accounts</h3>
-              <p className="text-xs text-slate-500">Connect accounts to unlock integrations.</p>
+              <h3 className="text-sm font-bold text-slate-900 dark:text-white">Linked Accounts</h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Connect accounts to unlock integrations.</p>
             </div>
           </div>
           <div className="space-y-3 pt-1">
             {CONNECTED_ACCOUNTS.map((provider) => (
               <div
                 key={provider.id}
-                className="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-200/60"
+                className="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-200/60 dark:bg-slate-800/60 dark:border-slate-700"
               >
                 <div className="flex items-center space-x-3 min-w-0">
-                  <span className="w-9 h-9 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-sm font-bold text-[#4A9FF5] shrink-0">
+                  <span className="w-9 h-9 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-sm font-bold text-[#4A9FF5] shrink-0 dark:bg-[#1E293B] dark:border-slate-700">
                     {provider.icon || provider.name.charAt(0)}
                   </span>
                   <div className="min-w-0">
-                    <p className="text-xs font-bold text-slate-800">{provider.name}</p>
+                    <p className="text-xs font-bold text-slate-800 dark:text-slate-100">{provider.name}</p>
                     <p className="text-[11px] text-slate-500 truncate">{provider.description}</p>
                   </div>
                 </div>
                 <button
                   type="button"
                   onClick={() => showToast(`${provider.name} linking is coming soon`)}
-                  className="text-[#4A9FF5] hover:bg-blue-50 border border-[#4A9FF5] px-4 py-1.5 rounded-lg text-[11px] font-bold transition cursor-pointer shrink-0"
+                  className="text-[#4A9FF5] hover:bg-blue-50 border border-[#4A9FF5] px-4 py-1.5 rounded-lg text-[11px] font-bold transition cursor-pointer shrink-0 dark:hover:bg-blue-500/10"
                 >
                   Connect
                 </button>
@@ -349,23 +349,23 @@ const Settings = () => {
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-5">
-        <div className="bg-white border border-[#E5E7EB] rounded-2xl shadow-[0_2px_8px_rgba(15,23,42,0.06)]">
+        <div className="bg-white border border-[#E5E7EB] rounded-2xl shadow-[0_2px_8px_rgba(15,23,42,0.06)] dark:bg-[#111827] dark:border-slate-800">
           <div className="p-6">
             <div className="flex items-center space-x-3 mb-4">
-              <div className="w-9 h-9 bg-[#E6F4EC] text-[#2F7A55] rounded-xl flex items-center justify-center">
+              <div className="w-9 h-9 bg-[#E6F4EC] text-[#2F7A55] rounded-xl flex items-center justify-center dark:bg-emerald-500/10 dark:text-emerald-300">
                 <Tag size={20} />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-slate-900">Listing Preferences</h3>
-                <p className="text-xs text-slate-500">Property categories you focus on.</p>
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white">Listing Preferences</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400">Property categories you focus on.</p>
               </div>
             </div>
-            <p className="text-xs font-semibold text-slate-700 mb-2">Property Interests</p>
-            <div className="border border-slate-200 rounded-xl divide-y divide-slate-100 bg-white">
+            <p className="text-xs font-semibold text-slate-700 mb-2 dark:text-slate-200">Property Interests</p>
+            <div className="border border-slate-200 rounded-xl divide-y divide-slate-100 bg-white dark:border-slate-800 dark:divide-slate-800 dark:bg-[#111827]">
               {categoriesLoading ? (
                 <p className="p-4 text-xs text-slate-500">Loading categories…</p>
               ) : categoriesError ? (
-                <p className="flex items-center space-x-2 p-4 text-xs text-rose-600">
+                <p className="flex items-center space-x-2 p-4 text-xs text-rose-600 dark:text-rose-400">
                   <AlertCircle size={14} className="shrink-0" />
                   <span>{categoriesError}</span>
                 </p>
@@ -377,7 +377,7 @@ const Settings = () => {
                   const isSelected = listingPrefs.categories.includes(category.name);
                   return (
                     <div key={category.id}>
-                      <div className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-slate-50 transition">
+                      <div className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-slate-50 transition dark:hover:bg-slate-800/60">
                         <label className="flex items-center space-x-2.5 min-w-0 cursor-pointer">
                           <input
                             type="checkbox"
@@ -395,15 +395,15 @@ const Settings = () => {
                           type="button"
                           aria-expanded={isExpanded}
                           onClick={() => setExpandedCategory(isExpanded ? null : category.name)}
-                          className="flex items-center space-x-2 shrink-0 rounded-lg px-2 py-1 -mr-1 hover:bg-slate-100 transition cursor-pointer"
+                          className="flex items-center space-x-2 shrink-0 rounded-lg px-2 py-1 -mr-1 hover:bg-slate-100 transition cursor-pointer dark:hover:bg-slate-700/50"
                           aria-label={isExpanded ? `Hide details for ${category.name}` : `Show details for ${category.name}`}
                         >
-                          <span className="text-[11px] text-slate-400">{isSelected ? 'Added' : 'Add'}</span>
-                          {isExpanded ? (
-                            <ChevronUp size={16} className="text-slate-400" />
-                          ) : (
-                            <ChevronDown size={16} className="text-slate-400" />
-                          )}
+<span className="text-[11px] text-slate-400 dark:text-slate-500">{isSelected ? 'Added' : 'Add'}</span>
+                            {isExpanded ? (
+                              <ChevronUp size={16} className="text-slate-400 dark:text-slate-500" />
+                            ) : (
+                              <ChevronDown size={16} className="text-slate-400 dark:text-slate-500" />
+                            )}
                         </button>
                       </div>
                       {isExpanded && (
@@ -419,7 +419,7 @@ const Settings = () => {
                 })
               )}
             </div>
-            <p className="text-[11px] text-slate-400 mt-2">
+            <p className="text-[11px] text-slate-400 mt-2 dark:text-slate-500">
               {selectedInterestCount > 0
                 ? `${selectedInterestCount} categor${selectedInterestCount > 1 ? 'ies' : 'y'} selected`
                 : 'No categories selected yet'}
@@ -427,26 +427,26 @@ const Settings = () => {
           </div>
         </div>
 
-        <div className="bg-white border border-[#E5E7EB] rounded-2xl shadow-[0_2px_8px_rgba(15,23,42,0.06)]">
+        <div className="bg-white border border-[#E5E7EB] rounded-2xl shadow-[0_2px_8px_rgba(15,23,42,0.06)] dark:bg-[#111827] dark:border-slate-800">
           <div className="p-6 space-y-5">
             <div className="flex items-center space-x-3">
-              <div className="w-9 h-9 bg-[#FBF3DD] text-[#E7B85A] rounded-xl flex items-center justify-center">
+              <div className="w-9 h-9 bg-[#FBF3DD] text-[#E7B85A] rounded-xl flex items-center justify-center dark:bg-amber-500/10 dark:text-amber-300">
                 <Wallet size={20} />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-slate-900">Pricing &amp; Alerts</h3>
-                <p className="text-xs text-slate-500">Set your target client budget range.</p>
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white">Pricing &amp; Alerts</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400">Set your target client budget range.</p>
               </div>
             </div>
 
             <div>
               <div className="flex items-center justify-between mb-2">
-                <p className="text-xs font-semibold text-slate-700">Budget Range</p>
+                <p className="text-xs font-semibold text-slate-700 dark:text-slate-200">Budget Range</p>
                 <p className="text-xs font-bold text-[#4A9FF5]">
                   {budgetFormatter(listingPrefs.minBudget)} – {budgetFormatter(listingPrefs.maxBudget)}
                 </p>
               </div>
-              <div className="relative h-2 bg-slate-200 rounded-full">
+              <div className="relative h-2 bg-slate-200 rounded-full dark:bg-slate-700">
                 <div
                   className="absolute inset-y-0 bg-[#4A9FF5] rounded-full"
                   style={{
@@ -477,18 +477,18 @@ const Settings = () => {
                   className="budget-range absolute inset-x-0 top-0 h-6 w-full appearance-none bg-transparent cursor-pointer pointer-events-none"
                 />
               </div>
-              <div className="flex justify-between text-[11px] text-slate-400 mt-1">
+              <div className="flex justify-between text-[11px] text-slate-400 mt-1 dark:text-slate-500">
                 <span>Br 0</span>
                 <span>Br 1M</span>
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1.5" htmlFor="preferredLocations">
+              <label className="block text-xs font-semibold text-slate-700 mb-1.5 dark:text-slate-200" htmlFor="preferredLocations">
                 Preferred Locations
               </label>
               <div className="relative">
-                <MapPin size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                <MapPin size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
                 <input
                   id="preferredLocations"
                   type="text"
@@ -498,15 +498,15 @@ const Settings = () => {
                   className={`${FIELD_STYLE} pl-10`}
                 />
               </div>
-              <p className="text-[11px] text-slate-400 mt-1.5">
+              <p className="text-[11px] text-slate-400 mt-1.5 dark:text-slate-500">
                 Comma-separated areas you mostly work in.
               </p>
             </div>
 
-            <label className="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-200/60 cursor-pointer hover:bg-slate-100/50 transition">
+            <label className="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-200/60 cursor-pointer hover:bg-slate-100/50 transition dark:bg-slate-800/60 dark:border-slate-700 dark:hover:bg-slate-700/50">
               <div>
-                <p className="text-xs font-bold text-slate-800">Listing Alerts</p>
-                <p className="text-[11px] text-slate-500">
+                <p className="text-xs font-bold text-slate-800 dark:text-slate-100">Listing Alerts</p>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">
                   Notify me when a new property matches my profile interests.
                 </p>
               </div>
@@ -521,17 +521,17 @@ const Settings = () => {
         </div>
       </div>
 
-      <div className="p-6 bg-white border border-[#E5E7EB] rounded-2xl shadow-[0_2px_8px_rgba(15,23,42,0.06)]">
+      <div className="p-6 bg-white border border-[#E5E7EB] rounded-2xl shadow-[0_2px_8px_rgba(15,23,42,0.06)] dark:bg-[#111827] dark:border-slate-800">
         <div className="flex items-center space-x-2 text-xs">
           {storageStatus === 'saved' ? (
             <>
-              <CheckCircle2 size={15} className="text-emerald-600" />
-              <span className="text-emerald-700 font-semibold">Notification and listing preferences saved locally</span>
+              <CheckCircle2 size={15} className="text-emerald-600 dark:text-emerald-400" />
+              <span className="text-emerald-700 font-semibold dark:text-emerald-400">Notification and listing preferences saved locally</span>
             </>
           ) : (
             <>
-              <AlertCircle size={15} className="text-rose-500" />
-              <span className="text-slate-500">Preferences active, but couldn't save to this browser</span>
+              <AlertCircle size={15} className="text-rose-500 dark:text-rose-400" />
+              <span className="text-slate-500 dark:text-slate-400">Preferences active, but couldn't save to this browser</span>
             </>
           )}
         </div>
