@@ -1,6 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --color-teal: #159FA7;
   --color-teal-dark: #0A3A47;
@@ -77,4 +79,13 @@ body {
   border: 3px solid #4A9FF5;
   box-shadow: 0 1px 3px rgba(15, 23, 42, 0.25);
   cursor: pointer;
+}
+
+/* Dark-mode token overrides: theme utilities and body inherit from these */
+.dark {
+  --color-canvas: #0B1120;
+  --color-ink: #F7F8F8;
+  --color-muted: #94A3B8;
+  --color-line: #334155;
+  color-scheme: dark;
 }
