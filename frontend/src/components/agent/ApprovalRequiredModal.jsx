@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { X, Clock, AlertCircle, XCircle } from 'lucide-react';
 
 const STATUS_CONTENT = {
@@ -29,13 +29,59 @@ const STATUS_CONTENT = {
 };
 
 const ApprovalRequiredModal = ({ open, onClose, agentStatus = 'pending' }) => {
+  const dialogRef = useRef(null);
+
+  // Lock body scroll, move focus into the dialog, trap Tab navigation, and
+  // restore focus to the triggering element on close.
   useEffect(() => {
     if (!open) return;
+
+    const previouslyFocusedElement = document.activeElement;
+    dialogRef.current?.focus();
+
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
     const handleKeyDown = (e) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') {
+        onClose();
+        return;
+      }
+
+      if (e.key === 'Tab' && dialogRef.current) {
+        const focusable = dialogRef.current.querySelectorAll(
+          'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        );
+        if (focusable.length === 0) return;
+
+        const firstElement = focusable[0];
+        const lastElement = focusable[focusable.length - 1];
+        const isInsideModal = dialogRef.current.contains(document.activeElement);
+
+        // Pull focus back into the dialog whenever it falls outside
+        if (!isInsideModal) {
+          e.preventDefault();
+          (e.shiftKey ? lastElement : firstElement).focus();
+        } else if (e.shiftKey) {
+          if (document.activeElement === firstElement) {
+            e.preventDefault();
+            lastElement.focus();
+          }
+        } else if (document.activeElement === lastElement) {
+          e.preventDefault();
+          firstElement.focus();
+        }
+      }
     };
+
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      window.removeEventListener('keydown', handleKeyDown);
+      if (previouslyFocusedElement && typeof previouslyFocusedElement.focus === 'function') {
+        previouslyFocusedElement.focus();
+      }
+    };
   }, [open, onClose]);
 
   if (!open) return null;
@@ -51,10 +97,12 @@ const ApprovalRequiredModal = ({ open, onClose, agentStatus = 'pending' }) => {
       }}
     >
       <div
+        ref={dialogRef}
+        tabIndex={-1}
         role="dialog"
         aria-modal="true"
         aria-labelledby="approval-required-title"
-        className="w-full max-w-md bg-white rounded-2xl shadow-2xl p-6"
+        className="w-full max-w-md bg-white rounded-2xl shadow-2xl p-6 focus:outline-none focus:ring-2 focus:ring-amber-400/40"
       >
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-2">
