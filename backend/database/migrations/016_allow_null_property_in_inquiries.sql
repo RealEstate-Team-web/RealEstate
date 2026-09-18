@@ -1,0 +1,2 @@
+ALTER TABLE inquiries
+    MODIFY COLUMN property_id BIGINT UNSIGNED NULL;

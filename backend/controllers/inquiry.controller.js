@@ -7,9 +7,10 @@ const inquiryService = require("../services/inquiry.service");
 async function submitInquiry(req, res, next) {
   try {
     const buyerId = req.user.id;
-    const { propertyId, name, email, phone, message } = req.body;
+    const { agentId, propertyId, name, email, phone, message } = req.body;
 
     const inquiry = await inquiryService.submitInquiry(buyerId, {
+      agentId,
       propertyId,
       name,
       email,

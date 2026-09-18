@@ -1,6 +1,6 @@
 import { ArrowRight, MapPin, Phone, Mail } from 'lucide-react';
 
-const AgentCard = ({ agent, variant = 'full' }) => {
+const AgentCard = ({ agent, variant = 'full', onContact }) => {
   if (variant === 'compact') {
     return (
       <div className="rounded-xl border border-slate-200 bg-white p-3 text-center transition-transform duration-200 hover:-translate-y-1 hover:shadow-md">
@@ -94,15 +94,25 @@ const AgentCard = ({ agent, variant = 'full' }) => {
             </p>
           </div>
 
-          {agent.email && (
-            <a
-              href={`mailto:${agent.email}`}
-              className="inline-flex items-center gap-1.5 rounded-lg bg-[#0F9690] px-4 py-2 text-xs font-bold text-white transition hover:bg-[#0D827D]"
-            >
-              Contact
-              <ArrowRight className="h-3.5 w-3.5" />
-            </a>
-          )}
+          {agent.email &&
+            (onContact ? (
+              <button
+                type="button"
+                onClick={() => onContact(agent)}
+                className="inline-flex items-center gap-1.5 rounded-lg bg-[#0F9690] px-4 py-2 text-xs font-bold text-white transition hover:bg-[#0D827D] cursor-pointer"
+              >
+                Contact
+                <ArrowRight className="h-3.5 w-3.5" />
+              </button>
+            ) : (
+              <a
+                href={`mailto:${agent.email}`}
+                className="inline-flex items-center gap-1.5 rounded-lg bg-[#0F9690] px-4 py-2 text-xs font-bold text-white transition hover:bg-[#0D827D]"
+              >
+                Contact
+                <ArrowRight className="h-3.5 w-3.5" />
+              </a>
+            ))}
         </div>
       </div>
     </div>

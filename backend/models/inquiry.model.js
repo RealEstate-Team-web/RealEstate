@@ -146,7 +146,7 @@ const Inquiry = {
           LIMIT 1
         ) AS propertyImage
       FROM inquiries i
-      JOIN properties p ON p.id = i.property_id
+      LEFT JOIN properties p ON p.id = i.property_id
       JOIN users u_agent ON u_agent.id = i.agent_id
       LEFT JOIN agent_profiles ap ON ap.user_id = i.agent_id
       JOIN users u_buyer ON u_buyer.id = i.buyer_id
@@ -213,7 +213,7 @@ const Inquiry = {
           WHERE im.inquiry_id = i.id
         ) AS messageCount
       FROM inquiries i
-      JOIN properties p ON p.id = i.property_id
+      LEFT JOIN properties p ON p.id = i.property_id
       JOIN users u_agent ON u_agent.id = i.agent_id
       LEFT JOIN agent_profiles ap ON ap.user_id = i.agent_id
       WHERE i.buyer_id = ?
@@ -235,7 +235,7 @@ const Inquiry = {
     let sql = `
       SELECT COUNT(*) AS total
       FROM inquiries i
-      JOIN properties p ON p.id = i.property_id
+      LEFT JOIN properties p ON p.id = i.property_id
       JOIN users u_agent ON u_agent.id = i.agent_id
       WHERE i.buyer_id = ?
     `;
@@ -298,7 +298,7 @@ const Inquiry = {
           WHERE im.inquiry_id = i.id
         ) AS messageCount
       FROM inquiries i
-      JOIN properties p ON p.id = i.property_id
+      LEFT JOIN properties p ON p.id = i.property_id
       JOIN users u_buyer ON u_buyer.id = i.buyer_id
       WHERE i.agent_id = ?
     `;
@@ -319,7 +319,7 @@ const Inquiry = {
     let sql = `
       SELECT COUNT(*) AS total
       FROM inquiries i
-      JOIN properties p ON p.id = i.property_id
+      LEFT JOIN properties p ON p.id = i.property_id
       JOIN users u_buyer ON u_buyer.id = i.buyer_id
       WHERE i.agent_id = ?
     `;

@@ -1,32 +1,63 @@
 const Inquiry = require("../models/inquiry.model");
+const Agent = require("../models/agent.model");
 
 const ALLOWED_STATUSES = new Set(["pending", "read", "responded", "archived"]);
 
 /**
- * Submit an initial inquiry for a property (Creates thread)
+ * Submit an initial inquiry for a property or a general contact to an agent
  * @param {number|string} buyerId
  * @param {Object} data
  * @returns {Promise<Object>}
  */
-async function submitInquiry(buyerId, { propertyId, name, email, phone, message }) {
-  const property = await Inquiry.getPropertyListingAgent(propertyId);
-  if (!property) {
-    const error = new Error("Property not found");
-    error.status = 404;
-    throw error;
-  }
+async function submitInquiry(buyerId, { agentId, propertyId, name, email, phone, message }) {
+  let targetAgentId;
+  let targetPropertyId = propertyId;
 
-  if (property.status && property.status !== "available") {
-    const error = new Error("Inquiries can only be submitted for available property listings");
-    error.status = 400;
-    throw error;
-  }
+  if (propertyId) {
+    const property = await Inquiry.getPropertyListingAgent(propertyId);
+    if (!property) {
+      const error = new Error("Property not found");
+      error.status = 404;
+      throw error;
+    }
 
-  // Prevent users from inquiring on their own listing
-  if (String(property.agentId) === String(buyerId)) {
-    const error = new Error("You cannot submit an inquiry for your own property listing");
-    error.status = 400;
-    throw error;
+    if (property.status && property.status !== "available") {
+      const error = new Error("Inquiries can only be submitted for available property listings");
+      error.status = 400;
+      throw error;
+    }
+
+    // Prevent users from inquiring on their own listing
+    if (String(property.agentId) === String(buyerId)) {
+      const error = new Error("You cannot submit an inquiry for your own property listing");
+      error.status = 400;
+      throw error;
+    }
+
+    targetAgentId = property.agentId;
+  } else {
+    const agent = await Agent.findByUserId(agentId);
+    if (!agent) {
+      const error = new Error("Agent not found");
+      error.status = 404;
+      throw error;
+    }
+
+    if (agent.status !== "approved") {
+      const error = new Error("Contact can only be initiated with approved agents");
+      error.status = 400;
+      throw error;
+    }
+
+    // Prevent a user from contacting themselves
+    if (String(agentId) === String(buyerId)) {
+      const error = new Error("You cannot send a contact message to yourself");
+      error.status = 400;
+      throw error;
+    }
+
+    targetAgentId = agentId;
+    targetPropertyId = null;
   }
 
   const cleanName = typeof name === "string" ? name.trim() : "";
@@ -35,9 +66,9 @@ async function submitInquiry(buyerId, { propertyId, name, email, phone, message 
   const cleanMessage = typeof message === "string" ? message.trim() : "";
 
   const inquiryId = await Inquiry.create({
-    property_id: propertyId,
+    property_id: targetPropertyId,
     buyer_id: buyerId,
-    agent_id: property.agentId,
+    agent_id: targetAgentId,
     name: cleanName,
     email: cleanEmail,
     phone: cleanPhone,

@@ -53,7 +53,13 @@ const LoginForm = () => {
       } else {
         localStorage.removeItem('remember_email')
       }
-      navigate(ROLE_DASHBOARDS[user.role] || '/', { replace: true })
+      const returnTo = sessionStorage.getItem('returnTo')
+      if (returnTo) {
+        sessionStorage.removeItem('returnTo')
+        navigate(returnTo, { replace: true })
+      } else {
+        navigate(ROLE_DASHBOARDS[user.role] || '/', { replace: true })
+      }
     } catch (err) {
       setServerError(err.message)
     } finally {

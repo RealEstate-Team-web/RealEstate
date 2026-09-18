@@ -425,7 +425,7 @@ export const Messages = () => {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between">
                           <h4 className="text-xs font-bold text-slate-900 truncate">
-                            {inq.propertyTitle}
+                            {inq.propertyTitle || 'General inquiry'}
                           </h4>
                           <span className="text-[10px] text-slate-400 font-medium shrink-0 ml-1">
                             {formatShortDate(inq.updatedAt || inq.createdAt)}
@@ -526,6 +526,7 @@ export const Messages = () => {
                     </div>
                   </div>
 
+                  {activeInquiry.propertyId && (
                   <button
                     type="button"
                     onClick={() => setScheduleModalTarget(activeInquiry)}
@@ -535,9 +536,11 @@ export const Messages = () => {
                     <span className="hidden sm:inline">Schedule Visit</span>
                     <span className="sm:hidden">Tour</span>
                   </button>
+                  )}
                 </div>
 
                 {/* Property Context Banner */}
+                {activeInquiry.propertyId && (
                 <div className="p-3 bg-blue-50/60 border-b border-blue-100 flex items-center justify-between gap-3 text-xs">
                   <div className="flex items-center space-x-3 min-w-0">
                     {activeInquiry.propertyImage && (
@@ -549,7 +552,7 @@ export const Messages = () => {
                     )}
                     <div className="min-w-0">
                       <h4 className="font-bold text-slate-900 truncate">
-                        {activeInquiry.propertyTitle}
+                        {activeInquiry.propertyTitle || 'General inquiry'}
                       </h4>
                       <p className="text-[11px] text-slate-500 truncate flex items-center gap-1">
                         <MapPin size={11} className="text-slate-400" />
@@ -571,6 +574,7 @@ export const Messages = () => {
                     View Listing
                   </Link>
                 </div>
+                )}
 
                 {/* Message Thread History */}
                 <div className="p-4 sm:p-6 space-y-3.5 overflow-y-auto flex-1 max-h-[380px] bg-slate-50/30">

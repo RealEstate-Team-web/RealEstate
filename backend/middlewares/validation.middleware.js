@@ -542,10 +542,32 @@ const validateRescheduleVisit = (req, res, next) => {
 
 const validateSubmitInquiry = (req, res, next) => {
   const errors = [];
-  const { propertyId, name, email, phone, message } = req.body || {};
+  const { propertyId, agentId, name, email, phone, message } = req.body || {};
 
-  if (!isValidPositiveBigInt(propertyId)) {
-    errors.push("propertyId is required and must be a valid positive integer");
+  let hasProperty = false;
+  let hasAgent = false;
+
+  // Validate each supplied target independently so an invalid id is never
+  // masked by a valid one. At least one valid target must be present.
+  const isTargetProvided = (value) =>
+    value !== undefined && value !== null && value !== "";
+
+  if (isTargetProvided(propertyId)) {
+    hasProperty = isValidPositiveBigInt(propertyId);
+    if (!hasProperty) {
+      errors.push("propertyId must be a valid positive integer");
+    }
+  }
+
+  if (isTargetProvided(agentId)) {
+    hasAgent = isValidPositiveBigInt(agentId);
+    if (!hasAgent) {
+      errors.push("agentId must be a valid positive integer");
+    }
+  }
+
+  if (!hasProperty && !hasAgent) {
+    errors.push("Either a valid propertyId or agentId is required");
   }
 
   if (!name || typeof name !== "string" || name.trim().length < 2) {
