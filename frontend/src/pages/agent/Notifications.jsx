@@ -136,19 +136,19 @@ const Notifications = () => {
         <div className="flex items-center gap-2.5">
           <span
             aria-hidden="true"
-            className="w-10 h-10 rounded-xl bg-[#E7F0FB] text-[#4A9FF5] flex items-center justify-center shrink-0"
+            className="w-10 h-10 rounded-xl bg-[#E7F0FB] text-[#4A9FF5] flex items-center justify-center shrink-0 dark:bg-blue-500/10"
           >
             <Bell size={20} />
           </span>
-          <h1 className="text-[24px] font-bold text-[#111827] tracking-tight">Notifications</h1>
+          <h1 className="text-[24px] font-bold text-[#111827] tracking-tight dark:text-white">Notifications</h1>
         </div>
-        <p className="text-[13px] text-[#6B7280] mt-1">
+        <p className="text-[13px] text-[#6B7280] mt-1 dark:text-slate-400">
           New inquiries and visit requests for your listings
         </p>
       </div>
 
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-1.5 bg-slate-100 rounded-xl p-1">
+        <div className="flex items-center gap-1.5 bg-slate-100 rounded-xl p-1 dark:bg-slate-800">
           {TABS.map((option) => (
             <button
               key={option.key}
@@ -156,8 +156,8 @@ const Notifications = () => {
               onClick={() => setTab(option.key)}
               className={`px-4 py-2 rounded-lg text-xs font-bold transition cursor-pointer ${
                 tab === option.key
-                  ? 'bg-white text-[#111827] shadow-sm'
-                  : 'text-slate-500 hover:text-slate-700'
+                  ? 'bg-white text-[#111827] shadow-sm dark:bg-slate-700 dark:text-white'
+                  : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'
               }`}
             >
               {option.label}
@@ -175,7 +175,7 @@ const Notifications = () => {
             type="button"
             onClick={handleMarkAllRead}
             disabled={markingAll}
-            className="flex items-center space-x-2 text-[#4A9FF5] hover:bg-blue-50 border border-[#4A9FF5] px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer disabled:opacity-50"
+            className="flex items-center space-x-2 text-[#4A9FF5] hover:bg-blue-50 border border-[#4A9FF5] px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer disabled:opacity-50 dark:hover:bg-blue-500/10"
           >
             <CheckCheck size={15} />
             <span>{markingAll ? 'Marking…' : 'Mark all read'}</span>
@@ -184,19 +184,19 @@ const Notifications = () => {
       </div>
 
       {error && (
-        <div role="alert" className="flex items-center gap-2 bg-rose-50 border border-rose-200 text-rose-700 text-[13px] px-4 py-2.5 rounded-xl">
+        <div role="alert" className="flex items-center gap-2 bg-rose-50 border border-rose-200 text-rose-700 text-[13px] px-4 py-2.5 rounded-xl dark:bg-rose-500/10 dark:border-rose-500/30 dark:text-rose-300">
           <AlertCircle size={16} />
           <span>{error}</span>
         </div>
       )}
 
       {loading ? (
-        <div className="bg-white border border-[#E5E7EB] rounded-2xl p-10 flex items-center justify-center">
+        <div className="bg-white border border-[#E5E7EB] rounded-2xl p-10 flex items-center justify-center dark:bg-[#111827] dark:border-slate-800">
           <p className="text-[13px] text-[#9CA3AF]">Loading notifications…</p>
         </div>
       ) : visibleItems.length === 0 ? (
-        <div className="bg-white border border-[#E5E7EB] rounded-2xl p-10 flex flex-col items-center gap-3">
-          <span className="w-12 h-12 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center">
+        <div className="bg-white border border-[#E5E7EB] rounded-2xl p-10 flex flex-col items-center gap-3 dark:bg-[#111827] dark:border-slate-800">
+          <span className="w-12 h-12 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center dark:bg-slate-800 dark:text-slate-500">
             <Inbox size={24} />
           </span>
           <p className="text-[13px] text-[#9CA3AF]">
@@ -210,13 +210,13 @@ const Notifications = () => {
               <button
                 type="button"
                 onClick={() => handleOpenItem(item)}
-                className="w-full text-left bg-white border border-[#E5E7EB] rounded-2xl p-4 flex items-start gap-3 hover:border-[#4A9FF5] hover:shadow-[0_2px_10px_rgba(74,159,245,0.12)] transition cursor-pointer"
+                className="w-full text-left bg-white border border-[#E5E7EB] rounded-2xl p-4 flex items-start gap-3 hover:border-[#4A9FF5] hover:shadow-[0_2px_10px_rgba(74,159,245,0.12)] transition cursor-pointer dark:bg-[#111827] dark:border-slate-800"
               >
                 <span
                   className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
                     item.kind === 'inquiry'
                       ? 'bg-[#E7F0FB] text-[#4A9FF5]'
-                      : 'bg-[#E6F4EC] text-[#2F7A55]'
+                      : 'bg-[#E6F4EC] text-[#2F7A55] dark:bg-emerald-500/10 dark:text-emerald-300'
                   }`}
                 >
                   {item.kind === 'inquiry' ? (
@@ -228,20 +228,20 @@ const Notifications = () => {
                 <span className="min-w-0 flex-1">
                   <span className="flex items-center justify-between gap-3">
                     <span className="flex items-center space-x-2 min-w-0">
-                      <span className="text-[13px] font-bold text-slate-900 truncate">
+                      <span className="text-[13px] font-bold text-slate-900 truncate dark:text-white">
                         {item.title}
                       </span>
                       {item.unread && (
                         <span className="w-2 h-2 rounded-full bg-[#4A9FF5] shrink-0" aria-label="Unread" />
                       )}
                     </span>
-                    <span className="text-[11px] text-slate-400 shrink-0">
+                    <span className="text-[11px] text-slate-400 shrink-0 dark:text-slate-500">
                       {formatTime(item.createdAt)}
                     </span>
                   </span>
-                  <span className="block text-xs text-slate-600 mt-0.5">{item.description}</span>
+                  <span className="block text-xs text-slate-600 mt-0.5 dark:text-slate-300">{item.description}</span>
                   {item.detail && (
-                    <span className="block text-[11px] text-slate-400 mt-1 truncate">
+                    <span className="block text-[11px] text-slate-400 mt-1 truncate dark:text-slate-500">
                       {item.detail}
                     </span>
                   )}
