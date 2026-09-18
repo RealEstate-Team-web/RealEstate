@@ -66,7 +66,7 @@ const ActivityTrendChart = () => {
         {gridLines.map(({ t, y }) => (
           <g key={t}>
             <line x1={padL} y1={y} x2={w - padR} y2={y} stroke="#EEF1F4" strokeWidth="1" />
-            <text x={padL - 6} y={y + 3} textAnchor="end" className="fill-[#9CA3AF]" style={{ fontSize: 9 }}>
+            <text x={padL - 6} y={y + 3} textAnchor="end" className="fill-[#9CA3AF] dark:fill-slate-500" style={{ fontSize: 9 }}>
               {t}
             </text>
           </g>
@@ -98,7 +98,7 @@ const ActivityTrendChart = () => {
         {xLabels.map((label, i) => {
           const x = padL + (i * plotW) / (xLabels.length - 1);
           return (
-            <text key={label} x={x} y={h - 8} textAnchor="middle" className="fill-[#9CA3AF]" style={{ fontSize: 9 }}>
+            <text key={label} x={x} y={h - 8} textAnchor="middle" className="fill-[#9CA3AF] dark:fill-slate-500" style={{ fontSize: 9 }}>
               {label}
             </text>
           );
@@ -110,7 +110,7 @@ const ActivityTrendChart = () => {
         {Object.values(SERIES).map((s) => (
           <div key={s.label} className="flex items-center gap-1.5">
             <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: s.color }} />
-            <span className="text-[11px] text-[#6B7280]">{s.label}</span>
+            <span className="text-[11px] text-[#6B7280] dark:text-slate-400">{s.label}</span>
           </div>
         ))}
       </div>

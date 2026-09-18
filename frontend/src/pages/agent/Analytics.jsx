@@ -42,22 +42,22 @@ const numberFormat = (n) => {
 };
 
 const STATUS_BADGES = {
-  available: "bg-emerald-50 text-emerald-700 border-emerald-200/60",
-  sold: "bg-rose-50 text-rose-700 border-rose-200/60",
-  rented: "bg-blue-50 text-blue-700 border-blue-200/60",
-  draft: "bg-slate-100 text-slate-600 border-slate-200/60",
+  available: "bg-emerald-50 text-emerald-700 border-emerald-200/60 dark:bg-emerald-500/10 dark:text-emerald-300 dark:border-emerald-500/20",
+  sold: "bg-rose-50 text-rose-700 border-rose-200/60 dark:bg-rose-500/10 dark:text-rose-300 dark:border-rose-500/20",
+  rented: "bg-blue-50 text-blue-700 border-blue-200/60 dark:bg-blue-500/10 dark:text-blue-300 dark:border-blue-500/20",
+  draft: "bg-slate-100 text-slate-600 border-slate-200/60 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700",
 };
 
 const STATUS_ORDER = ["available", "sold", "rented", "draft"];
 
-const CARD_TITLE_CLASS = "text-[15px] font-semibold text-[#111827]";
-const CARD_SUBTITLE_CLASS = "text-[12px] text-[#6B7280] mt-0.5";
+const CARD_TITLE_CLASS = "text-[15px] font-semibold text-[#111827] dark:text-white";
+const CARD_SUBTITLE_CLASS = "text-[12px] text-[#6B7280] mt-0.5 dark:text-slate-400";
 const chartCardClass =
-  "bg-white border border-[#E5E7EB] rounded-2xl shadow-[0_2px_8px_rgba(15,23,42,0.06)] p-5";
+  "bg-white border border-[#E5E7EB] rounded-2xl shadow-[0_2px_8px_rgba(15,23,42,0.06)] p-5 dark:bg-[#111827] dark:border-slate-800";
 
 const SummaryPill = ({ value, trendLabel = "" }) => (
   <div className="flex flex-col items-end gap-1">
-    <p className="text-[26px] font-bold text-[#111827] leading-none">
+    <p className="text-[26px] font-bold text-[#111827] leading-none dark:text-white">
       {numberFormat(value)}
     </p>
     {trendLabel && (
@@ -70,10 +70,10 @@ const SummaryPill = ({ value, trendLabel = "" }) => (
 
 const EmptyState = ({ message }) => (
   <div className="flex flex-col items-center justify-center py-10 text-center">
-    <div className="w-12 h-12 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center mb-3">
+    <div className="w-12 h-12 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center mb-3 dark:bg-slate-800 dark:text-slate-500">
       <Inbox size={22} />
     </div>
-    <p className="text-[13px] text-slate-500">{message}</p>
+    <p className="text-[13px] text-slate-500 dark:text-slate-400">{message}</p>
   </div>
 );
 
@@ -130,10 +130,10 @@ const ProgressRing = ({ value, total }) => {
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="text-[30px] font-bold text-[#111827] leading-none">
+        <span className="text-[30px] font-bold text-[#111827] leading-none dark:text-white">
           {numberFormat(value)}
         </span>
-        <span className="text-[11px] text-[#6B7280] mt-1">
+        <span className="text-[11px] text-[#6B7280] mt-1 dark:text-slate-400">
           {pct}% of {numberFormat(total)}
         </span>
       </div>
@@ -172,23 +172,23 @@ const CompletedVisitsGauge = ({ gauge }) => {
         />
       </svg>
       <div className="-mt-7 text-center">
-        <p className="text-[32px] font-bold text-[#111827] leading-none">
+        <p className="text-[32px] font-bold text-[#111827] leading-none dark:text-white">
           {rate}%
         </p>
-        <p className="text-[11px] text-[#6B7280] mt-1">completion rate</p>
+        <p className="text-[11px] text-[#6B7280] mt-1 dark:text-slate-400">completion rate</p>
       </div>
       <div className="grid grid-cols-2 gap-x-8 gap-y-1 mt-5 text-center">
         <div>
-          <p className="text-[18px] font-bold text-[#111827] leading-none">
+          <p className="text-[18px] font-bold text-[#111827] leading-none dark:text-white">
             {numberFormat(completed)}
           </p>
-          <p className="text-[11px] text-[#6B7280] mt-0.5">Completed</p>
+          <p className="text-[11px] text-[#6B7280] mt-0.5 dark:text-slate-400">Completed</p>
         </div>
         <div>
-          <p className="text-[18px] font-bold text-[#111827] leading-none">
+          <p className="text-[18px] font-bold text-[#111827] leading-none dark:text-white">
             {numberFormat(scheduled)}
           </p>
-          <p className="text-[11px] text-[#6B7280] mt-0.5">Scheduled</p>
+          <p className="text-[11px] text-[#6B7280] mt-0.5 dark:text-slate-400">Scheduled</p>
         </div>
       </div>
     </div>
@@ -369,7 +369,7 @@ const Analytics = () => {
   };
 
   const SortIcon = ({ colKey }) => {
-    if (sortKey !== colKey) return <ArrowUpDown size={12} className="text-slate-400" />;
+    if (sortKey !== colKey) return <ArrowUpDown size={12} className="text-slate-400 dark:text-slate-500" />;
     return sortDir === "asc" ? (
       <ArrowUp size={12} className="text-[#4A9FF5]" />
     ) : (
@@ -391,7 +391,7 @@ const Analytics = () => {
           type="button"
           onClick={() => toggleSort(colKey)}
           aria-label={sortLabel}
-          className="inline-flex items-center gap-1 uppercase tracking-wider text-[11px] text-slate-500 hover:text-[#111827] transition cursor-pointer"
+          className="inline-flex items-center gap-1 uppercase tracking-wider text-[11px] text-slate-500 hover:text-[#111827] transition cursor-pointer dark:text-slate-400 dark:hover:text-white"
         >
           {label} <SortIcon colKey={colKey} />
         </button>
@@ -422,7 +422,7 @@ const Analytics = () => {
           type="button"
           onClick={() => setReloadKey((k) => k + 1)}
           disabled={loading}
-          className="inline-flex items-center gap-2 px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50 transition cursor-pointer disabled:opacity-60"
+          className="inline-flex items-center gap-2 px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50 transition cursor-pointer disabled:opacity-60 dark:bg-[#111827] dark:border-slate-800 dark:text-slate-200 dark:hover:bg-slate-800/60"
         >
           <RefreshCw size={14} className={loading ? "animate-spin" : ""} />
           Refresh
@@ -430,7 +430,7 @@ const Analytics = () => {
       </div>
 
       {error && (
-        <div className="flex items-center gap-2 bg-rose-50 border border-rose-200 text-rose-700 text-[13px] px-4 py-2.5 rounded-xl">
+        <div className="flex items-center gap-2 bg-rose-50 border border-rose-200 text-rose-700 text-[13px] px-4 py-2.5 rounded-xl dark:bg-rose-500/10 dark:border-rose-500/30 dark:text-rose-300">
           <AlertCircle size={16} /> {error}
         </div>
       )}
@@ -438,7 +438,7 @@ const Analytics = () => {
       {loading && !data ? (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
           {Array.from({ length: 3 }).map((_, i) => (
-            <div key={i} className="h-64 rounded-2xl bg-slate-100 animate-pulse" />
+            <div key={i} className="h-64 rounded-2xl bg-slate-100 animate-pulse dark:bg-slate-800" />
           ))}
         </div>
       ) : (
@@ -522,7 +522,7 @@ const Analytics = () => {
                     ].map((s) => (
                       <div key={s.label} className="flex items-center gap-1.5">
                         <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: s.color }} />
-                        <span className="text-[11px] text-[#6B7280]">{s.label}</span>
+                        <span className="text-[11px] text-[#6B7280] dark:text-slate-400">{s.label}</span>
                       </div>
                     ))}
                   </div>
@@ -620,9 +620,9 @@ const Analytics = () => {
                             className="w-2.5 h-2.5 rounded-full shrink-0"
                             style={{ backgroundColor: DONUT_PALETTE[i % DONUT_PALETTE.length] }}
                           />
-                          <span className="text-[#6B7280] truncate">{entry.name}</span>
+                          <span className="text-[#6B7280] truncate dark:text-slate-400">{entry.name}</span>
                         </span>
-                        <span className="font-semibold text-[#111827]">
+                        <span className="font-semibold text-[#111827] dark:text-white">
                           {numberFormat(entry.value)}
                         </span>
                       </div>
@@ -640,7 +640,7 @@ const Analytics = () => {
               <div className="mt-6 flex-1 flex flex-col justify-center">
                 <div className="flex flex-col items-center gap-2">
                   <ProgressRing value={respondedInquiries} total={totalInquiries} />
-                  <p className="text-[12px] font-medium text-[#6B7280]">
+                  <p className="text-[12px] font-medium text-[#6B7280] dark:text-slate-400">
                     responded of total inquiries
                   </p>
                 </div>
@@ -659,7 +659,7 @@ const Analytics = () => {
           </div>
 
           <div className={`${chartCardClass} p-0 overflow-hidden`}>
-            <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+            <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between dark:border-slate-800">
               <div>
                 <h3 className={CARD_TITLE_CLASS}>Top Performing Properties</h3>
                 <p className="text-[12px] text-[#6B7280] mt-0.5">
@@ -672,22 +672,22 @@ const Analytics = () => {
                   onClick={() => setFilterOpen((v) => !v)}
                   className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-[12px] font-semibold transition cursor-pointer ${
                     statusFilter === "all"
-                      ? "bg-white border-slate-200 text-slate-600 hover:bg-slate-50"
-                      : "bg-[#E7F0FB] border-[#4A9FF5]/40 text-[#1D6FD3]"
+                      ? "bg-white border-slate-200 text-slate-600 hover:bg-slate-50 dark:bg-[#111827] dark:border-slate-800 dark:text-slate-300 dark:hover:bg-slate-800/60"
+                      : "bg-[#E7F0FB] border-[#4A9FF5]/40 text-[#1D6FD3] dark:bg-blue-500/10 dark:text-blue-300"
                   }`}
                 >
                   <Filter size={13} />
                   {statusFilter === "all" ? "Status" : statusFilter}
                 </button>
                 {filterOpen && (
-                  <div className="absolute right-0 mt-1 w-40 bg-white border border-slate-200 rounded-xl shadow-lg py-1 z-10">
+                  <div className="absolute right-0 mt-1 w-40 bg-white border border-slate-200 rounded-xl shadow-lg py-1 z-10 dark:bg-[#111827] dark:border-slate-800">
                     <button
                       type="button"
                       onClick={() => {
                         setStatusFilter("all");
                         setFilterOpen(false);
                       }}
-                      className="w-full text-left px-3 py-1.5 text-[12px] text-slate-700 hover:bg-slate-50 cursor-pointer"
+                      className="w-full text-left px-3 py-1.5 text-[12px] text-slate-700 hover:bg-slate-50 cursor-pointer dark:text-slate-200 dark:hover:bg-slate-800/60"
                     >
                       All statuses
                     </button>
@@ -711,13 +711,13 @@ const Analytics = () => {
 
             {topProperties.length === 0 ? (
               <div className="py-14 text-center space-y-2">
-                <div className="w-14 h-14 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center mx-auto">
+                <div className="w-14 h-14 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center mx-auto dark:bg-slate-800 dark:text-slate-500">
                   <Building2 size={26} />
                 </div>
-                <p className="text-[14px] font-semibold text-slate-700">
+                <p className="text-[14px] font-semibold text-slate-700 dark:text-slate-200">
                   No properties yet
                 </p>
-                <p className="text-[12px] text-slate-500 max-w-sm mx-auto">
+                <p className="text-[12px] text-slate-500 max-w-sm mx-auto dark:text-slate-400">
                   Once you list a property, you'll see its performance here.
                 </p>
               </div>
@@ -725,7 +725,7 @@ const Analytics = () => {
               <div className="overflow-x-auto">
                 <table className="w-full text-[12px]">
                   <thead>
-                    <tr className="text-left text-[11px] uppercase tracking-wider text-slate-500 bg-slate-50/50">
+                    <tr className="text-left text-[11px] uppercase tracking-wider text-slate-500 bg-slate-50/50 dark:bg-[#1E293B] dark:text-slate-400">
                       {renderSortableTh("title", "Property")}
                       {renderSortableTh("views", "Total Views", "text-right")}
                       {renderSortableTh("favorites", "Favorites", "text-right")}
@@ -740,11 +740,11 @@ const Analytics = () => {
                       return (
                         <tr
                           key={p.id}
-                          className="border-t border-slate-100 hover:bg-slate-50/50 transition"
+                          className="border-t border-slate-100 hover:bg-slate-50/50 transition dark:border-slate-800 dark:hover:bg-slate-800/60"
                         >
                           <td className="px-6 py-3">
                             <div className="flex items-center gap-3 min-w-0">
-                              <div className="w-10 h-10 rounded-lg bg-slate-100 overflow-hidden shrink-0">
+                              <div className="w-10 h-10 rounded-lg bg-slate-100 overflow-hidden shrink-0 dark:bg-slate-800">
                                 {p.coverImage ? (
                                   <img
                                     src={p.coverImage}
@@ -752,28 +752,28 @@ const Analytics = () => {
                                     className="w-full h-full object-cover"
                                   />
                                 ) : (
-                                  <div className="w-full h-full flex items-center justify-center text-slate-400">
+                                  <div className="w-full h-full flex items-center justify-center text-slate-400 dark:text-slate-500">
                                     <Building2 size={16} />
                                   </div>
                                 )}
                               </div>
                               <div className="min-w-0">
-                                <p className="font-semibold text-slate-900 truncate max-w-[220px]">
+                                <p className="font-semibold text-slate-900 truncate max-w-[220px] dark:text-white">
                                   {p.title}
                                 </p>
-                                <p className="text-[11px] text-slate-500 capitalize">
+                                <p className="text-[11px] text-slate-500 capitalize dark:text-slate-400">
                                   {p.listingType}
                                 </p>
                               </div>
                             </div>
                           </td>
-                          <td className="px-4 py-3 text-right text-slate-700">
+                          <td className="px-4 py-3 text-right text-slate-700 dark:text-slate-200">
                             {numberFormat(p.views)}
                           </td>
-                          <td className="px-4 py-3 text-right text-slate-700">
+                          <td className="px-4 py-3 text-right text-slate-700 dark:text-slate-200">
                             {numberFormat(p.favorites)}
                           </td>
-                          <td className="px-4 py-3 text-right text-slate-700">
+                          <td className="px-4 py-3 text-right text-slate-700 dark:text-slate-200">
                             {numberFormat(p.inquiries)}
                           </td>
                           <td className="px-4 py-3">

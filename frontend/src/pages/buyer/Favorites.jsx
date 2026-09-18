@@ -156,7 +156,7 @@ export const Favorites = () => {
     <div className="space-y-6 font-sans">
       {/* Toast Notification Alert */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-xl flex items-center space-x-2 text-xs font-medium animate-in fade-in slide-in-from-bottom-3 duration-200">
+        <div className="fixed bottom-6 right-6 z-50 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-xl flex items-center space-x-2 text-xs font-medium animate-in fade-in slide-in-from-bottom-3 duration-200 dark:bg-slate-800 dark:border dark:border-slate-700">
           <CheckCircle2 size={16} className="text-emerald-400 shrink-0" />
           <span>{toastMessage}</span>
         </div>
@@ -164,19 +164,19 @@ export const Favorites = () => {
 
       {/* Page Title & Count */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-        <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
+        <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight dark:text-white">
           My Favorites{' '}
-          <span className="text-slate-400 font-normal text-lg">
+          <span className="text-slate-400 font-normal text-lg dark:text-slate-500">
             ({filteredAndSortedFavorites.length} {filteredAndSortedFavorites.length === 1 ? 'result' : 'results'})
           </span>
         </h1>
       </div>
 
       {/* Control Bar: Search, Status Filter & Sort */}
-      <div className="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-xs flex flex-wrap items-center justify-between gap-4">
+      <div className="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-xs flex flex-wrap items-center justify-between gap-4 dark:bg-[#111827] dark:border-slate-800">
         {/* Search Input */}
         <div className="relative flex-1 min-w-[240px]">
-          <Search className="absolute left-3.5 top-3 text-slate-400" size={16} />
+          <Search className="absolute left-3.5 top-3 text-slate-400 dark:text-slate-500" size={16} />
           <input
             type="text"
             value={searchQuery}
@@ -185,21 +185,21 @@ export const Favorites = () => {
               setCurrentPage(1);
             }}
             placeholder="Search saved properties by title, location..."
-            className="w-full bg-slate-50 border border-slate-200 focus:border-blue-600 focus:bg-white rounded-xl py-2 pl-10 pr-4 text-xs font-medium text-slate-800 focus:outline-none transition"
+            className="w-full bg-slate-50 border border-slate-200 focus:border-blue-600 focus:bg-white rounded-xl py-2 pl-10 pr-4 text-xs font-medium text-slate-800 focus:outline-none transition dark:bg-[#1E293B] dark:border-slate-700 dark:text-white dark:placeholder:text-slate-400 dark:focus:bg-[#1E293B]"
           />
         </div>
 
         {/* Filter by Status */}
         <div className="flex items-center space-x-2">
-          <Filter size={15} className="text-slate-400" />
-          <span className="text-xs text-slate-500 font-medium hidden sm:inline">Status:</span>
+          <Filter size={15} className="text-slate-400 dark:text-slate-500" />
+          <span className="text-xs text-slate-500 font-medium hidden sm:inline dark:text-slate-400">Status:</span>
           <select
             value={statusFilter}
             onChange={(e) => {
               setStatusFilter(e.target.value);
               setCurrentPage(1);
             }}
-            className="bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-700 rounded-xl px-3 py-2 focus:outline-none focus:border-blue-600 cursor-pointer"
+            className="bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-700 rounded-xl px-3 py-2 focus:outline-none focus:border-blue-600 cursor-pointer dark:bg-[#1E293B] dark:border-slate-700 dark:text-white"
           >
             <option value="all">All Statuses</option>
             <option value="active">Active</option>
@@ -210,11 +210,11 @@ export const Favorites = () => {
 
         {/* Sort Controls */}
         <div className="flex items-center space-x-2">
-          <span className="text-xs text-slate-400 font-medium hidden sm:inline">Sort by:</span>
+          <span className="text-xs text-slate-400 font-medium hidden sm:inline dark:text-slate-500">Sort by:</span>
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
-            className="bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-700 rounded-xl px-3 py-2 focus:outline-none focus:border-blue-600 cursor-pointer"
+            className="bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-700 rounded-xl px-3 py-2 focus:outline-none focus:border-blue-600 cursor-pointer dark:bg-[#1E293B] dark:border-slate-700 dark:text-white"
           >
             <option value="date">Date added (Newest)</option>
             <option value="price-low">Price: Low to High</option>
@@ -225,14 +225,14 @@ export const Favorites = () => {
 
       {/* Error State */}
       {error && (
-        <div className="p-4 bg-rose-50 border border-rose-200 rounded-xl flex items-center justify-between text-rose-700 text-xs font-medium">
+        <div className="p-4 bg-rose-50 border border-rose-200 rounded-xl flex items-center justify-between text-rose-700 text-xs font-medium dark:bg-rose-500/10 dark:border-rose-500/30 dark:text-rose-300">
           <div className="flex items-center space-x-2">
             <AlertCircle size={16} />
             <span>{error}</span>
           </div>
           <button
             onClick={loadFavorites}
-            className="underline font-bold hover:text-rose-900 cursor-pointer"
+            className="underline font-bold hover:text-rose-900 cursor-pointer dark:hover:text-rose-200"
           >
             Retry
           </button>
@@ -245,12 +245,12 @@ export const Favorites = () => {
           {[1, 2, 3, 4, 5, 6].map((n) => (
             <div
               key={n}
-              className="bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-xs animate-pulse p-4 space-y-3"
+              className="bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-xs animate-pulse p-4 space-y-3 dark:bg-[#111827] dark:border-slate-800"
             >
-              <div className="h-44 bg-slate-200 rounded-xl w-full"></div>
-              <div className="h-4 bg-slate-200 rounded w-3/4"></div>
-              <div className="h-3 bg-slate-100 rounded w-1/2"></div>
-              <div className="h-4 bg-slate-100 rounded w-full pt-2"></div>
+              <div className="h-44 bg-slate-200 rounded-xl w-full dark:bg-slate-700"></div>
+              <div className="h-4 bg-slate-200 rounded w-3/4 dark:bg-slate-700"></div>
+              <div className="h-3 bg-slate-100 rounded w-1/2 dark:bg-slate-800"></div>
+              <div className="h-4 bg-slate-100 rounded w-full pt-2 dark:bg-slate-800"></div>
             </div>
           ))}
         </div>
@@ -258,12 +258,12 @@ export const Favorites = () => {
 
       {/* Empty State: No Saved Properties */}
       {!loading && !error && filteredAndSortedFavorites.length === 0 && (
-        <div className="bg-white border border-slate-200/80 rounded-2xl p-12 text-center flex flex-col items-center justify-center max-w-lg mx-auto shadow-xs">
-          <div className="w-16 h-16 bg-rose-50 text-rose-500 rounded-full flex items-center justify-center mb-4">
+        <div className="bg-white border border-slate-200/80 rounded-2xl p-12 text-center flex flex-col items-center justify-center max-w-lg mx-auto shadow-xs dark:bg-[#111827] dark:border-slate-800">
+          <div className="w-16 h-16 bg-rose-50 text-rose-500 rounded-full flex items-center justify-center mb-4 dark:bg-rose-500/10 dark:text-rose-300">
             <Heart size={32} />
           </div>
-          <h3 className="text-base font-bold text-slate-900">No favorite properties found</h3>
-          <p className="text-xs text-slate-500 mt-1 max-w-sm">
+          <h3 className="text-base font-bold text-slate-900 dark:text-white">No favorite properties found</h3>
+          <p className="text-xs text-slate-500 mt-1 max-w-sm dark:text-slate-400">
             {searchQuery || statusFilter !== 'all'
               ? 'No saved properties match your current search and filter criteria.'
               : "You haven't added any properties to your favorites yet. Browse through our listings to find your dream home."}
@@ -294,11 +294,11 @@ export const Favorites = () => {
             return (
               <div
                 key={prop.id}
-                className="bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-xs hover:shadow-lg transition-all duration-200 flex flex-col justify-between group"
+                className="bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-xs hover:shadow-lg transition-all duration-200 flex flex-col justify-between group dark:bg-[#111827] dark:border-slate-800"
               >
                 <div>
                   {/* Photo & Heart Badge */}
-                  <div className="relative h-44 overflow-hidden bg-slate-100">
+                  <div className="relative h-44 overflow-hidden bg-slate-100 dark:bg-slate-800">
                     <img
                       src={
                         prop.imageUrl ||
@@ -325,12 +325,12 @@ export const Favorites = () => {
 
                   {/* Information */}
                   <div className="p-4">
-                    <h3 className="font-bold text-slate-900 text-sm truncate">{prop.title}</h3>
-                    <p className="text-xs text-slate-500 mt-0.5 truncate">
+                    <h3 className="font-bold text-slate-900 text-sm truncate dark:text-white">{prop.title}</h3>
+                    <p className="text-xs text-slate-500 mt-0.5 truncate dark:text-slate-400">
                       {prop.location || `${prop.city || 'Addis Ababa'}, Ethiopia`}
                     </p>
 
-                    <div className="flex items-center space-x-3 text-xs text-slate-500 mt-3 pt-3 border-t border-slate-100 font-medium">
+                    <div className="flex items-center space-x-3 text-xs text-slate-500 mt-3 pt-3 border-t border-slate-100 font-medium dark:text-slate-400 dark:border-slate-800">
                       <span>{prop.bedrooms || prop.beds || 3} Beds</span>
                       <span>•</span>
                       <span>{prop.bathrooms || prop.baths || 2} Baths</span>
@@ -341,8 +341,8 @@ export const Favorites = () => {
                 </div>
 
                 {/* Price & Action Buttons */}
-                <div className="px-4 pb-4 pt-2 flex items-center justify-between border-t border-slate-100/60">
-                  <span className="text-base font-extrabold text-slate-900">
+                <div className="px-4 pb-4 pt-2 flex items-center justify-between border-t border-slate-100/60 dark:border-slate-800">
+                  <span className="text-base font-extrabold text-slate-900 dark:text-white">
                     {typeof prop.price === 'number'
                       ? `$${prop.price.toLocaleString()}`
                       : prop.price || '$150,000'}
@@ -350,7 +350,7 @@ export const Favorites = () => {
                   <div className="flex items-center space-x-2">
                     <button
                       onClick={() => handleRemoveFavorite(prop.id, prop.title)}
-                      className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition cursor-pointer"
+                      className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition cursor-pointer dark:text-slate-500 dark:hover:bg-rose-500/10"
                       title="Remove Favorite"
                       aria-label="Remove"
                     >
@@ -358,7 +358,7 @@ export const Favorites = () => {
                     </button>
                     <button
                       onClick={() => handleShare(prop)}
-                      className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition cursor-pointer"
+                      className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition cursor-pointer dark:text-slate-500 dark:hover:bg-blue-500/10"
                       title="Share Property"
                       aria-label="Share"
                     >
@@ -392,7 +392,7 @@ export const Favorites = () => {
               className={`px-3.5 py-1.5 text-xs font-bold rounded-lg transition cursor-pointer ${
                 validCurrentPage === page
                   ? 'bg-blue-600 text-white shadow-xs'
-                  : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
+                  : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 dark:bg-[#111827] dark:border-slate-800 dark:text-slate-300 dark:hover:bg-slate-800/60'
               }`}
             >
               {page}

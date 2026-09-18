@@ -29,26 +29,26 @@ import { uploadProfileImage } from "../../services/user.service";
 const STATUS_META = {
   incomplete: {
     label: "Incomplete",
-    className: "bg-[#F7EFDD] text-[#8A6A2F] border-amber-200/60",
+    className: "bg-[#F7EFDD] text-[#8A6A2F] border-amber-200/60 dark:bg-amber-500/10 dark:text-amber-300 dark:border-amber-500/20",
     icon: AlertCircle,
     helper:
       "Complete your agent profile to activate your account and list properties.",
   },
   pending: {
     label: "Pending Approval",
-    className: "bg-[#FBF3DD] text-[#8A6A2F] border-amber-200/60",
+    className: "bg-[#FBF3DD] text-[#8A6A2F] border-amber-200/60 dark:bg-amber-500/10 dark:text-amber-300 dark:border-amber-500/20",
     icon: Clock,
     helper: "Your profile is under review by an administrator.",
   },
   approved: {
     label: "Approved",
-    className: "bg-[#E6F4EC] text-[#2F7A55] border-emerald-200/60",
+    className: "bg-[#E6F4EC] text-[#2F7A55] border-emerald-200/60 dark:bg-emerald-500/10 dark:text-emerald-300 dark:border-emerald-500/20",
     icon: CheckCircle,
     helper: "Your agent account is active and you can list properties.",
   },
   rejected: {
     label: "Rejected",
-    className: "bg-[#FBEAE9] text-[#B23B36] border-rose-200/60",
+    className: "bg-[#FBEAE9] text-[#B23B36] border-rose-200/60 dark:bg-rose-500/10 dark:text-rose-300 dark:border-rose-500/20",
     icon: XCircle,
     helper:
       "Your profile was rejected. Update your details and contact support for next steps.",
@@ -221,12 +221,12 @@ const Profile = () => {
     return (
       <div className="space-y-5 font-sans">
         <div className="animate-pulse space-y-4">
-          <div className="h-7 w-24 bg-slate-200 rounded" />
-          <div className="h-8 w-40 bg-slate-200 rounded" />
+          <div className="h-7 w-24 bg-slate-200 rounded dark:bg-slate-700" />
+          <div className="h-8 w-40 bg-slate-200 rounded dark:bg-slate-700" />
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          <div className="lg:col-span-4 h-64 bg-slate-200 rounded-2xl animate-pulse" />
-          <div className="lg:col-span-8 h-80 bg-slate-200 rounded-2xl animate-pulse" />
+          <div className="lg:col-span-4 h-64 bg-slate-200 rounded-2xl animate-pulse dark:bg-slate-700" />
+          <div className="lg:col-span-8 h-80 bg-slate-200 rounded-2xl animate-pulse dark:bg-slate-700" />
         </div>
       </div>
     );
@@ -251,27 +251,27 @@ const Profile = () => {
         <div className="flex items-center gap-2.5">
           <span
             aria-hidden="true"
-            className="w-10 h-10 rounded-xl bg-[#E7F0FB] text-[#4A9FF5] flex items-center justify-center shrink-0"
+            className="w-10 h-10 rounded-xl bg-[#E7F0FB] text-[#4A9FF5] flex items-center justify-center shrink-0 dark:bg-blue-500/10"
           >
             <UserCircle size={20} />
           </span>
-          <h1 className="text-[24px] font-bold text-[#111827] tracking-tight">
+          <h1 className="text-[24px] font-bold text-[#111827] tracking-tight dark:text-white">
             My Profile
           </h1>
         </div>
-        <p className="text-[13px] text-[#6B7280] mt-1">
+        <p className="text-[13px] text-[#6B7280] mt-1 dark:text-slate-400">
           Manage your agent profile and account information
         </p>
       </div>
 
       {/* Feedback */}
       {error && (
-        <div role="status" className="flex items-center gap-2 bg-rose-50 border border-rose-200 text-rose-700 text-[13px] px-4 py-2.5 rounded-xl">
+        <div role="status" className="flex items-center gap-2 bg-rose-50 border border-rose-200 text-rose-700 text-[13px] px-4 py-2.5 rounded-xl dark:bg-rose-500/10 dark:border-rose-500/30 dark:text-rose-300">
           <AlertCircle size={16} /> {error}
         </div>
       )}
       {success && (
-        <div role="status" className="flex items-center gap-2 bg-emerald-50 border border-emerald-200 text-emerald-700 text-[13px] px-4 py-2.5 rounded-xl">
+        <div role="status" className="flex items-center gap-2 bg-emerald-50 border border-emerald-200 text-emerald-700 text-[13px] px-4 py-2.5 rounded-xl dark:bg-emerald-500/10 dark:border-emerald-500/30 dark:text-emerald-300">
           <CheckCircle size={16} /> {success}
         </div>
       )}
@@ -279,13 +279,13 @@ const Profile = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left column — Identity card */}
         <div className="lg:col-span-4 space-y-6">
-          <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 shadow-[0_2px_8px_rgba(15,23,42,0.06)] text-center flex flex-col items-center">
+          <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 shadow-[0_2px_8px_rgba(15,23,42,0.06)] text-center flex flex-col items-center dark:bg-[#111827] dark:border-slate-800">
             <div className="relative mb-4">
               <Avatar
                 src={profile?.profileImageUrl || user?.profileImageUrl}
                 alt={displayName}
                 size={112}
-                className="border-4 border-slate-100 shadow-md"
+                className="border-4 border-slate-100 shadow-md dark:border-slate-800"
               />
               <button
                 type="button"
@@ -307,8 +307,8 @@ const Profile = () => {
               />
             </div>
 
-            <h2 className="text-lg font-bold text-slate-900">{displayName}</h2>
-            <p className="text-xs text-slate-500 font-medium mt-0.5 capitalize">
+            <h2 className="text-lg font-bold text-slate-900 dark:text-white">{displayName}</h2>
+            <p className="text-xs text-slate-500 font-medium mt-0.5 capitalize dark:text-slate-400">
               {profile?.role || user?.role || "Agent"}
             </p>
 
@@ -319,47 +319,47 @@ const Profile = () => {
               {status.label}
             </span>
 
-            <div className="w-full mt-6 pt-6 border-t border-slate-100 space-y-3 text-left">
-              <div className="flex items-center justify-between text-xs text-slate-500">
+            <div className="w-full mt-6 pt-6 border-t border-slate-100 space-y-3 text-left dark:border-slate-800">
+              <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
                 <span className="flex items-center gap-1">
-                  <Mail size={13} className="text-slate-400" />
+                  <Mail size={13} className="text-slate-400 dark:text-slate-500" />
                   Email
                 </span>
-                <span className="font-semibold text-slate-900 truncate max-w-[220px]">
+                <span className="font-semibold text-slate-900 truncate max-w-[220px] dark:text-white">
                   {profile?.email || "—"}
                 </span>
               </div>
-              <div className="flex items-center justify-between text-xs text-slate-500">
+              <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
                 <span className="flex items-center gap-1">
-                  <Briefcase size={13} className="text-slate-400" />
+                  <Briefcase size={13} className="text-slate-400 dark:text-slate-500" />
                   Account Role
                 </span>
-                <span className="font-semibold text-slate-900 capitalize">
+                <span className="font-semibold text-slate-900 capitalize dark:text-white">
                   {profile?.role || "Agent"}
                 </span>
               </div>
-              <div className="flex items-center justify-between text-xs text-slate-500">
+              <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
                 <span className="flex items-center gap-1">
-                  <Calendar size={13} className="text-slate-400" />
+                  <Calendar size={13} className="text-slate-400 dark:text-slate-500" />
                   Member Since
                 </span>
-                <span className="font-semibold text-slate-900">
+                <span className="font-semibold text-slate-900 dark:text-white">
                   {formatDate(profile?.memberSince)}
                 </span>
               </div>
             </div>
           </div>
 
-          <div className="bg-[#E7F0FB] border border-blue-100 rounded-2xl p-5 shadow-[0_2px_8px_rgba(15,23,42,0.04)]">
+          <div className="bg-[#E7F0FB] border border-blue-100 rounded-2xl p-5 shadow-[0_2px_8px_rgba(15,23,42,0.04)] dark:bg-blue-500/10 dark:border-blue-500/20">
             <div className="flex items-start space-x-3">
               <div className="w-9 h-9 bg-[#4A9FF5] text-white rounded-xl flex items-center justify-center shrink-0 shadow-sm">
                 <ShieldCheck size={20} />
               </div>
               <div>
-                <h4 className="text-xs font-bold text-slate-900">
+                <h4 className="text-xs font-bold text-slate-900 dark:text-white">
                   Account Security
                 </h4>
-                <p className="text-[11px] text-slate-500 mt-1">
+                <p className="text-[11px] text-slate-500 mt-1 dark:text-slate-400">
                   Your profile is private. Update your details below and
                   contact support to change your password or email.
                 </p>
@@ -370,25 +370,25 @@ const Profile = () => {
 
         {/* Right column — Profile details + verification */}
         <div className="lg:col-span-8 space-y-6">
-          <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 shadow-[0_2px_8px_rgba(15,23,42,0.06)]">
-            <h3 className="text-[16px] font-semibold text-[#111827] pb-3 border-b border-slate-100">
+          <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 shadow-[0_2px_8px_rgba(15,23,42,0.06)] dark:bg-[#111827] dark:border-slate-800">
+            <h3 className="text-[16px] font-semibold text-[#111827] pb-3 border-b border-slate-100 dark:text-white dark:border-slate-800">
               Verification Status
             </h3>
-            <p className="text-[13px] text-[#6B7280] mt-4">{status.helper}</p>
+            <p className="text-[13px] text-[#6B7280] mt-4 dark:text-slate-400">{status.helper}</p>
 
             {profile?.licenseNumber && (
-              <p className="text-[12px] text-slate-500 mt-3">
+              <p className="text-[12px] text-slate-500 mt-3 dark:text-slate-400">
                 License:{" "}
-                <span className="font-semibold text-slate-900">
+                <span className="font-semibold text-slate-900 dark:text-white">
                   {profile.licenseNumber}
                 </span>
               </p>
             )}
             {profile?.experienceYears !== undefined &&
               profile?.experienceYears !== null && (
-                <p className="text-[12px] text-slate-500 mt-1">
+                <p className="text-[12px] text-slate-500 mt-1 dark:text-slate-400">
                   Experience:{" "}
-                  <span className="font-semibold text-slate-900">
+                  <span className="font-semibold text-slate-900 dark:text-white">
                     {profile.experienceYears} years
                   </span>
                 </p>
@@ -405,9 +405,9 @@ const Profile = () => {
             )}
           </div>
 
-          <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 shadow-[0_2px_8px_rgba(15,23,42,0.06)] space-y-6">
+          <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 shadow-[0_2px_8px_rgba(15,23,42,0.06)] space-y-6 dark:bg-[#111827] dark:border-slate-800">
             <div>
-              <h3 className="text-[16px] font-semibold text-[#111827] pb-3 border-b border-slate-100">
+              <h3 className="text-[16px] font-semibold text-[#111827] pb-3 border-b border-slate-100 dark:text-white dark:border-slate-800">
                 Personal Information
               </h3>
             </div>
@@ -417,7 +417,7 @@ const Profile = () => {
                 <div>
                   <label
                     htmlFor="firstName"
-                    className="block text-xs font-semibold text-slate-600 uppercase mb-1"
+                    className="block text-xs font-semibold text-slate-600 uppercase mb-1 dark:text-slate-300"
                   >
                     First Name
                   </label>
@@ -428,10 +428,10 @@ const Profile = () => {
                     onChange={handleChange("firstName")}
                     aria-invalid={!!fieldErrors.firstName}
                     aria-describedby={fieldErrors.firstName ? "firstNameError" : undefined}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3.5 text-xs text-slate-800 focus:outline-none focus:border-[#4A9FF5] font-medium transition"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3.5 text-xs text-slate-800 focus:outline-none focus:border-[#4A9FF5] font-medium transition dark:bg-[#1E293B] dark:border-slate-700 dark:text-white dark:placeholder:text-slate-400"
                   />
                   {fieldErrors.firstName && (
-                    <p id="firstNameError" className="text-[11px] text-[#B23B36] mt-1">
+                    <p id="firstNameError" className="text-[11px] text-[#B23B36] mt-1 dark:text-rose-400">
                       {fieldErrors.firstName}
                     </p>
                   )}
@@ -439,7 +439,7 @@ const Profile = () => {
                 <div>
                   <label
                     htmlFor="lastName"
-                    className="block text-xs font-semibold text-slate-600 uppercase mb-1"
+                    className="block text-xs font-semibold text-slate-600 uppercase mb-1 dark:text-slate-300"
                   >
                     Last Name
                   </label>
@@ -450,10 +450,10 @@ const Profile = () => {
                     onChange={handleChange("lastName")}
                     aria-invalid={!!fieldErrors.lastName}
                     aria-describedby={fieldErrors.lastName ? "lastNameError" : undefined}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3.5 text-xs text-slate-800 focus:outline-none focus:border-[#4A9FF5] font-medium transition"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3.5 text-xs text-slate-800 focus:outline-none focus:border-[#4A9FF5] font-medium transition dark:bg-[#1E293B] dark:border-slate-700 dark:text-white dark:placeholder:text-slate-400"
                   />
                   {fieldErrors.lastName && (
-                    <p id="lastNameError" className="text-[11px] text-[#B23B36] mt-1">
+                    <p id="lastNameError" className="text-[11px] text-[#B23B36] mt-1 dark:text-rose-400">
                       {fieldErrors.lastName}
                     </p>
                   )}
@@ -463,13 +463,13 @@ const Profile = () => {
               <div>
                 <label
                   htmlFor="email"
-                  className="block text-xs font-semibold text-slate-600 uppercase mb-1"
+                  className="block text-xs font-semibold text-slate-600 uppercase mb-1 dark:text-slate-300"
                 >
                   Email Address
                 </label>
                 <div className="relative">
                   <Mail
-                    className="absolute left-3.5 top-3 text-slate-400"
+                    className="absolute left-3.5 top-3 text-slate-400 dark:text-slate-500"
                     size={16}
                   />
                   <input
@@ -478,10 +478,10 @@ const Profile = () => {
                     value={profile?.email || ""}
                     readOnly
                     aria-readonly="true"
-                    className="w-full bg-slate-100 border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-xs text-slate-500 font-medium cursor-not-allowed"
+                    className="w-full bg-slate-100 border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-xs text-slate-500 font-medium cursor-not-allowed dark:bg-slate-800 dark:border-slate-700 dark:text-slate-400"
                   />
                 </div>
-                <p className="text-[11px] text-slate-400 mt-1">
+                <p className="text-[11px] text-slate-400 mt-1 dark:text-slate-500">
                   Email cannot be changed from this page
                 </p>
               </div>
@@ -489,13 +489,13 @@ const Profile = () => {
               <div>
                 <label
                   htmlFor="phone"
-                  className="block text-xs font-semibold text-slate-600 uppercase mb-1"
+                  className="block text-xs font-semibold text-slate-600 uppercase mb-1 dark:text-slate-300"
                 >
                   Phone Number
                 </label>
                 <div className="relative">
                   <Phone
-                    className="absolute left-3.5 top-3 text-slate-400"
+                    className="absolute left-3.5 top-3 text-slate-400 dark:text-slate-500"
                     size={16}
                   />
                   <input
@@ -505,11 +505,11 @@ const Profile = () => {
                     onChange={handleChange("phone")}
                     aria-invalid={!!fieldErrors.phone}
                     aria-describedby={fieldErrors.phone ? "phoneError" : undefined}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-xs text-slate-800 focus:outline-none focus:border-[#4A9FF5] font-medium transition"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-xs text-slate-800 focus:outline-none focus:border-[#4A9FF5] font-medium transition dark:bg-[#1E293B] dark:border-slate-700 dark:text-white dark:placeholder:text-slate-400"
                   />
                 </div>
                 {fieldErrors.phone && (
-                  <p id="phoneError" className="text-[11px] text-[#B23B36] mt-1">
+                  <p id="phoneError" className="text-[11px] text-[#B23B36] mt-1 dark:text-rose-400">
                     {fieldErrors.phone}
                   </p>
                 )}
@@ -519,13 +519,13 @@ const Profile = () => {
                 <div>
                   <label
                     htmlFor="agencyName"
-                    className="block text-xs font-semibold text-slate-600 uppercase mb-1"
+                    className="block text-xs font-semibold text-slate-600 uppercase mb-1 dark:text-slate-300"
                   >
                     Agency Name
                   </label>
                   <div className="relative">
                     <Building2
-                      className="absolute left-3.5 top-3 text-slate-400"
+                      className="absolute left-3.5 top-3 text-slate-400 dark:text-slate-500"
                       size={16}
                     />
                     <input
@@ -535,11 +535,11 @@ const Profile = () => {
                       onChange={handleChange("agencyName")}
                       aria-invalid={!!fieldErrors.agencyName}
                       aria-describedby={fieldErrors.agencyName ? "agencyNameError" : undefined}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-xs text-slate-800 focus:outline-none focus:border-[#4A9FF5] font-medium transition"
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-xs text-slate-800 focus:outline-none focus:border-[#4A9FF5] font-medium transition dark:bg-[#1E293B] dark:border-slate-700 dark:text-white dark:placeholder:text-slate-400"
                     />
                   </div>
                   {fieldErrors.agencyName && (
-                    <p id="agencyNameError" className="text-[11px] text-[#B23B36] mt-1">
+                    <p id="agencyNameError" className="text-[11px] text-[#B23B36] mt-1 dark:text-rose-400">
                       {fieldErrors.agencyName}
                     </p>
                   )}
@@ -547,13 +547,13 @@ const Profile = () => {
                 <div>
                   <label
                     htmlFor="specialization"
-                    className="block text-xs font-semibold text-slate-600 uppercase mb-1"
+                    className="block text-xs font-semibold text-slate-600 uppercase mb-1 dark:text-slate-300"
                   >
                     Specialization
                   </label>
                   <div className="relative">
                     <Award
-                      className="absolute left-3.5 top-3 text-slate-400"
+                      className="absolute left-3.5 top-3 text-slate-400 dark:text-slate-500"
                       size={16}
                     />
                     <input
@@ -563,11 +563,11 @@ const Profile = () => {
                       onChange={handleChange("specialization")}
                       aria-invalid={!!fieldErrors.specialization}
                       aria-describedby={fieldErrors.specialization ? "specializationError" : undefined}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-xs text-slate-800 focus:outline-none focus:border-[#4A9FF5] font-medium transition"
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-xs text-slate-800 focus:outline-none focus:border-[#4A9FF5] font-medium transition dark:bg-[#1E293B] dark:border-slate-700 dark:text-white dark:placeholder:text-slate-400"
                     />
                   </div>
                   {fieldErrors.specialization && (
-                    <p id="specializationError" className="text-[11px] text-[#B23B36] mt-1">
+                    <p id="specializationError" className="text-[11px] text-[#B23B36] mt-1 dark:text-rose-400">
                       {fieldErrors.specialization}
                     </p>
                   )}
@@ -575,13 +575,13 @@ const Profile = () => {
                 <div>
                   <label
                     htmlFor="city"
-                    className="block text-xs font-semibold text-slate-600 uppercase mb-1"
+                    className="block text-xs font-semibold text-slate-600 uppercase mb-1 dark:text-slate-300"
                   >
                     City
                   </label>
                   <div className="relative">
                     <MapPin
-                      className="absolute left-3.5 top-3 text-slate-400"
+                      className="absolute left-3.5 top-3 text-slate-400 dark:text-slate-500"
                       size={16}
                     />
                     <input
@@ -591,11 +591,11 @@ const Profile = () => {
                       onChange={handleChange("city")}
                       aria-invalid={!!fieldErrors.city}
                       aria-describedby={fieldErrors.city ? "cityError" : undefined}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-xs text-slate-800 focus:outline-none focus:border-[#4A9FF5] font-medium transition"
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-xs text-slate-800 focus:outline-none focus:border-[#4A9FF5] font-medium transition dark:bg-[#1E293B] dark:border-slate-700 dark:text-white dark:placeholder:text-slate-400"
                     />
                   </div>
                   {fieldErrors.city && (
-                    <p id="cityError" className="text-[11px] text-[#B23B36] mt-1">
+                    <p id="cityError" className="text-[11px] text-[#B23B36] mt-1 dark:text-rose-400">
                       {fieldErrors.city}
                     </p>
                   )}
@@ -603,7 +603,7 @@ const Profile = () => {
                 <div>
                   <label
                     htmlFor="officeAddress"
-                    className="block text-xs font-semibold text-slate-600 uppercase mb-1"
+                    className="block text-xs font-semibold text-slate-600 uppercase mb-1 dark:text-slate-300"
                   >
                     Office Address
                   </label>
@@ -614,10 +614,10 @@ const Profile = () => {
                     onChange={handleChange("officeAddress")}
                     aria-invalid={!!fieldErrors.officeAddress}
                     aria-describedby={fieldErrors.officeAddress ? "officeAddressError" : undefined}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3.5 text-xs text-slate-800 focus:outline-none focus:border-[#4A9FF5] font-medium transition"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3.5 text-xs text-slate-800 focus:outline-none focus:border-[#4A9FF5] font-medium transition dark:bg-[#1E293B] dark:border-slate-700 dark:text-white dark:placeholder:text-slate-400"
                   />
                   {fieldErrors.officeAddress && (
-                    <p id="officeAddressError" className="text-[11px] text-[#B23B36] mt-1">
+                    <p id="officeAddressError" className="text-[11px] text-[#B23B36] mt-1 dark:text-rose-400">
                       {fieldErrors.officeAddress}
                     </p>
                   )}
@@ -627,7 +627,7 @@ const Profile = () => {
               <div>
                 <label
                   htmlFor="bio"
-                  className="block text-xs font-semibold text-slate-600 uppercase mb-1"
+                  className="block text-xs font-semibold text-slate-600 uppercase mb-1 dark:text-slate-300"
                 >
                   Bio
                 </label>
@@ -638,24 +638,24 @@ const Profile = () => {
                   onChange={handleChange("bio")}
                   aria-invalid={!!fieldErrors.bio}
                   aria-describedby={fieldErrors.bio ? "bioError" : undefined}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3.5 text-xs text-slate-800 focus:outline-none focus:border-[#4A9FF5] font-medium transition resize-none"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3.5 text-xs text-slate-800 focus:outline-none focus:border-[#4A9FF5] font-medium transition resize-none dark:bg-[#1E293B] dark:border-slate-700 dark:text-white dark:placeholder:text-slate-400"
                   placeholder="Tell buyers about your experience, focus areas, and approach."
                 />
                 <div className="flex items-center justify-between mt-1">
                   {fieldErrors.bio ? (
-                    <p id="bioError" className="text-[11px] text-[#B23B36]">
+                    <p id="bioError" className="text-[11px] text-[#B23B36] dark:text-rose-400">
                       {fieldErrors.bio}
                     </p>
                   ) : (
                     <span />
                   )}
-                  <p className="text-[11px] text-slate-400">
+                  <p className="text-[11px] text-slate-400 dark:text-slate-500">
                     {form.bio.length}/1000
                   </p>
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-slate-100 flex justify-end">
+              <div className="pt-4 border-t border-slate-100 flex justify-end dark:border-slate-800">
                 <button
                   type="submit"
                   disabled={saving}

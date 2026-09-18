@@ -22,11 +22,11 @@ const SaveNotice = ({ toastMessage, toastTone, saveFailed }) => (
     )}
 
     {saveFailed && (
-      <div role="alert" className="rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs px-4 py-3 flex items-center space-x-2">
+      <div role="alert" className="rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs px-4 py-3 flex items-center space-x-2 dark:bg-rose-500/10 dark:border-rose-500/30 dark:text-rose-300">
         <AlertTriangle size={15} className="shrink-0" />
         <span>
           The property was saved, but some images failed to upload.{' '}
-          <Link to={ROUTES.agentProperties} className="underline font-semibold hover:text-rose-900">
+          <Link to={ROUTES.agentProperties} className="underline font-semibold hover:text-rose-900 dark:hover:text-rose-300">
             Open My Properties
           </Link>{' '}
           to add images later.

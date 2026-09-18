@@ -128,7 +128,7 @@ const PropertyDetails = () => {
 
   if (loading) {
     return (
-      <div className="flex min-h-[500px] items-center justify-center bg-[#F7FAFA]">
+      <div className="flex min-h-[500px] items-center justify-center bg-[#F7FAFA] dark:bg-[#0B1120]">
         <div className="text-sm font-semibold text-[#0F9690]">
           <PageLoader />
         </div>
@@ -138,12 +138,12 @@ const PropertyDetails = () => {
 
   if (error || !property) {
     return (
-      <div className="flex min-h-[500px] flex-col items-center justify-center bg-[#F7FAFA] px-4 text-center">
-        <h2 className="text-xl font-extrabold text-[#162831]">
+      <div className="flex min-h-[500px] flex-col items-center justify-center bg-[#F7FAFA] px-4 text-center dark:bg-[#0B1120]">
+        <h2 className="text-xl font-extrabold text-[#162831] dark:text-white">
           Property Not Found
         </h2>
 
-        <p className="mt-2 text-sm text-slate-500">
+        <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
           {error || "This property could not be found."}
         </p>
 
@@ -271,10 +271,10 @@ const PropertyDetails = () => {
   };
 
   return (
-    <div className="w-full min-w-0 overflow-x-hidden bg-[#F7FAFA]">
+    <div className="w-full min-w-0 overflow-x-hidden bg-[#F7FAFA] dark:bg-[#0B1120]">
       <div className="mx-auto w-full max-w-[1240px] px-4 py-5 sm:px-6 sm:py-7 lg:px-8 lg:py-8">
 
-        <div className="mb-6 flex items-center gap-2 overflow-hidden text-xs text-slate-500 sm:mb-8">
+        <div className="mb-6 flex items-center gap-2 overflow-hidden text-xs text-slate-500 dark:text-slate-400 sm:mb-8">
           <Link
             to="/"
             className="shrink-0 hover:text-[#0F9690]"
@@ -293,12 +293,12 @@ const PropertyDetails = () => {
 
           <span>/</span>
 
-          <span className="truncate text-slate-700">
+          <span className="truncate text-slate-700 dark:text-slate-200">
             {property?.title || "Property"}
           </span>
         </div>
 
-        <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <section className="overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-white shadow-sm dark:border-slate-800 dark:bg-[#111827]">
 
           <div className="relative h-[260px] overflow-hidden sm:h-[380px] lg:h-[500px]">
 
@@ -309,7 +309,7 @@ const PropertyDetails = () => {
                 className="h-full w-full object-cover"
               />
             ) : (
-              <div className="flex h-full w-full items-center justify-center bg-slate-100 text-sm text-slate-500">
+              <div className="flex h-full w-full items-center justify-center bg-slate-100 text-sm text-slate-500 dark:bg-slate-800 dark:text-slate-400">
                 Property image unavailable
               </div>
             )}
@@ -329,7 +329,7 @@ const PropertyDetails = () => {
                   type="button"
                   onClick={previousImage}
                   aria-label="Previous image"
-                  className="absolute left-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-[#162831] shadow-lg sm:left-5 sm:h-10 sm:w-10"
+                  className="absolute left-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-[#162831] shadow-lg dark:bg-slate-800/90 dark:text-white sm:left-5 sm:h-10 sm:w-10"
                 >
                   <ChevronLeft className="h-5 w-5" />
                 </button>
@@ -338,7 +338,7 @@ const PropertyDetails = () => {
                   type="button"
                   onClick={nextImage}
                   aria-label="Next image"
-                  className="absolute right-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-[#162831] shadow-lg sm:right-5 sm:h-10 sm:w-10"
+                  className="absolute right-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-[#162831] shadow-lg dark:bg-slate-800/90 dark:text-white sm:right-5 sm:h-10 sm:w-10"
                 >
                   <ChevronRight className="h-5 w-5" />
                 </button>
@@ -359,7 +359,7 @@ const PropertyDetails = () => {
               </div>
 
               {images.length > 0 && (
-                <div className="hidden items-center gap-2 rounded-lg bg-white/95 px-4 py-2.5 text-xs font-bold text-[#162831] shadow-lg sm:flex">
+                <div className="hidden items-center gap-2 rounded-lg bg-white/95 px-4 py-2.5 text-xs font-bold text-[#162831] shadow-lg dark:bg-slate-800/95 dark:text-white sm:flex">
                   <Camera className="h-4 w-4 text-[#0F9690]" />
                   {images.length} Photos
                 </div>
@@ -392,7 +392,7 @@ const PropertyDetails = () => {
           )}
         </section>
 
-        <section className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
+        <section className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7 dark:border-slate-800 dark:bg-[#111827]">
           <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
 
             <div className="min-w-0">
@@ -400,11 +400,11 @@ const PropertyDetails = () => {
                 {property?.listingType || "Property"}
               </p>
 
-              <h1 className="break-words text-2xl font-extrabold text-[#162831] sm:text-3xl lg:text-4xl">
+              <h1 className="break-words text-2xl font-extrabold text-[#162831] dark:text-white sm:text-3xl lg:text-4xl">
                 {property?.title || "Untitled Property"}
               </h1>
 
-              <div className="mt-3 flex items-start gap-2 text-sm text-slate-500">
+              <div className="mt-3 flex items-start gap-2 text-sm text-slate-500 dark:text-slate-400">
                 <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#0F9690]" />
 
                 <span>
@@ -428,7 +428,7 @@ const PropertyDetails = () => {
                 className={`flex h-10 items-center gap-2 rounded-lg border px-4 text-xs font-bold ${
                   saved
                     ? "border-red-200 bg-red-50 text-red-500"
-                    : "border-slate-200 text-[#162831]"
+                    : "border-slate-200 dark:border-slate-800 text-[#162831] dark:text-white"
                 }`}
               >
                 <Heart
@@ -445,7 +445,7 @@ const PropertyDetails = () => {
               <button
                 type="button"
                 onClick={shareProperty}
-                className="flex h-10 items-center gap-2 rounded-lg border border-slate-200 px-4 text-xs font-bold text-[#162831] hover:border-[#0F9690]"
+                className="flex h-10 items-center gap-2 rounded-lg border border-slate-200 dark:border-slate-800 px-4 text-xs font-bold text-[#162831] dark:text-white hover:border-[#0F9690]"
               >
                 <Share2 className="h-4 w-4" />
 
@@ -456,7 +456,7 @@ const PropertyDetails = () => {
             </div>
           </div>
 
-          <div className="mt-6 flex flex-wrap items-center gap-3 border-t border-slate-100 pt-5">
+          <div className="mt-6 flex flex-wrap items-center gap-3 border-t border-slate-100 dark:border-slate-800 pt-5">
             <span className="text-2xl font-extrabold text-[#0F9690] sm:text-3xl">
               {price !== "Price unavailable"
                 ? `$${price}`
@@ -482,8 +482,8 @@ const PropertyDetails = () => {
 
           <div className="space-y-6 lg:col-span-2">
 
-            <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
-              <h2 className="mb-5 text-lg font-extrabold text-[#162831]">
+            <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7 dark:border-slate-800 dark:bg-[#111827]">
+              <h2 className="mb-5 text-lg font-extrabold text-[#162831] dark:text-white">
                 Key Specs
               </h2>
 
@@ -517,27 +517,27 @@ const PropertyDetails = () => {
                 />
               </div>
 
-              <div className="mt-5 border-t border-slate-100 pt-5">
-                <span className="inline-flex items-center gap-2 rounded-full bg-[#E8F7F5] px-3 py-1.5 text-xs font-bold text-[#0F9690]">
+              <div className="mt-5 border-t border-slate-100 dark:border-slate-800 pt-5">
+                <span className="inline-flex items-center gap-2 rounded-full bg-[#E8F7F5] dark:bg-[#0F9690]/15 px-3 py-1.5 text-xs font-bold text-[#0F9690]">
                   <CheckCircle2 className="h-4 w-4" />
                   Status: {property?.status || "Available"}
                 </span>
               </div>
             </section>
 
-            <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
-              <h2 className="mb-4 text-lg font-extrabold text-[#162831]">
+            <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7 dark:border-slate-800 dark:bg-[#111827]">
+              <h2 className="mb-4 text-lg font-extrabold text-[#162831] dark:text-white">
                 Description
               </h2>
 
-              <p className="text-sm leading-7 text-slate-600">
+              <p className="text-sm leading-7 text-slate-600 dark:text-slate-300">
                 {property?.description ||
                   "No description is available for this property."}
               </p>
             </section>
 
-            <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
-              <h2 className="mb-5 text-lg font-extrabold text-[#162831]">
+            <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7 dark:border-slate-800 dark:bg-[#111827]">
+              <h2 className="mb-5 text-lg font-extrabold text-[#162831] dark:text-white">
                 Amenities
               </h2>
 
@@ -546,32 +546,32 @@ const PropertyDetails = () => {
                   {amenities.map((amenity, index) => (
                     <div
                       key={`${amenity}-${index}`}
-                      className="flex items-center gap-3 rounded-lg border border-slate-100 bg-[#F8FBFB] p-3"
+                      className="flex items-center gap-3 rounded-lg border border-slate-100 dark:border-slate-800 bg-[#F8FBFB] p-3 dark:bg-[#1E293B]"
                     >
-                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#E6F5F4] text-[#0F9690]">
+                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#E6F5F4] text-[#0F9690] dark:bg-[#0F9690]/15">
                         <CheckCircle2 className="h-4 w-4" />
                       </span>
 
-                      <span className="text-sm font-medium text-slate-700">
+                      <span className="text-sm font-medium text-slate-700 dark:text-slate-200">
                         {amenity}
                       </span>
                     </div>
                   ))}
                 </div>
               ) : (
-                <p className="text-sm text-slate-500">
+                <p className="text-sm text-slate-500 dark:text-slate-400">
                   No amenities are available for this property.
                 </p>
               )}
             </section>
 
-            <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
+            <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7 dark:border-slate-800 dark:bg-[#111827]">
               <div className="mb-5">
-                <h2 className="text-lg font-extrabold text-[#162831]">
+                <h2 className="text-lg font-extrabold text-[#162831] dark:text-white">
                   Location Map
                 </h2>
 
-                <p className="mt-1 text-xs text-slate-500">
+                <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                   {location.address || ""}
 
                   {location.city
@@ -589,22 +589,22 @@ const PropertyDetails = () => {
               />
 
               <div className="mt-4 flex flex-wrap gap-3">
-                <div className="rounded-lg bg-[#F3FAF9] px-3 py-2">
+                <div className="rounded-lg bg-[#F3FAF9] dark:bg-[#0F9690]/10 px-3 py-2">
                   <p className="text-[10px] text-slate-400">
                     Latitude
                   </p>
 
-                  <p className="text-xs font-bold text-[#162831]">
+                  <p className="text-xs font-bold text-[#162831] dark:text-white">
                     {location.latitude ?? "—"}
                   </p>
                 </div>
 
-                <div className="rounded-lg bg-[#F3FAF9] px-3 py-2">
+                <div className="rounded-lg bg-[#F3FAF9] dark:bg-[#0F9690]/10 px-3 py-2">
                   <p className="text-[10px] text-slate-400">
                     Longitude
                   </p>
 
-                  <p className="text-xs font-bold text-[#162831]">
+                  <p className="text-xs font-bold text-[#162831] dark:text-white">
                     {location.longitude ?? "—"}
                   </p>
                 </div>
@@ -613,9 +613,9 @@ const PropertyDetails = () => {
           </div>
 
           <aside className="lg:col-span-1">
-            <div className="sticky top-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+            <div className="sticky top-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6 dark:border-slate-800 dark:bg-[#111827]">
 
-              <div className="border-b border-slate-100 pb-5 text-center">
+              <div className="border-b border-slate-100 dark:border-slate-800 pb-5 text-center">
                 <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#0F9690]">
                   Listing Agent
                 </p>
@@ -628,13 +628,13 @@ const PropertyDetails = () => {
                       className="h-28 w-28 rounded-full border-4 border-[#E8F7F5] object-cover shadow-md"
                     />
                   ) : (
-                    <div className="flex h-28 w-28 items-center justify-center rounded-full border-4 border-[#E8F7F5] bg-[#F3FAF9] text-2xl font-extrabold text-[#0F9690]">
+                    <div className="flex h-28 w-28 items-center justify-center rounded-full border-4 border-[#E8F7F5] bg-[#F3FAF9] dark:bg-[#0F9690]/10 text-2xl font-extrabold text-[#0F9690]">
                       {agent?.name?.charAt(0) || "A"}
                     </div>
                   )}
                 </div>
 
-                <h3 className="mt-4 text-xl font-extrabold text-[#162831]">
+                <h3 className="mt-4 text-xl font-extrabold text-[#162831] dark:text-white">
                   {agent?.name || "Listing Agent"}
                 </h3>
 
@@ -652,7 +652,7 @@ const PropertyDetails = () => {
                     </span>
                   ))}
 
-                  <span className="ml-1 text-xs font-bold text-[#162831]">
+                  <span className="ml-1 text-xs font-bold text-[#162831] dark:text-white">
                     {agent?.rating != null
                       ? Number(agent.rating).toFixed(1)
                       : "—"}
@@ -660,17 +660,17 @@ const PropertyDetails = () => {
                 </div>
               </div>
 
-              <div className="rounded-xl bg-[#F3FAF9] p-3 text-center">
-                <p className="text-lg font-extrabold text-[#162831]">
+              <div className="rounded-xl bg-[#F3FAF9] dark:bg-[#0F9690]/10 p-3 text-center">
+                <p className="text-lg font-extrabold text-[#162831] dark:text-white">
                   {agent?.experienceYears ?? "—"}
                 </p>
 
-                <p className="mt-1 text-[10px] text-slate-500">
+                <p className="mt-1 text-[10px] text-slate-500 dark:text-slate-400">
                   Years Experience
                 </p>
               </div>
 
-              <div className="space-y-4 border-b border-slate-100 py-5">
+              <div className="space-y-4 border-b border-slate-100 dark:border-slate-800 py-5">
                 <AgentInfo
                   icon={<MapPin />}
                   label="Location"
@@ -691,42 +691,42 @@ const PropertyDetails = () => {
               </div>
 
               <div className="py-5">
-                <h4 className="mb-2 text-sm font-extrabold text-[#162831]">
+                <h4 className="mb-2 text-sm font-extrabold text-[#162831] dark:text-white">
                   About the Agent
                 </h4>
 
-                <p className="text-xs leading-6 text-slate-500">
+                <p className="text-xs leading-6 text-slate-500 dark:text-slate-400">
                   {agent?.bio ||
                     "No agent information is available."}
                 </p>
               </div>
 
-              <div className="mt-5 border-t border-slate-100 pt-5">
+              <div className="mt-5 border-t border-slate-100 dark:border-slate-800 pt-5">
 
                 <div className="mb-3 flex items-center gap-2">
                   <CalendarDays className="h-4 w-4 text-[#0F9690]" />
 
-                  <h4 className="text-sm font-extrabold text-[#162831]">
+                  <h4 className="text-sm font-extrabold text-[#162831] dark:text-white">
                     Schedule a Visit
                   </h4>
                 </div>
 
-                <p className="mb-3 text-xs leading-5 text-slate-500">
+                <p className="mb-3 text-xs leading-5 text-slate-500 dark:text-slate-400">
                   Send a message to the listing agent to request a
                   property visit.
                 </p>
 
                 {messageSent ? (
-                  <div className="rounded-xl border border-[#BFE8E3] bg-[#E8F7F5] p-4">
+                  <div className="rounded-xl border border-[#BFE8E3] bg-[#E8F7F5] dark:bg-[#0F9690]/15 p-4">
                     <div className="flex items-start gap-2">
                       <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-[#0F9690]" />
 
                       <div>
-                        <p className="text-xs font-bold text-[#162831]">
+                        <p className="text-xs font-bold text-[#162831] dark:text-white">
                           Message sent successfully
                         </p>
 
-                        <p className="mt-1 text-[11px] leading-5 text-slate-500">
+                        <p className="mt-1 text-[11px] leading-5 text-slate-500 dark:text-slate-400">
                           The agent can now respond regarding your
                           visit request.
                         </p>
@@ -748,7 +748,7 @@ const PropertyDetails = () => {
                           : "Please sign in to send a direct message or visit request to the agent."
                       }
                       disabled={!user}
-                      className="w-full resize-none rounded-xl border border-slate-200 bg-[#FAFCFC] px-3 py-3 text-xs text-[#162831] outline-none placeholder:text-slate-400 focus:border-[#0F9690] focus:ring-1 focus:ring-[#0F9690] disabled:bg-slate-100 disabled:cursor-not-allowed"
+                      className="w-full resize-none rounded-xl border border-slate-200 dark:border-slate-700 bg-[#FAFCFC] px-3 py-3 text-xs text-[#162831] dark:bg-[#1E293B] dark:text-white outline-none placeholder:text-slate-400 focus:border-[#0F9690] focus:ring-1 focus:ring-[#0F9690] disabled:bg-slate-100 dark:disabled:bg-slate-800 disabled:cursor-not-allowed"
                     />
 
                     {messageError && (
@@ -792,7 +792,7 @@ const PropertyDetails = () => {
           </aside>
         </div>
 
-        <section className="mt-10 border-t border-slate-200 pt-8 sm:mt-14 sm:pt-10">
+        <section className="mt-10 border-t border-slate-200 dark:border-slate-800 pt-8 sm:mt-14 sm:pt-10">
 
           <div className="mb-6 flex items-end justify-between">
             <div>
@@ -800,7 +800,7 @@ const PropertyDetails = () => {
                 Explore More
               </p>
 
-              <h2 className="text-xl font-extrabold text-[#162831] sm:text-2xl">
+              <h2 className="text-xl font-extrabold text-[#162831] dark:text-white sm:text-2xl">
                 Nearby Properties
               </h2>
             </div>
@@ -824,7 +824,7 @@ const PropertyDetails = () => {
               ))}
             </div>
           ) : (
-            <div className="rounded-xl border border-slate-200 bg-white p-8 text-center text-sm text-slate-500">
+            <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white p-8 text-center text-sm text-slate-500 dark:bg-[#111827] dark:text-slate-400">
               No nearby properties are available.
             </div>
           )}
@@ -846,7 +846,7 @@ const PropertyDetails = () => {
 
 const Spec = ({ icon, value, label }) => {
   return (
-    <div className="flex items-center gap-3 rounded-xl border border-[#E1F1EF] bg-[#F3FAF9] p-3.5">
+    <div className="flex items-center gap-3 rounded-xl border border-[#E1F1EF] bg-[#F3FAF9] dark:border-[#0F9690]/30 dark:bg-[#0F9690]/10 p-3.5">
       <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white text-[#0F9690] shadow-sm">
         <span className="[&>svg]:h-5 [&>svg]:w-5">
           {icon}
@@ -854,11 +854,11 @@ const Spec = ({ icon, value, label }) => {
       </div>
 
       <div className="min-w-0">
-        <p className="truncate text-sm font-extrabold text-[#162831]">
+        <p className="truncate text-sm font-extrabold text-[#162831] dark:text-white">
           {value}
         </p>
 
-        <p className="text-[10px] text-slate-500">
+        <p className="text-[10px] text-slate-500 dark:text-slate-400">
           {label}
         </p>
       </div>
@@ -869,18 +869,18 @@ const Spec = ({ icon, value, label }) => {
 const AgentInfo = ({ icon, label, value }) => {
   return (
     <div className="flex items-center gap-3">
-      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#E8F7F5] text-[#0F9690]">
+      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#E8F7F5] dark:bg-[#0F9690]/15 text-[#0F9690]">
         <span className="[&>svg]:h-4 [&>svg]:w-4">
           {icon}
         </span>
       </div>
 
       <div className="min-w-0">
-        <p className="text-[10px] text-slate-400">
+        <p className="text-[10px] text-slate-400 dark:text-slate-500">
           {label}
         </p>
 
-        <p className="truncate text-xs font-bold text-[#162831]">
+        <p className="truncate text-xs font-bold text-[#162831] dark:text-white">
           {value}
         </p>
       </div>

@@ -94,31 +94,31 @@ const AgentApproval = () => {
           title: 'Total Pending Agents',
           value: stats.pendingAgents,
           icon: Clock,
-          iconBg: 'bg-[#FBF3DD] text-[#E7B85A]',
+          iconBg: 'bg-[#FBF3DD] text-[#E7B85A] dark:bg-amber-500/10 dark:text-amber-300',
         },
         {
           title: 'Total Approved Agents',
           value: stats.approvedAgents,
           icon: UserCheck,
-          iconBg: 'bg-[#E7F4EE] text-[#4FAF83]',
+          iconBg: 'bg-[#E7F4EE] text-[#4FAF83] dark:bg-emerald-500/10 dark:text-emerald-300',
         },
         {
           title: 'Total Rejected Agents',
           value: stats.rejectedAgents,
           icon: XCircle,
-          iconBg: 'bg-[#FBEAE9] text-[#D96B67]',
+          iconBg: 'bg-[#FBEAE9] text-[#D96B67] dark:bg-rose-500/10 dark:text-rose-300',
         },
         {
           title: 'Total Suspended Users',
           value: stats.suspendedUsers,
           icon: Ban,
-          iconBg: 'bg-[#FBEAE9] text-[#D96B67]',
+          iconBg: 'bg-[#FBEAE9] text-[#D96B67] dark:bg-rose-500/10 dark:text-rose-300',
         },
       ]
     : [];
 
   if (loading) {
-    return <div className="py-20 text-center text-[#6B7280]">Loading agent approvals…</div>;
+    return <div className="py-20 text-center text-[#6B7280] dark:text-slate-400">Loading agent approvals…</div>;
   }
 
   return (
@@ -129,26 +129,26 @@ const AgentApproval = () => {
             Approvals
           </p>
           <div className="flex items-center gap-2.5">
-            <span aria-hidden="true" className="w-10 h-10 rounded-xl bg-[#E7F0FB] text-[#4A9FF5] flex items-center justify-center shrink-0">
+            <span aria-hidden="true" className="w-10 h-10 rounded-xl bg-[#E7F0FB] text-[#4A9FF5] flex items-center justify-center shrink-0 dark:bg-blue-500/10 dark:text-blue-300">
               <ShieldCheck size={20} />
             </span>
-            <h1 className="text-[24px] font-bold text-[#111827] tracking-tight">
+            <h1 className="text-[24px] font-bold text-[#111827] tracking-tight dark:text-white">
               Agent Approval Dashboard
             </h1>
           </div>
-          <p className="text-[13px] text-[#6B7280] mt-1">
+          <p className="text-[13px] text-[#6B7280] mt-1 dark:text-slate-400">
             Review, approve, or reject agent verification requests
           </p>
         </div>
       </div>
 
       {error && (
-        <div className="rounded-md bg-[#FBE9E8] text-[#B23B36] text-[13px] px-4 py-3">
+        <div className="rounded-md bg-[#FBE9E8] text-[#B23B36] text-[13px] px-4 py-3 dark:bg-rose-500/10 dark:text-rose-300">
           {error}
         </div>
       )}
       {success && (
-        <div className="rounded-md bg-[#E6F4EC] text-[#2F7A55] text-[13px] px-4 py-3">
+        <div className="rounded-md bg-[#E6F4EC] text-[#2F7A55] text-[13px] px-4 py-3 dark:bg-emerald-500/10 dark:text-emerald-300">
           {success}
         </div>
       )}
@@ -166,13 +166,13 @@ const AgentApproval = () => {
       </div>
 
       {/* Agent list */}
-      <div className="bg-white border border-[#E5E7EB] rounded-lg shadow-[0_2px_8px_rgba(15,23,42,0.06)] overflow-hidden">
+      <div className="bg-white border border-[#E5E7EB] rounded-lg shadow-[0_2px_8px_rgba(15,23,42,0.06)] overflow-hidden dark:bg-[#111827] dark:border-slate-800">
         <div className="flex items-center justify-between px-4 py-3 gap-3">
-          <h2 className="text-[17px] font-semibold text-[#111827]">
+          <h2 className="text-[17px] font-semibold text-[#111827] dark:text-white">
             {searchTerm.trim() ? 'Agent Search Results' : 'Pending Verification Requests'}
           </h2>
           <div className="relative w-full max-w-xs">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" size={15} />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none dark:text-slate-500" size={15} />
             <input
               type="text"
               value={searchTerm}
@@ -187,14 +187,14 @@ const AgentApproval = () => {
               }
               placeholder="Search agents..."
               aria-label="Search agents"
-              className="w-full bg-[#F5F5FA] border border-[#E5E7EB] rounded-lg py-2 pl-9 pr-3 text-[13px] text-slate-700 placeholder-slate-400 focus:outline-none focus:border-[#4A9FF5] focus:bg-white transition"
+              className="w-full bg-[#F5F5FA] border border-[#E5E7EB] rounded-lg py-2 pl-9 pr-3 text-[13px] text-slate-700 placeholder-slate-400 focus:outline-none focus:border-[#4A9FF5] focus:bg-white transition dark:bg-[#1E293B] dark:border-slate-700 dark:text-white dark:placeholder:text-slate-400 dark:focus:bg-[#1E293B]"
             />
           </div>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-[13px] text-[#111827] min-w-[920px]">
+          <table className="w-full text-left text-[13px] text-[#111827] min-w-[920px] dark:text-white">
             <thead>
-              <tr className="bg-[#F3F4F8] text-[#374151] font-medium text-[13px] h-[42px]">
+              <tr className="bg-[#F3F4F8] text-[#374151] font-medium text-[13px] h-[42px] dark:bg-[#1E293B] dark:text-slate-200">
                 <th className="py-0 px-4 rounded-l-lg w-[18%]">Applicant Name</th>
                 <th className="py-0 px-4 w-[18%]">Agency Name</th>
                 <th className="py-0 px-4 w-[15%]">Registration Date</th>
@@ -203,10 +203,10 @@ const AgentApproval = () => {
                 <th className="py-0 px-4 w-[21%] rounded-r-lg">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#E5E7EB]">
+            <tbody className="divide-y divide-[#E5E7EB] dark:divide-slate-800">
               {agents.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="py-10 text-center text-[13px] text-[#6B7280]">
+                  <td colSpan={6} className="py-10 text-center text-[13px] text-[#6B7280] dark:text-slate-400">
                     {searchTerm.trim() ? 'No agents match your search.' : 'No pending verification requests.'}
                   </td>
                 </tr>
@@ -214,7 +214,7 @@ const AgentApproval = () => {
                  agents.map((a) => {
                    const isHighlighted = highlightId && String(a.userId) === String(highlightId);
                    return (
-                    <tr key={a.id} className={`h-[50px] hover:bg-[#F9FAFB] transition-colors ${isHighlighted ? 'bg-[#E7F0FB]/60' : ''}`}>
+                    <tr key={a.id} className={`h-[50px] hover:bg-[#F9FAFB] transition-colors dark:hover:bg-slate-800/60 ${isHighlighted ? 'bg-[#E7F0FB]/60 dark:bg-blue-500/10' : ''}`}>
                       <td className="py-0 px-4">
                         <div className="flex items-center gap-2.5 min-w-0">
                           <Avatar
@@ -222,22 +222,22 @@ const AgentApproval = () => {
                             src={a.profile_image_url || undefined}
                             alt={`${a.first_name} ${a.last_name}`}
                           />
-                          <span className="font-medium truncate text-[#111827]">
+                          <span className="font-medium truncate text-[#111827] dark:text-white">
                             {a.first_name} {a.last_name}
                           </span>
                         </div>
                       </td>
-                      <td className="py-0 px-4 text-[#374151] truncate">{a.agency || '—'}</td>
-                      <td className="py-0 px-4 text-[#374151] whitespace-nowrap">
+                      <td className="py-0 px-4 text-[#374151] truncate dark:text-slate-200">{a.agency || '—'}</td>
+                      <td className="py-0 px-4 text-[#374151] whitespace-nowrap dark:text-slate-200">
                         {formatDate(a.created_at)}
                       </td>
                       <td className="py-0 px-4">
                         {a.licenseNumber ? (
-                          <span className="text-[#374151] text-[13px] font-medium whitespace-nowrap">
+                          <span className="text-[#374151] text-[13px] font-medium whitespace-nowrap dark:text-slate-200">
                             {a.licenseNumber}
                           </span>
                         ) : (
-                          <span className="text-[#9CA3AF]">—</span>
+                          <span className="text-[#9CA3AF] dark:text-slate-500">—</span>
                         )}
                       </td>
                       <td className="py-0 px-4">
@@ -246,12 +246,12 @@ const AgentApproval = () => {
                        <td className="py-0 px-4">
                          {a.status === 'pending' && actionId === a.id ? (
                            <div className="flex items-center gap-2 whitespace-nowrap">
-                             <Loader2 size={17} className="animate-spin text-[#4FAF83]" />
-                             <span className="text-[12px] text-[#6B7280]">Updating…</span>
+<Loader2 size={17} className="animate-spin text-[#4FAF83]" />
+                              <span className="text-[12px] text-[#6B7280] dark:text-slate-400">Updating…</span>
                            </div>
                          ) : confirmAction?.id === a.id ? (
                            <div className="flex items-center gap-2 whitespace-nowrap">
-                             <span className="text-[12px] font-medium text-[#374151]">
+                             <span className="text-[12px] font-medium text-[#374151] dark:text-slate-200">
                                {confirmAction.action === 'approve' ? 'Approve?' : 'Reject?'}
                              </span>
                              <button
@@ -271,7 +271,7 @@ const AgentApproval = () => {
                                type="button"
                                disabled={actionId === a.id}
                                onClick={() => setConfirmAction(null)}
-                               className="h-[30px] px-3 rounded-md bg-[#edf2fa] border border-[#d6deeb] text-[12px] font-medium text-[#374151] hover:bg-[#F3F4F8] transition-colors disabled:opacity-50"
+                               className="h-[30px] px-3 rounded-md bg-[#edf2fa] border border-[#d6deeb] text-[12px] font-medium text-[#374151] hover:bg-[#F3F4F8] transition-colors disabled:opacity-50 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-700"
                              >
                                No
                              </button>
@@ -282,23 +282,23 @@ const AgentApproval = () => {
                              type="button"
                              disabled={actionId === a.id}
 onClick={() => setConfirmAction({ id: a.id, action: 'approve' })}
-                               className="inline-flex items-center gap-1.5 h-[34px] px-[10px] rounded-md bg-[#E7F4EE] text-[13px] font-medium text-[#2F7A55] hover:bg-[#d3efe1] transition-colors disabled:opacity-50"
-                             >
-                             <CheckCircle size={19} className="text-[#2F7A55]" />
+className="inline-flex items-center gap-1.5 h-[34px] px-[10px] rounded-md bg-[#E7F4EE] text-[13px] font-medium text-[#2F7A55] hover:bg-[#d3efe1] transition-colors disabled:opacity-50 dark:bg-emerald-500/10 dark:text-emerald-300 dark:hover:bg-emerald-500/20"
+                              >
+                              <CheckCircle size={19} className="text-[#2F7A55] dark:text-emerald-300" />
                              Approve Account
                           </button>
                           <button
                             type="button"
                             disabled={actionId === a.id}
                             onClick={() => setConfirmAction({ id: a.id, action: 'reject' })}
-                            className="inline-flex items-center gap-1.5 h-[34px] px-[10px] rounded-md bg-[#FBEAE9] text-[13px] font-medium text-[#B23B36] hover:bg-[#f5d8d6] transition-colors disabled:opacity-50"
+                            className="inline-flex items-center gap-1.5 h-[34px] px-[10px] rounded-md bg-[#FBEAE9] text-[13px] font-medium text-[#B23B36] hover:bg-[#f5d8d6] transition-colors disabled:opacity-50 dark:bg-rose-500/10 dark:text-rose-300 dark:hover:bg-rose-500/20"
                           >
-                            <XCircle size={19} className="text-[#B23B36]" />
+                            <XCircle size={19} className="text-[#B23B36] dark:text-rose-300" />
                             Reject Account
                           </button>
                         </div>
                          ) : (
-                           <span className="text-[#9CA3AF]">—</span>
+                           <span className="text-[#9CA3AF] dark:text-slate-500">—</span>
                          )}
                       </td>
                     </tr>
@@ -312,15 +312,15 @@ onClick={() => setConfirmAction({ id: a.id, action: 'approve' })}
 
       {/* Bottom grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 items-stretch">
-        <div className="bg-white border border-[#E5E7EB] rounded-lg shadow-[0_2px_8px_rgba(15,23,42,0.06)] p-4 flex flex-col">
-          <h2 className="text-[17px] font-semibold text-[#111827] mb-2">Recent Activity Log</h2>
+        <div className="bg-white border border-[#E5E7EB] rounded-lg shadow-[0_2px_8px_rgba(15,23,42,0.06)] p-4 flex flex-col dark:bg-[#111827] dark:border-slate-800">
+          <h2 className="text-[17px] font-semibold text-[#111827] mb-2 dark:text-white">Recent Activity Log</h2>
           <div className="flex-1 max-h-[260px] overflow-y-auto scrollbar-thin">
             {!stats || stats.recentAgents.length === 0 ? (
-              <p className="text-[13px] text-[#6B7280] py-6 text-center">
+              <p className="text-[13px] text-[#6B7280] py-6 text-center dark:text-slate-400">
                 No recent activity.
               </p>
             ) : (
-              <div className="divide-y divide-slate-100">
+              <div className="divide-y divide-slate-100 dark:divide-slate-800">
                 {stats.recentAgents.map((r) => (
                   <div key={r.id} className="flex items-center justify-between py-2.5">
                     <div className="flex items-center space-x-2.5 min-w-0">
@@ -329,7 +329,7 @@ onClick={() => setConfirmAction({ id: a.id, action: 'approve' })}
                         src={r.profile_image_url || undefined}
                         alt={`${r.first_name} ${r.last_name}`}
                       />
-                      <span className="text-[13px] font-semibold text-[#111827] truncate">
+                      <span className="text-[13px] font-semibold text-[#111827] truncate dark:text-white">
                         {r.first_name} {r.last_name}
                       </span>
                     </div>

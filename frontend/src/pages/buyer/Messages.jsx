@@ -223,23 +223,23 @@ export const Messages = () => {
       case 'read':
         return {
           label: 'Read by Agent',
-          className: 'bg-blue-100 text-blue-800 border-blue-200',
+          className: 'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-500/10 dark:text-blue-300 dark:border-blue-500/30',
         };
       case 'responded':
         return {
           label: 'Responded',
-          className: 'bg-emerald-100 text-emerald-800 border-emerald-200',
+          className: 'bg-emerald-100 text-emerald-800 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-300 dark:border-emerald-500/30',
         };
       case 'archived':
         return {
           label: 'Archived',
-          className: 'bg-slate-100 text-slate-700 border-slate-200',
+          className: 'bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700',
         };
       case 'pending':
       default:
         return {
           label: 'Sent (Pending Read)',
-          className: 'bg-amber-100 text-amber-800 border-amber-200',
+          className: 'bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-500/10 dark:text-amber-300 dark:border-amber-500/30',
         };
     }
   };
@@ -266,7 +266,7 @@ export const Messages = () => {
     <div className="space-y-6 font-sans">
       {/* Toast Notification Alert */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-xl flex items-center space-x-2 text-xs font-medium animate-in fade-in slide-in-from-bottom-3 duration-200">
+        <div className="fixed bottom-6 right-6 z-50 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-xl flex items-center space-x-2 text-xs font-medium animate-in fade-in slide-in-from-bottom-3 duration-200 dark:bg-slate-800 dark:border dark:border-slate-700">
           <CheckCircle2 size={16} className="text-emerald-400 shrink-0" />
           <span>{toastMessage}</span>
         </div>
@@ -275,10 +275,10 @@ export const Messages = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
+          <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight dark:text-white">
             Messages & Inquiries
           </h1>
-          <p className="text-xs text-slate-500 mt-1">
+          <p className="text-xs text-slate-500 mt-1 dark:text-slate-400">
             Direct communication with listing agents regarding your inquiries
           </p>
         </div>
@@ -286,7 +286,7 @@ export const Messages = () => {
           type="button"
           onClick={() => loadInquiries()}
           disabled={loading}
-          className="self-start sm:self-auto px-3.5 py-2 text-xs font-semibold bg-white border border-slate-200 rounded-xl text-slate-700 hover:bg-slate-50 shadow-2xs transition cursor-pointer flex items-center space-x-2 disabled:opacity-50"
+          className="self-start sm:self-auto px-3.5 py-2 text-xs font-semibold bg-white border border-slate-200 rounded-xl text-slate-700 hover:bg-slate-50 shadow-2xs transition cursor-pointer flex items-center space-x-2 disabled:opacity-50 dark:bg-[#111827] dark:border-slate-800 dark:text-slate-200 dark:hover:bg-slate-800/60"
         >
           <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
           <span>Refresh</span>
@@ -295,21 +295,21 @@ export const Messages = () => {
 
       {/* Loading State */}
       {loading && (
-        <div className="bg-white border border-slate-200/80 rounded-2xl shadow-2xs p-8 text-center space-y-4 min-h-[400px] flex flex-col items-center justify-center">
+        <div className="bg-white border border-slate-200/80 rounded-2xl shadow-2xs p-8 text-center space-y-4 min-h-[400px] flex flex-col items-center justify-center dark:bg-[#111827] dark:border-slate-800">
           <div className="w-8 h-8 border-3 border-blue-600/20 border-t-blue-600 rounded-full animate-spin mx-auto" />
-          <p className="text-xs font-semibold text-slate-600">Loading your conversations...</p>
+          <p className="text-xs font-semibold text-slate-600 dark:text-slate-300">Loading your conversations...</p>
         </div>
       )}
 
       {/* Error State */}
       {!loading && error && (
-        <div className="bg-rose-50 border border-rose-200 rounded-2xl p-6 text-center space-y-3">
-          <div className="w-12 h-12 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center mx-auto">
+        <div className="bg-rose-50 border border-rose-200 rounded-2xl p-6 text-center space-y-3 dark:bg-rose-500/10 dark:border-rose-500/30">
+          <div className="w-12 h-12 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center mx-auto dark:bg-rose-500/15 dark:text-rose-300">
             <AlertCircle size={24} />
           </div>
           <div>
-            <h3 className="text-sm font-bold text-rose-900">Failed to Load Messages</h3>
-            <p className="text-xs text-rose-600 mt-0.5">{error}</p>
+            <h3 className="text-sm font-bold text-rose-900 dark:text-rose-300">Failed to Load Messages</h3>
+            <p className="text-xs text-rose-600 mt-0.5 dark:text-rose-400">{error}</p>
           </div>
           <button
             type="button"
@@ -323,13 +323,13 @@ export const Messages = () => {
 
       {/* Empty State */}
       {!loading && !error && inquiries.length === 0 && (
-        <div className="bg-white border border-slate-100 rounded-2xl p-12 text-center space-y-4 shadow-xs">
-          <div className="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto">
+        <div className="bg-white border border-slate-100 rounded-2xl p-12 text-center space-y-4 shadow-xs dark:bg-[#111827] dark:border-slate-800">
+          <div className="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto dark:bg-blue-500/10 dark:text-blue-300">
             <MessageSquare size={28} />
           </div>
           <div>
-            <h3 className="text-base font-bold text-slate-900">No inquiries or messages yet</h3>
-            <p className="text-xs text-slate-500 max-w-sm mx-auto mt-1">
+            <h3 className="text-base font-bold text-slate-900 dark:text-white">No inquiries or messages yet</h3>
+            <p className="text-xs text-slate-500 max-w-sm mx-auto mt-1 dark:text-slate-400">
               Have a question about a property? Send an inquiry directly to the listing agent while browsing properties!
             </p>
           </div>
@@ -344,15 +344,15 @@ export const Messages = () => {
 
       {/* Split-View Chat / Conversation Interface */}
       {!loading && !error && inquiries.length > 0 && (
-        <div className="bg-white border border-slate-200/80 rounded-2xl shadow-2xs overflow-hidden grid grid-cols-1 lg:grid-cols-12 min-h-[580px]">
+        <div className="bg-white border border-slate-200/80 rounded-2xl shadow-2xs overflow-hidden grid grid-cols-1 lg:grid-cols-12 min-h-[580px] dark:bg-[#111827] dark:border-slate-800">
           {/* Left: Conversations List */}
           <div
-            className={`lg:col-span-4 border-r border-slate-200/80 flex flex-col bg-slate-50/50 ${
+            className={`lg:col-span-4 border-r border-slate-200/80 flex flex-col bg-slate-50/50 dark:border-slate-800 dark:bg-slate-800/30 ${
               mobileView === 'chat' ? 'hidden lg:flex' : 'flex'
             }`}
           >
             {/* Status Filter Tabs & Search Header */}
-            <div className="p-3.5 border-b border-slate-200/80 space-y-2.5">
+            <div className="p-3.5 border-b border-slate-200/80 space-y-2.5 dark:border-slate-800">
               <div className="flex items-center gap-1 overflow-x-auto pb-1">
                 {[
                   { key: 'all', label: 'All' },
@@ -367,7 +367,7 @@ export const Messages = () => {
                     className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold transition cursor-pointer shrink-0 ${
                       statusFilter === tab.key
                         ? 'bg-blue-600 text-white shadow-2xs'
-                        : 'text-slate-600 hover:bg-slate-200/60'
+                        : 'text-slate-600 hover:bg-slate-200/60 dark:text-slate-300 dark:hover:bg-slate-800'
                     }`}
                   >
                     {tab.label}
@@ -376,21 +376,21 @@ export const Messages = () => {
               </div>
 
               <div className="relative">
-                <Search className="absolute left-3 top-2.5 text-slate-400" size={14} />
+                <Search className="absolute left-3 top-2.5 text-slate-400 dark:text-slate-500" size={14} />
                 <input
                   type="text"
                   placeholder="Search inquiries..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-white border border-slate-200 rounded-xl py-1.5 pl-8 pr-3 text-xs text-slate-800 focus:outline-none focus:border-blue-600 transition"
+                  className="w-full bg-white border border-slate-200 rounded-xl py-1.5 pl-8 pr-3 text-xs text-slate-800 focus:outline-none focus:border-blue-600 transition dark:bg-[#1E293B] dark:border-slate-700 dark:text-white dark:placeholder:text-slate-400"
                 />
               </div>
             </div>
 
             {/* Conversations List Items */}
-            <div className="divide-y divide-slate-100 overflow-y-auto flex-1 max-h-[500px]">
+            <div className="divide-y divide-slate-100 overflow-y-auto flex-1 max-h-[500px] dark:divide-slate-800">
               {filteredInquiries.length === 0 ? (
-                <div className="p-6 text-center text-slate-400 text-xs">
+                <div className="p-6 text-center text-slate-400 text-xs dark:text-slate-500">
                   No matching inquiries found.
                 </div>
               ) : (
@@ -405,8 +405,8 @@ export const Messages = () => {
                       onClick={() => handleSelectConversation(inq.id)}
                       className={`p-3.5 flex items-start space-x-3 cursor-pointer transition ${
                         isSelected
-                          ? 'bg-blue-50/90 border-l-4 border-blue-600'
-                          : 'hover:bg-slate-100/60'
+                          ? 'bg-blue-50/90 border-l-4 border-blue-600 dark:bg-blue-500/10 dark:border-blue-400'
+                          : 'hover:bg-slate-100/60 dark:hover:bg-slate-800/60'
                       }`}
                     >
                       {/* Property or Agent Thumbnail */}
@@ -414,29 +414,29 @@ export const Messages = () => {
                         <img
                           src={inq.propertyImage}
                           alt={inq.propertyTitle}
-                          className="w-11 h-11 rounded-xl object-cover shrink-0 border border-slate-200/80"
+                          className="w-11 h-11 rounded-xl object-cover shrink-0 border border-slate-200/80 dark:border-slate-700"
                         />
                       ) : (
-                        <div className="w-11 h-11 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xs shrink-0">
+                        <div className="w-11 h-11 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xs shrink-0 dark:bg-blue-500/10 dark:text-blue-300">
                           <Building size={18} />
                         </div>
                       )}
 
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between">
-                          <h4 className="text-xs font-bold text-slate-900 truncate">
+                          <h4 className="text-xs font-bold text-slate-900 truncate dark:text-white">
                             {inq.propertyTitle}
                           </h4>
-                          <span className="text-[10px] text-slate-400 font-medium shrink-0 ml-1">
+                          <span className="text-[10px] text-slate-400 font-medium shrink-0 ml-1 dark:text-slate-500">
                             {formatShortDate(inq.updatedAt || inq.createdAt)}
                           </span>
                         </div>
 
-                        <p className="text-[11px] text-slate-600 font-medium truncate mt-0.5">
+                        <p className="text-[11px] text-slate-600 font-medium truncate mt-0.5 dark:text-slate-300">
                           Agent: {inq.agentFirstName} {inq.agentLastName}
                         </p>
 
-                        <p className="text-xs text-slate-500 truncate mt-1">
+                        <p className="text-xs text-slate-500 truncate mt-1 dark:text-slate-400">
                           {displayMessage}
                         </p>
 
@@ -457,19 +457,19 @@ export const Messages = () => {
 
           {/* Right: Active Chat / Inquiry Thread View */}
           <div
-            className={`lg:col-span-8 flex flex-col justify-between bg-white ${
+            className={`lg:col-span-8 flex flex-col justify-between bg-white dark:bg-transparent ${
               mobileView === 'list' ? 'hidden lg:flex' : 'flex'
             }`}
           >
             {activeLoading ? (
-              <div className="flex-1 flex flex-col items-center justify-center p-12 text-slate-400 space-y-3">
+              <div className="flex-1 flex flex-col items-center justify-center p-12 text-slate-400 space-y-3 dark:text-slate-500">
                 <div className="w-8 h-8 border-3 border-blue-600 border-t-transparent rounded-full animate-spin" />
                 <p className="text-xs font-medium">Loading conversation...</p>
               </div>
             ) : activeError ? (
-              <div className="flex-1 flex flex-col items-center justify-center p-12 text-slate-500 space-y-3">
+              <div className="flex-1 flex flex-col items-center justify-center p-12 text-slate-500 space-y-3 dark:text-slate-400">
                 <AlertCircle className="w-8 h-8 text-rose-500" />
-                <p className="text-xs font-medium text-rose-600">{activeError}</p>
+                <p className="text-xs font-medium text-rose-600 dark:text-rose-400">{activeError}</p>
                 <button
                   type="button"
                   onClick={() => {
@@ -477,7 +477,7 @@ export const Messages = () => {
                     setActiveInquiryId(null);
                     setTimeout(() => setActiveInquiryId(currId), 10);
                   }}
-                  className="px-3 py-1.5 text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg font-semibold transition cursor-pointer"
+                  className="px-3 py-1.5 text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg font-semibold transition cursor-pointer dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-200"
                 >
                   Retry
                 </button>
@@ -485,12 +485,12 @@ export const Messages = () => {
             ) : activeInquiry ? (
               <>
                 {/* Active Thread Header */}
-                <div className="p-3.5 border-b border-slate-200/80 flex items-center justify-between bg-slate-50/40">
+                <div className="p-3.5 border-b border-slate-200/80 flex items-center justify-between bg-slate-50/40 dark:border-slate-800 dark:bg-slate-900/40">
                   <div className="flex items-center space-x-3 min-w-0">
                     <button
                       type="button"
                       onClick={() => setMobileView('list')}
-                      className="p-1 text-slate-600 hover:text-slate-900 lg:hidden cursor-pointer shrink-0"
+                      className="p-1 text-slate-600 hover:text-slate-900 lg:hidden cursor-pointer shrink-0 dark:text-slate-300 dark:hover:text-white"
                       title="Back to inquiries list"
                     >
                       <ArrowLeft size={18} />
@@ -500,19 +500,19 @@ export const Messages = () => {
                       <img
                         src={activeInquiry.agentAvatar}
                         alt={`${activeInquiry.agentFirstName} ${activeInquiry.agentLastName}`}
-                        className="w-10 h-10 rounded-full object-cover border border-slate-200 shrink-0"
+                        className="w-10 h-10 rounded-full object-cover border border-slate-200 shrink-0 dark:border-slate-700"
                       />
                     ) : (
-                      <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xs shrink-0">
+                      <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xs shrink-0 dark:bg-blue-500/10 dark:text-blue-300">
                         {activeInquiry.agentFirstName?.[0] || 'A'}
                       </div>
                     )}
 
                     <div className="min-w-0">
-                      <h3 className="text-xs sm:text-sm font-bold text-slate-900 truncate">
+                      <h3 className="text-xs sm:text-sm font-bold text-slate-900 truncate dark:text-white">
                         {activeInquiry.agentFirstName} {activeInquiry.agentLastName}
                       </h3>
-                      <p className="text-[11px] text-slate-500 truncate flex items-center gap-1">
+                      <p className="text-[11px] text-slate-500 truncate flex items-center gap-1 dark:text-slate-400">
                         <span>{activeInquiry.agencyName || 'Listing Agent'}</span>
                         {activeInquiry.agentPhone && (
                           <>
@@ -538,21 +538,21 @@ export const Messages = () => {
                 </div>
 
                 {/* Property Context Banner */}
-                <div className="p-3 bg-blue-50/60 border-b border-blue-100 flex items-center justify-between gap-3 text-xs">
+                <div className="p-3 bg-blue-50/60 border-b border-blue-100 flex items-center justify-between gap-3 text-xs dark:bg-blue-500/10 dark:border-blue-500/30">
                   <div className="flex items-center space-x-3 min-w-0">
                     {activeInquiry.propertyImage && (
                       <img
                         src={activeInquiry.propertyImage}
                         alt={activeInquiry.propertyTitle}
-                        className="w-12 h-12 rounded-lg object-cover shrink-0 border border-blue-200/70"
+                        className="w-12 h-12 rounded-lg object-cover shrink-0 border border-blue-200/70 dark:border-blue-500/30"
                       />
                     )}
                     <div className="min-w-0">
-                      <h4 className="font-bold text-slate-900 truncate">
+                      <h4 className="font-bold text-slate-900 truncate dark:text-white">
                         {activeInquiry.propertyTitle}
                       </h4>
-                      <p className="text-[11px] text-slate-500 truncate flex items-center gap-1">
-                        <MapPin size={11} className="text-slate-400" />
+                      <p className="text-[11px] text-slate-500 truncate flex items-center gap-1 dark:text-slate-400">
+                        <MapPin size={11} className="text-slate-400 dark:text-slate-500" />
                         {activeInquiry.propertyAddress ? `${activeInquiry.propertyAddress}, ` : ''}
                         {activeInquiry.propertyCity}
                       </p>
@@ -566,14 +566,14 @@ export const Messages = () => {
 
                   <Link
                     to={`/properties/${activeInquiry.propertyId}`}
-                    className="px-3 py-1.5 bg-white border border-blue-200 text-blue-700 hover:bg-blue-50 rounded-lg text-xs font-bold transition shrink-0"
+                    className="px-3 py-1.5 bg-white border border-blue-200 text-blue-700 hover:bg-blue-50 rounded-lg text-xs font-bold transition shrink-0 dark:bg-[#1E293B] dark:border-blue-500/30 dark:text-blue-300 dark:hover:bg-blue-500/10"
                   >
                     View Listing
                   </Link>
                 </div>
 
                 {/* Message Thread History */}
-                <div className="p-4 sm:p-6 space-y-3.5 overflow-y-auto flex-1 max-h-[380px] bg-slate-50/30">
+                <div className="p-4 sm:p-6 space-y-3.5 overflow-y-auto flex-1 max-h-[380px] bg-slate-50/30 dark:bg-slate-900/40">
                   {threadMessages.map((msg, idx) => {
                     const isFromUser =
                       (msg.senderId != null &&
@@ -588,7 +588,7 @@ export const Messages = () => {
                         className={`flex items-end ${isFromUser ? 'justify-end' : 'justify-start'} space-x-2`}
                       >
                         {!isFromUser && (
-                          <div className="w-7 h-7 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center font-bold text-[10px] shrink-0 mb-1">
+                          <div className="w-7 h-7 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center font-bold text-[10px] shrink-0 mb-1 dark:bg-slate-700 dark:text-slate-200">
                             {activeInquiry.agentFirstName?.[0] || 'A'}
                           </div>
                         )}
@@ -596,7 +596,7 @@ export const Messages = () => {
                           className={`max-w-[85%] sm:max-w-md p-3.5 rounded-2xl shadow-2xs space-y-1 ${
                             isFromUser
                               ? 'bg-blue-600 text-white rounded-br-none'
-                              : 'bg-white text-slate-800 border border-slate-200/80 rounded-bl-none'
+                              : 'bg-white text-slate-800 border border-slate-200/80 rounded-bl-none dark:bg-slate-800 dark:text-slate-100 dark:border-slate-700'
                           }`}
                         >
                           <p className="text-xs leading-relaxed whitespace-pre-wrap">{msg.message}</p>
@@ -604,7 +604,7 @@ export const Messages = () => {
                             className={`flex items-center justify-between text-[9px] font-normal pt-1 border-t ${
                               isFromUser
                                 ? 'text-blue-100 border-blue-500/40'
-                                : 'text-slate-400 border-slate-100'
+                                : 'text-slate-400 border-slate-100 dark:text-slate-500 dark:border-slate-700'
                             }`}
                           >
                             <span>{formatFullDateTime(msg.createdAt)}</span>
@@ -624,7 +624,7 @@ export const Messages = () => {
                 {/* Message Composer Footer */}
                 <form
                   onSubmit={handleSendMessage}
-                  className="p-3 sm:p-4 border-t border-slate-200/80 flex items-center space-x-2 bg-slate-50/50"
+                  className="p-3 sm:p-4 border-t border-slate-200/80 flex items-center space-x-2 bg-slate-50/50 dark:border-slate-800 dark:bg-slate-900/40"
                 >
                   <input
                     type="text"
@@ -632,7 +632,7 @@ export const Messages = () => {
                     onChange={(e) => setNewMessage(e.target.value)}
                     placeholder="Type a message in this conversation..."
                     disabled={sending}
-                    className="flex-1 bg-white border border-slate-200 rounded-xl py-2 px-3.5 text-xs text-slate-800 focus:outline-none focus:border-blue-600 transition min-w-0 disabled:opacity-50"
+                    className="flex-1 bg-white border border-slate-200 rounded-xl py-2 px-3.5 text-xs text-slate-800 focus:outline-none focus:border-blue-600 transition min-w-0 disabled:opacity-50 dark:bg-[#1E293B] dark:border-slate-700 dark:text-white dark:placeholder:text-slate-400"
                   />
                   <button
                     type="submit"
@@ -651,7 +651,7 @@ export const Messages = () => {
                 </form>
               </>
             ) : (
-              <div className="p-8 text-center text-slate-400 text-xs my-auto">
+              <div className="p-8 text-center text-slate-400 text-xs my-auto dark:text-slate-500">
                 Select an inquiry from the list to view the conversation.
               </div>
             )}

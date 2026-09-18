@@ -94,15 +94,15 @@ const EditProperty = () => {
 
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-[19px] font-bold text-[#101820] tracking-tight">Edit Property</h2>
-          <p className="text-[12px] text-slate-500 mt-0.5">
+          <h2 className="text-[19px] font-bold text-[#101820] tracking-tight dark:text-white">Edit Property</h2>
+          <p className="text-[12px] text-slate-500 mt-0.5 dark:text-slate-400">
             Update the listing details and press Publish when ready.
           </p>
         </div>
         <button
           type="button"
           onClick={() => navigate(ROUTES.agentProperties)}
-          className="inline-flex items-center gap-1.5 h-9 px-3.5 rounded-lg border border-slate-200 bg-white text-[13px] font-semibold text-slate-600 hover:border-slate-300 transition cursor-pointer"
+          className="inline-flex items-center gap-1.5 h-9 px-3.5 rounded-lg border border-slate-200 bg-white text-[13px] font-semibold text-slate-600 hover:border-slate-300 transition cursor-pointer dark:border-slate-800 dark:bg-[#111827] dark:text-slate-300 dark:hover:border-slate-700"
         >
           <ArrowLeft size={15} />
           Back
@@ -110,14 +110,14 @@ const EditProperty = () => {
       </div>
 
       {loading && (
-        <div className="flex items-center justify-center py-16 text-slate-500 text-[13px] gap-2">
+        <div className="flex items-center justify-center py-16 text-slate-500 text-[13px] gap-2 dark:text-slate-400">
           <Loader2 size={18} className="animate-spin" />
           Loading listing...
         </div>
       )}
 
       {!loading && loadError && (
-        <div className="rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs px-4 py-3">
+        <div className="rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs px-4 py-3 dark:bg-rose-500/10 dark:border-rose-500/30 dark:text-rose-300">
           {loadError}
           <button
             type="button"
