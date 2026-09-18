@@ -7,6 +7,7 @@ const ContactAgentModalContent = ({ agent, onClose }) => {
   const { user } = useAuth();
   const nameInputRef = useRef(null);
   const modalRef = useRef(null);
+  const doneButtonRef = useRef(null);
   const loadingRef = useRef(false);
 
   const defaultName = user ? `${user.firstName || ''} ${user.lastName || ''}`.trim() : '';
@@ -27,6 +28,14 @@ const ContactAgentModalContent = ({ agent, onClose }) => {
   useEffect(() => {
     loadingRef.current = loading;
   }, [loading]);
+
+  // Refocus onto the Done button when the form swaps to the success view, so
+  // keyboard focus does not leak out of the modal.
+  useEffect(() => {
+    if (sent) {
+      doneButtonRef.current?.focus();
+    }
+  }, [sent]);
 
   // Auto focus first interactive control, lock body scroll, trap focus, and handle Escape key
   useEffect(() => {
@@ -50,8 +59,14 @@ const ContactAgentModalContent = ({ agent, onClose }) => {
 
         const firstElement = focusable[0];
         const lastElement = focusable[focusable.length - 1];
+        const isInsideModal = modalRef.current.contains(document.activeElement);
 
-        if (e.shiftKey) {
+        // Pull focus back into the modal if it has leaked outside
+        // (e.g. after the form is replaced by the success view)
+        if (!isInsideModal) {
+          e.preventDefault();
+          (e.shiftKey ? lastElement : firstElement).focus();
+        } else if (e.shiftKey) {
           if (document.activeElement === firstElement) {
             e.preventDefault();
             lastElement.focus();
@@ -141,6 +156,7 @@ const ContactAgentModalContent = ({ agent, onClose }) => {
             </p>
             <button
               type="button"
+              ref={doneButtonRef}
               onClick={onClose}
               className="mt-6 px-5 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-xs transition cursor-pointer"
             >
@@ -270,7 +286,7 @@ const ContactAgentModalContent = ({ agent, onClose }) => {
               type="tel"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              placeholder="+251 911 000 000"
+              placeholder="+251911000000"
               className="w-full text-xs font-medium text-slate-800 bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition"
             />
           </div>

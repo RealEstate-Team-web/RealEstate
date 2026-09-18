@@ -19,22 +19,30 @@ const PublicAgents = () => {
 
   // Restore a pending "contact agent" request (stashed before the guest walked
   // through login) so the modal auto-opens once the guest arrives as a buyer.
-  const [contactAgent, setContactAgent] = useState(() => {
-    const raw = sessionStorage.getItem("pendingAgentContact");
-    if (!raw) return null;
-    try {
-      const data = JSON.parse(raw);
-      return data?.agentId
-        ? { id: data.agentId, name: data.name, photo: data.photo || null }
-        : null;
-    } catch {
-      return null;
-    }
-  });
+  // Only an authenticated buyer gets the request restored — guests keep null.
+  const [contactAgent, setContactAgent] = useState(null);
 
   useEffect(() => {
+    if (!user) return;
+
+    const raw = sessionStorage.getItem("pendingAgentContact");
+    if (!raw) return;
+
+    let data;
+    try {
+      data = JSON.parse(raw);
+    } catch {
+      sessionStorage.removeItem("pendingAgentContact");
+      return;
+    }
+
+    if (data?.agentId) {
+      Promise.resolve().then(() => {
+        setContactAgent({ id: data.agentId, name: data.name, photo: data.photo || null });
+      });
+    }
     sessionStorage.removeItem("pendingAgentContact");
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     let active = true;
