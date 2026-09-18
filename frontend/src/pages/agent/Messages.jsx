@@ -470,7 +470,7 @@ const Messages = () => {
                         </div>
                         <p className="text-[11px] text-slate-500 font-medium truncate mt-0.5 flex items-center gap-1">
                           <Building2 size={11} className="text-slate-400 shrink-0" />
-                          <span className="truncate">{inq.propertyTitle}</span>
+                          <span className="truncate">{inq.propertyTitle || 'General inquiry'}</span>
                         </p>
                         <p className="text-xs text-slate-500 truncate mt-1">
                           {displayMessage}
@@ -578,6 +578,7 @@ const Messages = () => {
                   </div>
                 </div>
 
+                {activeInquiry.propertyId && (
                 <div className="p-3 bg-blue-50/60 border-b border-blue-100 flex items-center justify-between gap-3 text-xs">
                   <div className="flex items-center space-x-3 min-w-0">
                     {activeInquiry.propertyImage && (
@@ -589,7 +590,7 @@ const Messages = () => {
                     )}
                     <div className="min-w-0">
                       <h4 className="font-bold text-slate-900 truncate">
-                        {activeInquiry.propertyTitle}
+                        {activeInquiry.propertyTitle || 'General inquiry'}
                       </h4>
                       <p className="text-[11px] text-slate-500 truncate flex items-center gap-1">
                         <MapPin size={11} className="text-slate-400" />
@@ -613,6 +614,7 @@ const Messages = () => {
                     View Listing
                   </Link>
                 </div>
+                )}
 
                 <div className="p-4 sm:p-6 space-y-3.5 overflow-y-auto flex-1 max-h-[380px] bg-slate-50/30">
                   {threadMessages.map((msg, idx) => {

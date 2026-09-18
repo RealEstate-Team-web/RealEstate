@@ -542,10 +542,13 @@ const validateRescheduleVisit = (req, res, next) => {
 
 const validateSubmitInquiry = (req, res, next) => {
   const errors = [];
-  const { propertyId, name, email, phone, message } = req.body || {};
+  const { propertyId, agentId, name, email, phone, message } = req.body || {};
 
-  if (!isValidPositiveBigInt(propertyId)) {
-    errors.push("propertyId is required and must be a valid positive integer");
+  const hasProperty = isValidPositiveBigInt(propertyId);
+  const hasAgent = isValidPositiveBigInt(agentId);
+
+  if (!hasProperty && !hasAgent) {
+    errors.push("Either propertyId or agentId is required");
   }
 
   if (!name || typeof name !== "string" || name.trim().length < 2) {

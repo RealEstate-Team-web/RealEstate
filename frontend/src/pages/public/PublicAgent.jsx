@@ -1,17 +1,40 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   ArrowRight,
 } from "lucide-react";
 
 import { getPublicAgents } from "../../services/agent.service";
+import useAuth from "../../hooks/useAuth";
 import AgentCard from "../../components/agent/AgentCard";
 import AgentCardSkeleton from "../../components/agent/AgentCardSkeleton";
+import { ContactAgentModal } from "../../components/buyer/ContactAgentModal";
 
 const PublicAgents = () => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
   const [agents, setAgents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  // Restore a pending "contact agent" request (stashed before the guest walked
+  // through login) so the modal auto-opens once the guest arrives as a buyer.
+  const [contactAgent, setContactAgent] = useState(() => {
+    const raw = sessionStorage.getItem("pendingAgentContact");
+    if (!raw) return null;
+    try {
+      const data = JSON.parse(raw);
+      return data?.agentId
+        ? { id: data.agentId, name: data.name, photo: data.photo || null }
+        : null;
+    } catch {
+      return null;
+    }
+  });
+
+  useEffect(() => {
+    sessionStorage.removeItem("pendingAgentContact");
+  }, []);
 
   useEffect(() => {
     let active = true;
@@ -36,6 +59,28 @@ const PublicAgents = () => {
       active = false;
     };
   }, []);
+
+  const handleContact = (agent) => {
+    if (user) {
+      setContactAgent(agent);
+      return;
+    }
+
+    sessionStorage.setItem(
+      "pendingAgentContact",
+      JSON.stringify({
+        agentId: agent.id,
+        name: agent.name,
+        photo: agent.photo || null,
+      })
+    );
+    sessionStorage.setItem("returnTo", "/agents");
+    navigate("/login");
+  };
+
+  const handleCloseContactModal = () => {
+    setContactAgent(null);
+  };
 
   return (
     <div className="w-full min-w-0 overflow-x-hidden bg-white">
@@ -118,7 +163,12 @@ const PublicAgents = () => {
           ) : agents.length > 0 ? (
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {agents.map((agent) => (
-                <AgentCard key={agent.id} agent={agent} variant="full" />
+                <AgentCard
+                  key={agent.id}
+                  agent={agent}
+                  variant="full"
+                  onContact={handleContact}
+                />
               ))}
             </div>
           ) : !error ? (
@@ -166,6 +216,12 @@ const PublicAgents = () => {
         </div>
 
       </section>
+
+      <ContactAgentModal
+        open={Boolean(contactAgent)}
+        agent={contactAgent}
+        onClose={handleCloseContactModal}
+      />
 
     </div>
   );
