@@ -3,7 +3,7 @@ import { ArrowRight, MapPin, Phone, Mail } from 'lucide-react';
 const AgentCard = ({ agent, variant = 'full' }) => {
   if (variant === 'compact') {
     return (
-      <div className="rounded-xl border border-slate-200 bg-white p-3 text-center transition-transform duration-200 hover:-translate-y-1 hover:shadow-md">
+      <div className="rounded-xl border border-slate-200 bg-white p-3 text-center transition-transform duration-200 hover:-translate-y-1 hover:shadow-md dark:border-slate-800 dark:bg-[#111827]">
         {agent.photo ? (
           <img
             src={agent.photo}
@@ -11,16 +11,16 @@ const AgentCard = ({ agent, variant = 'full' }) => {
             className="mx-auto h-16 w-16 rounded-full border-2 border-[#0F9690] object-cover p-0.5"
           />
         ) : (
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border-2 border-[#0F9690] bg-[#F3FAF9] p-0.5 text-lg font-extrabold text-[#0F9690]">
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border-2 border-[#0F9690] bg-[#F3FAF9] p-0.5 text-lg font-extrabold text-[#0F9690] dark:bg-[#0F9690]/10">
             {agent.name?.charAt(0) || 'A'}
           </div>
         )}
 
-        <h4 className="mt-2 line-clamp-1 text-xs font-bold text-[#162831]">
+        <h4 className="mt-2 line-clamp-1 text-xs font-bold text-[#162831] dark:text-white">
           {agent.name}
         </h4>
 
-        <p className="mt-1 text-[10px] text-slate-500">{agent.role}</p>
+        <p className="mt-1 text-[10px] text-slate-500 dark:text-slate-400">{agent.role}</p>
 
         <p className="mt-1 text-[10px] font-semibold text-[#0F9690]">
           {agent.propertyCount ?? 0}{' '}
@@ -31,8 +31,8 @@ const AgentCard = ({ agent, variant = 'full' }) => {
   }
 
   return (
-    <div className="group overflow-hidden rounded-2xl border border-slate-200 bg-white transition-all duration-300 hover:-translate-y-1 hover:border-[#0F9690]/30 hover:shadow-[0_15px_40px_rgba(15,150,144,0.12)]">
-      <div className="relative flex h-[260px] items-center justify-center overflow-hidden bg-slate-100">
+    <div className="group overflow-hidden rounded-2xl border border-slate-200 bg-white transition-all duration-300 hover:-translate-y-1 hover:border-[#0F9690]/30 hover:shadow-[0_15px_40px_rgba(15,150,144,0.12)] dark:border-slate-800 dark:bg-[#111827]">
+      <div className="relative flex h-[260px] items-center justify-center overflow-hidden bg-slate-100 dark:bg-slate-800">
         {agent.photo ? (
           <img
             src={agent.photo}
@@ -40,52 +40,52 @@ const AgentCard = ({ agent, variant = 'full' }) => {
             className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
           />
         ) : (
-          <div className="flex h-28 w-28 items-center justify-center rounded-full bg-[#E8F7F5] text-5xl font-extrabold text-[#0F9690]">
+          <div className="flex h-28 w-28 items-center justify-center rounded-full bg-[#E8F7F5] text-5xl font-extrabold text-[#0F9690] dark:bg-[#0F9690]/10">
             {agent.name?.charAt(0) || 'A'}
           </div>
         )}
 
-        <div className="absolute bottom-3 left-3 rounded-lg bg-white px-3 py-1.5 text-xs font-bold text-[#162831] shadow">
+        <div className="absolute bottom-3 left-3 rounded-lg bg-white px-3 py-1.5 text-xs font-bold text-[#162831] shadow dark:bg-[#1F2937] dark:text-white">
           {agent.propertyCount ?? 0}{' '}
           {agent.propertyCount === 1 ? 'Property' : 'Properties'}
         </div>
       </div>
 
       <div className="p-5">
-        <h3 className="text-lg font-bold text-[#162831]">{agent.name}</h3>
+        <h3 className="text-lg font-bold text-[#162831] dark:text-white">{agent.name}</h3>
 
         <p className="mt-1 text-xs font-medium text-[#0F9690]">{agent.role}</p>
 
-        <div className="mt-4 space-y-2 border-t border-slate-100 pt-4">
+        <div className="mt-4 space-y-2 border-t border-slate-100 pt-4 dark:border-slate-800">
           {agent.location ? (
-            <div className="flex items-center gap-2 text-xs text-slate-500">
+            <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
               <MapPin className="h-4 w-4 text-[#0F9690]" />
               {agent.location}
             </div>
           ) : null}
 
           {agent.phone ? (
-            <div className="flex items-center gap-2 text-xs text-slate-500">
+            <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
               <Phone className="h-4 w-4 text-[#0F9690]" />
               {agent.phone}
             </div>
           ) : null}
 
           {agent.email ? (
-            <div className="flex items-center gap-2 text-xs text-slate-500">
+            <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
               <Mail className="h-4 w-4 text-[#0F9690]" />
               {agent.email}
             </div>
           ) : null}
         </div>
 
-        <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-4">
+        <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-4 dark:border-slate-800">
           <div>
-            <p className="text-[10px] uppercase tracking-wide text-slate-400">
+            <p className="text-[10px] uppercase tracking-wide text-slate-400 dark:text-slate-500">
               Experience
             </p>
 
-            <p className="mt-1 text-sm font-bold text-[#162831]">
+            <p className="mt-1 text-sm font-bold text-[#162831] dark:text-white">
               {agent.experienceYears != null
                 ? `${agent.experienceYears} ${
                     agent.experienceYears === 1 ? 'Year' : 'Years'
