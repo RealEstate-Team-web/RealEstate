@@ -134,22 +134,22 @@ const InquiryModalContent = ({
     <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
       <div
         ref={modalRef}
-        className="bg-white w-full max-w-lg rounded-2xl shadow-2xl border border-slate-100 overflow-hidden transform transition-all animate-in fade-in zoom-in-95 duration-200"
+        className="bg-white w-full max-w-lg rounded-2xl shadow-2xl border border-slate-100 overflow-hidden transform transition-all animate-in fade-in zoom-in-95 duration-200 dark:bg-[#111827] dark:border-slate-800"
         role="dialog"
         aria-modal="true"
         aria-labelledby="inquiry-modal-title"
       >
         {/* Modal Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/50">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/50 dark:border-slate-800 dark:bg-slate-900/40">
           <div className="flex items-center space-x-2.5">
-            <div className="p-2 rounded-xl bg-blue-50 text-blue-600">
+            <div className="p-2 rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-300">
               <MessageSquare size={20} />
             </div>
             <div>
-              <h2 id="inquiry-modal-title" className="text-base font-bold text-slate-900">
+              <h2 id="inquiry-modal-title" className="text-base font-bold text-slate-900 dark:text-white">
                 Contact Listing Agent
               </h2>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-500 dark:text-slate-400">
                 Send a direct message or inquiry about this property
               </p>
             </div>
@@ -158,7 +158,7 @@ const InquiryModalContent = ({
             type="button"
             onClick={onClose}
             disabled={loading}
-            className="p-2 text-slate-400 hover:text-slate-600 rounded-xl hover:bg-slate-100 transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            className="p-2 text-slate-400 hover:text-slate-600 rounded-xl hover:bg-slate-100 transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed dark:text-slate-500 dark:hover:text-slate-200 dark:hover:bg-slate-800"
             aria-label="Close modal"
           >
             <X size={18} />
@@ -169,7 +169,7 @@ const InquiryModalContent = ({
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           {/* Property Summary Preview */}
           {property && (
-            <div className="flex items-center space-x-3.5 p-3 rounded-xl bg-slate-50 border border-slate-200/80">
+            <div className="flex items-center space-x-3.5 p-3 rounded-xl bg-slate-50 border border-slate-200/80 dark:bg-slate-800/60 dark:border-slate-800">
               {(property.img || property.image || property.propertyImage) && (
                 <img
                   src={property.img || property.image || property.propertyImage}
@@ -178,10 +178,10 @@ const InquiryModalContent = ({
                 />
               )}
               <div className="min-w-0 flex-1">
-                <h4 className="text-xs font-bold text-slate-900 truncate">
+                <h4 className="text-xs font-bold text-slate-900 truncate dark:text-white">
                   {property.title}
                 </h4>
-                <p className="text-[11px] text-slate-500 truncate">
+                <p className="text-[11px] text-slate-500 truncate dark:text-slate-400">
                   {property.location || property.city || property.address}
                 </p>
                 {property.price && (
@@ -196,7 +196,7 @@ const InquiryModalContent = ({
           {error && (
             <div
               role="alert"
-              className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-rose-700 text-xs flex items-center space-x-2"
+              className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-rose-700 text-xs flex items-center space-x-2 dark:bg-rose-500/10 dark:border-rose-500/30 dark:text-rose-300"
             >
               <AlertCircle size={16} className="shrink-0 text-rose-500" />
               <span>{error}</span>
@@ -206,7 +206,7 @@ const InquiryModalContent = ({
           {/* Name & Email Fields */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1">
-              <label htmlFor="inquiryName" className="block text-xs font-bold text-slate-700">
+              <label htmlFor="inquiryName" className="block text-xs font-bold text-slate-700 dark:text-slate-200">
                 Your Name <span className="text-rose-500">*</span>
               </label>
               <input
@@ -217,12 +217,12 @@ const InquiryModalContent = ({
                 onChange={(e) => setName(e.target.value)}
                 required
                 placeholder="John Doe"
-                className="w-full text-xs font-medium text-slate-800 bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition"
+                className="w-full text-xs font-medium text-slate-800 bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition dark:bg-[#1E293B] dark:border-slate-700 dark:text-white dark:placeholder:text-slate-400"
               />
             </div>
 
             <div className="space-y-1">
-              <label htmlFor="inquiryEmail" className="block text-xs font-bold text-slate-700">
+              <label htmlFor="inquiryEmail" className="block text-xs font-bold text-slate-700 dark:text-slate-200">
                 Email Address <span className="text-rose-500">*</span>
               </label>
               <input
@@ -232,15 +232,15 @@ const InquiryModalContent = ({
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 placeholder="you@example.com"
-                className="w-full text-xs font-medium text-slate-800 bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition"
+                className="w-full text-xs font-medium text-slate-800 bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition dark:bg-[#1E293B] dark:border-slate-700 dark:text-white dark:placeholder:text-slate-400"
               />
             </div>
           </div>
 
           {/* Phone Field */}
           <div className="space-y-1">
-            <label htmlFor="inquiryPhone" className="block text-xs font-bold text-slate-700">
-              Phone Number <span className="text-[11px] font-normal text-slate-400">(Optional)</span>
+            <label htmlFor="inquiryPhone" className="block text-xs font-bold text-slate-700 dark:text-slate-200">
+              Phone Number <span className="text-[11px] font-normal text-slate-400 dark:text-slate-500">(Optional)</span>
             </label>
             <input
               id="inquiryPhone"
@@ -248,15 +248,15 @@ const InquiryModalContent = ({
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               placeholder="+251 911 000 000"
-              className="w-full text-xs font-medium text-slate-800 bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition"
+              className="w-full text-xs font-medium text-slate-800 bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition dark:bg-[#1E293B] dark:border-slate-700 dark:text-white dark:placeholder:text-slate-400"
             />
           </div>
 
           {/* Message Area */}
           <div className="space-y-1">
-            <label htmlFor="inquiryMessage" className="block text-xs font-bold text-slate-700 flex items-center justify-between">
+            <label htmlFor="inquiryMessage" className="block text-xs font-bold text-slate-700 flex items-center justify-between dark:text-slate-200">
               <span>Your Message <span className="text-rose-500">*</span></span>
-              <span className="text-[11px] font-normal text-slate-400">Max 2000 chars</span>
+              <span className="text-[11px] font-normal text-slate-400 dark:text-slate-500">Max 2000 chars</span>
             </label>
             <textarea
               id="inquiryMessage"
@@ -266,17 +266,17 @@ const InquiryModalContent = ({
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               required
-              className="w-full text-xs font-medium text-slate-800 bg-white border border-slate-200 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition resize-none placeholder:text-slate-400"
+              className="w-full text-xs font-medium text-slate-800 bg-white border border-slate-200 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition resize-none placeholder:text-slate-400 dark:bg-[#1E293B] dark:border-slate-700 dark:text-white dark:placeholder:text-slate-400"
             />
           </div>
 
           {/* Modal Actions */}
-          <div className="flex items-center justify-end space-x-3 pt-3 border-t border-slate-100">
+          <div className="flex items-center justify-end space-x-3 pt-3 border-t border-slate-100 dark:border-slate-800">
             <button
               type="button"
               onClick={onClose}
               disabled={loading}
-              className="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-xl transition cursor-pointer disabled:opacity-50"
+              className="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-xl transition cursor-pointer disabled:opacity-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800"
             >
               Cancel
             </button>

@@ -120,22 +120,22 @@ const BookVisitModalContent = ({
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
       <div
-        className="bg-white w-full max-w-lg rounded-2xl shadow-2xl border border-slate-100 overflow-hidden transform transition-all animate-in fade-in zoom-in-95 duration-200"
+        className="bg-white w-full max-w-lg rounded-2xl shadow-2xl border border-slate-100 overflow-hidden transform transition-all animate-in fade-in zoom-in-95 duration-200 dark:bg-[#111827] dark:border-slate-800"
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"
       >
         {/* Modal Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/50">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/50 dark:border-slate-800 dark:bg-slate-900/40">
           <div className="flex items-center space-x-2.5">
-            <div className="p-2 rounded-xl bg-blue-50 text-blue-600">
+            <div className="p-2 rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-300">
               <Calendar size={20} />
             </div>
             <div>
-              <h2 id="modal-title" className="text-base font-bold text-slate-900">
+              <h2 id="modal-title" className="text-base font-bold text-slate-900 dark:text-white">
                 {isReschedule ? 'Reschedule Property Visit' : 'Schedule a Property Visit'}
               </h2>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-500 dark:text-slate-400">
                 {isReschedule
                   ? 'Select a new date and time for your visit'
                   : 'Choose your preferred date and time to visit'}
@@ -146,7 +146,7 @@ const BookVisitModalContent = ({
             type="button"
             onClick={onClose}
             disabled={loading}
-            className="p-2 text-slate-400 hover:text-slate-600 rounded-xl hover:bg-slate-100 transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            className="p-2 text-slate-400 hover:text-slate-600 rounded-xl hover:bg-slate-100 transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed dark:text-slate-500 dark:hover:text-slate-200 dark:hover:bg-slate-800"
             aria-label="Close modal"
           >
             <X size={18} />
@@ -157,7 +157,7 @@ const BookVisitModalContent = ({
         <form onSubmit={handleSubmit} className="p-6 space-y-5">
           {/* Property Summary Preview */}
           {targetProperty && (
-            <div className="flex items-center space-x-3.5 p-3 rounded-xl bg-slate-50 border border-slate-200/80">
+            <div className="flex items-center space-x-3.5 p-3 rounded-xl bg-slate-50 border border-slate-200/80 dark:bg-slate-800/60 dark:border-slate-800">
               {targetProperty.img && (
                 <img
                   src={targetProperty.img}
@@ -166,10 +166,10 @@ const BookVisitModalContent = ({
                 />
               )}
               <div className="min-w-0 flex-1">
-                <h4 className="text-xs font-bold text-slate-900 truncate">
+                <h4 className="text-xs font-bold text-slate-900 truncate dark:text-white">
                   {targetProperty.title}
                 </h4>
-                <p className="text-[11px] text-slate-500 truncate">
+                <p className="text-[11px] text-slate-500 truncate dark:text-slate-400">
                   {targetProperty.location || targetProperty.city || targetProperty.address}
                 </p>
                 {targetProperty.price && (
@@ -184,7 +184,7 @@ const BookVisitModalContent = ({
           {error && (
             <div
               role="alert"
-              className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-rose-700 text-xs flex items-center space-x-2"
+              className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-rose-700 text-xs flex items-center space-x-2 dark:bg-rose-500/10 dark:border-rose-500/30 dark:text-rose-300"
             >
               <AlertCircle size={16} className="shrink-0 text-rose-500" />
               <span>{error}</span>
@@ -193,7 +193,7 @@ const BookVisitModalContent = ({
 
           {/* Visit Date */}
           <div className="space-y-1.5">
-            <label htmlFor="visitDate" className="block text-xs font-bold text-slate-700">
+            <label htmlFor="visitDate" className="block text-xs font-bold text-slate-700 dark:text-slate-200">
               Visit Date <span className="text-rose-500">*</span>
             </label>
             <div className="relative">
@@ -205,14 +205,14 @@ const BookVisitModalContent = ({
                 value={visitDate}
                 onChange={(e) => setVisitDate(e.target.value)}
                 required
-                className="w-full text-xs font-medium text-slate-800 bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition"
+                className="w-full text-xs font-medium text-slate-800 bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition dark:bg-[#1E293B] dark:border-slate-700 dark:text-white dark:[color-scheme:dark]"
               />
             </div>
           </div>
 
           {/* Time Slots */}
           <div className="space-y-2">
-            <label className="block text-xs font-bold text-slate-700">
+            <label className="block text-xs font-bold text-slate-700 dark:text-slate-200">
               Preferred Time Slot <span className="text-rose-500">*</span>
             </label>
             <div className="grid grid-cols-4 gap-2">
@@ -226,7 +226,7 @@ const BookVisitModalContent = ({
                     className={`py-2 text-xs font-semibold rounded-xl border transition cursor-pointer ${
                       isSelected
                         ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
-                        : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+                        : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-700 dark:hover:bg-slate-700'
                     }`}
                   >
                     {slot}
@@ -238,9 +238,9 @@ const BookVisitModalContent = ({
 
           {/* Optional Notes */}
           <div className="space-y-1.5">
-            <label htmlFor="notes" className="block text-xs font-bold text-slate-700 flex items-center justify-between">
+            <label htmlFor="notes" className="block text-xs font-bold text-slate-700 flex items-center justify-between dark:text-slate-200">
               <span>Notes for the Agent (Optional)</span>
-              <span className="text-[11px] font-normal text-slate-400">Max 500 chars</span>
+              <span className="text-[11px] font-normal text-slate-400 dark:text-slate-500">Max 500 chars</span>
             </label>
             <textarea
               id="notes"
@@ -249,17 +249,17 @@ const BookVisitModalContent = ({
               placeholder="e.g. Interested in seeing the master bedroom and parking facilities..."
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              className="w-full text-xs font-medium text-slate-800 bg-white border border-slate-200 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition resize-none placeholder:text-slate-400"
+              className="w-full text-xs font-medium text-slate-800 bg-white border border-slate-200 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition resize-none placeholder:text-slate-400 dark:bg-[#1E293B] dark:border-slate-700 dark:text-white dark:placeholder:text-slate-400"
             />
           </div>
 
           {/* Modal Actions */}
-          <div className="flex items-center justify-end space-x-3 pt-3 border-t border-slate-100">
+          <div className="flex items-center justify-end space-x-3 pt-3 border-t border-slate-100 dark:border-slate-800">
             <button
               type="button"
               onClick={onClose}
               disabled={loading}
-              className="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-xl transition cursor-pointer disabled:opacity-50"
+              className="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-xl transition cursor-pointer disabled:opacity-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800"
             >
               Cancel
             </button>
