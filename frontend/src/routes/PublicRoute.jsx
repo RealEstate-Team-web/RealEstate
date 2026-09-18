@@ -23,7 +23,7 @@ const PublicRoute = ({ children, allowAuthenticated = false }) => {
   const { isAuthenticated, loading, user } = useAuth();
 
   const page = (
-    <div className="flex flex-col min-h-screen w-full overflow-x-hidden bg-white">
+    <div className="flex flex-col min-h-screen w-full overflow-x-hidden bg-white dark:bg-[#0B1120]">
       <ScrollToTop />
       <Header className="" />
       <main className="flex-1 w-full pt-[70px]">{children}</main>
