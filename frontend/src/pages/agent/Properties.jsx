@@ -17,6 +17,8 @@ import {
   Landmark,
 } from 'lucide-react';
 import { useToast } from '../../hooks/useToast';
+import { useAgentListingPermission } from '../../hooks/useAgentListingPermission';
+import ApprovalRequiredModal from '../../components/agent/ApprovalRequiredModal';
 import {
   getMyProperties,
   deleteProperty,
@@ -57,6 +59,8 @@ const Properties = () => {
   const [loadError, setLoadError] = useState('');
   const [confirmDeleteId, setConfirmDeleteId] = useState(null);
   const [busyId, setBusyId] = useState(null);
+  const [showApprovalModal, setShowApprovalModal] = useState(false);
+  const { canListProperties, agentStatus } = useAgentListingPermission();
 
   if (prevQ !== q) {
     setPrevQ(q);
@@ -130,6 +134,14 @@ const Properties = () => {
   const applySearch = (e) => {
     e.preventDefault();
     updateQuery({ search: localSearch.trim() || '', page: 1 });
+  };
+
+  const handleAddPropertyClick = () => {
+    if (!canListProperties) {
+      setShowApprovalModal(true);
+      return;
+    }
+    navigate('/agent/properties/new');
   };
 
   const handleEdit = (id) => navigate(`/agent/properties/edit/${id}`);
@@ -222,7 +234,7 @@ const Properties = () => {
 
         <button
           type="button"
-          onClick={() => navigate('/agent/properties/new')}
+          onClick={handleAddPropertyClick}
           className="inline-flex items-center justify-center gap-1.5 h-10 px-4 rounded-lg bg-[#142238] text-white text-[13px] font-semibold hover:bg-[#1d3357] transition cursor-pointer"
         >
           <Plus size={16} />
@@ -294,7 +306,7 @@ const Properties = () => {
           {!q && activeStatus === 'all' && (
             <button
               type="button"
-              onClick={() => navigate('/agent/properties/new')}
+              onClick={handleAddPropertyClick}
               className="mt-4 inline-flex items-center gap-1.5 h-10 px-4 rounded-lg bg-[#4A9FF5] text-white text-[13px] font-semibold hover:bg-[#3d8be0] transition cursor-pointer"
             >
               <Plus size={16} />
@@ -487,6 +499,12 @@ const Properties = () => {
           </p>
         </div>
       )}
+
+      <ApprovalRequiredModal
+        open={showApprovalModal}
+        onClose={() => setShowApprovalModal(false)}
+        agentStatus={agentStatus}
+      />
     </div>
   );
 };

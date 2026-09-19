@@ -3,7 +3,7 @@ const upload = require("../config/multer.config");
 const { verifyImagesMagic } = upload;
 
 const { authenticate, authenticateOptional } = require("../middlewares/auth.middleware");
-const { requireRole } = require("../middlewares/role.middleware");
+const { requireRole, requireApprovedAgent } = require("../middlewares/role.middleware");
 
 const {
   validateCreateProperty,
@@ -85,6 +85,7 @@ router.post(
   "/",
   authenticate,
   requireRole("agent"),
+  requireApprovedAgent,
   validateCreateProperty,
   createProperty
 );
@@ -113,6 +114,7 @@ router.post(
   "/:id/duplicate",
   authenticate,
   requireRole("agent"),
+  requireApprovedAgent,
   validateIdParam,
   duplicateProperty
 );

@@ -15,6 +15,8 @@ import {
   X,
 } from 'lucide-react';
 import { ROUTES } from '../../utils/constants';
+import { useAgentListingPermission } from '../../hooks/useAgentListingPermission';
+import ApprovalRequiredModal from './ApprovalRequiredModal';
 
 const primaryNavItems = [
   { label: 'Dashboard', path: ROUTES.agent, icon: LayoutDashboard, end: true, disabled: false },
@@ -45,6 +47,8 @@ const AgentSidebar = ({ isOpen, onClose }) => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const { canListProperties, agentStatus } = useAgentListingPermission();
+  const [showApprovalModal, setShowApprovalModal] = useState(false);
   const [propertiesOpen, setPropertiesOpen] = useState(
     location.pathname.startsWith('/agent/properties'),
   );
@@ -102,11 +106,12 @@ const AgentSidebar = ({ isOpen, onClose }) => {
   const groupActive = location.pathname.startsWith('/agent/properties');
 
   return (
-    <aside
-      className={`fixed inset-y-0 left-0 z-40 w-[210px] bg-[#142238] text-slate-300 flex flex-col justify-between transition-transform duration-300 ease-in-out lg:translate-x-0 ${
-        isOpen ? "translate-x-0" : "-translate-x-full"
-      } font-sans`}
-    >
+    <>
+      <aside
+        className={`fixed inset-y-0 left-0 z-40 w-[210px] bg-[#142238] text-slate-300 flex flex-col justify-between transition-transform duration-300 ease-in-out lg:translate-x-0 ${
+          isOpen ? "translate-x-0" : "-translate-x-full"
+        } font-sans`}
+      >
       {/* Brand */}
       <div>
         <div className="flex items-center justify-between h-[68px] px-4 border-b border-white/5">
@@ -164,22 +169,37 @@ const AgentSidebar = ({ isOpen, onClose }) => {
 
             {propertiesOpen && (
               <div className="mt-1 ml-7 space-y-1 border-l border-white/10 pl-3">
-                {propertySubLinks.map((link) => (
-                  <NavLink
-                    key={link.to}
-                    to={link.to}
-                    onClick={() => onClose && onClose()}
-                    className={() =>
-                      `flex items-center px-2.5 py-2 rounded-lg text-[13px] font-medium transition-all duration-200 ${
+                {propertySubLinks.map((link) =>
+                  link.to === '/agent/properties/new' && !canListProperties ? (
+                    <button
+                      key={link.to}
+                      type="button"
+                      onClick={() => setShowApprovalModal(true)}
+                      className={`w-full text-left flex items-center px-2.5 py-2 rounded-lg text-[13px] font-medium transition-all duration-200 cursor-pointer ${
                         link.match(location)
-                          ? "text-[#4A9FF5]"
-                          : "text-slate-400 hover:text-white hover:bg-white/5"
-                      }`
-                    }
-                  >
-                    <span className="truncate">{link.label}</span>
-                  </NavLink>
-                ))}
+                          ? 'text-[#4A9FF5]'
+                          : 'text-slate-400 hover:text-white hover:bg-white/5'
+                      }`}
+                    >
+                      <span className="truncate">{link.label}</span>
+                    </button>
+                  ) : (
+                    <NavLink
+                      key={link.to}
+                      to={link.to}
+                      onClick={() => onClose && onClose()}
+                      className={() =>
+                        `flex items-center px-2.5 py-2 rounded-lg text-[13px] font-medium transition-all duration-200 ${
+                          link.match(location)
+                            ? 'text-[#4A9FF5]'
+                            : 'text-slate-400 hover:text-white hover:bg-white/5'
+                        }`
+                      }
+                    >
+                      <span className="truncate">{link.label}</span>
+                    </NavLink>
+                  ),
+                )}
               </div>
             )}
           </div>
@@ -216,7 +236,14 @@ const AgentSidebar = ({ isOpen, onClose }) => {
           Logout
         </button>
       </div>
-    </aside>
+      </aside>
+
+      <ApprovalRequiredModal
+        open={showApprovalModal}
+        onClose={() => setShowApprovalModal(false)}
+        agentStatus={agentStatus}
+      />
+    </>
   );
 };
 
