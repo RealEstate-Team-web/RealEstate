@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
   Search,
   Filter,
@@ -15,6 +16,7 @@ import { getFavorites, removeFavorite } from '../../services/favorite.service';
 import { useToast } from '../../hooks/useToast';
 
 export const Favorites = () => {
+  const { t } = useTranslation('buyer');
   const navigate = useNavigate();
   const [favorites, setFavorites] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -26,6 +28,15 @@ export const Favorites = () => {
   const { toastMessage, showToast } = useToast();
   const itemsPerPage = 6;
 
+  const statusLabel = (status) => {
+    const labels = {
+      active: t('status_active'),
+      pending: t('status_pending'),
+      sold: t('status_sold'),
+    };
+    return labels[String(status).toLowerCase()] || status;
+  };
+
   const loadFavorites = useCallback(async () => {
     try {
       setLoading(true);
@@ -34,11 +45,11 @@ export const Favorites = () => {
       setError('');
     } catch (err) {
       console.error('Failed to load favorites:', err);
-      setError(err.message || 'Failed to load favorite properties');
+      setError(err.message || t('fav_error_load'));
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     let isMounted = true;
@@ -52,7 +63,7 @@ export const Favorites = () => {
       } catch (err) {
         if (isMounted) {
           console.error('Failed to load favorites:', err);
-          setError(err.message || 'Failed to load favorite properties');
+          setError(err.message || t('fav_error_load'));
         }
       } finally {
         if (isMounted) {
@@ -63,13 +74,13 @@ export const Favorites = () => {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [t]);
 
   const handleRemoveFavorite = async (propertyId, title) => {
     const targetItem = favorites.find((item) => String(item.id) === String(propertyId));
     // Optimistic UI removal
     setFavorites((prev) => prev.filter((item) => String(item.id) !== String(propertyId)));
-    showToast(`Removed "${title || 'Property'}" from favorites`);
+    showToast(t('favorite_removed_toast', { title: title || t('fav_property') }));
 
     try {
       await removeFavorite(propertyId);
@@ -82,7 +93,7 @@ export const Favorites = () => {
           return [...prev, targetItem];
         });
       }
-      showToast('Failed to remove favorite. Please try again.');
+      showToast(t('favorite_remove_failed'));
     }
   };
 
@@ -91,13 +102,13 @@ export const Favorites = () => {
     if (navigator.clipboard && navigator.clipboard.writeText) {
       try {
         await navigator.clipboard.writeText(url);
-        showToast(`Link to "${prop.title}" copied to clipboard!`);
+        showToast(t('fav_share_copied', { title: prop.title }));
       } catch (err) {
         console.warn('Clipboard write failed:', err);
-        showToast(`Property link: ${url}`);
+        showToast(t('fav_share_link', { url }));
       }
     } else {
-      showToast(`Property link: ${url}`);
+      showToast(t('fav_share_link', { url }));
     }
   };
 
@@ -165,9 +176,9 @@ export const Favorites = () => {
       {/* Page Title & Count */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
         <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
-          My Favorites{' '}
+          {t('fav_title')}{' '}
           <span className="text-slate-400 font-normal text-lg">
-            ({filteredAndSortedFavorites.length} {filteredAndSortedFavorites.length === 1 ? 'result' : 'results'})
+            ({t('results_count', { count: filteredAndSortedFavorites.length })})
           </span>
         </h1>
       </div>
@@ -184,7 +195,7 @@ export const Favorites = () => {
               setSearchQuery(e.target.value);
               setCurrentPage(1);
             }}
-            placeholder="Search saved properties by title, location..."
+            placeholder={t('fav_search_placeholder')}
             className="w-full bg-slate-50 border border-slate-200 focus:border-blue-600 focus:bg-white rounded-xl py-2 pl-10 pr-4 text-xs font-medium text-slate-800 focus:outline-none transition"
           />
         </div>
@@ -192,7 +203,7 @@ export const Favorites = () => {
         {/* Filter by Status */}
         <div className="flex items-center space-x-2">
           <Filter size={15} className="text-slate-400" />
-          <span className="text-xs text-slate-500 font-medium hidden sm:inline">Status:</span>
+          <span className="text-xs text-slate-500 font-medium hidden sm:inline">{t('fav_status_label')}</span>
           <select
             value={statusFilter}
             onChange={(e) => {
@@ -201,24 +212,24 @@ export const Favorites = () => {
             }}
             className="bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-700 rounded-xl px-3 py-2 focus:outline-none focus:border-blue-600 cursor-pointer"
           >
-            <option value="all">All Statuses</option>
-            <option value="active">Active</option>
-            <option value="sold">Sold</option>
-            <option value="pending">Pending</option>
+            <option value="all">{t('fav_all_statuses')}</option>
+            <option value="active">{t('status_active')}</option>
+            <option value="sold">{t('status_sold')}</option>
+            <option value="pending">{t('status_pending')}</option>
           </select>
         </div>
 
         {/* Sort Controls */}
         <div className="flex items-center space-x-2">
-          <span className="text-xs text-slate-400 font-medium hidden sm:inline">Sort by:</span>
+          <span className="text-xs text-slate-400 font-medium hidden sm:inline">{t('fav_sort_by')}</span>
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
             className="bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-700 rounded-xl px-3 py-2 focus:outline-none focus:border-blue-600 cursor-pointer"
           >
-            <option value="date">Date added (Newest)</option>
-            <option value="price-low">Price: Low to High</option>
-            <option value="price-high">Price: High to Low</option>
+            <option value="date">{t('fav_sort_date')}</option>
+            <option value="price-low">{t('sort_price_asc')}</option>
+            <option value="price-high">{t('sort_price_desc')}</option>
           </select>
         </div>
       </div>
@@ -234,7 +245,7 @@ export const Favorites = () => {
             onClick={loadFavorites}
             className="underline font-bold hover:text-rose-900 cursor-pointer"
           >
-            Retry
+            {t('retry')}
           </button>
         </div>
       )}
@@ -262,18 +273,18 @@ export const Favorites = () => {
           <div className="w-16 h-16 bg-rose-50 text-rose-500 rounded-full flex items-center justify-center mb-4">
             <Heart size={32} />
           </div>
-          <h3 className="text-base font-bold text-slate-900">No favorite properties found</h3>
+          <h3 className="text-base font-bold text-slate-900">{t('fav_empty_title')}</h3>
           <p className="text-xs text-slate-500 mt-1 max-w-sm">
             {searchQuery || statusFilter !== 'all'
-              ? 'No saved properties match your current search and filter criteria.'
-              : "You haven't added any properties to your favorites yet. Browse through our listings to find your dream home."}
+              ? t('fav_empty_filtered')
+              : t('fav_empty_all')}
           </p>
           <button
             onClick={() => navigate('/buyer/properties')}
             className="mt-5 flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition shadow-xs cursor-pointer"
           >
             <Building size={16} />
-            <span>Browse Properties</span>
+            <span>{t('browse_title')}</span>
             <ArrowRight size={14} />
           </button>
         </div>
@@ -311,13 +322,13 @@ export const Favorites = () => {
                     <span
                       className={`absolute top-3 left-3 text-[10px] font-bold px-2.5 py-1 rounded-md uppercase tracking-wider ${statusColor}`}
                     >
-                      {status}
+                      {statusLabel(status)}
                     </span>
                     <button
                       onClick={() => handleRemoveFavorite(prop.id, prop.title)}
                       className="absolute top-3 right-3 p-2 bg-rose-500 text-white rounded-full shadow-md transition hover:scale-110 cursor-pointer"
-                      title="Remove from favorites"
-                      aria-label="Remove favorite"
+                      title={t('browse_remove_fav')}
+                      aria-label={t('fav_remove_title')}
                     >
                       <Heart size={16} fill="currentColor" />
                     </button>
@@ -331,9 +342,9 @@ export const Favorites = () => {
                     </p>
 
                     <div className="flex items-center space-x-3 text-xs text-slate-500 mt-3 pt-3 border-t border-slate-100 font-medium">
-                      <span>{prop.bedrooms || prop.beds || 3} Beds</span>
+                      <span>{t('beds_count', { count: prop.bedrooms || prop.beds || 3 })}</span>
                       <span>•</span>
-                      <span>{prop.bathrooms || prop.baths || 2} Baths</span>
+                      <span>{t('baths_count', { count: prop.bathrooms || prop.baths || 2 })}</span>
                       <span>•</span>
                       <span>{prop.area || prop.sqft || '200m²'}</span>
                     </div>
@@ -351,16 +362,16 @@ export const Favorites = () => {
                     <button
                       onClick={() => handleRemoveFavorite(prop.id, prop.title)}
                       className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition cursor-pointer"
-                      title="Remove Favorite"
-                      aria-label="Remove"
+                      title={t('fav_remove_title')}
+                      aria-label={t('fav_remove')}
                     >
                       <Trash2 size={16} />
                     </button>
                     <button
                       onClick={() => handleShare(prop)}
                       className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition cursor-pointer"
-                      title="Share Property"
-                      aria-label="Share"
+                      title={t('fav_share_title')}
+                      aria-label={t('fav_share')}
                     >
                       <Share2 size={16} />
                     </button>
@@ -372,7 +383,7 @@ export const Favorites = () => {
                       }
                       className="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition cursor-pointer shadow-xs"
                     >
-                      View Details
+                      {t('fav_view_details')}
                     </button>
                   </div>
                 </div>
