@@ -5,11 +5,13 @@ import {
   ArrowRight,
 } from "lucide-react";
 
+import { ROUTES } from "../../utils/constants";
 import { getLanding } from "../../services/property.service";
 import { getPublicAgents } from "../../services/agent.service";
 import PropertyCard from "../../components/property/PropertyCard";
 import AgentCard from "../../components/agent/AgentCard";
 import AgentCardSkeleton from "../../components/agent/AgentCardSkeleton";
+import SubscriptionPlans from "../../components/subscription/SubscriptionPlans";
 
 
 
@@ -25,6 +27,10 @@ const Home = () => {
   const [price, setPrice] = useState("");
 
   const navigate = useNavigate();
+
+  const handlePlanSelect = () => {
+    navigate("/register");
+  };
 
  useEffect(() => {
   const load = async () => {
@@ -290,13 +296,35 @@ const Home = () => {
 
           <div className="mt-8">
             <Link
-              to="/register"
+              to={ROUTES.registerAgent}
               className="inline-flex items-center gap-2 rounded-lg bg-[#E69500] px-6 py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-[#D48800]"
             >
               Become an Agent
               <ArrowRight className="h-3.5 w-3.5" />
             </Link>
           </div>
+
+        </div>
+      </section>
+
+      {/* SUBSCRIPTION PLANS */}
+      <section id="pricing" className="w-full border-t border-slate-200 bg-[#F8FAFC]">
+        <div className="mx-auto w-full max-w-[1240px] px-4 py-14 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
+
+          <span className="text-[10px] font-bold uppercase tracking-wider text-[#0F9690]">
+            Pricing
+          </span>
+
+          <h2 className="mb-3 mt-1 text-2xl font-bold text-[#162831] sm:text-3xl">
+            Subscription Plans
+          </h2>
+
+          <p className="mb-8 max-w-2xl text-sm leading-relaxed text-slate-500">
+            Choose the plan that fits your needs and start publishing your
+            properties to thousands of buyers.
+          </p>
+
+          <SubscriptionPlans ctaLabel="Get Started" onCta={handlePlanSelect} />
 
         </div>
       </section>

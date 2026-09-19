@@ -7,6 +7,7 @@ import {
   CalendarCheck,
   MessageSquare,
   BarChart3,
+  CreditCard,
   UserCircle,
   Settings,
   Bell,
@@ -27,6 +28,7 @@ const secondaryNavItems = [
   { label: 'Visit Requests', path: ROUTES.agentVisits, icon: CalendarCheck, disabled: false },
   { label: 'Customer Messages', path: ROUTES.agentMessages, icon: MessageSquare, disabled: false },
   { label: 'Analytics', path: ROUTES.agentAnalytics, icon: BarChart3, disabled: false },
+  { label: 'Subscription', path: ROUTES.agentSubscription, icon: CreditCard, disabled: false },
   { label: 'Profile', path: ROUTES.agentProfile, icon: UserCircle, disabled: false },
   { label: 'Settings', path: ROUTES.agentSettings, icon: Settings, disabled: false },
 ];

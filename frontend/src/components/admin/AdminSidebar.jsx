@@ -10,6 +10,7 @@ import {
   Activity,
   UserCircle,
   Settings,
+  CreditCard,
 } from 'lucide-react';
 
 const navItems = [
@@ -22,6 +23,7 @@ const navItems = [
     badgeColor: 'bg-[#E7B85A]',
   },
   { label: 'Categories', path: '/admin/categories', icon: Tag },
+  { label: 'Subscription Plans', path: '/admin/subscription-plans', icon: CreditCard },
   { label: 'Users', path: '/admin/users', icon: Users },
   { label: 'Reports', path: '/admin/reports', icon: BarChart3 },
   { label: 'Analytics', path: '/admin/analytics', icon: Activity },

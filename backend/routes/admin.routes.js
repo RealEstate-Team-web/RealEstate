@@ -1,6 +1,7 @@
 const express = require("express");
 const { authenticate } = require("../middlewares/auth.middleware");
 const { requireRole } = require("../middlewares/role.middleware");
+const { validateIdParam } = require("../middlewares/validation.middleware");
 const {
   getDashboard,
   getAnalytics,
@@ -22,8 +23,19 @@ const {
   remove,
 } = require("../controllers/category.controller");
 const {
+  list: listPlans,
+  getOne: getPlan,
+  create: createPlan,
+  update: updatePlan,
+  updateStatus,
+  remove: removePlan,
+} = require("../controllers/subscriptionPlan.controller");
+const {
   validateCreateCategory,
   validateUpdateCategory,
+  validateCreateSubscriptionPlan,
+  validateUpdateSubscriptionPlan,
+  validateSubscriptionPlanStatus,
 } = require("../middlewares/validation.middleware");
 
 const router = express.Router();
@@ -48,5 +60,12 @@ router.get("/categories/:id", getOne);
 router.post("/categories", validateCreateCategory, create);
 router.put("/categories/:id", validateUpdateCategory, update);
 router.delete("/categories/:id", remove);
+
+router.get("/subscription-plans", listPlans);
+router.get("/subscription-plans/:id", validateIdParam, getPlan);
+router.post("/subscription-plans", validateCreateSubscriptionPlan, createPlan);
+router.put("/subscription-plans/:id", validateIdParam, validateUpdateSubscriptionPlan, updatePlan);
+router.patch("/subscription-plans/:id/status", validateIdParam, validateSubscriptionPlanStatus, updateStatus);
+router.delete("/subscription-plans/:id", validateIdParam, removePlan);
 
 module.exports = router;

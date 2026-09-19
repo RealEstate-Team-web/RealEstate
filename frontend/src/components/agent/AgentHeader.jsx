@@ -17,6 +17,7 @@ const titleMap = {
   '/agent/visits': 'Visit Requests',
   '/agent/messages': 'Customer Messages',
   '/agent/analytics': 'Analytics',
+  '/agent/subscription': 'Subscription',
 };
 
 const getTitle = (pathname) => {

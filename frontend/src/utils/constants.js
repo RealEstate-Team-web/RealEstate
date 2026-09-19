@@ -25,5 +25,7 @@ export const ROUTES = {
   agentProfile: '/agent/profile',
   agentSettings: '/agent/settings',
   agentNotifications: '/agent/notifications',
+  agentSubscription: '/agent/subscription',
   admin: '/admin',
+  adminSubscriptionPlans: '/admin/subscription-plans',
 }
