@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { MessageSquare, X, AlertCircle, Send, CheckCircle2 } from 'lucide-react';
 import { submitInquiry } from '../../services/inquiry.service';
 import useAuth from '../../hooks/useAuth';
@@ -9,6 +10,7 @@ const InquiryModalContent = ({
   onSuccess,
 }) => {
   const { user } = useAuth();
+  const { t } = useTranslation('buyer');
   const nameInputRef = useRef(null);
   const modalRef = useRef(null);
   const loadingRef = useRef(false);
@@ -22,13 +24,31 @@ const InquiryModalContent = ({
   const [phone, setPhone] = useState(defaultPhone);
   const [message, setMessage] = useState(
     property?.title
-      ? `Hello, I am interested in "${property.title}". Is this property still available for viewing?`
-      : 'Hello, I would like more information about this property listing.'
+      ? t('inquiry_autofill_msg', { title: property.title })
+      : t('inquiry_default_msg')
   );
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
   loadingRef.current = loading;
+
+  const generatedMessage =
+    property?.title
+      ? t('inquiry_autofill_msg', { title: property.title })
+      : t('inquiry_default_msg');
+  const generatedMessageRef = useRef(message);
+
+  // Re-translate the pre-filled message when the language changes,
+  // but only if the user has not edited it.
+  useEffect(() => {
+    setMessage((prev) => {
+      if (prev === generatedMessageRef.current) {
+        generatedMessageRef.current = generatedMessage;
+        return generatedMessage;
+      }
+      return prev;
+    });
+  }, [generatedMessage]);
 
   // Auto focus first interactive control, lock body scroll, trap focus, and handle Escape key
   useEffect(() => {
@@ -81,22 +101,22 @@ const InquiryModalContent = ({
     e.preventDefault();
 
     if (!property?.id) {
-      setError('Property identifier is missing. Please select a valid property.');
+      setError(t('inquiry_error_id'));
       return;
     }
 
     if (!name.trim()) {
-      setError('Please enter your name');
+      setError(t('inquiry_error_name'));
       return;
     }
 
     if (!email.trim()) {
-      setError('Please enter your email address');
+      setError(t('inquiry_error_email'));
       return;
     }
 
     if (!message.trim() || message.trim().length < 5) {
-      setError('Please enter a message of at least 5 characters');
+      setError(t('inquiry_error_message'));
       return;
     }
 
@@ -113,7 +133,7 @@ const InquiryModalContent = ({
       });
 
       if (onSuccess) {
-        onSuccess(created, 'Your inquiry has been sent to the listing agent!');
+        onSuccess(created, t('inquiry_sent'));
       }
       onClose();
     } catch (err) {
@@ -123,7 +143,7 @@ const InquiryModalContent = ({
         (Array.isArray(err.response?.data?.errors)
           ? err.response.data.errors.join(', ')
           : err.message) ||
-        'Failed to send inquiry';
+        t('inquiry_failed');
       setError(msg);
     } finally {
       setLoading(false);
@@ -147,10 +167,10 @@ const InquiryModalContent = ({
             </div>
             <div>
               <h2 id="inquiry-modal-title" className="text-base font-bold text-slate-900">
-                Contact Listing Agent
+                {t('inquiry_title')}
               </h2>
               <p className="text-xs text-slate-500">
-                Send a direct message or inquiry about this property
+                {t('inquiry_subtitle')}
               </p>
             </div>
           </div>
@@ -159,7 +179,7 @@ const InquiryModalContent = ({
             onClick={onClose}
             disabled={loading}
             className="p-2 text-slate-400 hover:text-slate-600 rounded-xl hover:bg-slate-100 transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-            aria-label="Close modal"
+            aria-label={t('visit_close')}
           >
             <X size={18} />
           </button>
@@ -207,7 +227,7 @@ const InquiryModalContent = ({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1">
               <label htmlFor="inquiryName" className="block text-xs font-bold text-slate-700">
-                Your Name <span className="text-rose-500">*</span>
+                {t('inquiry_your_name')} <span className="text-rose-500">*</span>
               </label>
               <input
                 ref={nameInputRef}
@@ -223,7 +243,7 @@ const InquiryModalContent = ({
 
             <div className="space-y-1">
               <label htmlFor="inquiryEmail" className="block text-xs font-bold text-slate-700">
-                Email Address <span className="text-rose-500">*</span>
+                {t('inquiry_email')} <span className="text-rose-500">*</span>
               </label>
               <input
                 id="inquiryEmail"
@@ -240,7 +260,7 @@ const InquiryModalContent = ({
           {/* Phone Field */}
           <div className="space-y-1">
             <label htmlFor="inquiryPhone" className="block text-xs font-bold text-slate-700">
-              Phone Number <span className="text-[11px] font-normal text-slate-400">(Optional)</span>
+              {t('inquiry_phone')} <span className="text-[11px] font-normal text-slate-400">{t('inquiry_optional')}</span>
             </label>
             <input
               id="inquiryPhone"
@@ -255,14 +275,14 @@ const InquiryModalContent = ({
           {/* Message Area */}
           <div className="space-y-1">
             <label htmlFor="inquiryMessage" className="block text-xs font-bold text-slate-700 flex items-center justify-between">
-              <span>Your Message <span className="text-rose-500">*</span></span>
-              <span className="text-[11px] font-normal text-slate-400">Max 2000 chars</span>
+              <span>{t('inquiry_message')} <span className="text-rose-500">*</span></span>
+              <span className="text-[11px] font-normal text-slate-400">{t('inquiry_max')}</span>
             </label>
             <textarea
               id="inquiryMessage"
               rows={4}
               maxLength={2000}
-              placeholder="Ask about pricing, availability, or property features..."
+              placeholder={t('inquiry_placeholder')}
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               required
@@ -278,7 +298,7 @@ const InquiryModalContent = ({
               disabled={loading}
               className="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-xl transition cursor-pointer disabled:opacity-50"
             >
-              Cancel
+              {t('cancel')}
             </button>
             <button
               type="submit"
@@ -288,12 +308,12 @@ const InquiryModalContent = ({
               {loading ? (
                 <>
                   <span className="inline-block w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  <span>Sending...</span>
+                  <span>{t('inquiry_sending')}</span>
                 </>
               ) : (
                 <>
                   <Send size={13} />
-                  <span>Send Inquiry</span>
+                  <span>{t('inquiry_send')}</span>
                 </>
               )}
             </button>

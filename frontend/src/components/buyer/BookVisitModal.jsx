@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Calendar, X, AlertCircle } from 'lucide-react';
 import { bookVisit, rescheduleVisit } from '../../services/visit.service';
 
@@ -9,6 +10,7 @@ const BookVisitModalContent = ({
   isReschedule = false,
   onSuccess,
 }) => {
+  const { t } = useTranslation('buyer');
   const dateInputRef = useRef(null);
 
   const tomorrowStr = (() => {
@@ -70,17 +72,17 @@ const BookVisitModalContent = ({
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!visitDate) {
-      setError('Please select a visit date');
+      setError(t('visit_error_date'));
       return;
     }
     if (!visitTime) {
-      setError('Please select a visit time');
+      setError(t('visit_error_time'));
       return;
     }
 
     const selectedDateTime = new Date(`${visitDate}T${visitTime}:00`);
     if (selectedDateTime <= new Date()) {
-      setError('Visit date and time must be in the future');
+      setError(t('visit_error_future'));
       return;
     }
 
@@ -94,7 +96,7 @@ const BookVisitModalContent = ({
           visitTime,
           notes,
         });
-        if (onSuccess) onSuccess(updated, 'Visit rescheduled successfully!');
+        if (onSuccess) onSuccess(updated, t('visit_rescheduled'));
       } else if (targetProperty?.id) {
         const created = await bookVisit({
           propertyId: targetProperty.id,
@@ -102,15 +104,15 @@ const BookVisitModalContent = ({
           visitTime,
           notes,
         });
-        if (onSuccess) onSuccess(created, 'Visit booked successfully! The agent will review your request.');
+        if (onSuccess) onSuccess(created, t('visit_booked'));
       } else {
-        setError('This property is not available for booking. Please try again.');
+        setError(t('visit_error_property'));
         return;
       }
       onClose();
     } catch (err) {
       console.error('Failed to submit visit:', err);
-      const msg = err.response?.data?.message || err.message || 'Failed to save visit booking';
+      const msg = err.response?.data?.message || err.message || t('visit_failed');
       setError(msg);
     } finally {
       setLoading(false);
@@ -133,12 +135,12 @@ const BookVisitModalContent = ({
             </div>
             <div>
               <h2 id="modal-title" className="text-base font-bold text-slate-900">
-                {isReschedule ? 'Reschedule Property Visit' : 'Schedule a Property Visit'}
+                {isReschedule ? t('visit_title_reschedule') : t('visit_title_book')}
               </h2>
               <p className="text-xs text-slate-500">
                 {isReschedule
-                  ? 'Select a new date and time for your visit'
-                  : 'Choose your preferred date and time to visit'}
+                  ? t('visit_subtitle_reschedule')
+                  : t('visit_subtitle_book')}
               </p>
             </div>
           </div>
@@ -147,7 +149,7 @@ const BookVisitModalContent = ({
             onClick={onClose}
             disabled={loading}
             className="p-2 text-slate-400 hover:text-slate-600 rounded-xl hover:bg-slate-100 transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-            aria-label="Close modal"
+            aria-label={t('visit_close')}
           >
             <X size={18} />
           </button>
@@ -194,7 +196,7 @@ const BookVisitModalContent = ({
           {/* Visit Date */}
           <div className="space-y-1.5">
             <label htmlFor="visitDate" className="block text-xs font-bold text-slate-700">
-              Visit Date <span className="text-rose-500">*</span>
+              {t('visit_date')} <span className="text-rose-500">*</span>
             </label>
             <div className="relative">
               <input
@@ -213,7 +215,7 @@ const BookVisitModalContent = ({
           {/* Time Slots */}
           <div className="space-y-2">
             <label className="block text-xs font-bold text-slate-700">
-              Preferred Time Slot <span className="text-rose-500">*</span>
+              {t('visit_time')} <span className="text-rose-500">*</span>
             </label>
             <div className="grid grid-cols-4 gap-2">
               {timeSlots.map((slot) => {
@@ -239,14 +241,14 @@ const BookVisitModalContent = ({
           {/* Optional Notes */}
           <div className="space-y-1.5">
             <label htmlFor="notes" className="block text-xs font-bold text-slate-700 flex items-center justify-between">
-              <span>Notes for the Agent (Optional)</span>
-              <span className="text-[11px] font-normal text-slate-400">Max 500 chars</span>
+              <span>{t('visit_notes')}</span>
+              <span className="text-[11px] font-normal text-slate-400">{t('visit_notes_max')}</span>
             </label>
             <textarea
               id="notes"
               rows={3}
               maxLength={500}
-              placeholder="e.g. Interested in seeing the master bedroom and parking facilities..."
+              placeholder={t('visit_notes_placeholder')}
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               className="w-full text-xs font-medium text-slate-800 bg-white border border-slate-200 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition resize-none placeholder:text-slate-400"
@@ -261,7 +263,7 @@ const BookVisitModalContent = ({
               disabled={loading}
               className="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-xl transition cursor-pointer disabled:opacity-50"
             >
-              Cancel
+              {t('cancel')}
             </button>
             <button
               type="submit"
@@ -271,10 +273,10 @@ const BookVisitModalContent = ({
               {loading ? (
                 <>
                   <span className="inline-block w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  <span>Processing...</span>
+                  <span>{t('visit_processing')}</span>
                 </>
               ) : (
-                <span>{isReschedule ? 'Save Changes' : 'Confirm Visit Request'}</span>
+                <span>{isReschedule ? t('save_changes') : t('visit_confirm')}</span>
               )}
             </button>
           </div>
