@@ -29,6 +29,7 @@ import AgentAnalytics from '../pages/agent/Analytics';
 import AgentMessages from '../pages/agent/Messages';
 import AgentSettings from '../pages/agent/Settings';
 import AgentNotifications from '../pages/agent/Notifications';
+import AgentSubscription from '../pages/agent/Subscription';
 
 import DashboardLayout from '../hooks/layouts/DashboardLayout';
 import Dashboard from '../pages/buyer/Dashboard';
@@ -44,6 +45,7 @@ import AdminLayout from '../hooks/layouts/AdminLayout';
 import AdminDashboard from '../pages/admin/Dashboard';
 import Agents from '../pages/admin/Agents';
 import Categories from '../pages/admin/Categories';
+import AdminSubscriptionPlans from '../pages/admin/SubscriptionPlans';
 import Users from '../pages/admin/Users';
 import AdminReports from '../pages/admin/Reports';
 import AdminAnalytics from '../pages/admin/Analytics';
@@ -146,6 +148,7 @@ export const AppRoutes = () => {
             <Route path="profile" element={<AgentProfile />} />
             <Route path="settings" element={<AgentSettings />} />
             <Route path="notifications" element={<AgentNotifications />} />
+            <Route path="subscription" element={<AgentSubscription />} />
             <Route path="*" element={<Navigate to={ROUTES.agent} replace />} />
           </Route>
         </Route>
@@ -156,6 +159,7 @@ export const AppRoutes = () => {
             <Route index element={<AdminDashboard />} />
             <Route path="agents" element={<Agents />} />
             <Route path="categories" element={<Categories />} />
+            <Route path="subscription-plans" element={<AdminSubscriptionPlans />} />
             <Route path="users" element={<Users />} />
             <Route path="reports" element={<AdminReports />} />
             <Route path="analytics" element={<AdminAnalytics />} />

@@ -153,6 +153,181 @@ const validateUpdateCategory = (req, res, next) => {
   next();
 };
 
+const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+
+const normalizeSubscriptionPlanFields = (req) => {
+  const body = req.body || {};
+  if (typeof body.name === "string") body.name = body.name.trim();
+  if (typeof body.slug === "string") {
+    body.slug = body.slug.trim().toLowerCase();
+  }
+  if (typeof body.description === "string") body.description = body.description.trim();
+  if (typeof body.currency === "string") {
+    body.currency = body.currency.trim().toUpperCase();
+  }
+  for (const key of [
+    "price",
+    "duration_days",
+    "property_limit",
+    "images_per_property",
+  ]) {
+    if (
+      body[key] !== undefined &&
+      body[key] !== null &&
+      typeof body[key] === "string" &&
+      body[key].trim() !== ""
+    ) {
+      const parsed = Number(body[key].trim());
+      if (Number.isFinite(parsed)) {
+        body[key] = parsed;
+      }
+    }
+  }
+  return body;
+};
+
+const validateSubscriptionPlanField = (body, key, errors) => {
+  const value = body[key];
+
+  if (key === "description" || key === "features") {
+    if (value === null) return null; // allow explicit null for nullable fields
+  }
+
+  const present = value !== undefined && value !== null;
+
+  if (!present) {
+    errors.push(`${key} is required`);
+    return;
+  }
+
+  switch (key) {
+    case "name":
+      if (typeof value !== "string" || !value.trim())
+        errors.push("name must be a non-empty string");
+      else if (value.trim().length > 100)
+        errors.push("name must be at most 100 characters");
+      break;
+    case "slug":
+      if (typeof value !== "string" || !value.trim())
+        errors.push("slug must be a non-empty string");
+      else if (value.trim().length > 100)
+        errors.push("slug must be at most 100 characters");
+      else if (!slugPattern.test(value.trim()))
+        errors.push("slug must contain only lowercase letters, numbers, and dashes");
+      break;
+    case "price":
+      if (typeof value !== "number" || !Number.isFinite(value) || value < 0 || value > 99999999.99)
+        errors.push("price must be a non-negative number up to 99,999,999.99");
+      else {
+        const scaled = value * 100;
+        const tolerance = Number.EPSILON * Math.max(1, Math.abs(scaled)) * 4;
+        if (Math.abs(scaled - Math.round(scaled)) > tolerance)
+          errors.push("price must have at most two decimal places");
+      }
+      break;
+    case "currency":
+      if (typeof value !== "string" || !/^[A-Z]{3}$/.test(value))
+        errors.push("currency must be a 3-letter currency code");
+      break;
+    case "duration_days":
+      if (typeof value !== "number" || !Number.isInteger(value) || value <= 0 || value > 4294967295)
+        errors.push("duration_days must be a positive integer up to 4,294,967,295");
+      break;
+    case "property_limit":
+      if (typeof value !== "number" || !Number.isInteger(value) || value <= 0 || value > 4294967295)
+        errors.push("property_limit must be a positive integer up to 4,294,967,295");
+      break;
+    case "images_per_property":
+      if (typeof value !== "number" || !Number.isInteger(value) || value <= 0 || value > 4294967295)
+        errors.push("images_per_property must be a positive integer up to 4,294,967,295");
+      break;
+    case "description":
+      if (typeof value !== "string" || value.trim().length > 1000)
+        errors.push("description must be a string of at most 1000 characters");
+      break;
+    case "features":
+      if (
+        !Array.isArray(value) ||
+        value.length > 20 ||
+        value.some((item) => typeof item !== "string" || item.trim().length > 100)
+      )
+        errors.push(
+          "features must be an array of at most 20 items, each string of at most 100 characters"
+        );
+      break;
+    case "is_active":
+      if (typeof value !== "boolean")
+        errors.push("is_active must be a boolean");
+      break;
+    default:
+      break;
+  }
+};
+
+const validateCreateSubscriptionPlan = (req, res, next) => {
+  const errors = [];
+  const body = normalizeSubscriptionPlanFields(req);
+  if (body.currency === undefined || body.currency === null) body.currency = "ETB";
+  const requiredKeys = [
+    "name",
+    "slug",
+    "price",
+    "currency",
+    "duration_days",
+    "property_limit",
+    "images_per_property",
+  ];
+  const optionalKeys = ["description", "features", "is_active"];
+
+  for (const key of requiredKeys) validateSubscriptionPlanField(body, key, errors);
+  for (const key of optionalKeys) {
+    if (body[key] !== undefined) {
+      validateSubscriptionPlanField(body, key, errors);
+    }
+  }
+
+  if (errors.length > 0) return next(validationError(errors));
+  next();
+};
+
+const validateUpdateSubscriptionPlan = (req, res, next) => {
+  const errors = [];
+  const body = normalizeSubscriptionPlanFields(req);
+  const allKeys = [
+    "name",
+    "slug",
+    "price",
+    "currency",
+    "duration_days",
+    "property_limit",
+    "images_per_property",
+    "description",
+    "features",
+    "is_active",
+  ];
+  const presentKeys = allKeys.filter((key) => Object.hasOwn(body, key));
+
+  if (presentKeys.length === 0) {
+    errors.push("at least one field is required to update");
+  } else {
+    for (const key of presentKeys) validateSubscriptionPlanField(body, key, errors);
+  }
+
+  if (errors.length > 0) return next(validationError(errors));
+  next();
+};
+
+const validateSubscriptionPlanStatus = (req, res, next) => {
+  const errors = [];
+  const { is_active } = req.body || {};
+
+  if (typeof is_active !== "boolean")
+    errors.push("is_active must be a boolean");
+
+  if (errors.length > 0) return next(validationError(errors));
+  next();
+};
+
 const validateLogin = (req, res, next) => {
   const errors = [];
   const { email, password } = req.body || {};
@@ -761,6 +936,9 @@ module.exports = {
   validateLogin,
   validateCreateCategory,
   validateUpdateCategory,
+  validateCreateSubscriptionPlan,
+  validateUpdateSubscriptionPlan,
+  validateSubscriptionPlanStatus,
   validateForgotPassword,
   validateResetPassword,
   validateUpdateProfile,
