@@ -1,12 +1,14 @@
 import { useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { CheckCircle2, Loader2 } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import AuthLayout from '../../hooks/layouts/AuthLayout'
 import PasswordInput from '../../components/forms/PasswordInput'
 import { ROUTES } from '../../utils/constants'
 import authService from '../../services/auth.service'
 
 const ResetPassword = () => {
+  const { t } = useTranslation('auth')
   const [searchParams] = useSearchParams()
   const token = searchParams.get('token') || ''
 
@@ -27,17 +29,17 @@ const ResetPassword = () => {
     e.preventDefault()
     const next = {}
     if (!form.password || form.password.length < 8) {
-      next.password = 'Password must be at least 8 characters.'
+      next.password = t('reset_password_min')
     } else {
       if (!/[A-Z]/.test(form.password))
-        next.password = 'Password must contain an uppercase letter.'
+        next.password = t('reset_password_upper')
       else if (!/[a-z]/.test(form.password))
-        next.password = 'Password must contain a lowercase letter.'
+        next.password = t('reset_password_lower')
       else if (!/[0-9]/.test(form.password))
-        next.password = 'Password must contain a number.'
+        next.password = t('reset_password_number')
     }
     if (form.password !== form.confirmPassword) {
-      next.confirmPassword = 'Passwords do not match.'
+      next.confirmPassword = t('reset_password_mismatch')
     }
     setErrors(next)
     if (Object.keys(next).length > 0) return
@@ -48,7 +50,7 @@ const ResetPassword = () => {
       await authService.resetPassword(token, form.password)
       setDone(true)
     } catch (err) {
-      setServerError(err.message || 'Unable to reset password. The link may be invalid or expired.')
+      setServerError(err.message || t('reset_failed'))
     } finally {
       setLoading(false)
     }
@@ -59,10 +61,10 @@ const ResetPassword = () => {
       <div className="mx-auto w-full max-w-[420px] rounded-[6px] border border-[#D9E0E2] bg-white px-5 py-7 shadow-sm sm:px-8 sm:py-8">
         <div className="mb-8 text-center">
           <h1 className="font-display text-[30px] font-bold leading-[1.1] text-navy">
-            Reset Password
+            {t('reset_title')}
           </h1>
           <p className="mt-2 text-[14px] text-ink">
-            Choose a new password for your account.
+            {t('reset_subtitle')}
           </p>
         </div>
 
@@ -70,18 +72,18 @@ const ResetPassword = () => {
           <div className="text-center">
             <CheckCircle2 size={40} className="mx-auto text-teal" strokeWidth={1.5} />
             <p className="mt-3 text-[14px] text-ink">
-              Your password has been reset. You can now log in.
+              {t('reset_done')}
             </p>
             <Link
               to={ROUTES.login}
               className="mt-4 inline-flex h-[38px] items-center justify-center rounded-[5px] bg-teal px-6 text-[14px] font-semibold text-white transition-colors hover:bg-[#0F828A]"
             >
-              Back to Login
+              {t('reset_back_to_login')}
             </Link>
           </div>
         ) : !token ? (
           <p className="rounded-[5px] border border-[#E5484D]/30 bg-[#FEF2F2] px-3 py-2 text-xs text-[#E5484D]">
-            Missing or invalid reset token.
+            {t('reset_bad_token')}
           </p>
         ) : (
           <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
@@ -91,14 +93,14 @@ const ResetPassword = () => {
               </p>
             )}
             <PasswordInput
-              label="New Password"
+              label={t('reset_new_password')}
               name="password"
               value={form.password}
               onChange={handleChange}
               error={errors.password}
             />
             <PasswordInput
-              label="Confirm Password"
+              label={t('reset_confirm_password')}
               name="confirmPassword"
               value={form.confirmPassword}
               onChange={handleChange}
@@ -110,7 +112,7 @@ const ResetPassword = () => {
               className="mt-1 inline-flex h-[38px] w-full items-center justify-center gap-1.5 rounded-[5px] bg-teal text-[15px] font-semibold text-white transition-all duration-150 hover:bg-[#0F828A] hover:shadow-md disabled:opacity-60"
             >
               {loading && <Loader2 size={16} className="animate-spin" />}
-              Reset Password
+              {t('reset_submit')}
             </button>
           </form>
         )}

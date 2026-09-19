@@ -1,21 +1,23 @@
 import { useRef, useState } from 'react'
 import { Plus } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 const ACCEPTED = ['image/jpeg', 'image/png', 'image/webp']
 const MAX_SIZE = 5 * 1024 * 1024
 
 const ProfilePhotoUpload = ({ onChange, error }) => {
+  const { t } = useTranslation('auth')
   const inputRef = useRef(null)
   const [preview, setPreview] = useState('')
 
   const handleFile = (file) => {
     if (!file) return
     if (!ACCEPTED.includes(file.type)) {
-      onChange({ error: 'Please upload a valid profile photo (JPEG, PNG, or WebP).' })
+      onChange({ error: t('photo_invalid') })
       return
     }
     if (file.size > MAX_SIZE) {
-      onChange({ error: 'Profile photo must be 5MB or smaller.' })
+      onChange({ error: t('photo_too_large') })
       return
     }
     onChange({ file, error: null })
@@ -26,19 +28,19 @@ const ProfilePhotoUpload = ({ onChange, error }) => {
 
   return (
     <div className="flex flex-col gap-1.5">
-      <span className="text-[13px] font-semibold text-[#101820]">Profile Photo (optional)</span>
+      <span className="text-[13px] font-semibold text-[#101820]">{t('photo_label')}</span>
       <div className="flex items-center gap-4">
         <button
           type="button"
           onClick={() => inputRef.current?.click()}
-          aria-label="Upload profile photo"
+          aria-label={t('photo_upload')}
           className="relative flex h-[50px] w-[50px] shrink-0 items-center justify-center overflow-hidden rounded-full"
           style={{ background: preview ? 'transparent' : '#E5E7E8' }}
         >
           {preview ? (
             <img
               src={preview}
-              alt="Profile preview"
+              alt={t('photo_preview_alt')}
               className="h-[50px] w-[50px] rounded-full object-cover"
             />
           ) : (
@@ -53,7 +55,7 @@ const ProfilePhotoUpload = ({ onChange, error }) => {
           onClick={() => inputRef.current?.click()}
           className="text-[12px] font-medium text-navy transition-colors hover:text-teal"
         >
-          Upload Profile Photo
+          {t('photo_upload')}
         </button>
         <input
           ref={inputRef}

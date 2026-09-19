@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Mail } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import useAuth from '../../hooks/useAuth'
 import FormInput from './FormInput'
 import PasswordInput from './PasswordInput'
@@ -8,6 +9,7 @@ import { ROLE_DASHBOARDS, ROUTES } from '../../utils/constants'
 
 const LoginForm = () => {
   const navigate = useNavigate()
+  const { t } = useTranslation('auth')
   const { login } = useAuth()
 
   const [form, setForm] = useState({ email: '', password: '' })
@@ -26,12 +28,12 @@ const LoginForm = () => {
   const validate = () => {
     const next = {}
     if (!form.email.trim()) {
-      next.email = 'Email is required.'
+      next.email = t('forgot_email_required')
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
-      next.email = 'Enter a valid email address.'
+      next.email = t('forgot_email_invalid')
     }
     if (!form.password) {
-      next.password = 'Password is required.'
+      next.password = t('password_required')
     }
     setErrors(next)
     return Object.keys(next).length === 0
@@ -76,7 +78,7 @@ const LoginForm = () => {
       )}
 
       <FormInput
-        label="Email Address"
+        label={t('email_label')}
         name="email"
         type="email"
         value={form.email}
@@ -84,11 +86,11 @@ const LoginForm = () => {
         error={errors.email}
         icon={Mail}
         autoComplete="email"
-        placeholder="you@example.com"
+        placeholder={t('email_placeholder_short')}
       />
 
       <PasswordInput
-        label="Password"
+        label={t('password_label')}
         name="password"
         value={form.password}
         onChange={handleChange}
@@ -103,10 +105,10 @@ const LoginForm = () => {
             onChange={(e) => setRemember(e.target.checked)}
             className="h-3.5 w-3.5 accent-[#159FA7]"
           />
-          Remember me
+          {t('remember_me')}
         </label>
         <Link to={ROUTES.forgotPassword} className="text-teal hover:underline">
-          Forgot password?
+          {t('forgot_password')}
         </Link>
       </div>
 
@@ -115,13 +117,13 @@ const LoginForm = () => {
         disabled={loading}
         className="mt-1 h-[38px] w-full rounded-[5px] bg-teal text-[15px] font-semibold text-white transition-all duration-150 hover:bg-[#0F828A] hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60"
       >
-        {loading ? 'Signing in...' : 'Login'}
+        {loading ? t('login_signing') : t('login_submit')}
       </button>
 
       <p className="mt-1 text-center text-[13px] text-ink">
-        Don't have an account?{' '}
+        {t('login_no_account')}{' '}
         <Link to={ROUTES.register} className="font-medium text-teal hover:underline">
-          Register
+          {t('register_link')}
         </Link>
       </p>
     </form>

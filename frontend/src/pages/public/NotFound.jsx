@@ -1,7 +1,10 @@
 import { Link } from "react-router-dom";
 import { Home, Search } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const NotFound = () => {
+  const { t } = useTranslation("notfound");
+
   return (
     <div className="min-h-[600px] flex items-center justify-center px-4 py-20">
       <div className="text-center max-w-[480px]">
@@ -15,11 +18,10 @@ const NotFound = () => {
           className="text-navy font-bold mt-4"
           style={{ fontFamily: "var(--font-display)", fontSize: "clamp(22px,3.5vw,32px)" }}
         >
-          Page Not Found
+          {t("page_not_found")}
         </h1>
         <p className="text-muted mt-3 text-[15px] leading-relaxed">
-          The page you're looking for doesn't exist or has been moved. Let's
-          get you back on track.
+          {t("body")}
         </p>
         <div className="mt-8 flex justify-center gap-3 flex-wrap">
           <Link
@@ -27,14 +29,14 @@ const NotFound = () => {
             className="inline-flex items-center gap-2 bg-teal text-white font-semibold px-6 py-3 rounded-lg hover:bg-teal-dark transition-colors"
           >
             <Home className="w-4 h-4" />
-            Go Home
+            {t("go_home")}
           </Link>
           <Link
             to="/properties"
             className="inline-flex items-center gap-2 border border-border text-ink font-semibold px-6 py-3 rounded-lg hover:bg-cream transition-colors"
           >
             <Search className="w-4 h-4" />
-            Browse Properties
+            {t("browse_properties")}
           </Link>
         </div>
       </div>

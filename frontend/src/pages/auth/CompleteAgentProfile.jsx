@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Building2, BadgeCheck, Briefcase, MapPin } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import useAuth from '../../hooks/useAuth'
 import AuthLayout from '../../hooks/layouts/AuthLayout'
 import FormInput from '../../components/forms/FormInput'
@@ -18,6 +19,7 @@ const initialState = {
 
 const CompleteAgentProfile = () => {
   const navigate = useNavigate()
+  const { t } = useTranslation('auth')
   const { user, completeAgentProfile } = useAuth()
 
   const [form, setForm] = useState(initialState)
@@ -35,20 +37,20 @@ const CompleteAgentProfile = () => {
 
   const validate = () => {
     const next = {}
-    if (!form.agencyName.trim()) next.agencyName = 'Agency name is required.'
+    if (!form.agencyName.trim()) next.agencyName = t('complete_agency_required')
     if (!form.licenseNumber.trim()) {
-      next.licenseNumber = 'License number is required.'
+      next.licenseNumber = t('complete_license_required')
     } else if (form.licenseNumber.trim().length > 50) {
-      next.licenseNumber = 'License number must be at most 50 characters.'
+      next.licenseNumber = t('complete_license_max')
     }
     if (form.experience === '' || Number.isNaN(Number(form.experience)) || Number(form.experience) < 0) {
-      next.experience = 'Experience must be a valid number.'
+      next.experience = t('complete_experience_invalid')
     }
-    if (!form.officeAddress.trim()) next.officeAddress = 'Office address is required.'
+    if (!form.officeAddress.trim()) next.officeAddress = t('complete_office_required')
     if (form.bio.trim() && form.bio.trim().length < 20) {
-      next.bio = 'Bio must be at least 20 characters.'
+      next.bio = t('complete_bio_min')
     } else if (form.bio.trim().length > 500) {
-      next.bio = 'Bio must be at most 500 characters.'
+      next.bio = t('complete_bio_max')
     }
     if (photo.error) {
       next.photo = photo.error
@@ -89,12 +91,10 @@ const CompleteAgentProfile = () => {
       <div className="mx-auto w-full max-w-[420px] rounded-[6px] border border-[#D7E0E3] bg-white px-5 py-7 shadow-sm sm:px-8 sm:py-8">
         <div className="mb-6 text-center">
           <h1 className="font-display text-[29px] font-bold leading-[1.1] text-navy">
-            Complete Agent Profile
+            {t('complete_title')}
           </h1>
           <p className="mx-auto mt-2 max-w-[340px] text-[12px] leading-[1.3] text-ink">
-            Welcome, {user?.firstName} {user?.lastName}! Provide additional
-            details to activate your agent account. This step is mandatory to
-            list properties.
+            {t('complete_subtitle', { userName: `${user?.firstName} ${user?.lastName}` })}
           </p>
         </div>
 
@@ -107,7 +107,7 @@ const CompleteAgentProfile = () => {
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <FormInput
-              label="Agency Name"
+              label={t('complete_agency_name')}
               name="agencyName"
               value={form.agencyName}
               onChange={handleChange}
@@ -115,7 +115,7 @@ const CompleteAgentProfile = () => {
               icon={Building2}
             />
             <FormInput
-              label="License Number"
+              label={t('complete_license_number')}
               name="licenseNumber"
               value={form.licenseNumber}
               onChange={handleChange}
@@ -126,20 +126,20 @@ const CompleteAgentProfile = () => {
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <FormInput
-              label="Experience"
+              label={t('complete_experience')}
               name="experience"
               type="number"
               min="0"
-              placeholder="e.g. 5"
+              placeholder={t('complete_experience_placeholder')}
               value={form.experience}
               onChange={handleChange}
               error={errors.experience}
               icon={Briefcase}
             />
             <FormInput
-              label="Office Address"
+              label={t('complete_office_address')}
               name="officeAddress"
-              placeholder="Office address"
+              placeholder={t('complete_office_placeholder')}
               value={form.officeAddress}
               onChange={handleChange}
               error={errors.officeAddress}
@@ -148,9 +148,9 @@ const CompleteAgentProfile = () => {
           </div>
 
           <FormTextarea
-            label="Bio (optional)"
+            label={t('complete_bio')}
             name="bio"
-            placeholder="Describe your real estate expertise and philosophy..."
+            placeholder={t('complete_bio_placeholder')}
             value={form.bio}
             onChange={handleChange}
             error={errors.bio}
@@ -168,7 +168,7 @@ const CompleteAgentProfile = () => {
             disabled={loading}
             className="mt-1 h-[36px] w-full rounded-[5px] bg-teal text-[15px] font-semibold text-white transition-all duration-150 hover:bg-[#0F828A] hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {loading ? 'Activating...' : 'Activate Agent Profile'}
+            {loading ? t('complete_activating') : t('complete_activate')}
           </button>
 
           <button
@@ -176,13 +176,13 @@ const CompleteAgentProfile = () => {
             onClick={handleSkip}
             className="mx-auto text-[11px] text-navy transition-colors hover:text-teal"
           >
-            Skip for now (Your account will be restricted until completed)
+            {t('complete_skip')}
           </button>
         </form>
 
         <div className="mt-4 text-center">
           <Link to="/login" className="text-[12px] text-muted transition-colors hover:text-teal">
-            Back to Login
+            {t('forgot_back_to_login')}
           </Link>
         </div>
       </div>

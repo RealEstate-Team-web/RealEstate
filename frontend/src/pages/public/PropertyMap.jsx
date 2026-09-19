@@ -8,6 +8,7 @@ import {
   MapPin,
 } from "lucide-react";
 import L from "leaflet";
+import { useTranslation } from "react-i18next";
 import "leaflet/dist/leaflet.css";
 // Fix Leaflet default marker
 delete L.Icon.Default.prototype._getIconUrl;
@@ -22,13 +23,14 @@ L.Icon.Default.mergeOptions({
 });
 
 export const PropertyMap = ({ property }) => {
+  const { t } = useTranslation("detail");
   const latitude = Number(property?.location?.latitude);
   const longitude = Number(property?.location?.longitude);
 
   if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) {
     return (
       <div className="flex h-[320px] items-center justify-center rounded-xl bg-slate-100 text-sm text-slate-500">
-        Location information is not available.
+        {t("map_unavailable")}
       </div>
     );
   }
@@ -47,7 +49,7 @@ export const PropertyMap = ({ property }) => {
           <Popup>
             <div className="min-w-[180px]">
               <p className="text-sm font-bold text-[#162831]">
-                {property?.title || "Property"}
+                {property?.title || t("map_property")}
               </p>
 
               <p className="mt-1 text-xs text-slate-500">
@@ -64,7 +66,7 @@ export const PropertyMap = ({ property }) => {
       <div className="pointer-events-none absolute left-3 top-3 z-[1000] rounded-lg bg-white px-3 py-2 text-[11px] font-bold text-[#162831] shadow-md">
         <div className="flex items-center gap-1.5">
           <MapPin className="h-3.5 w-3.5 text-[#0F9690]" />
-          {property?.location?.address || "Location"}
+          {property?.location?.address || t("map_location")}
         </div>
       </div>
     </div>

@@ -1,9 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 import { MessageSquare, X, AlertCircle, Send, CheckCircle2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { submitInquiry } from '../../services/inquiry.service';
 import useAuth from '../../hooks/useAuth';
 
 const ContactAgentModalContent = ({ agent, onClose }) => {
+  const { t } = useTranslation('agents');
   const { user } = useAuth();
   const nameInputRef = useRef(null);
   const modalRef = useRef(null);
@@ -18,7 +20,7 @@ const ContactAgentModalContent = ({ agent, onClose }) => {
   const [email, setEmail] = useState(defaultEmail);
   const [phone, setPhone] = useState(defaultPhone);
   const [message, setMessage] = useState(
-    `Hello ${agent?.name || ''}, I would like to get in touch with you about real estate assistance.`
+    t('default_message', { name: agent?.name || '' })
   );
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -94,17 +96,17 @@ const ContactAgentModalContent = ({ agent, onClose }) => {
     e.preventDefault();
 
     if (!name.trim()) {
-      setError('Please enter your name');
+      setError(t('error_name'));
       return;
     }
 
     if (!email.trim()) {
-      setError('Please enter your email address');
+      setError(t('error_email'));
       return;
     }
 
     if (!message.trim() || message.trim().length < 5) {
-      setError('Please enter a message of at least 5 characters');
+      setError(t('error_message_short'));
       return;
     }
 
@@ -127,7 +129,7 @@ const ContactAgentModalContent = ({ agent, onClose }) => {
         (Array.isArray(err.response?.data?.errors)
           ? err.response.data.errors.join(', ')
           : err.message) ||
-        'Failed to send your message';
+        t('error_generic');
       setError(msg);
     } finally {
       setLoading(false);
@@ -149,10 +151,10 @@ const ContactAgentModalContent = ({ agent, onClose }) => {
               <CheckCircle2 size={28} className="text-emerald-600" />
             </div>
             <h2 id="contact-success-title" className="text-base font-bold text-slate-900">
-              Message Sent
+              {t('success_title')}
             </h2>
             <p className="text-xs text-slate-500 mt-2 max-w-xs leading-relaxed">
-              Your message has been sent to {agent?.name}. They will get back to you soon.
+              {t('success_body', { name: agent?.name })}
             </p>
             <button
               type="button"
@@ -160,7 +162,7 @@ const ContactAgentModalContent = ({ agent, onClose }) => {
               onClick={onClose}
               className="mt-6 px-5 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-xs transition cursor-pointer"
             >
-              Done
+              {t('done')}
             </button>
           </div>
         </div>
@@ -185,10 +187,10 @@ const ContactAgentModalContent = ({ agent, onClose }) => {
             </div>
             <div>
               <h2 id="contact-modal-title" className="text-base font-bold text-slate-900">
-                Contact {agent?.name}
+                {t('modal_title', { name: agent?.name })}
               </h2>
               <p className="text-xs text-slate-500">
-                Send a direct message to this agent
+                {t('modal_subtitle')}
               </p>
             </div>
           </div>
@@ -197,7 +199,7 @@ const ContactAgentModalContent = ({ agent, onClose }) => {
             onClick={onClose}
             disabled={loading}
             className="p-2 text-slate-400 hover:text-slate-600 rounded-xl hover:bg-slate-100 transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-            aria-label="Close modal"
+            aria-label={t('modal_close')}
           >
             <X size={18} />
           </button>
@@ -222,11 +224,10 @@ const ContactAgentModalContent = ({ agent, onClose }) => {
               <div className="min-w-0 flex-1">
                 <h4 className="text-xs font-bold text-slate-900 truncate">{agent.name}</h4>
                 <p className="text-[11px] text-slate-500 truncate">
-                  {agent.role || 'Real Estate Agent'}
+                  {agent.role || t('agent_role')}
                 </p>
                 <p className="text-[11px] text-slate-400 truncate mt-0.5">
-                  {agent.propertyCount ?? 0}{' '}
-                  {agent.propertyCount === 1 ? 'property' : 'properties'}
+                  {t('propertyCount', { count: agent.propertyCount ?? 0 })}
                 </p>
               </div>
             </div>
@@ -246,7 +247,7 @@ const ContactAgentModalContent = ({ agent, onClose }) => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1">
               <label htmlFor="contactName" className="block text-xs font-bold text-slate-700">
-                Your Name <span className="text-rose-500">*</span>
+                {t('your_name')} <span className="text-rose-500">*</span>
               </label>
               <input
                 ref={nameInputRef}
@@ -255,14 +256,14 @@ const ContactAgentModalContent = ({ agent, onClose }) => {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
-                placeholder="John Doe"
+                placeholder={t('name_placeholder')}
                 className="w-full text-xs font-medium text-slate-800 bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition"
               />
             </div>
 
             <div className="space-y-1">
               <label htmlFor="contactEmail" className="block text-xs font-bold text-slate-700">
-                Email Address <span className="text-rose-500">*</span>
+                {t('email_address')} <span className="text-rose-500">*</span>
               </label>
               <input
                 id="contactEmail"
@@ -270,7 +271,7 @@ const ContactAgentModalContent = ({ agent, onClose }) => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                placeholder="you@example.com"
+                placeholder={t('email_placeholder')}
                 className="w-full text-xs font-medium text-slate-800 bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition"
               />
             </div>
@@ -279,14 +280,17 @@ const ContactAgentModalContent = ({ agent, onClose }) => {
           {/* Phone Field */}
           <div className="space-y-1">
             <label htmlFor="contactPhone" className="block text-xs font-bold text-slate-700">
-              Phone Number <span className="text-[11px] font-normal text-slate-400">(Optional)</span>
+              {t('phone_number')}{' '}
+              <span className="text-[11px] font-normal text-slate-400">
+                {t('phone_optional')}
+              </span>
             </label>
             <input
               id="contactPhone"
               type="tel"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              placeholder="+251911000000"
+              placeholder={t('phone_placeholder')}
               className="w-full text-xs font-medium text-slate-800 bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition"
             />
           </div>
@@ -294,14 +298,14 @@ const ContactAgentModalContent = ({ agent, onClose }) => {
           {/* Message Area */}
           <div className="space-y-1">
             <label htmlFor="contactMessage" className="block text-xs font-bold text-slate-700 flex items-center justify-between">
-              <span>Your Message <span className="text-rose-500">*</span></span>
-              <span className="text-[11px] font-normal text-slate-400">Max 5000 chars</span>
+              <span>{t('your_message')} <span className="text-rose-500">*</span></span>
+              <span className="text-[11px] font-normal text-slate-400">{t('max_chars')}</span>
             </label>
             <textarea
               id="contactMessage"
               rows={4}
               maxLength={5000}
-              placeholder="Tell the agent how they can help you..."
+              placeholder={t('message_placeholder')}
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               required
@@ -317,7 +321,7 @@ const ContactAgentModalContent = ({ agent, onClose }) => {
               disabled={loading}
               className="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-xl transition cursor-pointer disabled:opacity-50"
             >
-              Cancel
+              {t('cancel')}
             </button>
             <button
               type="submit"
@@ -327,12 +331,12 @@ const ContactAgentModalContent = ({ agent, onClose }) => {
               {loading ? (
                 <>
                   <span className="inline-block w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  <span>Sending...</span>
+                  <span>{t('sending')}</span>
                 </>
               ) : (
                 <>
                   <Send size={13} />
-                  <span>Send Message</span>
+                  <span>{t('send_message')}</span>
                 </>
               )}
             </button>

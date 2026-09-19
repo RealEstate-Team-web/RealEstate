@@ -6,6 +6,7 @@ import {
   CarFront,
   MapPin,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { getPropertyImageUrl } from "../../utils/helpers";
 
 const FALLBACK_IMAGE =
@@ -16,7 +17,7 @@ const getImage = (property) => {
   return url || FALLBACK_IMAGE;
 };
 
-const getLocation = (property) => {
+const getLocation = (property, t) => {
   // Mock data structure
   if (property.location) {
     const address = property.location.address;
@@ -26,7 +27,7 @@ const getLocation = (property) => {
       return `${address}, ${city}`;
     }
 
-    return address || city || "Location unavailable";
+    return address || city || t("location_unavailable");
   }
 
   // Backend may return address/city directly
@@ -42,14 +43,15 @@ const getLocation = (property) => {
     return property.city;
   }
 
-  return "Location unavailable";
+  return t("location_unavailable");
 };
 
-const getStatus = (property) => {
-  return property.status || property.listingStatus || "Active";
+const getStatus = (property, t) => {
+  return property.status || property.listingStatus || t("status_active");
 };
 
-const getPrice = (property) => {
+const getPrice = (property, t) => {
+  const priceOnRequest = t("price_on_request");
   if (
     property.formattedPrice &&
     property.formattedPrice !== "Price on request"
@@ -58,7 +60,7 @@ const getPrice = (property) => {
   }
 
   if (!property.price) {
-    return "Price on request";
+    return priceOnRequest;
   }
 
   return `${Number(property.price).toLocaleString()} ETB`;
@@ -75,10 +77,11 @@ const getArea = (property) => {
 };
 
 const PropertyCard = ({ property }) => {
+  const { t } = useTranslation("property");
   const image = getImage(property);
-  const location = getLocation(property);
-  const price = getPrice(property);
-  const status = getStatus(property);
+  const location = getLocation(property, t);
+  const price = getPrice(property, t);
+  const status = getStatus(property, t);
   const area = getArea(property);
 
   return (
@@ -104,7 +107,7 @@ const PropertyCard = ({ property }) => {
       <div className="relative h-[200px] w-full overflow-hidden bg-slate-100">
         <img
           src={image}
-          alt={property.title || "Property"}
+          alt={property.title || t("untitled")}
           className="
             h-full
             w-full
@@ -196,7 +199,7 @@ const PropertyCard = ({ property }) => {
           "
           title={property.title}
         >
-          {property.title || "Untitled Property"}
+          {property.title || t("untitled")}
         </h3>
 
         {/* Location */}
@@ -339,7 +342,7 @@ const PropertyCard = ({ property }) => {
               active:scale-[0.98]
             "
           >
-            View Details
+            {t("view_details")}
           </Link>
         </div>
 

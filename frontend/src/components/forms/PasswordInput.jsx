@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import { Eye, EyeOff, Lock } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 const PasswordInput = ({ label, name, value, onChange, error, onBlur }) => {
+  const { t } = useTranslation('auth')
   const [visible, setVisible] = useState(false)
 
   return (
@@ -32,7 +34,7 @@ const PasswordInput = ({ label, name, value, onChange, error, onBlur }) => {
         <button
           type="button"
           onClick={() => setVisible((v) => !v)}
-          aria-label={visible ? 'Hide password' : 'Show password'}
+          aria-label={visible ? t('hide_password') : t('show_password')}
           className="flex w-9 shrink-0 items-center justify-center text-muted transition-colors hover:text-teal"
         >
           {visible ? <EyeOff size={17} strokeWidth={1.8} /> : <Eye size={17} strokeWidth={1.8} />}

@@ -1,15 +1,17 @@
 import { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { Menu, X, LogOut } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import useAuth from "../../hooks/useAuth";
 import { ROLE_DASHBOARDS, ROUTES } from "../../utils/constants";
+import LanguageSwitcher from "./LanguageSwitcher";
 
 const NAV_LINKS = [
-  { to: "/", label: "Home" },
-  { to: "/about", label: "About Us" },
-  { to: "/properties", label: "Properties" },
-  { to: "/agents", label: "Agents" },
-  { to: "/contact", label: "Contact Us" },
+  { to: "/",labelKey: "nav_home" },
+  { to: "/about", labelKey: "nav_about" },
+  { to: "/properties", labelKey: "nav_properties" },
+  { to: "/agents", labelKey: "nav_agents" },
+  { to: "/contact", labelKey: "nav_contact" },
 ];
 
 const getUserName = (user) => {
@@ -54,6 +56,7 @@ const Header = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { isAuthenticated, user, logout } = useAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const handleLogout = async () => {
     await logout();
@@ -88,7 +91,7 @@ const Header = () => {
         <nav className="hidden md:flex items-center gap-7">
           {NAV_LINKS.map((link) => (
             <NavLink
-              key={link.label}
+              key={link.labelKey}
               to={link.to}
               end={link.to === "/"}
               className={({ isActive }) =>
@@ -99,19 +102,20 @@ const Header = () => {
                 }`
               }
             >
-              {link.label}
+              {t(link.labelKey)}
             </NavLink>
           ))}
         </nav>
 
         {/* Right Auth Buttons */}
         <div className="hidden md:flex items-center gap-3">
+          <LanguageSwitcher />
           {isAuthenticated ? (
             <>
               <Link
                 to={dashboardPath}
                 className="flex items-center gap-2.5 rounded-full border border-slate-200 bg-white py-1 pl-1 pr-3 hover:border-[#0F9690]/40 hover:shadow-sm transition-all"
-                aria-label={`Open ${getUserName(user)} dashboard`}
+                aria-label={t("nav_dashboard_open", { name: getUserName(user) })}
               >
                 <UserAvatar user={user} />
                 <span className="text-[13px] font-semibold text-[#162831] max-w-[140px] truncate">
@@ -123,7 +127,7 @@ const Header = () => {
                 className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-white bg-[#0F9690] px-3.5 py-1.5 rounded-md hover:bg-[#0D827D] transition-colors cursor-pointer"
               >
                 <LogOut className="w-3.5 h-3.5" />
-                Logout
+                {t("nav_logout")}
               </button>
             </>
           ) : (
@@ -132,13 +136,13 @@ const Header = () => {
                 to={ROUTES.login}
                 className="text-[13px] font-medium text-[#475569] hover:text-[#0F9690] px-2 py-1 transition-colors"
               >
-                Login
+                {t("nav_login")}
               </Link>
               <Link
                 to={ROUTES.register}
                 className="text-[13px] font-semibold text-[#E6A23C] border border-[#E6A23C] hover:bg-[#FEF3D6] px-4 py-1.5 rounded-md transition-colors shadow-xs"
               >
-                Register
+                {t("nav_register")}
               </Link>
             </>
           )}
@@ -148,7 +152,7 @@ const Header = () => {
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
           className="md:hidden p-2 text-[#475569] hover:text-[#162831] rounded-md"
-          aria-label="Toggle Menu"
+          aria-label={t("nav_toggle_menu")}
         >
           {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>
@@ -157,9 +161,15 @@ const Header = () => {
       {/* Mobile Menu Dropdown */}
       {mobileOpen && (
         <div className="md:hidden bg-white border-t border-border px-4 py-4 space-y-3 shadow-md">
+          <div className="flex items-center justify-between">
+            <span className="text-[13px] font-semibold text-[#162831]">
+              {t("nav_language")}
+            </span>
+            <LanguageSwitcher />
+          </div>
           {NAV_LINKS.map((link) => (
             <NavLink
-              key={link.label}
+              key={link.labelKey}
               to={link.to}
               end={link.to === "/"}
               onClick={() => setMobileOpen(false)}
@@ -171,7 +181,7 @@ const Header = () => {
                 }`
               }
             >
-              {link.label}
+              {t(link.labelKey)}
             </NavLink>
           ))}
           <div className="pt-3 border-t border-border flex flex-col gap-2">
@@ -189,7 +199,7 @@ const Header = () => {
                   onClick={handleLogout}
                   className="w-full text-center text-[14px] font-semibold text-white bg-[#0F9690] py-2 rounded-md"
                 >
-                  Logout
+                  {t("nav_logout")}
                 </button>
               </>
             ) : (
@@ -199,14 +209,14 @@ const Header = () => {
                   onClick={() => setMobileOpen(false)}
                   className="w-full text-center text-[14px] font-medium text-[#475569] border border-border py-2 rounded-md"
                 >
-                  Login
+                  {t("nav_login")}
                 </Link>
                 <Link
                   to={ROUTES.register}
                   onClick={() => setMobileOpen(false)}
                   className="w-full text-center text-[14px] font-semibold text-[#E6A23C] border border-[#E6A23C] bg-[#FEF3D6] py-2 rounded-md"
                 >
-                  Register
+                  {t("nav_register")}
                 </Link>
               </>
             )}

@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
   Search,
   Calendar,
@@ -22,6 +23,7 @@ import useAuth from '../../hooks/useAuth';
 import useToast from '../../hooks/useToast';
 
 export const Messages = () => {
+  const { t } = useTranslation('buyer');
   const { user } = useAuth();
   const { toastMessage, showToast } = useToast();
   const messagesEndRef = useRef(null);
@@ -66,13 +68,13 @@ export const Messages = () => {
     } catch (err) {
       if (!isMountedRef.current) return;
       console.error('Failed to load inquiries:', err);
-      setError(err.response?.data?.message || err.message || 'Failed to load conversations');
+      setError(err.response?.data?.message || err.message || t('msg_load_error'));
     } finally {
       if (isMountedRef.current) {
         setLoading(false);
       }
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     const mountedRef = { current: true };
@@ -103,7 +105,7 @@ export const Messages = () => {
       } catch (err) {
         console.error('Failed to load inquiry thread:', err);
         if (isCurrent) {
-          setActiveError('Failed to load this conversation. Please try again.');
+          setActiveError(t('msg_load_thread_error'));
         }
       } finally {
         if (isCurrent) {
@@ -117,7 +119,7 @@ export const Messages = () => {
     return () => {
       isCurrent = false;
     };
-  }, [activeInquiryId]);
+  }, [activeInquiryId, t]);
 
   useEffect(() => {
     scrollToBottom();
@@ -161,7 +163,7 @@ export const Messages = () => {
     try {
       const messageText = newMessage.trim();
       const updatedInquiry = await replyToInquiry(activeInquiryId, messageText);
-      showToast('Message sent');
+      showToast(t('msg_sent_toast'));
       setNewMessage('');
 
       // Update active thread with all messages directly
@@ -183,7 +185,7 @@ export const Messages = () => {
       );
     } catch (err) {
       console.error('Failed to send message:', err);
-      showToast(err.response?.data?.message || 'Failed to send message');
+      showToast(err.response?.data?.message || t('msg_send_failed'));
     } finally {
       setSending(false);
     }
@@ -222,23 +224,23 @@ export const Messages = () => {
     switch (status?.toLowerCase()) {
       case 'read':
         return {
-          label: 'Read by Agent',
+          label: t('msg_status_read'),
           className: 'bg-blue-100 text-blue-800 border-blue-200',
         };
       case 'responded':
         return {
-          label: 'Responded',
+          label: t('msg_status_responded'),
           className: 'bg-emerald-100 text-emerald-800 border-emerald-200',
         };
       case 'archived':
         return {
-          label: 'Archived',
+          label: t('msg_status_archived'),
           className: 'bg-slate-100 text-slate-700 border-slate-200',
         };
       case 'pending':
       default:
         return {
-          label: 'Sent (Pending Read)',
+          label: t('msg_status_sent_pending'),
           className: 'bg-amber-100 text-amber-800 border-amber-200',
         };
     }
@@ -276,10 +278,10 @@ export const Messages = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
-            Messages & Inquiries
+            {t('msg_title')}
           </h1>
           <p className="text-xs text-slate-500 mt-1">
-            Direct communication with listing agents regarding your inquiries
+            {t('msg_subtitle')}
           </p>
         </div>
         <button
@@ -289,7 +291,7 @@ export const Messages = () => {
           className="self-start sm:self-auto px-3.5 py-2 text-xs font-semibold bg-white border border-slate-200 rounded-xl text-slate-700 hover:bg-slate-50 shadow-2xs transition cursor-pointer flex items-center space-x-2 disabled:opacity-50"
         >
           <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
-          <span>Refresh</span>
+          <span>{t('msg_refresh')}</span>
         </button>
       </div>
 
@@ -297,7 +299,7 @@ export const Messages = () => {
       {loading && (
         <div className="bg-white border border-slate-200/80 rounded-2xl shadow-2xs p-8 text-center space-y-4 min-h-[400px] flex flex-col items-center justify-center">
           <div className="w-8 h-8 border-3 border-blue-600/20 border-t-blue-600 rounded-full animate-spin mx-auto" />
-          <p className="text-xs font-semibold text-slate-600">Loading your conversations...</p>
+          <p className="text-xs font-semibold text-slate-600">{t('msg_loading')}</p>
         </div>
       )}
 
@@ -308,7 +310,7 @@ export const Messages = () => {
             <AlertCircle size={24} />
           </div>
           <div>
-            <h3 className="text-sm font-bold text-rose-900">Failed to Load Messages</h3>
+            <h3 className="text-sm font-bold text-rose-900">{t('msg_load_failed_title')}</h3>
             <p className="text-xs text-rose-600 mt-0.5">{error}</p>
           </div>
           <button
@@ -316,7 +318,7 @@ export const Messages = () => {
             onClick={() => loadInquiries()}
             className="px-4 py-2 text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 rounded-xl transition cursor-pointer shadow-xs"
           >
-            Try Again
+            {t('try_again')}
           </button>
         </div>
       )}
@@ -328,16 +330,16 @@ export const Messages = () => {
             <MessageSquare size={28} />
           </div>
           <div>
-            <h3 className="text-base font-bold text-slate-900">No inquiries or messages yet</h3>
+            <h3 className="text-base font-bold text-slate-900">{t('msg_empty_title')}</h3>
             <p className="text-xs text-slate-500 max-w-sm mx-auto mt-1">
-              Have a question about a property? Send an inquiry directly to the listing agent while browsing properties!
+              {t('msg_empty_body')}
             </p>
           </div>
           <Link
             to="/buyer/properties"
             className="inline-block px-5 py-2.5 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-xs transition cursor-pointer"
           >
-            Browse Properties
+            {t('browse_title')}
           </Link>
         </div>
       )}
@@ -355,10 +357,10 @@ export const Messages = () => {
             <div className="p-3.5 border-b border-slate-200/80 space-y-2.5">
               <div className="flex items-center gap-1 overflow-x-auto pb-1">
                 {[
-                  { key: 'all', label: 'All' },
-                  { key: 'pending', label: 'Pending' },
-                  { key: 'read', label: 'Read' },
-                  { key: 'responded', label: 'Responded' },
+                  { key: 'all', label: t('msg_tab_all') },
+                  { key: 'pending', label: t('msg_tab_pending') },
+                  { key: 'read', label: t('msg_tab_read') },
+                  { key: 'responded', label: t('msg_tab_responded') },
                 ].map((tab) => (
                   <button
                     key={tab.key}
@@ -379,7 +381,7 @@ export const Messages = () => {
                 <Search className="absolute left-3 top-2.5 text-slate-400" size={14} />
                 <input
                   type="text"
-                  placeholder="Search inquiries..."
+                  placeholder={t('msg_search_placeholder')}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full bg-white border border-slate-200 rounded-xl py-1.5 pl-8 pr-3 text-xs text-slate-800 focus:outline-none focus:border-blue-600 transition"
@@ -391,7 +393,7 @@ export const Messages = () => {
             <div className="divide-y divide-slate-100 overflow-y-auto flex-1 max-h-[500px]">
               {filteredInquiries.length === 0 ? (
                 <div className="p-6 text-center text-slate-400 text-xs">
-                  No matching inquiries found.
+                  {t('msg_no_match')}
                 </div>
               ) : (
                 filteredInquiries.map((inq) => {
@@ -425,7 +427,7 @@ export const Messages = () => {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between">
                           <h4 className="text-xs font-bold text-slate-900 truncate">
-                            {inq.propertyTitle || 'General inquiry'}
+                            {inq.propertyTitle || t('msg_general_inquiry')}
                           </h4>
                           <span className="text-[10px] text-slate-400 font-medium shrink-0 ml-1">
                             {formatShortDate(inq.updatedAt || inq.createdAt)}
@@ -433,7 +435,11 @@ export const Messages = () => {
                         </div>
 
                         <p className="text-[11px] text-slate-600 font-medium truncate mt-0.5">
-                          Agent: {inq.agentFirstName} {inq.agentLastName}
+                          {t('msg_agent_prefix', {
+                            name:
+                              [inq.agentFirstName, inq.agentLastName].filter(Boolean).join(' ') ||
+                              t('msg_listing_agent'),
+                          })}
                         </p>
 
                         <p className="text-xs text-slate-500 truncate mt-1">
@@ -491,7 +497,7 @@ export const Messages = () => {
                       type="button"
                       onClick={() => setMobileView('list')}
                       className="p-1 text-slate-600 hover:text-slate-900 lg:hidden cursor-pointer shrink-0"
-                      title="Back to inquiries list"
+                      title={t('msg_back_to_list')}
                     >
                       <ArrowLeft size={18} />
                     </button>
@@ -513,7 +519,7 @@ export const Messages = () => {
                         {activeInquiry.agentFirstName} {activeInquiry.agentLastName}
                       </h3>
                       <p className="text-[11px] text-slate-500 truncate flex items-center gap-1">
-                        <span>{activeInquiry.agencyName || 'Listing Agent'}</span>
+                        <span>{activeInquiry.agencyName || t('msg_listing_agent')}</span>
                         {activeInquiry.agentPhone && (
                           <>
                             <span>•</span>
@@ -533,8 +539,8 @@ export const Messages = () => {
                     className="flex items-center space-x-1.5 bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-xl text-xs font-semibold transition cursor-pointer shadow-2xs shrink-0"
                   >
                     <Calendar size={13} />
-                    <span className="hidden sm:inline">Schedule Visit</span>
-                    <span className="sm:hidden">Tour</span>
+                    <span className="hidden sm:inline">{t('msg_schedule_visit')}</span>
+                    <span className="sm:hidden">{t('browse_tour')}</span>
                   </button>
                   )}
                 </div>
@@ -552,7 +558,7 @@ export const Messages = () => {
                     )}
                     <div className="min-w-0">
                       <h4 className="font-bold text-slate-900 truncate">
-                        {activeInquiry.propertyTitle || 'General inquiry'}
+                        {activeInquiry.propertyTitle || t('msg_general_inquiry')}
                       </h4>
                       <p className="text-[11px] text-slate-500 truncate flex items-center gap-1">
                         <MapPin size={11} className="text-slate-400" />
@@ -571,7 +577,7 @@ export const Messages = () => {
                     to={`/properties/${activeInquiry.propertyId}`}
                     className="px-3 py-1.5 bg-white border border-blue-200 text-blue-700 hover:bg-blue-50 rounded-lg text-xs font-bold transition shrink-0"
                   >
-                    View Listing
+                    {t('msg_view_listing')}
                   </Link>
                 </div>
                 )}
@@ -614,7 +620,7 @@ export const Messages = () => {
                             <span>{formatFullDateTime(msg.createdAt)}</span>
                             {isFromUser && (
                               <span className="flex items-center gap-0.5">
-                                <Check size={11} /> Sent
+                                <Check size={11} /> {t('msg_sent_label')}
                               </span>
                             )}
                           </div>
@@ -634,7 +640,7 @@ export const Messages = () => {
                     type="text"
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
-                    placeholder="Type a message in this conversation..."
+                    placeholder={t('msg_composer_placeholder')}
                     disabled={sending}
                     className="flex-1 bg-white border border-slate-200 rounded-xl py-2 px-3.5 text-xs text-slate-800 focus:outline-none focus:border-blue-600 transition min-w-0 disabled:opacity-50"
                   />
@@ -647,7 +653,7 @@ export const Messages = () => {
                       <span className="inline-block w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                     ) : (
                       <>
-                        <span>Send</span>
+                        <span>{t('msg_send')}</span>
                         <Send size={13} />
                       </>
                     )}
@@ -656,7 +662,7 @@ export const Messages = () => {
               </>
             ) : (
               <div className="p-8 text-center text-slate-400 text-xs my-auto">
-                Select an inquiry from the list to view the conversation.
+                {t('msg_select_hint')}
               </div>
             )}
           </div>
@@ -677,7 +683,7 @@ export const Messages = () => {
             img: scheduleModalTarget.propertyImage,
           }}
           onSuccess={(res, msg) => {
-            showToast(msg || 'Visit requested successfully!');
+            showToast(msg || t('msg_visit_requested'));
             setScheduleModalTarget(null);
           }}
         />

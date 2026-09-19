@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   CheckCircle,
   Star,
@@ -10,7 +11,20 @@ import {
 } from 'lucide-react';
 
 export const Notifications = () => {
+  const { t } = useTranslation('buyer');
   const [filterType, setFilterType] = useState('all');
+
+  const notifTitle = (type) => {
+    const titles = {
+      visit_approved: t('notif_type_visit_approved'),
+      new_match: t('notif_type_new_match'),
+      agent_reply: t('notif_type_agent_reply'),
+      price_drop: t('notif_type_price_drop'),
+      visit_cancelled: t('notif_type_visit_cancelled'),
+    };
+    return titles[type] || type;
+  };
+
   const [notifications, setNotifications] = useState([
     {
       id: 1,
@@ -106,7 +120,8 @@ export const Notifications = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
         <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
-          Notifications <span className="text-slate-400 font-normal">({notifications.filter(n => n.unread).length} unread)</span>
+          {t('title_notifications')}{' '}
+          <span className="text-slate-400 font-normal">({t('notif_unread_count', { count: notifications.filter(n => n.unread).length })})</span>
         </h1>
       </div>
 
@@ -114,16 +129,16 @@ export const Notifications = () => {
       <div className="bg-white border border-slate-200/80 rounded-xl p-3.5 sm:p-4 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center space-x-2">
           <Filter size={15} className="text-slate-400 shrink-0" />
-          <span className="text-xs text-slate-500 font-medium">Filter</span>
+          <span className="text-xs text-slate-500 font-medium">{t('notif_filter')}</span>
           <select
             value={filterType}
             onChange={(e) => setFilterType(e.target.value)}
             className="bg-slate-50 border border-slate-200 text-xs font-medium text-slate-700 rounded-lg px-3 py-1.5 focus:outline-none"
           >
-            <option value="all">Show all</option>
-            <option value="unread">Unread only</option>
-            <option value="visits">Visit Alerts</option>
-            <option value="price">Price Drops</option>
+            <option value="all">{t('notif_show_all')}</option>
+            <option value="unread">{t('notif_unread_only')}</option>
+            <option value="visits">{t('notif_visit_alerts')}</option>
+            <option value="price">{t('notif_price_drops')}</option>
           </select>
         </div>
 
@@ -132,7 +147,7 @@ export const Notifications = () => {
           className="flex items-center justify-center space-x-1.5 text-xs font-semibold text-slate-700 hover:text-blue-600 border border-slate-200 px-3 py-1.5 rounded-lg hover:bg-slate-50 transition cursor-pointer self-start sm:self-auto"
         >
           <CheckCheck size={16} />
-          <span>Mark all as read</span>
+          <span>{t('notif_mark_all_read')}</span>
         </button>
       </div>
 
@@ -144,11 +159,11 @@ export const Notifications = () => {
               <CheckCircle size={24} />
             </div>
             <div>
-              <h4 className="text-sm font-bold text-slate-900">No notifications found</h4>
+              <h4 className="text-sm font-bold text-slate-900">{t('notif_empty_title')}</h4>
               <p className="text-xs text-slate-500 mt-0.5">
                 {filterType === 'unread'
-                  ? "You're all caught up! There are no unread notifications."
-                  : 'No notification records match this filter category.'}
+                  ? t('notif_empty_unread')
+                  : t('notif_empty_filter')}
               </p>
             </div>
           </div>
@@ -169,15 +184,15 @@ export const Notifications = () => {
               className={`p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-50/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 cursor-pointer ${
                 notif.unread ? 'bg-blue-50/20' : ''
               }`}
-              title={notif.unread ? 'Mark as read' : 'Mark as unread'}
+              title={notif.unread ? t('notif_mark_read') : t('notif_mark_unread')}
             >
               <div className="flex items-start sm:items-center space-x-3.5 min-w-0">
                 {/* Unread Status Dot */}
                 <div className="w-3 shrink-0 pt-1 sm:pt-0 flex justify-center">
                   {notif.unread ? (
-                    <span className="w-2.5 h-2.5 rounded-full bg-blue-600 shadow-2xs" title="Unread"></span>
+                    <span className="w-2.5 h-2.5 rounded-full bg-blue-600 shadow-2xs" title={t('notif_unread')}></span>
                   ) : (
-                    <span className="text-[10px] text-slate-400 font-medium sm:hidden">(Read)</span>
+                    <span className="text-[10px] text-slate-400 font-medium sm:hidden">{t('notif_read')}</span>
                   )}
                 </div>
 
@@ -188,7 +203,7 @@ export const Notifications = () => {
 
                 {/* Message Details */}
                 <div className="min-w-0">
-                  <h4 className="text-xs font-bold text-slate-900">{notif.title}</h4>
+                  <h4 className="text-xs font-bold text-slate-900">{notifTitle(notif.type)}</h4>
                   <p className="text-xs text-slate-500 mt-0.5 leading-normal">{notif.description}</p>
                 </div>
               </div>

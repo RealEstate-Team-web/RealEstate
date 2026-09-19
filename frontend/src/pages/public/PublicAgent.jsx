@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import {
   ArrowRight,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 import { getPublicAgents } from "../../services/agent.service";
 import useAuth from "../../hooks/useAuth";
@@ -12,6 +13,7 @@ import { ContactAgentModal } from "../../components/buyer/ContactAgentModal";
 
 const PublicAgents = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation("agents");
   const { user } = useAuth();
   const [agents, setAgents] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -54,7 +56,7 @@ const PublicAgents = () => {
       } catch (err) {
         if (active) {
           console.error("Failed to load agents:", err);
-          setError("We couldn't load our agents. Please try again.");
+          setError(t("load_error"));
         }
       } finally {
         if (active) setLoading(false);
@@ -66,7 +68,7 @@ const PublicAgents = () => {
     return () => {
       active = false;
     };
-  }, []);
+  }, [t]);
 
   const handleContact = (agent) => {
     if (user) {
@@ -105,23 +107,22 @@ const PublicAgents = () => {
         <div className="mx-auto w-full max-w-[900px] py-20 text-center">
 
           <span className="inline-flex rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-white backdrop-blur-sm">
-            Our Professionals
+            {t("hero_badge")}
           </span>
 
           <h1 className="mt-5 text-4xl font-extrabold tracking-tight text-white sm:text-5xl md:text-6xl">
-            Meet Our Trusted Agents
+            {t("hero_title")}
           </h1>
 
           <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-slate-200 sm:text-base">
-            Connect with experienced real estate professionals who understand
-            the market and are ready to help you find the right property.
+            {t("hero_subtitle")}
           </p>
 
           <Link
             to="/properties"
             className="mt-8 inline-flex items-center gap-2 rounded-xl bg-[#0F9690] px-6 py-3 text-sm font-bold text-white transition hover:bg-[#0D827D]"
           >
-            Explore Properties
+            {t("explore_properties")}
             <ArrowRight className="h-4 w-4" />
           </Link>
 
@@ -138,16 +139,15 @@ const PublicAgents = () => {
           <div className="mx-auto mb-12 max-w-2xl text-center">
 
             <span className="text-xs font-bold uppercase tracking-[0.18em] text-[#0F9690]">
-              Our Team
+              {t("list_eyebrow")}
             </span>
 
             <h2 className="mt-2 text-3xl font-bold tracking-tight text-[#162831] sm:text-4xl">
-              Meet Our Agents
+              {t("list_title")}
             </h2>
 
             <p className="mt-4 text-sm leading-6 text-slate-500 sm:text-base">
-              Our experienced agents are here to guide you through every step
-              of your property journey.
+              {t("list_subtitle")}
             </p>
 
           </div>
@@ -181,7 +181,7 @@ const PublicAgents = () => {
             </div>
           ) : !error ? (
             <p className="text-center text-sm text-slate-500">
-              No agents are available yet.
+              {t("empty")}
             </p>
           ) : null}
 
@@ -199,16 +199,15 @@ const PublicAgents = () => {
           <div>
 
             <span className="text-xs font-bold uppercase tracking-[0.18em] text-[#0F9690]">
-              Join Our Team
+              {t("join_eyebrow")}
             </span>
 
             <h2 className="mt-2 text-2xl font-bold sm:text-3xl">
-              Ready to Grow Your Real Estate Career?
+              {t("join_title")}
             </h2>
 
             <p className="mt-3 max-w-xl text-sm leading-6 text-slate-400">
-              Join our growing network of professional agents and connect with
-              more clients looking for their next property.
+              {t("join_subtitle")}
             </p>
 
           </div>
@@ -217,7 +216,7 @@ const PublicAgents = () => {
             to="/register"
             className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-[#E69500] px-6 py-3 text-sm font-bold text-white transition hover:bg-[#D48800]"
           >
-            Become an Agent
+            {t("become_agent")}
             <ArrowRight className="h-4 w-4" />
           </Link>
 

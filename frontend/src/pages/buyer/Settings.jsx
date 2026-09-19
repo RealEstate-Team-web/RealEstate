@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Bell,
   Lock,
@@ -23,6 +24,7 @@ const getSavedPreferences = () => {
 };
 
 export const Settings = () => {
+  const { t } = useTranslation('buyer');
   const initialPrefs = getSavedPreferences();
 
   // Preference states
@@ -70,32 +72,32 @@ export const Settings = () => {
     setPasswordSuccess('');
 
     if (!currentPassword) {
-      setPasswordError('Current password is required');
+      setPasswordError(t('password_current_required'));
       return;
     }
 
     if (!newPassword || newPassword.length < 8) {
-      setPasswordError('New password must be at least 8 characters long');
+      setPasswordError(t('password_min_length'));
       return;
     }
 
     if (!/[A-Z]/.test(newPassword)) {
-      setPasswordError('New password must contain at least one uppercase letter');
+      setPasswordError(t('password_upper'));
       return;
     }
 
     if (!/[a-z]/.test(newPassword)) {
-      setPasswordError('New password must contain at least one lowercase letter');
+      setPasswordError(t('password_lower'));
       return;
     }
 
     if (!/[0-9]/.test(newPassword)) {
-      setPasswordError('New password must contain at least one number');
+      setPasswordError(t('password_number'));
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      setPasswordError('New password and confirm password do not match');
+      setPasswordError(t('password_mismatch'));
       return;
     }
 
@@ -106,7 +108,7 @@ export const Settings = () => {
         newPassword,
       });
 
-      setPasswordSuccess('Password updated successfully!');
+      setPasswordSuccess(t('password_updated'));
       setCurrentPassword('');
       setNewPassword('');
       setConfirmPassword('');
@@ -117,7 +119,7 @@ export const Settings = () => {
         (Array.isArray(err.response?.data?.errors)
           ? err.response.data.errors.join(', ')
           : err.message) ||
-        'Failed to update password. Please verify your current password.'
+        t('password_update_failed')
       );
     } finally {
       setPasswordLoading(false);
@@ -128,7 +130,7 @@ export const Settings = () => {
     <div className="space-y-6 font-sans">
       {/* Title */}
       <div>
-        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Account Settings</h1>
+        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">{t('settings_title')}</h1>
       </div>
 
       <div className="bg-white border border-slate-200/80 rounded-2xl divide-y divide-slate-100 shadow-xs">
@@ -139,16 +141,16 @@ export const Settings = () => {
               <Bell size={20} />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-slate-900">Notification Preferences</h3>
-              <p className="text-xs text-slate-500">Choose how you receive updates about saved properties and visit alerts.</p>
+              <h3 className="text-sm font-bold text-slate-900">{t('settings_notif_title')}</h3>
+              <p className="text-xs text-slate-500">{t('settings_notif_subtitle')}</p>
             </div>
           </div>
 
           <div className="space-y-3 pt-2">
             <label className="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-200/60 cursor-pointer hover:bg-slate-100/50 transition">
               <div>
-                <p className="text-xs font-bold text-slate-800">Email Notifications</p>
-                <p className="text-[11px] text-slate-500">Receive visit confirmations and agent replies via email.</p>
+                <p className="text-xs font-bold text-slate-800">{t('settings_email_notif')}</p>
+                <p className="text-[11px] text-slate-500">{t('settings_email_notif_desc')}</p>
               </div>
               <input
                 type="checkbox"
@@ -160,8 +162,8 @@ export const Settings = () => {
 
             <label className="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-200/60 cursor-pointer hover:bg-slate-100/50 transition">
               <div>
-                <p className="text-xs font-bold text-slate-800">SMS / Phone Alerts</p>
-                <p className="text-[11px] text-slate-500">Get instant SMS reminders 1 hour before scheduled visits.</p>
+                <p className="text-xs font-bold text-slate-800">{t('settings_sms_alerts')}</p>
+                <p className="text-[11px] text-slate-500">{t('settings_sms_alerts_desc')}</p>
               </div>
               <input
                 type="checkbox"
@@ -173,8 +175,8 @@ export const Settings = () => {
 
             <label className="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-200/60 cursor-pointer hover:bg-slate-100/50 transition">
               <div>
-                <p className="text-xs font-bold text-slate-800">Price Drop Alerts</p>
-                <p className="text-[11px] text-slate-500">Alert me when a saved favorite property reduces its price.</p>
+                <p className="text-xs font-bold text-slate-800">{t('settings_price_drop')}</p>
+                <p className="text-[11px] text-slate-500">{t('settings_price_drop_desc')}</p>
               </div>
               <input
                 type="checkbox"
@@ -193,8 +195,8 @@ export const Settings = () => {
               <Lock size={20} />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-slate-900">Security & Password</h3>
-              <p className="text-xs text-slate-500">Manage your account password and security credentials.</p>
+              <h3 className="text-sm font-bold text-slate-900">{t('settings_security_title')}</h3>
+              <p className="text-xs text-slate-500">{t('settings_security_subtitle')}</p>
             </div>
           </div>
 
@@ -222,7 +224,7 @@ export const Settings = () => {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
                 <label htmlFor="settingsCurrentPassword" className="block text-xs font-semibold text-slate-600 uppercase mb-1">
-                  Current Password
+                  {t('settings_current_password')}
                 </label>
                 <input
                   id="settingsCurrentPassword"
@@ -238,7 +240,7 @@ export const Settings = () => {
 
               <div>
                 <label htmlFor="settingsNewPassword" className="block text-xs font-semibold text-slate-600 uppercase mb-1">
-                  New Password
+                  {t('settings_new_password')}
                 </label>
                 <input
                   id="settingsNewPassword"
@@ -254,7 +256,7 @@ export const Settings = () => {
 
               <div>
                 <label htmlFor="settingsConfirmPassword" className="block text-xs font-semibold text-slate-600 uppercase mb-1">
-                  Confirm Password
+                  {t('settings_confirm_password')}
                 </label>
                 <input
                   id="settingsConfirmPassword"
@@ -271,7 +273,7 @@ export const Settings = () => {
 
             <div className="flex items-center justify-between pt-1">
               <span className="text-[11px] text-slate-400">
-                Min 8 characters, at least 1 uppercase, 1 lowercase, and 1 number.
+                {t('settings_password_requirements')}
               </span>
 
               <button
@@ -282,12 +284,12 @@ export const Settings = () => {
                 {passwordLoading ? (
                   <>
                     <Loader2 size={13} className="animate-spin" />
-                    <span>Updating...</span>
+                    <span>{t('settings_updating')}</span>
                   </>
                 ) : (
                   <>
                     <KeyRound size={13} />
-                    <span>Update Password</span>
+                    <span>{t('settings_update_password')}</span>
                   </>
                 )}
               </button>
@@ -302,15 +304,15 @@ export const Settings = () => {
               <Globe size={20} />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-slate-900">Regional Preferences</h3>
-              <p className="text-xs text-slate-500">Configure currency display and default search area.</p>
+              <h3 className="text-sm font-bold text-slate-900">{t('settings_regional_title')}</h3>
+              <p className="text-xs text-slate-500">{t('settings_regional_subtitle')}</p>
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
             <div>
               <label htmlFor="settingsCurrency" className="block text-xs font-semibold text-slate-600 uppercase mb-1">
-                Display Currency
+                {t('settings_display_currency')}
               </label>
               <select
                 id="settingsCurrency"
@@ -318,13 +320,13 @@ export const Settings = () => {
                 onChange={(e) => setCurrency(e.target.value)}
                 className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3 text-xs font-semibold text-slate-700 focus:outline-none focus:border-blue-700"
               >
-                <option value="USD">USD ($) - United States Dollar</option>
-                <option value="ETB">ETB (ብር) - Ethiopian Birr</option>
+                <option value="USD">{t('settings_currency_usd')}</option>
+                <option value="ETB">{t('settings_currency_etb')}</option>
               </select>
             </div>
             <div>
               <label htmlFor="settingsArea" className="block text-xs font-semibold text-slate-600 uppercase mb-1">
-                Default City / Area
+                {t('settings_default_area')}
               </label>
               <select
                 id="settingsArea"
@@ -332,10 +334,10 @@ export const Settings = () => {
                 onChange={(e) => setDefaultArea(e.target.value)}
                 className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3 text-xs font-semibold text-slate-700 focus:outline-none focus:border-blue-700"
               >
-                <option value="Addis Ababa, Ethiopia">Addis Ababa, Ethiopia</option>
-                <option value="Hawassa, Ethiopia">Hawassa, Ethiopia</option>
-                <option value="Adama, Ethiopia">Adama, Ethiopia</option>
-                <option value="Bahir Dar, Ethiopia">Bahir Dar, Ethiopia</option>
+                <option value="Addis Ababa, Ethiopia">{t('settings_city_addis')}</option>
+                <option value="Hawassa, Ethiopia">{t('settings_city_hawassa')}</option>
+                <option value="Adama, Ethiopia">{t('settings_city_adama')}</option>
+                <option value="Bahir Dar, Ethiopia">{t('settings_city_bahirdar')}</option>
               </select>
             </div>
           </div>
@@ -347,10 +349,10 @@ export const Settings = () => {
             {prefsSaved ? (
               <>
                 <CheckCircle2 size={16} />
-                <span>Preferences saved successfully!</span>
+                <span>{t('settings_prefs_saved')}</span>
               </>
             ) : (
-              <span className="text-slate-400 font-normal">All preferences saved locally</span>
+              <span className="text-slate-400 font-normal">{t('settings_prefs_local')}</span>
             )}
           </div>
 
@@ -360,7 +362,7 @@ export const Settings = () => {
             className="flex items-center space-x-2 bg-blue-700 hover:bg-blue-800 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition cursor-pointer shadow-md shadow-blue-700/20"
           >
             <Save size={16} />
-            <span>Save Preferences</span>
+            <span>{t('settings_save_prefs')}</span>
           </button>
         </div>
       </div>

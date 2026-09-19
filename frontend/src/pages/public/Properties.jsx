@@ -8,6 +8,7 @@ import {
   MapPin,
   ArrowRight,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 import {
   getProperties,
@@ -48,13 +49,13 @@ const getPropertyImage = (property) => {
   );
 };
 
-const getPropertyType = (property) => {
+const getPropertyType = (property, t) => {
   return (
     property.property_type ||
     property.propertyType ||
     property.type ||
     property.category?.name ||
-    "Property"
+    t("type_fallback")
   );
 };
 
@@ -85,14 +86,14 @@ const getSearchText = (property) => {
     .toLowerCase();
 };
 
-const formatPrice = (price) => {
+const formatPrice = (price, t) => {
   if (
     price === null ||
     price === undefined ||
     price === "" ||
     Number.isNaN(Number(price))
   ) {
-    return "Price on request";
+    return t("price_on_request");
   }
 
   return `${Number(price).toLocaleString()} ETB`;
@@ -213,6 +214,7 @@ const filterProperties = (properties, filters) => {
 
 
 const Properties = () => {
+  const { t } = useTranslation("property");
   const [searchParams, setSearchParams] =
     useSearchParams();
 
@@ -380,13 +382,13 @@ const Properties = () => {
 
         setProperties([]);
         setLoadError(
-          "We couldn't load properties. Please try again in a moment."
+          t("load_error")
         );
       } finally {
         if (!isCancelled?.()) setLoading(false);
       }
     },
-    []
+    [t]
   );
 
  
@@ -501,7 +503,7 @@ const Properties = () => {
               <span className="h-1.5 w-1.5 rounded-full bg-[#2AC3BB] shadow-[0_0_12px_rgba(42,195,187,.9)]" />
 
               <span className="text-[9px] font-bold uppercase tracking-[.22em] text-[#54D4CD] sm:text-[10px]">
-                Explore Properties
+                {t("hero_eyebrow")}
               </span>
 
             </div>
@@ -513,17 +515,15 @@ const Properties = () => {
                   "var(--font-display)",
               }}
             >
-              Find Your
+              {t("hero_title_1")}
 
               <span className="block text-[#25B8B1]">
-                Dream Property.
+                {t("hero_title_2")}
               </span>
             </h1>
 
             <p className="mt-5 max-w-[620px] text-[13px] leading-6 text-[#C5D3D9] sm:text-[15px] sm:leading-7">
-              Discover modern homes, apartments,
-              villas and commercial properties from
-              trusted real estate professionals.
+              {t("hero_subtitle")}
             </p>
 
           </div>
@@ -555,7 +555,7 @@ const Properties = () => {
                 <div className="min-w-0">
 
                   <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-[#74858C]">
-                    Location
+                    {t("filter_location_label")}
                   </label>
 
                   <div className="relative">
@@ -572,7 +572,7 @@ const Properties = () => {
                           e.target.value
                         )
                       }
-                      placeholder="City / Location"
+                      placeholder={t("filter_location_placeholder")}
                       className="box-border h-11 w-full min-w-0 rounded-lg border border-[#DCE5E8] bg-[#FAFCFC] pl-9 pr-3.5 text-[13px] text-[#162831] outline-none transition-all focus:border-[#0F9690] focus:bg-white focus:ring-4 focus:ring-[#0F9690]/10"
                     />
 
@@ -585,7 +585,7 @@ const Properties = () => {
                 <div className="min-w-0">
 
                   <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-[#74858C]">
-                    Property Type
+                    {t("filter_type_label")}
                   </label>
 
                   <select
@@ -599,27 +599,27 @@ const Properties = () => {
                   >
 
                     <option value="">
-                      All Properties
+                      {t("filter_all_types")}
                     </option>
 
                     <option value="1">
-                      Apartment
+                      {t("filter_apartment")}
                     </option>
 
                     <option value="2">
-                      Villa
+                      {t("filter_villa")}
                     </option>
 
                     <option value="3">
-                      House
+                      {t("filter_house")}
                     </option>
 
                     <option value="4">
-                      Commercial
+                      {t("filter_commercial")}
                     </option>
 
                     <option value="5">
-                      Land
+                      {t("filter_land")}
                     </option>
 
                   </select>
@@ -631,7 +631,7 @@ const Properties = () => {
                 <div className="min-w-0">
 
                   <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-[#74858C]">
-                    Minimum Price
+                    {t("filter_min_label")}
                   </label>
 
                   <input
@@ -643,7 +643,7 @@ const Properties = () => {
                         e.target.value
                       )
                     }
-                    placeholder="Min price"
+                    placeholder={t("filter_min_placeholder")}
                     className="box-border h-11 w-full min-w-0 rounded-lg border border-[#DCE5E8] bg-[#FAFCFC] px-3.5 text-[13px] outline-none transition-all focus:border-[#0F9690] focus:bg-white focus:ring-4 focus:ring-[#0F9690]/10"
                   />
 
@@ -654,7 +654,7 @@ const Properties = () => {
                 <div className="min-w-0">
 
                   <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-[#74858C]">
-                    Maximum Price
+                    {t("filter_max_label")}
                   </label>
 
                   <input
@@ -666,7 +666,7 @@ const Properties = () => {
                         e.target.value
                       )
                     }
-                    placeholder="Max price"
+                    placeholder={t("filter_max_placeholder")}
                     className="box-border h-11 w-full min-w-0 rounded-lg border border-[#DCE5E8] bg-[#FAFCFC] px-3.5 text-[13px] outline-none transition-all focus:border-[#0F9690] focus:bg-white focus:ring-4 focus:ring-[#0F9690]/10"
                   />
 
@@ -677,7 +677,7 @@ const Properties = () => {
                 <div className="flex flex-col">
 
                   <label className="mb-1.5 hidden text-[10px] font-bold uppercase tracking-wider text-transparent lg:block">
-                    Filter
+                    {t("filter_button_aria")}
                   </label>
 
                   <button
@@ -689,8 +689,8 @@ const Properties = () => {
                     <SlidersHorizontal size={15} />
 
                     {loading
-                      ? "Searching..."
-                      : "Apply Filters"}
+                      ? t("filter_searching")
+                      : t("filter_apply")}
 
                     <ArrowRight
                       size={13}
@@ -714,7 +714,7 @@ const Properties = () => {
                 >
                   <X size={13} />
 
-                  Clear Filters
+                  {t("filter_clear")}
                 </button>
 
                 <div className="flex items-center gap-2">
@@ -735,15 +735,15 @@ const Properties = () => {
                   >
 
                     <option value="newest">
-                      Newest Listings
+                      {t("sort_newest")}
                     </option>
 
                     <option value="price_low">
-                      Lowest Price
+                      {t("sort_low_price")}
                     </option>
 
                     <option value="price_high">
-                      Highest Price
+                      {t("sort_high_price")}
                     </option>
 
                   </select>
@@ -775,7 +775,7 @@ const Properties = () => {
             <div>
 
               <span className="text-[9px] font-bold uppercase tracking-[.2em] text-[#0F9690] sm:text-[10px]">
-                Available Properties
+                {t("list_eyebrow")}
               </span>
 
               <h2
@@ -785,15 +785,13 @@ const Properties = () => {
                     "var(--font-display)",
                 }}
               >
-                Latest Properties
+                {t("list_title")}
               </h2>
 
               <p className="mt-1 text-[11px] text-[#71818A] sm:text-[12px]">
-                {properties.length}{" "}
-                {properties.length === 1
-                  ? "property"
-                  : "properties"}{" "}
-                found
+                {t("list_count", {
+                  count: properties.length,
+                })}
               </p>
 
             </div>
@@ -802,7 +800,7 @@ const Properties = () => {
               to="/"
               className="group flex w-fit items-center gap-1.5 text-[11px] font-semibold text-[#0F9690]"
             >
-              Back Home
+              {t("back_home")}
 
               <ArrowRight
                 size={13}
@@ -852,7 +850,7 @@ const Properties = () => {
 
             <div className="relative overflow-hidden rounded-2xl border border-rose-200 bg-rose-50 px-5 py-16 text-center shadow-[0_8px_30px_rgba(16,42,52,0.04)] sm:py-20">
               <h3 className="text-[18px] font-bold text-rose-700">
-                Something went wrong
+                {t("error_title")}
               </h3>
               <p className="mx-auto mt-2 max-w-[420px] text-[12px] leading-5 text-rose-700/80">
                 {loadError}
@@ -862,7 +860,7 @@ const Properties = () => {
                 onClick={clearFilters}
                 className="mt-5 cursor-pointer rounded-lg bg-[#0F9690] px-5 py-2.5 text-[11px] font-semibold text-white shadow-[0_6px_18px_rgba(15,150,144,0.16)] transition-all hover:-translate-y-0.5 hover:bg-[#0D827D]"
               >
-                Reset filters
+                {t("error_reset")}
               </button>
             </div>
 
@@ -883,14 +881,11 @@ const Properties = () => {
                 </div>
 
                 <h3 className="mt-5 text-[18px] font-bold text-[#162831]">
-                  No properties found
+                  {t("empty_title")}
                 </h3>
 
                 <p className="mx-auto mt-2 max-w-[380px] text-[12px] leading-5 text-[#71818A]">
-                  We couldn't find properties
-                  matching your current filters.
-                  Try another city, location,
-                  property type, or price range.
+                  {t("empty_body")}
                 </p>
 
                 <button
@@ -898,7 +893,7 @@ const Properties = () => {
                   onClick={clearFilters}
                   className="mt-5 cursor-pointer rounded-lg bg-[#0F9690] px-5 py-2.5 text-[11px] font-semibold text-white shadow-[0_6px_18px_rgba(15,150,144,.16)] transition-all hover:-translate-y-0.5 hover:bg-[#0D827D]"
                 >
-                  Clear Filters
+                  {t("filter_clear")}
                 </button>
 
               </div>
@@ -938,12 +933,14 @@ const Properties = () => {
 
                         property_type:
                           getPropertyType(
-                            property
+                            property,
+                            t
                           ),
 
                         formattedPrice:
                           formatPrice(
-                            property.price
+                            property.price,
+                            t
                           ),
                       }}
                     />
@@ -972,7 +969,7 @@ const Properties = () => {
           <div className="min-w-0">
 
             <span className="text-[9px] font-bold uppercase tracking-[.18em] text-[#0F9690]">
-              For Property Professionals
+              {t("cta_eyebrow")}
             </span>
 
             <h2
@@ -982,12 +979,11 @@ const Properties = () => {
                   "var(--font-display)",
               }}
             >
-              Want to list your properties?
+              {t("cta_title")}
             </h2>
 
             <p className="mt-1 text-[11px] leading-5 text-[#71818A] sm:text-[12px]">
-              Join our network of professional
-              real estate agents.
+              {t("cta_subtitle")}
             </p>
 
           </div>
@@ -996,7 +992,7 @@ const Properties = () => {
             to="/register"
             className="group flex shrink-0 items-center gap-2 rounded-lg bg-[#E69500] px-6 py-3 text-[11px] font-bold text-white shadow-[0_6px_18px_rgba(230,149,0,.14)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#D48800] hover:shadow-[0_10px_25px_rgba(230,149,0,.22)]"
           >
-            Become an Agent
+            {t("become_agent")}
 
             <ArrowRight
               size={14}

@@ -17,6 +17,7 @@ import {
   CalendarDays,
   Send,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 import PropertyCard from "../../components/property/PropertyCard";
 import {
@@ -43,6 +44,8 @@ const PropertyDetails = () => {
   const [messageError, setMessageError] = useState("");
   const [nearbyProperties, setNearbyProperties] = useState([]);
 
+  const { t } = useTranslation("detail");
+
   // Load property data from the API
   useEffect(() => {
     let active = true;
@@ -57,7 +60,7 @@ const PropertyDetails = () => {
     const loadProperty = async () => {
       if (!id) {
         resetInquiryState();
-        setError("Invalid property ID");
+        setError(t("invalid_id"));
         setLoading(false);
         return;
       }
@@ -76,8 +79,8 @@ const PropertyDetails = () => {
         console.error("Property load error:", err);
         setError(
           err?.status === 404
-            ? "Property not found"
-            : "We couldn't load this property. Please try again.",
+            ? t("not_found_error")
+            : t("load_error"),
         );
       } finally {
         if (active) setLoading(false);
@@ -89,7 +92,7 @@ const PropertyDetails = () => {
     return () => {
       active = false;
     };
-  }, [id]);
+  }, [id, t]);
 
   // Load real nearby properties
   useEffect(() => {
@@ -140,18 +143,18 @@ const PropertyDetails = () => {
     return (
       <div className="flex min-h-[500px] flex-col items-center justify-center bg-[#F7FAFA] px-4 text-center">
         <h2 className="text-xl font-extrabold text-[#162831]">
-          Property Not Found
+          {t("not_found_title")}
         </h2>
 
         <p className="mt-2 text-sm text-slate-500">
-          {error || "This property could not be found."}
+          {error || t("not_found_body")}
         </p>
 
         <Link
           to="/properties"
           className="mt-5 rounded-lg bg-[#0F9690] px-5 py-3 text-sm font-bold text-white"
         >
-          Back to Properties
+          {t("back_to_properties")}
         </Link>
       </div>
     );
@@ -184,7 +187,7 @@ const PropertyDetails = () => {
 
   const price = Number.isFinite(numericPrice)
     ? numericPrice.toLocaleString()
-    : "Price unavailable";
+    : t("price_unavailable");
 
   // Navigate to next image in gallery
   const nextImage = () => {
@@ -223,7 +226,7 @@ const PropertyDetails = () => {
         await navigator.clipboard.writeText(
           window.location.href
         );
-        alert("Property link copied to clipboard!");
+        alert(t("share_copied"));
       }
     } catch {
       console.log("Share cancelled.");
@@ -235,7 +238,7 @@ const PropertyDetails = () => {
     if (!message.trim() || !property?.id) return;
 
     if (!user) {
-      setMessageError("Please sign in to send an inquiry to the listing agent.");
+      setMessageError(t("inquiry_sign_in_error"));
       return;
     }
 
@@ -263,7 +266,7 @@ const PropertyDetails = () => {
         (Array.isArray(err?.errors)
           ? err.errors.join(", ")
           : "") ||
-        "Failed to send your request. Please try again.";
+        t("send_failed");
       setMessageError(errMsg);
     } finally {
       setSendingMessage(false);
@@ -279,7 +282,7 @@ const PropertyDetails = () => {
             to="/"
             className="shrink-0 hover:text-[#0F9690]"
           >
-            Home
+            {t("breadcrumb_home")}
           </Link>
 
           <span>/</span>
@@ -288,13 +291,13 @@ const PropertyDetails = () => {
             to="/properties"
             className="shrink-0 hover:text-[#0F9690]"
           >
-            Properties
+            {t("breadcrumb_properties")}
           </Link>
 
           <span>/</span>
 
           <span className="truncate text-slate-700">
-            {property?.title || "Property"}
+            {property?.title || t("untitled")}
           </span>
         </div>
 
@@ -305,12 +308,12 @@ const PropertyDetails = () => {
             {activeImageUrl ? (
               <img
                 src={activeImageUrl}
-                alt={property?.title || "Property"}
+                alt={property?.title || t("untitled")}
                 className="h-full w-full object-cover"
               />
             ) : (
               <div className="flex h-full w-full items-center justify-center bg-slate-100 text-sm text-slate-500">
-                Property image unavailable
+                {t("image_unavailable")}
               </div>
             )}
 
@@ -319,7 +322,7 @@ const PropertyDetails = () => {
             <div className="absolute left-4 top-4 sm:left-6 sm:top-6">
               <span className="inline-flex items-center gap-1.5 rounded-full bg-[#0F9690] px-3 py-1.5 text-[11px] font-bold text-white shadow-lg">
                 <CheckCircle2 className="h-3.5 w-3.5" />
-                {property?.status || "Available"}
+                {property?.status || t("status_available")}
               </span>
             </div>
 
@@ -328,7 +331,7 @@ const PropertyDetails = () => {
                 <button
                   type="button"
                   onClick={previousImage}
-                  aria-label="Previous image"
+                  aria-label={t("prev_image")}
                   className="absolute left-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-[#162831] shadow-lg sm:left-5 sm:h-10 sm:w-10"
                 >
                   <ChevronLeft className="h-5 w-5" />
@@ -337,7 +340,7 @@ const PropertyDetails = () => {
                 <button
                   type="button"
                   onClick={nextImage}
-                  aria-label="Next image"
+                  aria-label={t("next_image")}
                   className="absolute right-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-[#162831] shadow-lg sm:right-5 sm:h-10 sm:w-10"
                 >
                   <ChevronRight className="h-5 w-5" />
@@ -348,12 +351,12 @@ const PropertyDetails = () => {
             <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between sm:bottom-6 sm:left-6 sm:right-6">
               <div>
                 <p className="mb-1 text-[10px] uppercase tracking-wider text-white/75">
-                  Property Price
+                  {t("price_label")}
                 </p>
 
                 <p className="text-2xl font-extrabold text-white sm:text-3xl lg:text-4xl">
-                  {price !== "Price unavailable"
-                    ? `$${price}`
+                  {price !== t("price_unavailable")
+                    ? `${price} ETB`
                     : price}
                 </p>
               </div>
@@ -361,7 +364,9 @@ const PropertyDetails = () => {
               {images.length > 0 && (
                 <div className="hidden items-center gap-2 rounded-lg bg-white/95 px-4 py-2.5 text-xs font-bold text-[#162831] shadow-lg sm:flex">
                   <Camera className="h-4 w-4 text-[#0F9690]" />
-                  {images.length} Photos
+                  {t("photos_count", {
+                    count: images.length,
+                  })}
                 </div>
               )}
             </div>
@@ -374,7 +379,9 @@ const PropertyDetails = () => {
                   key={`${image}-${index}`}
                   type="button"
                   onClick={() => setActiveImage(index)}
-                  aria-label={`View image ${index + 1}`}
+                  aria-label={t("view_image", {
+                    index: index + 1,
+                  })}
                   className={`h-[65px] overflow-hidden rounded-lg border-2 sm:h-[90px] lg:h-[105px] ${
                     activeImage === index
                       ? "border-[#0F9690]"
@@ -383,7 +390,7 @@ const PropertyDetails = () => {
                 >
                   <img
                     src={image}
-                    alt={`${property?.title || "Property"} ${index + 1}`}
+                    alt={`${property?.title || t("untitled")} ${index + 1}`}
                     className="h-full w-full object-cover"
                   />
                 </button>
@@ -397,11 +404,11 @@ const PropertyDetails = () => {
 
             <div className="min-w-0">
               <p className="mb-2 text-[11px] font-bold uppercase tracking-[0.15em] text-[#0F9690]">
-                {property?.listingType || "Property"}
+                {property?.listingType || t("untitled")}
               </p>
 
               <h1 className="break-words text-2xl font-extrabold text-[#162831] sm:text-3xl lg:text-4xl">
-                {property?.title || "Untitled Property"}
+                {property?.title || t("untitled")}
               </h1>
 
               <div className="mt-3 flex items-start gap-2 text-sm text-slate-500">
@@ -438,7 +445,7 @@ const PropertyDetails = () => {
                 />
 
                 <span className="hidden sm:inline">
-                  {saved ? "Saved" : "Save"}
+                  {saved ? t("saved") : t("save")}
                 </span>
               </button>
 
@@ -450,7 +457,7 @@ const PropertyDetails = () => {
                 <Share2 className="h-4 w-4" />
 
                 <span className="hidden sm:inline">
-                  Share
+                  {t("share")}
                 </span>
               </button>
             </div>
@@ -458,13 +465,13 @@ const PropertyDetails = () => {
 
           <div className="mt-6 flex flex-wrap items-center gap-3 border-t border-slate-100 pt-5">
             <span className="text-2xl font-extrabold text-[#0F9690] sm:text-3xl">
-              {price !== "Price unavailable"
-                ? `$${price}`
+              {price !== t("price_unavailable")
+                ? `${price} ETB`
                 : price}
             </span>
 
             <span className="rounded-md bg-[#162831] px-3 py-1.5 text-[11px] font-bold text-white">
-              {property?.listingType || "Property"}
+              {property?.listingType || t("untitled")}
             </span>
 
             {agent?.id && (
@@ -472,7 +479,7 @@ const PropertyDetails = () => {
                 to={`/agents/${agent.id}`}
                 className="ml-auto text-xs font-bold text-[#0F9690]"
               >
-                View Listing Agent →
+                {t("view_listing_agent")}
               </Link>
             )}
           </div>
@@ -484,26 +491,26 @@ const PropertyDetails = () => {
 
             <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
               <h2 className="mb-5 text-lg font-extrabold text-[#162831]">
-                Key Specs
+                {t("specs_title")}
               </h2>
 
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
                 <Spec
                   icon={<BedDouble />}
                   value={property?.bedrooms ?? "—"}
-                  label="Bedrooms"
+                  label={t("spec_bedrooms")}
                 />
 
                 <Spec
                   icon={<Bath />}
                   value={property?.bathrooms ?? "—"}
-                  label="Bathrooms"
+                  label={t("spec_bathrooms")}
                 />
 
                 <Spec
                   icon={<CarFront />}
                   value={property?.parking ?? "—"}
-                  label="Parking"
+                  label={t("spec_parking")}
                 />
 
                 <Spec
@@ -513,32 +520,36 @@ const PropertyDetails = () => {
                       ? Number(property.area).toLocaleString()
                       : "—"
                   }
-                  label={property?.areaUnit || "Area"}
+                  label={property?.areaUnit || t("spec_area")}
                 />
               </div>
 
               <div className="mt-5 border-t border-slate-100 pt-5">
                 <span className="inline-flex items-center gap-2 rounded-full bg-[#E8F7F5] px-3 py-1.5 text-xs font-bold text-[#0F9690]">
                   <CheckCircle2 className="h-4 w-4" />
-                  Status: {property?.status || "Available"}
+                  {t("status_prefix", {
+                    status:
+                      property?.status ||
+                      t("status_available"),
+                  })}
                 </span>
               </div>
             </section>
 
             <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
               <h2 className="mb-4 text-lg font-extrabold text-[#162831]">
-                Description
+                {t("description_title")}
               </h2>
 
               <p className="text-sm leading-7 text-slate-600">
                 {property?.description ||
-                  "No description is available for this property."}
+                  t("description_empty")}
               </p>
             </section>
 
             <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
               <h2 className="mb-5 text-lg font-extrabold text-[#162831]">
-                Amenities
+                {t("amenities_title")}
               </h2>
 
               {amenities.length > 0 ? (
@@ -560,7 +571,7 @@ const PropertyDetails = () => {
                 </div>
               ) : (
                 <p className="text-sm text-slate-500">
-                  No amenities are available for this property.
+                  {t("amenities_empty")}
                 </p>
               )}
             </section>
@@ -568,7 +579,7 @@ const PropertyDetails = () => {
             <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
               <div className="mb-5">
                 <h2 className="text-lg font-extrabold text-[#162831]">
-                  Location Map
+                  {t("map_title")}
                 </h2>
 
                 <p className="mt-1 text-xs text-slate-500">
@@ -591,7 +602,7 @@ const PropertyDetails = () => {
               <div className="mt-4 flex flex-wrap gap-3">
                 <div className="rounded-lg bg-[#F3FAF9] px-3 py-2">
                   <p className="text-[10px] text-slate-400">
-                    Latitude
+                    {t("latitude")}
                   </p>
 
                   <p className="text-xs font-bold text-[#162831]">
@@ -601,7 +612,7 @@ const PropertyDetails = () => {
 
                 <div className="rounded-lg bg-[#F3FAF9] px-3 py-2">
                   <p className="text-[10px] text-slate-400">
-                    Longitude
+                    {t("longitude")}
                   </p>
 
                   <p className="text-xs font-bold text-[#162831]">
@@ -617,14 +628,14 @@ const PropertyDetails = () => {
 
               <div className="border-b border-slate-100 pb-5 text-center">
                 <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#0F9690]">
-                  Listing Agent
+                  {t("agent_badge")}
                 </p>
 
                 <div className="mt-4 flex justify-center">
                   {agent?.photo ? (
                     <img
                       src={agent.photo}
-                      alt={agent.name || "Listing Agent"}
+                      alt={agent.name || t("agent_badge")}
                       className="h-28 w-28 rounded-full border-4 border-[#E8F7F5] object-cover shadow-md"
                     />
                   ) : (
@@ -635,11 +646,11 @@ const PropertyDetails = () => {
                 </div>
 
                 <h3 className="mt-4 text-xl font-extrabold text-[#162831]">
-                  {agent?.name || "Listing Agent"}
+                  {agent?.name || t("agent_badge")}
                 </h3>
 
                 <p className="mt-1 text-sm font-medium text-[#0F9690]">
-                  {agent?.role || "Real Estate Agent"}
+                  {agent?.role || t("agent_role_fallback")}
                 </p>
 
                 <div className="mt-3 flex items-center justify-center gap-1">
@@ -666,38 +677,38 @@ const PropertyDetails = () => {
                 </p>
 
                 <p className="mt-1 text-[10px] text-slate-500">
-                  Years Experience
+                  {t("years_experience")}
                 </p>
               </div>
 
               <div className="space-y-4 border-b border-slate-100 py-5">
                 <AgentInfo
                   icon={<MapPin />}
-                  label="Location"
-                  value={agent?.location || "Not available"}
+                  label={t("agent_location")}
+                  value={agent?.location || t("not_available")}
                 />
 
                 <AgentInfo
                   icon={<Phone />}
-                  label="Phone"
-                  value={agent?.phone || "Not available"}
+                  label={t("agent_phone")}
+                  value={agent?.phone || t("not_available")}
                 />
 
                 <AgentInfo
                   icon={<Mail />}
-                  label="Email"
-                  value={agent?.email || "Not available"}
+                  label={t("agent_email")}
+                  value={agent?.email || t("not_available")}
                 />
               </div>
 
               <div className="py-5">
                 <h4 className="mb-2 text-sm font-extrabold text-[#162831]">
-                  About the Agent
+                  {t("about_agent")}
                 </h4>
 
                 <p className="text-xs leading-6 text-slate-500">
                   {agent?.bio ||
-                    "No agent information is available."}
+                    t("about_agent_empty")}
                 </p>
               </div>
 
@@ -707,13 +718,12 @@ const PropertyDetails = () => {
                   <CalendarDays className="h-4 w-4 text-[#0F9690]" />
 
                   <h4 className="text-sm font-extrabold text-[#162831]">
-                    Schedule a Visit
+                    {t("schedule_title")}
                   </h4>
                 </div>
 
                 <p className="mb-3 text-xs leading-5 text-slate-500">
-                  Send a message to the listing agent to request a
-                  property visit.
+                  {t("schedule_subtitle")}
                 </p>
 
                 {messageSent ? (
@@ -723,12 +733,11 @@ const PropertyDetails = () => {
 
                       <div>
                         <p className="text-xs font-bold text-[#162831]">
-                          Message sent successfully
+                          {t("msg_sent_title")}
                         </p>
 
                         <p className="mt-1 text-[11px] leading-5 text-slate-500">
-                          The agent can now respond regarding your
-                          visit request.
+                          {t("msg_sent_body")}
                         </p>
                       </div>
                     </div>
@@ -744,8 +753,12 @@ const PropertyDetails = () => {
                       rows={4}
                       placeholder={
                         user
-                          ? `Hello ${agent?.name || "Agent"}, I would like to schedule a visit for this property.`
-                          : "Please sign in to send a direct message or visit request to the agent."
+                          ? t("schedule_placeholder_authed", {
+                              name:
+                                agent?.name ||
+                                "Agent",
+                            })
+                          : t("schedule_placeholder_guest")
                       }
                       disabled={!user}
                       className="w-full resize-none rounded-xl border border-slate-200 bg-[#FAFCFC] px-3 py-3 text-xs text-[#162831] outline-none placeholder:text-slate-400 focus:border-[#0F9690] focus:ring-1 focus:ring-[#0F9690] disabled:bg-slate-100 disabled:cursor-not-allowed"
@@ -762,7 +775,7 @@ const PropertyDetails = () => {
                         to="/login"
                         className="mt-2 flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-[#0F9690] text-sm font-bold text-white transition hover:bg-[#0D827D]"
                       >
-                        Sign in to Inquire
+                        {t("sign_in_inquire")}
                       </Link>
                     ) : (
                       <button
@@ -775,11 +788,11 @@ const PropertyDetails = () => {
                         className="mt-2 flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-[#0F9690] text-sm font-bold text-white transition hover:bg-[#0D827D] disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
                       >
                         {sendingMessage ? (
-                          "Sending..."
+                          t("sending")
                         ) : (
                           <>
                             <Send className="h-4 w-4" />
-                            Send Visit Request
+                            {t("send_visit_request")}
                           </>
                         )}
                       </button>
@@ -797,11 +810,11 @@ const PropertyDetails = () => {
           <div className="mb-6 flex items-end justify-between">
             <div>
               <p className="mb-1 text-[10px] font-bold uppercase tracking-[0.15em] text-[#0F9690]">
-                Explore More
+                {t("explore_more")}
               </p>
 
               <h2 className="text-xl font-extrabold text-[#162831] sm:text-2xl">
-                Nearby Properties
+                {t("nearby_title")}
               </h2>
             </div>
 
@@ -809,7 +822,7 @@ const PropertyDetails = () => {
               to="/properties"
               className="hidden items-center gap-1 text-sm font-bold text-[#0F9690] sm:flex"
             >
-              View All
+              {t("view_all")}
               <ChevronRight className="h-4 w-4" />
             </Link>
           </div>
@@ -825,7 +838,7 @@ const PropertyDetails = () => {
             </div>
           ) : (
             <div className="rounded-xl border border-slate-200 bg-white p-8 text-center text-sm text-slate-500">
-              No nearby properties are available.
+              {t("nearby_empty")}
             </div>
           )}
 
@@ -834,7 +847,7 @@ const PropertyDetails = () => {
               to="/properties"
               className="inline-flex items-center gap-2 rounded-lg bg-[#0F9690] px-6 py-3 text-sm font-bold text-white"
             >
-              View All Properties
+              {t("view_all_properties")}
               <ChevronRight className="h-4 w-4" />
             </Link>
           </div>

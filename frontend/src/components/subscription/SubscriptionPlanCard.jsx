@@ -1,9 +1,12 @@
 import { Check, Building2, Images } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const SubscriptionPlanFeatures = ({ features }) => {
+  const { t } = useTranslation('subscription');
+
   if (!features || features.length === 0) {
     return (
-      <p className="text-xs text-slate-400">No features listed.</p>
+      <p className="text-xs text-slate-400">{t('no_features')}</p>
     );
   }
 
@@ -22,18 +25,19 @@ const SubscriptionPlanFeatures = ({ features }) => {
 const SubscriptionPlanCard = ({
   plan,
   featured = false,
-  ctaLabel = 'Choose Plan',
+  ctaLabel,
   onCta,
   ctaDisabled = false,
   ctaTitle,
 }) => {
+  const { t } = useTranslation('subscription');
   const price = Number(plan.price || 0).toLocaleString();
   const durationLabel =
     plan.duration_days === 30
-      ? 'month'
+      ? t('per_month')
       : plan.duration_days === 1
-        ? 'day'
-        : `${plan.duration_days} days`;
+        ? t('per_day')
+        : t('per_days', { count: plan.duration_days });
 
   return (
     <div
@@ -45,7 +49,7 @@ const SubscriptionPlanCard = ({
     >
       {featured ? (
         <span className="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-[#0F9690] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-white shadow">
-          Most Popular
+          {t('most_popular')}
         </span>
       ) : null}
 
@@ -67,12 +71,12 @@ const SubscriptionPlanCard = ({
         <div className="mt-4 flex items-center gap-3 rounded-lg bg-[#F3FAF9] px-3 py-2 text-[12px] font-semibold text-[#162831]">
           <span className="inline-flex items-center gap-1.5">
             <Building2 size={15} className="text-[#0F9690]" />
-            {plan.property_limit} {plan.property_limit === 1 ? 'property' : 'properties'}
+            {t('property', { count: plan.property_limit })}
           </span>
           {plan.images_per_property != null ? (
             <span className="inline-flex items-center gap-1.5">
               <Images size={15} className="text-[#0F9690]" />
-              {plan.images_per_property} {plan.images_per_property === 1 ? 'image' : 'images'} each
+              {t('image', { count: plan.images_per_property })}
             </span>
           ) : null}
         </div>
@@ -88,7 +92,7 @@ const SubscriptionPlanCard = ({
           if (!ctaDisabled && onCta) onCta(plan);
         }}
         disabled={ctaDisabled}
-        title={ctaDisabled ? ctaTitle || 'Payment integration is coming soon' : undefined}
+        title={ctaDisabled ? ctaTitle || t('coming_soon') : undefined}
         aria-disabled={ctaDisabled || undefined}
         className={`mt-6 inline-flex h-[42px] w-full items-center justify-center rounded-lg text-[13px] font-bold transition ${
           ctaDisabled

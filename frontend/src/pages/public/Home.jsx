@@ -4,6 +4,7 @@ import {
   Search,
   ArrowRight,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 import { ROUTES } from "../../utils/constants";
 import { getLanding } from "../../services/property.service";
@@ -16,6 +17,7 @@ import SubscriptionPlans from "../../components/subscription/SubscriptionPlans";
 
 
 const Home = () => {
+  const { t } = useTranslation("landing");
   const [properties, setProperties] = useState([]);
   const [propertiesLoading, setPropertiesLoading] = useState(true);
   const [propertiesError, setPropertiesError] = useState("");
@@ -47,7 +49,7 @@ const Home = () => {
     } catch (error) {
       console.error("Landing error:", error);
       setProperties([]);
-      setPropertiesError("We couldn't load featured properties. Please try again.");
+      setPropertiesError(t("search_loading_properties_error"));
     } finally {
       setPropertiesLoading(false);
     }
@@ -55,7 +57,7 @@ const Home = () => {
 
   load();
 
-}, []);
+}, [t]);
 
  useEffect(() => {
   const loadAgents = async () => {
@@ -66,7 +68,7 @@ const Home = () => {
     } catch (error) {
       console.error("Agents error:", error);
       setAgents([]);
-      setAgentsError("We couldn't load our agents. Please try again.");
+      setAgentsError(t("search_loading_agents_error"));
     } finally {
       setAgentsLoading(false);
     }
@@ -74,7 +76,7 @@ const Home = () => {
 
   loadAgents();
 
-}, []);
+}, [t]);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -113,11 +115,11 @@ const Home = () => {
         <div className="w-full max-w-[1050px] text-center py-16">
 
           <h1 className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl md:text-6xl">
-            Find Your Dream Property
+            {t("hero_title")}
           </h1>
 
           <p className="mx-auto mt-3 max-w-2xl text-sm text-slate-100 sm:text-base">
-            Find villas, townhouses, apartments and more matching your lifestyle.
+            {t("hero_subtitle")}
           </p>
 
           {/* Search */}
@@ -131,7 +133,7 @@ const Home = () => {
               onChange={(e) =>
                 setLocation(e.target.value)
               }
-              placeholder="Search by city or area..."
+              placeholder={t("hero_placeholder")}
               className="h-12 rounded-lg bg-white border border-slate-200 px-4 text-sm outline-none focus:border-[#0F9690]"
             />
 
@@ -142,11 +144,11 @@ const Home = () => {
               }
               className="h-12 rounded-lg bg-white border border-slate-200 px-4 text-sm text-slate-600 outline-none focus:border-[#0F9690]"
             >
-              <option value="">Type</option>
-              <option value="1">Apartment</option>
-              <option value="2">Villa</option>
-              <option value="3">House</option>
-              <option value="4">Commercial</option>
+              <option value="">{t("option_type")}</option>
+              <option value="1">{t("option_apartment")}</option>
+              <option value="2">{t("option_villa")}</option>
+              <option value="3">{t("option_house")}</option>
+              <option value="4">{t("option_commercial")}</option>
             </select>
 
             <select
@@ -156,7 +158,7 @@ const Home = () => {
               }
               className="h-12 rounded-lg bg-white border border-slate-200 px-4 text-sm text-slate-600 outline-none focus:border-[#0F9690]"
             >
-              <option value="">Price Range</option>
+              <option value="">{t("option_price")}</option>
               <option value="500000">Up to 500,000</option>
               <option value="1000000">Up to 1,000,000</option>
               <option value="2000000">Up to 2,000,000</option>
@@ -168,7 +170,7 @@ const Home = () => {
               className="flex h-12 items-center justify-center gap-2 rounded-lg bg-[#0F9690] px-5 text-sm font-bold text-white transition hover:bg-[#0D827D] cursor-pointer"
             >
               <Search className="h-4 w-4" />
-              Search Properties
+              {t("search_properties")}
             </button>
 
           </form>
@@ -186,15 +188,15 @@ const Home = () => {
           <div className="mb-10 flex flex-col items-center text-center">
 
             <span className="mb-3 inline-flex rounded-full border border-[#0F9690]/20 bg-[#0F9690]/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-[#0F9690]">
-              Featured Listings
+              {t("featured_badge")}
             </span>
 
             <h2 className="text-2xl font-bold tracking-tight text-[#162831] sm:text-3xl lg:text-4xl">
-              Featured Properties
+              {t("featured_title")}
             </h2>
 
             <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-500 sm:text-base">
-              Explore handpicked premier listings from top verified agents.
+              {t("featured_subtitle")}
             </p>
           </div>
 
@@ -224,7 +226,7 @@ const Home = () => {
               </div>
             ) : displayedProperties.length === 0 ? (
               <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white px-5 py-10 text-center text-sm text-slate-500">
-                No featured properties yet. Check back soon.
+                {t("featured_empty")}
               </div>
             ) : (
               <div className="grid w-full grid-cols-1 justify-items-center gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -252,7 +254,7 @@ const Home = () => {
               to="/properties"
               className="group inline-flex items-center gap-2 rounded-xl border border-[#0F9690] px-6 py-3 text-sm font-bold text-[#0F9690] transition-all duration-300 hover:bg-[#0F9690] hover:text-white hover:shadow-[0_10px_30px_rgba(15,150,144,0.25)] focus:outline-none focus:ring-2 focus:ring-[#0F9690]/30 focus:ring-offset-2"
             >
-              View All Properties
+              {t("view_all")}
 
               <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
             </Link>
@@ -267,11 +269,11 @@ const Home = () => {
         <div className="mx-auto w-full max-w-[1240px] px-4 py-14 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
 
           <span className="text-[10px] font-bold uppercase tracking-wider text-[#0F9690]">
-            Our Team
+            {t("agents_eyebrow")}
           </span>
 
           <h2 className="mb-7 mt-1 text-2xl font-bold text-[#162831] sm:text-3xl">
-            Featured Agents
+            {t("agents_title")}
           </h2>
 
           {agentsLoading ? (
@@ -290,7 +292,7 @@ const Home = () => {
             <p className="text-sm text-slate-500">{agentsError}</p>
           ) : (
             <p className="text-sm text-slate-500">
-              No featured agents yet.
+              {t("agents_empty")}
             </p>
           )}
 
@@ -299,7 +301,7 @@ const Home = () => {
               to={ROUTES.registerAgent}
               className="inline-flex items-center gap-2 rounded-lg bg-[#E69500] px-6 py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-[#D48800]"
             >
-              Become an Agent
+              {t("become_agent")}
               <ArrowRight className="h-3.5 w-3.5" />
             </Link>
           </div>
@@ -312,19 +314,18 @@ const Home = () => {
         <div className="mx-auto w-full max-w-[1240px] px-4 py-14 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
 
           <span className="text-[10px] font-bold uppercase tracking-wider text-[#0F9690]">
-            Pricing
+            {t("pricing_eyebrow")}
           </span>
 
           <h2 className="mb-3 mt-1 text-2xl font-bold text-[#162831] sm:text-3xl">
-            Subscription Plans
+            {t("pricing_title")}
           </h2>
 
           <p className="mb-8 max-w-2xl text-sm leading-relaxed text-slate-500">
-            Choose the plan that fits your needs and start publishing your
-            properties to thousands of buyers.
+            {t("pricing_subtitle")}
           </p>
 
-          <SubscriptionPlans ctaLabel="Get Started" onCta={handlePlanSelect} />
+          <SubscriptionPlans ctaLabel={t("pricing_cta")} onCta={handlePlanSelect} />
 
         </div>
       </section>

@@ -1,0 +1,17 @@
+{
+  "loading_aria": "የአባልነት እቅዶችን በመጫን ላይ",
+  "retry": "እንደገና ይሞክሩ",
+  "empty": "እስካሁን ምንም የአባልነት እቅዶች የሉም።",
+  "load_error": "የአባልነት እቅዶችን ማምጣት አልተቻለም። እባክዎ እንደገና ይሞክሩ።",
+  "choose_plan": "እቅድ ይምረጡ",
+  "no_features": "ምንም ባህሪያት አልተዘረዘሩም።",
+  "most_popular": "በጣም ተወዳጅ",
+  "per_month": "ወር",
+  "per_day": "ቀን",
+  "per_days": "{{count}} ቀናት",
+  "property_one": "{{count}} ንብረት",
+  "property_other": "{{count}} ንብረቶች",
+  "image_one": "{{count}} ምስል",
+  "image_other": "{{count}} ምስሎች እያንዳንዳቸው",
+  "coming_soon": "የክፍያ ውህደት በቅርቡ ይመጣል"
+}

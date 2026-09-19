@@ -1,0 +1,17 @@
+{
+  "loading_aria": "Loading subscription plans",
+  "retry": "Retry",
+  "empty": "No subscription plans are currently available.",
+  "load_error": "Unable to load subscription plans. Please try again.",
+  "choose_plan": "Choose Plan",
+  "no_features": "No features listed.",
+  "most_popular": "Most Popular",
+  "per_month": "month",
+  "per_day": "day",
+  "per_days": "{{count}} days",
+  "property_one": "{{count}} property",
+  "property_other": "{{count}} properties",
+  "image_one": "{{count}} image",
+  "image_other": "{{count}} images each",
+  "coming_soon": "Payment integration is coming soon"
+}
