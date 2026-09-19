@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useLocation, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
   Search,
   Filter,
@@ -25,6 +26,7 @@ import { InquiryModal } from '../../components/buyer/InquiryModal';
 import { useToast } from '../../hooks/useToast';
 
 export const BrowseProperties = () => {
+  const { t } = useTranslation('buyer');
   const location = useLocation();
   const [viewMode, setViewMode] = useState('split');
   const [selectedPropertyId, setSelectedPropertyId] = useState(
@@ -39,6 +41,15 @@ export const BrowseProperties = () => {
   const [loadingProperties, setLoadingProperties] = useState(false);
   const mutationVersionsRef = useRef(new Map());
   const { toastMessage, showToast } = useToast();
+
+  const statusLabel = (status) => {
+    const labels = {
+      active: t('status_active'),
+      pending: t('status_pending'),
+      sold: t('status_sold'),
+    };
+    return labels[String(status).toLowerCase()] || status;
+  };
 
   const demoProperties = [
     {
@@ -150,11 +161,11 @@ export const BrowseProperties = () => {
       }
     } catch (err) {
       console.warn('Failed to load user favorite IDs:', err);
-      setFavsError('Could not load your saved favorites');
+      setFavsError(t('browse_favs_error'));
     } finally {
       setFavsLoading(false);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     let isMounted = true;
@@ -168,7 +179,7 @@ export const BrowseProperties = () => {
       .catch((err) => {
         if (isMounted) {
           console.warn('Failed to load user favorite IDs:', err);
-          setFavsError('Could not load your saved favorites');
+          setFavsError(t('browse_favs_error'));
         }
       })
       .finally(() => {
@@ -179,7 +190,7 @@ export const BrowseProperties = () => {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [t]);
 
   const handleToggleFavorite = async (e, prop) => {
     if (favsLoading || favsError) return;
@@ -204,7 +215,7 @@ export const BrowseProperties = () => {
       try {
         await addFavorite(propId);
         if (mutationVersionsRef.current.get(propId) === nextVersion) {
-          showToast(`Saved "${prop.title}" to favorites!`);
+          showToast(t('favorite_saved_toast', { title: prop.title }));
         }
       } catch (err) {
         console.error('Failed to save favorite:', err);
@@ -214,14 +225,14 @@ export const BrowseProperties = () => {
             next.delete(propId);
             return next;
           });
-          showToast('Failed to save favorite. Please try again.');
+          showToast(t('favorite_save_failed'));
         }
       }
     } else {
       try {
         await removeFavorite(propId);
         if (mutationVersionsRef.current.get(propId) === nextVersion) {
-          showToast(`Removed "${prop.title}" from favorites`);
+          showToast(t('favorite_removed_toast', { title: prop.title }));
         }
       } catch (err) {
         console.error('Failed to remove favorite:', err);
@@ -231,7 +242,7 @@ export const BrowseProperties = () => {
             next.add(propId);
             return next;
           });
-          showToast('Failed to remove favorite. Please try again.');
+          showToast(t('favorite_remove_failed'));
         }
       }
     }
@@ -316,7 +327,7 @@ export const BrowseProperties = () => {
         >
           <div className="flex items-center space-x-2">
             <AlertCircle size={16} className="text-amber-600 shrink-0" />
-            <span>{favsError}. Some favorite statuses may not reflect your account.</span>
+            <span>{t('browse_favs_error')}. {t('browse_favs_hint')}</span>
           </div>
           <button
             type="button"
@@ -324,7 +335,7 @@ export const BrowseProperties = () => {
             disabled={favsLoading}
             className="px-3 py-1 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-semibold transition cursor-pointer disabled:opacity-50 shrink-0 text-xs"
           >
-            {favsLoading ? 'Retrying...' : 'Retry'}
+            {favsLoading ? t('retrying') : t('retry')}
           </button>
         </div>
       )}
@@ -332,7 +343,7 @@ export const BrowseProperties = () => {
       {/* Title */}
       <div>
         <h1 className="text-xl lg:text-2xl font-bold text-slate-900 tracking-tight">
-          Browse Properties <span className="text-slate-400 font-normal">(143 results)</span>
+          {t('browse_title')} <span className="text-slate-400 font-normal">{t('browse_results', { count: 143 })}</span>
         </h1>
       </div>
 
@@ -343,7 +354,7 @@ export const BrowseProperties = () => {
           <Search className="absolute left-3.5 top-2.5 text-slate-400" size={16} />
           <input
             type="text"
-            placeholder="Search locations, keywords..."
+            placeholder={t('browse_search_placeholder')}
             className="w-full bg-slate-50 border border-slate-200 focus:border-blue-600 focus:bg-white rounded-lg py-2 pl-9 pr-3 text-xs text-slate-800 focus:outline-none"
           />
         </div>
@@ -351,17 +362,17 @@ export const BrowseProperties = () => {
         {/* Filters */}
         <button className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-3.5 py-2 rounded-lg text-xs font-semibold shadow-2xs transition cursor-pointer">
           <Filter size={14} />
-          <span>Filters</span>
-          <span className="bg-blue-800 text-white text-[10px] px-1.5 py-0.5 rounded-full ml-0.5">3 Applied</span>
+          <span>{t('browse_filters')}</span>
+          <span className="bg-blue-800 text-white text-[10px] px-1.5 py-0.5 rounded-full ml-0.5">{t('browse_applied', { count: 3 })}</span>
         </button>
 
         {/* Sort */}
         <div className="flex items-center space-x-2">
-          <span className="text-xs text-slate-400 font-medium hidden sm:inline">Sort by</span>
+          <span className="text-xs text-slate-400 font-medium hidden sm:inline">{t('browse_sort_by')}</span>
           <select className="bg-slate-50 border border-slate-200 text-xs font-medium text-slate-700 rounded-lg px-2.5 py-2 focus:outline-none">
-            <option>Date: Newest</option>
-            <option>Price: Low to High</option>
-            <option>Price: High to Low</option>
+            <option>{t('browse_sort_newest')}</option>
+            <option>{t('sort_price_asc')}</option>
+            <option>{t('sort_price_desc')}</option>
           </select>
         </div>
 
@@ -373,7 +384,9 @@ export const BrowseProperties = () => {
               className={`p-1.5 rounded text-xs transition cursor-pointer ${
                 viewMode === 'split' ? 'bg-white text-blue-600 shadow-2xs font-semibold' : 'text-slate-500'
               }`}
-              title="Split Map View"
+              title={t('browse_split_view')}
+              aria-label={t('browse_split_view')}
+              aria-pressed={viewMode === 'split'}
             >
               <MapIcon size={15} />
             </button>
@@ -382,7 +395,9 @@ export const BrowseProperties = () => {
               className={`p-1.5 rounded text-xs transition cursor-pointer ${
                 viewMode === 'grid' ? 'bg-white text-blue-600 shadow-2xs font-semibold' : 'text-slate-500'
               }`}
-              title="Grid View"
+              title={t('browse_grid_view')}
+              aria-label={t('browse_grid_view')}
+              aria-pressed={viewMode === 'grid'}
             >
               <Grid size={15} />
             </button>
@@ -390,7 +405,7 @@ export const BrowseProperties = () => {
 
           <button className="flex items-center space-x-1.5 bg-slate-900 hover:bg-slate-800 text-white px-3 py-2 rounded-lg text-xs font-medium transition cursor-pointer">
             <Layers size={14} />
-            <span>Compare (2)</span>
+            <span>{t('browse_compare', { count: 2 })}</span>
           </button>
         </div>
       </div>
@@ -467,7 +482,7 @@ export const BrowseProperties = () => {
                 className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold transition cursor-pointer flex items-center space-x-1"
               >
                 <Calendar size={13} />
-                <span>Book Visit</span>
+                <span>{t('browse_book_visit')}</span>
               </button>
             </div>
           </div>
@@ -512,7 +527,7 @@ export const BrowseProperties = () => {
                             : 'bg-slate-900/85 text-white backdrop-blur-xs'
                         }`}
                       >
-                        {prop.status}
+                        {statusLabel(prop.status)}
                       </span>
 
                       {/* Favorite Heart Button */}
@@ -524,8 +539,8 @@ export const BrowseProperties = () => {
                             ? 'bg-rose-500 text-white hover:bg-rose-600 scale-105'
                             : 'bg-white/90 hover:bg-white text-slate-700 hover:text-rose-500'
                         } disabled:cursor-not-allowed disabled:opacity-50`}
-                        title={isFavorited ? 'Remove from favorites' : 'Add to favorites'}
-                        aria-label={isFavorited ? 'Remove from favorites' : 'Add to favorites'}
+                        title={isFavorited ? t('browse_remove_fav') : t('browse_add_fav')}
+                        aria-label={isFavorited ? t('browse_remove_fav') : t('browse_add_fav')}
                         aria-pressed={isFavorited}
                       >
                         <Heart size={15} fill={isFavorited ? 'currentColor' : 'none'} />
@@ -562,11 +577,11 @@ export const BrowseProperties = () => {
                       <div className="grid grid-cols-3 gap-2 pt-3 border-t border-slate-100 text-slate-600">
                         <div className="flex items-center justify-center gap-1.5 py-1.5 px-2 bg-slate-50 border border-slate-100 rounded-xl text-[11px] font-semibold">
                           <BedDouble size={13} className="text-slate-400 shrink-0" />
-                          <span className="truncate">{prop.beds} Beds</span>
+                          <span className="truncate">{t('beds_count', { count: prop.beds })}</span>
                         </div>
                         <div className="flex items-center justify-center gap-1.5 py-1.5 px-2 bg-slate-50 border border-slate-100 rounded-xl text-[11px] font-semibold">
                           <Bath size={13} className="text-slate-400 shrink-0" />
-                          <span className="truncate">{prop.baths} Baths</span>
+                          <span className="truncate">{t('baths_count', { count: prop.baths })}</span>
                         </div>
                         <div className="flex items-center justify-center gap-1.5 py-1.5 px-2 bg-slate-50 border border-slate-100 rounded-xl text-[11px] font-semibold">
                           <Maximize2 size={13} className="text-slate-400 shrink-0" />
@@ -585,10 +600,10 @@ export const BrowseProperties = () => {
                         setInquireProperty(prop);
                       }}
                       className="py-2.5 px-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition cursor-pointer flex items-center justify-center gap-1.5 shadow-2xs"
-                      title="Send inquiry to listing agent"
+                      title={t('browse_inquire_title')}
                     >
                       <MessageSquare size={13} className="text-slate-500 shrink-0" />
-                      <span>Inquire</span>
+                      <span>{t('browse_inquire')}</span>
                     </button>
 
                     <button
@@ -598,19 +613,19 @@ export const BrowseProperties = () => {
                         setBookingProperty(prop);
                       }}
                       className="py-2.5 px-3 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200/80 rounded-xl text-xs font-bold transition cursor-pointer flex items-center justify-center gap-1.5 shadow-2xs"
-                      title="Schedule a property tour"
+                      title={t('browse_tour_title')}
                     >
                       <Calendar size={13} className="text-blue-600 shrink-0" />
-                      <span>Tour</span>
+                      <span>{t('browse_tour')}</span>
                     </button>
 
                     <Link
                       to={`/properties/${prop.id}`}
                       onClick={(e) => e.stopPropagation()}
                       className="py-2.5 px-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition cursor-pointer flex items-center justify-center text-center shadow-2xs"
-                      title="View full property details"
+                      title={t('browse_view_title')}
                     >
-                      View
+                      {t('browse_view')}
                     </Link>
                   </div>
                 </div>
@@ -621,14 +636,14 @@ export const BrowseProperties = () => {
           {/* Pagination */}
           <div className="mt-6 flex items-center justify-center space-x-2">
             <button className="px-3 py-1 bg-white border border-slate-200 text-xs font-medium text-slate-600 rounded-md hover:bg-slate-50 cursor-pointer">
-              Previous
+              {t('browse_prev')}
             </button>
             <button className="px-3 py-1 bg-blue-600 text-xs font-bold text-white rounded-md">1</button>
             <button className="px-3 py-1 bg-white border border-slate-200 text-xs font-medium text-slate-600 rounded-md hover:bg-slate-50 cursor-pointer">
               2
             </button>
             <button className="px-3 py-1 bg-white border border-slate-200 text-xs font-medium text-slate-600 rounded-md hover:bg-slate-50 cursor-pointer">
-              Next
+              {t('browse_next')}
             </button>
           </div>
         </div>
