@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../hooks/useAuth';
 import {
   Mail,
@@ -16,6 +17,7 @@ import {
 import { getProfile, updateProfile, uploadProfileImage } from '../../services/user.service';
 
 export const Profile = () => {
+  const { t, i18n } = useTranslation('buyer');
   const { user, updateUser } = useAuth();
   const fileInputRef = useRef(null);
 
@@ -62,10 +64,10 @@ export const Profile = () => {
   }, []);
 
   const memberSince = user?.createdAt
-    ? new Date(user.createdAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
-    : 'Jan 2024';
+    ? new Date(user.createdAt).toLocaleDateString(i18n.language, { month: 'short', year: 'numeric' })
+    : new Date('2024-01-01T00:00:00').toLocaleDateString(i18n.language, { month: 'short', year: 'numeric' });
 
-  const displayName = [firstName, lastName].filter(Boolean).join(' ') || user?.email || 'Valued Buyer';
+  const displayName = [firstName, lastName].filter(Boolean).join(' ') || user?.email || t('profile_display_fallback');
 
   const handleAvatarClick = () => {
     if (!uploadingImage) {
@@ -78,12 +80,12 @@ export const Profile = () => {
     if (!file) return;
 
     if (!file.type.startsWith('image/')) {
-      setError('Please select a valid image file (JPEG, PNG, WebP)');
+      setError(t('profile_valid_image'));
       return;
     }
 
     if (file.size > 5 * 1024 * 1024) {
-      setError('Profile image size cannot exceed 5MB');
+      setError(t('profile_image_too_large'));
       return;
     }
 
@@ -93,7 +95,7 @@ export const Profile = () => {
       setSuccess('');
       const updated = await uploadProfileImage(file);
       updateUser(updated);
-      setSuccess('Profile photo updated successfully!');
+      setSuccess(t('profile_photo_updated'));
     } catch (err) {
       console.error('Failed to upload avatar:', err);
       setError(
@@ -101,7 +103,7 @@ export const Profile = () => {
         (Array.isArray(err.response?.data?.errors)
           ? err.response.data.errors.join(', ')
           : err.message) ||
-        'Failed to upload profile photo'
+        t('profile_update_failed')
       );
     } finally {
       setUploadingImage(false);
@@ -115,12 +117,12 @@ export const Profile = () => {
     e.preventDefault();
 
     if (!firstName.trim()) {
-      setError('First name is required');
+      setError(t('profile_first_required'));
       return;
     }
 
     if (!lastName.trim()) {
-      setError('Last name is required');
+      setError(t('profile_last_required'));
       return;
     }
 
@@ -136,7 +138,7 @@ export const Profile = () => {
       });
 
       updateUser(updated);
-      setSuccess('Profile updated successfully!');
+      setSuccess(t('profile_updated'));
     } catch (err) {
       console.error('Failed to update profile:', err);
       setError(
@@ -144,7 +146,7 @@ export const Profile = () => {
         (Array.isArray(err.response?.data?.errors)
           ? err.response.data.errors.join(', ')
           : err.message) ||
-        'Failed to save profile changes'
+        t('profile_save_failed')
       );
     } finally {
       setSaving(false);
@@ -155,7 +157,7 @@ export const Profile = () => {
     <div className="space-y-6 font-sans">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">My Profile</h1>
+        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">{t('profile_title')}</h1>
       </div>
 
       {/* Status Alerts */}
@@ -207,8 +209,8 @@ export const Profile = () => {
                 onClick={handleAvatarClick}
                 disabled={uploadingImage}
                 className="absolute bottom-0 right-0 p-2 bg-blue-700 hover:bg-blue-800 text-white rounded-full shadow-md transition cursor-pointer disabled:opacity-50"
-                title="Update avatar"
-                aria-label="Upload profile image"
+                title={t('profile_update_avatar')}
+                aria-label={t('profile_avatar_label')}
               >
                 <Camera size={16} />
               </button>
@@ -226,22 +228,22 @@ export const Profile = () => {
             <p className="text-xs text-slate-500 font-medium mt-0.5">{user?.email}</p>
 
             <span className="mt-3 px-3 py-1 bg-emerald-50 text-emerald-800 text-xs font-bold rounded-full border border-emerald-200/60 inline-flex items-center gap-1">
-              <CheckCircle size={14} /> Verified Buyer
+              <CheckCircle size={14} /> {t('profile_verified')}
             </span>
 
             <div className="w-full mt-6 pt-6 border-t border-slate-100 space-y-3 text-left">
               <div className="flex items-center justify-between text-xs text-slate-500">
-                <span>Account Role</span>
-                <span className="font-semibold text-slate-900 capitalize">{user?.role || 'Buyer'}</span>
+                <span>{t('profile_role')}</span>
+                <span className="font-semibold text-slate-900 capitalize">{user?.role || t('profile_buyer')}</span>
               </div>
               <div className="flex items-center justify-between text-xs text-slate-500">
-                <span>Member Since</span>
+                <span>{t('profile_member_since')}</span>
                 <span className="font-semibold text-slate-900 flex items-center gap-1">
                   <Calendar size={13} className="text-slate-400" /> {memberSince}
                 </span>
               </div>
               <div className="flex items-center justify-between text-xs text-slate-500">
-                <span>Location</span>
+                <span>{t('profile_location')}</span>
                 <span className="font-semibold text-slate-900">Addis Ababa, ET</span>
               </div>
             </div>
@@ -254,9 +256,9 @@ export const Profile = () => {
                 <ShieldCheck size={20} />
               </div>
               <div>
-                <h4 className="text-xs font-bold text-slate-900">Two-Factor Security Active</h4>
+                <h4 className="text-xs font-bold text-slate-900">{t('profile_security_title')}</h4>
                 <p className="text-xs text-slate-500 mt-1">
-                  Your account authentication and saved properties are protected with end-to-end security.
+                  {t('profile_security_body')}
                 </p>
               </div>
             </div>
@@ -267,7 +269,7 @@ export const Profile = () => {
         <div className="lg:col-span-8 bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs space-y-6">
           <div>
             <h3 className="text-base font-bold text-slate-900 pb-3 border-b border-slate-100">
-              Personal Information
+              {t('profile_personal_info')}
             </h3>
           </div>
 
@@ -275,7 +277,7 @@ export const Profile = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label htmlFor="profileFirstName" className="block text-xs font-semibold text-slate-600 uppercase mb-1">
-                  First Name <span className="text-rose-500">*</span>
+                  {t('profile_first_name')} <span className="text-rose-500">*</span>
                 </label>
                 <input
                   id="profileFirstName"
@@ -290,7 +292,7 @@ export const Profile = () => {
 
               <div>
                 <label htmlFor="profileLastName" className="block text-xs font-semibold text-slate-600 uppercase mb-1">
-                  Last Name <span className="text-rose-500">*</span>
+                  {t('profile_last_name')} <span className="text-rose-500">*</span>
                 </label>
                 <input
                   id="profileLastName"
@@ -306,8 +308,8 @@ export const Profile = () => {
 
             <div>
               <label htmlFor="profileEmail" className="block text-xs font-semibold text-slate-600 uppercase mb-1 flex items-center justify-between">
-                <span>Email Address</span>
-                <span className="text-[10px] text-slate-400 font-normal lowercase">(Primary account identifier)</span>
+                <span>{t('profile_email')}</span>
+                <span className="text-[10px] text-slate-400 font-normal lowercase">{t('profile_email_hint')}</span>
               </label>
               <div className="relative">
                 <Mail className="absolute left-3.5 top-3 text-slate-400" size={16} />
@@ -325,7 +327,7 @@ export const Profile = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label htmlFor="profilePhone" className="block text-xs font-semibold text-slate-600 uppercase mb-1">
-                  Phone Number
+                  {t('profile_phone')}
                 </label>
                 <div className="relative">
                   <Phone className="absolute left-3.5 top-3 text-slate-400" size={16} />
@@ -343,7 +345,7 @@ export const Profile = () => {
 
               <div>
                 <label htmlFor="profileLocation" className="block text-xs font-semibold text-slate-600 uppercase mb-1">
-                  Preferred Location
+                  {t('profile_preferred_location')}
                 </label>
                 <div className="relative">
                   <Building className="absolute left-3.5 top-3 text-slate-400" size={16} />
@@ -369,12 +371,12 @@ export const Profile = () => {
                 {saving ? (
                   <>
                     <Loader2 size={15} className="animate-spin" />
-                    <span>Saving...</span>
+                    <span>{t('profile_saving')}</span>
                   </>
                 ) : (
                   <>
                     <Save size={15} />
-                    <span>Save Changes</span>
+                    <span>{t('save_changes')}</span>
                   </>
                 )}
               </button>
