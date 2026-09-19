@@ -1,4 +1,5 @@
 import { NavLink, Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../hooks/useAuth';
 import {
   LayoutDashboard,
@@ -14,6 +15,7 @@ import {
 } from 'lucide-react';
 
 export const Sidebar = ({ isOpen, onClose }) => {
+  const { t } = useTranslation('buyer');
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -23,14 +25,14 @@ export const Sidebar = ({ isOpen, onClose }) => {
   };
 
   const navItems = [
-    { label: 'Dashboard', path: '/buyer', icon: LayoutDashboard, exact: true },
-    { label: 'Browse Properties', path: '/buyer/properties', icon: Building },
-    { label: 'Favorites', path: '/buyer/favorites', icon: Heart },
-    { label: 'Scheduled Visits', path: '/buyer/visits', icon: Calendar },
-    { label: 'Messages', path: '/buyer/messages', icon: MessageSquare },
-    { label: 'Notifications', path: '/buyer/notifications', icon: Bell, badge: user?.unreadNotifications || 7 },
-    { label: 'Profile', path: '/buyer/profile', icon: User },
-    { label: 'Settings', path: '/buyer/settings', icon: Settings },
+    { label: t('title_dashboard'), path: '/buyer', icon: LayoutDashboard, exact: true },
+    { label: t('title_browse'), path: '/buyer/properties', icon: Building },
+    { label: t('sidebar_favorites'), path: '/buyer/favorites', icon: Heart },
+    { label: t('title_visits'), path: '/buyer/visits', icon: Calendar },
+    { label: t('title_messages'), path: '/buyer/messages', icon: MessageSquare },
+    { label: t('title_notifications'), path: '/buyer/notifications', icon: Bell, badge: user?.unreadNotifications ?? 0 },
+    { label: t('title_profile'), path: '/buyer/profile', icon: User },
+    { label: t('title_settings'), path: '/buyer/settings', icon: Settings },
   ];
 
   return (
@@ -59,7 +61,7 @@ export const Sidebar = ({ isOpen, onClose }) => {
           <button
             onClick={onClose}
             className="lg:hidden p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer"
-            aria-label="Close sidebar"
+            aria-label={t('sidebar_close')}
           >
             <X size={20} />
           </button>
@@ -67,7 +69,7 @@ export const Sidebar = ({ isOpen, onClose }) => {
 
         {/* Section Title */}
         <div className="px-6 pt-6 pb-2">
-          <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Properties</span>
+          <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">{t('sidebar_section_properties')}</span>
         </div>
 
         {/* Navigation Items */}
@@ -107,7 +109,7 @@ export const Sidebar = ({ isOpen, onClose }) => {
           className="w-full flex items-center space-x-3 px-4 py-2.5 rounded-xl font-medium text-sm text-slate-400 hover:bg-slate-800/80 hover:text-rose-400 transition-colors duration-200 cursor-pointer"
         >
           <LogOut size={18} />
-          <span>Logout</span>
+          <span>{t('logout')}</span>
         </button>
 
         {/* User Mini Profile Box */}
@@ -121,7 +123,7 @@ export const Sidebar = ({ isOpen, onClose }) => {
             <p className="text-xs font-semibold text-white truncate">{user?.name || `${user?.firstName || ''} ${user?.lastName || ''}`.trim() || 'User'}</p>
             <div className="flex items-center space-x-1.5 mt-0.5">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span className="text-[11px] text-slate-400 truncate">Online</span>
+              <span className="text-[11px] text-slate-400 truncate">{t('sidebar_online')}</span>
             </div>
           </div>
         </div>

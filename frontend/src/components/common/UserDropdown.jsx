@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ChevronDown, LogOut, User } from 'lucide-react';
 
 const DEFAULT_AVATAR =
   'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200';
 
 const UserDropdown = ({ user, displayName, roleLabel, onLogout, profilePath, onNavigate }) => {
+  const { t } = useTranslation('buyer');
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -69,7 +71,7 @@ const UserDropdown = ({ user, displayName, roleLabel, onLogout, profilePath, onN
                 className="w-full px-4 py-2 text-[13px] text-slate-700 hover:bg-slate-50 flex items-center space-x-2 transition cursor-pointer"
               >
                 <User size={16} className="text-slate-400" />
-                <span>My Profile</span>
+                <span>{t('user_menu_profile')}</span>
               </button>
             </div>
           )}
@@ -78,7 +80,7 @@ const UserDropdown = ({ user, displayName, roleLabel, onLogout, profilePath, onN
             className="w-full px-4 py-2 text-[13px] text-[#D96B67] hover:bg-rose-50 flex items-center space-x-2 font-medium transition cursor-pointer"
           >
             <LogOut size={16} />
-            <span>Logout</span>
+            <span>{t('logout')}</span>
           </button>
         </div>
       )}

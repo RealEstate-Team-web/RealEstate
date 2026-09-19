@@ -1,36 +1,32 @@
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../hooks/useAuth';
 import { Menu, Search, Bell } from 'lucide-react';
 import { ROUTES } from '../../utils/constants';
 import UserDropdown from './UserDropdown';
+import LanguageSwitcher from './LanguageSwitcher';
+
+const PAGE_TITLE_KEYS = {
+  '/buyer': 'title_dashboard',
+  '/buyer/': 'title_dashboard',
+  '/buyer/properties': 'title_browse',
+  '/buyer/favorites': 'title_favorites',
+  '/buyer/visits': 'title_visits',
+  '/buyer/messages': 'title_messages',
+  '/buyer/notifications': 'title_notifications',
+  '/buyer/profile': 'title_profile',
+  '/buyer/settings': 'title_settings',
+};
 
 export const Navbar = ({ onToggleSidebar }) => {
+  const { t } = useTranslation('buyer');
   const { user, logout } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
 
   const getPageTitle = (pathname) => {
-    switch (pathname) {
-      case '/buyer':
-      case '/buyer/':
-        return 'Dashboard';
-      case '/buyer/properties':
-        return 'Browse Properties';
-      case '/buyer/favorites':
-        return 'My Favorites';
-      case '/buyer/visits':
-        return 'Scheduled Visits';
-      case '/buyer/messages':
-        return 'Messages';
-      case '/buyer/notifications':
-        return 'Notifications';
-      case '/buyer/profile':
-        return 'My Profile';
-      case '/buyer/settings':
-        return 'Settings';
-      default:
-        return 'Buyer Dashboard';
-    }
+    const normalized = pathname === '/' ? pathname : pathname.replace(/\/+$/, '');
+    return t(PAGE_TITLE_KEYS[normalized] || 'title_buyer_dashboard');
   };
 
   return (
@@ -40,7 +36,7 @@ export const Navbar = ({ onToggleSidebar }) => {
         <button
           onClick={onToggleSidebar}
           className="p-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition lg:hidden cursor-pointer"
-          aria-label="Open menu"
+          aria-label={t('navbar_open_menu')}
         >
           <Menu size={22} />
         </button>
@@ -55,19 +51,22 @@ export const Navbar = ({ onToggleSidebar }) => {
           <Search className="absolute left-3.5 top-3 text-slate-400" size={18} />
           <input
             type="text"
-            placeholder="Search properties, clients, etc..."
+            placeholder={t('navbar_search_placeholder')}
             className="w-full bg-slate-100/80 hover:bg-slate-100 border border-slate-200 focus:border-blue-500 focus:bg-white rounded-full py-2.5 pl-10 pr-4 text-sm text-slate-800 placeholder-slate-400 focus:outline-none transition duration-200"
           />
         </div>
       </div>
 
-      {/* Right: Notification Icon & User Profile */}
+      {/* Right: Language Switcher, Notification Icon & User Profile */}
       <div className="flex items-center space-x-4">
+        {/* Language Switcher */}
+        <LanguageSwitcher />
+
         {/* Notification Bell */}
         <button
           onClick={() => navigate('/buyer/notifications')}
           className="relative p-2.5 rounded-full text-slate-600 hover:bg-slate-100 hover:text-blue-600 transition cursor-pointer"
-          title="Notifications"
+          title={t('navbar_notifications')}
         >
           <Bell size={20} />
           {user?.unreadNotifications > 0 && (
