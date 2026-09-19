@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../hooks/useAuth';
 import {
   Home,
@@ -13,14 +14,30 @@ import {
 } from 'lucide-react';
 
 export const Dashboard = () => {
+  const { t } = useTranslation('buyer');
   const { user } = useAuth();
   const navigate = useNavigate();
 
   const firstName = user?.firstName || user?.name?.split(' ')[0] || 'Abebe';
 
+  const statusLabel = (status) => {
+    const labels = {
+      active: t('status_active'),
+      pending: t('status_pending'),
+      sold: t('status_sold'),
+      confirmed: t('status_confirmed'),
+    };
+    return labels[String(status).toLowerCase()] || status;
+  };
+
+  const changeLabel = (change) => {
+    if (change === 'this month') return t('dashboard_change_this_month');
+    return t('dashboard_change_pct', { value: change.replace(' from last month', '') });
+  };
+
   const stats = [
     {
-      title: 'Total Saved Properties',
+      title: t('dashboard_stat_saved'),
       value: '12',
       change: '12% from last month',
       icon: Home,
@@ -28,7 +45,7 @@ export const Dashboard = () => {
       changeColor: 'text-emerald-600',
     },
     {
-      title: 'Upcoming Visits',
+      title: t('dashboard_stat_visits'),
       value: '3',
       change: 'this month',
       icon: Calendar,
@@ -36,7 +53,7 @@ export const Dashboard = () => {
       changeColor: 'text-slate-400',
     },
     {
-      title: 'Recent Searches',
+      title: t('dashboard_stat_searches'),
       value: '5',
       change: 'this month',
       icon: Search,
@@ -44,7 +61,7 @@ export const Dashboard = () => {
       changeColor: 'text-slate-400',
     },
     {
-      title: 'New Recommendations',
+      title: t('dashboard_stat_recommendations'),
       value: '4',
       change: '25% from last month',
       icon: Sparkles,
@@ -162,9 +179,9 @@ export const Dashboard = () => {
       {/* Welcome Greeting Banner */}
       <div>
         <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
-          Welcome back, {firstName}!
+          {t('dashboard_greeting', { name: firstName })}
         </h1>
-        <p className="text-xs text-slate-500 mt-1">Here's what's happening with your properties today.</p>
+        <p className="text-xs text-slate-500 mt-1">{t('dashboard_subtitle')}</p>
       </div>
 
       {/* 4 Stat Overview Cards - Grid Responsive Reflow */}
@@ -185,7 +202,7 @@ export const Dashboard = () => {
             </div>
             <div className={`mt-3 text-[11px] font-medium flex items-center gap-1 ${stat.changeColor}`}>
               <TrendingUp size={13} />
-              <span>{stat.change}</span>
+              <span>{changeLabel(stat.change)}</span>
             </div>
           </div>
         ))}
@@ -196,10 +213,10 @@ export const Dashboard = () => {
         {/* Left: Property Views Over Time Chart */}
         <div className="xl:col-span-8 bg-white border border-slate-200/80 rounded-xl p-4 sm:p-6 shadow-2xs flex flex-col justify-between">
           <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
-            <h2 className="text-sm font-bold text-slate-900">Property Views Over Time</h2>
+            <h2 className="text-sm font-bold text-slate-900">{t('dashboard_chart_title')}</h2>
             <select className="bg-white border border-slate-200 text-xs font-medium text-slate-600 rounded-lg px-2.5 py-1 focus:outline-none hover:bg-slate-50">
-              <option>Last 30 Days</option>
-              <option>Last 7 Days</option>
+              <option>{t('dashboard_range_30')}</option>
+              <option>{t('dashboard_range_7')}</option>
             </select>
           </div>
 
@@ -267,12 +284,12 @@ export const Dashboard = () => {
         {/* Right: Recent Messages Widget */}
         <div className="xl:col-span-4 bg-white border border-slate-200/80 rounded-xl p-4 sm:p-5 shadow-2xs flex flex-col">
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-sm font-bold text-slate-900">Recent Messages</h2>
+            <h2 className="text-sm font-bold text-slate-900">{t('dashboard_recent_messages')}</h2>
             <button
               onClick={() => navigate('/buyer/messages')}
               className="text-xs font-semibold text-blue-600 hover:underline cursor-pointer"
             >
-              View All
+              {t('dashboard_view_all')}
             </button>
           </div>
 
@@ -305,12 +322,12 @@ export const Dashboard = () => {
         {/* Left: Recently Viewed Properties Container */}
         <div className="xl:col-span-8 bg-white border border-slate-200/80 rounded-xl p-4 sm:p-5 shadow-2xs">
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-sm font-bold text-slate-900">Recently Viewed Properties</h2>
+            <h2 className="text-sm font-bold text-slate-900">{t('dashboard_recent_viewed')}</h2>
             <button
               onClick={() => navigate('/buyer/properties')}
               className="text-xs font-semibold text-blue-600 hover:underline cursor-pointer"
             >
-              View All
+              {t('dashboard_view_all')}
             </button>
           </div>
 
@@ -319,13 +336,13 @@ export const Dashboard = () => {
             <table className="w-full text-left text-xs text-slate-600">
               <thead className="bg-slate-50 text-slate-400 font-semibold uppercase text-[10px] tracking-wider border-y border-slate-100">
                 <tr>
-                  <th className="py-2.5 px-3">Property</th>
-                  <th className="py-2.5 px-2">Type</th>
-                  <th className="py-2.5 px-2">Location</th>
-                  <th className="py-2.5 px-2">Price</th>
-                  <th className="py-2.5 px-2">Status</th>
-                  <th className="py-2.5 px-2">Views</th>
-                  <th className="py-2.5 px-2 text-right">Actions</th>
+                  <th className="py-2.5 px-3">{t('dashboard_col_property')}</th>
+                  <th className="py-2.5 px-2">{t('dashboard_col_type')}</th>
+                  <th className="py-2.5 px-2">{t('dashboard_col_location')}</th>
+                  <th className="py-2.5 px-2">{t('dashboard_col_price')}</th>
+                  <th className="py-2.5 px-2">{t('dashboard_col_status')}</th>
+                  <th className="py-2.5 px-2">{t('dashboard_col_views')}</th>
+                  <th className="py-2.5 px-2 text-right">{t('dashboard_col_actions')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
@@ -345,7 +362,7 @@ export const Dashboard = () => {
                     <td className="py-3 px-2 font-bold text-slate-900">{prop.price}</td>
                     <td className="py-3 px-2">
                       <span className={`px-2 py-0.5 rounded text-[10px] ${prop.statusColor}`}>
-                        {prop.status}
+                        {statusLabel(prop.status)}
                       </span>
                     </td>
                     <td className="py-3 px-2 font-medium">{prop.views}</td>
@@ -354,14 +371,14 @@ export const Dashboard = () => {
                         <button
                           onClick={() => navigate('/buyer/properties')}
                           className="p-1 hover:text-blue-600 transition cursor-pointer"
-                          title="View"
+                          title={t('dashboard_action_view')}
                         >
                           <Eye size={14} />
                         </button>
-                        <button className="p-1 hover:text-slate-700 transition cursor-pointer" title="Edit">
+                        <button className="p-1 hover:text-slate-700 transition cursor-pointer" title={t('dashboard_action_edit')}>
                           <Edit2 size={14} />
                         </button>
-                        <button className="p-1 hover:text-rose-600 transition cursor-pointer" title="Delete">
+                        <button className="p-1 hover:text-rose-600 transition cursor-pointer" title={t('dashboard_action_delete')}>
                           <Trash2 size={14} />
                         </button>
                       </div>
@@ -385,7 +402,7 @@ export const Dashboard = () => {
                   </div>
                 </div>
                 <span className={`px-2 py-0.5 rounded text-[10px] shrink-0 ${prop.statusColor}`}>
-                  {prop.status}
+                  {statusLabel(prop.status)}
                 </span>
               </div>
             ))}
@@ -396,12 +413,12 @@ export const Dashboard = () => {
         <div className="xl:col-span-4 bg-white border border-slate-200/80 rounded-xl p-4 sm:p-5 shadow-2xs flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between mb-3">
-              <h2 className="text-sm font-bold text-slate-900">Upcoming Visits</h2>
+              <h2 className="text-sm font-bold text-slate-900">{t('dashboard_upcoming_visits')}</h2>
               <button
                 onClick={() => navigate('/buyer/visits')}
                 className="text-xs font-semibold text-blue-600 hover:underline cursor-pointer"
               >
-                View All
+                {t('dashboard_view_all')}
               </button>
             </div>
 
@@ -431,7 +448,7 @@ export const Dashboard = () => {
                         : 'bg-amber-50 text-amber-700'
                     }`}
                   >
-                    {visit.status}
+                    {statusLabel(visit.status)}
                   </span>
                 </div>
               ))}
