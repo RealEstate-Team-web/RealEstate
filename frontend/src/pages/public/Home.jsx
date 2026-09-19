@@ -31,7 +31,7 @@ const Home = () => {
   const navigate = useNavigate();
 
   const handlePlanSelect = () => {
-    navigate("/register");
+    navigate(ROUTES.registerAgent);
   };
 
  useEffect(() => {

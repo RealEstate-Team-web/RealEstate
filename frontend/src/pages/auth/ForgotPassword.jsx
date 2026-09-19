@@ -50,10 +50,9 @@ const ForgotPassword = () => {
 
         {sent ? (
           <div className="text-center">
-            <p
-              className="rounded-[5px] border border-teal/30 bg-teal/5 px-3 py-3 text-[13px] text-teal"
-              dangerouslySetInnerHTML={{ __html: t('forgot_sent', { email }) }}
-            />
+            <p className="rounded-[5px] border border-teal/30 bg-teal/5 px-3 py-3 text-[13px] text-teal">
+              {t('forgot_sent', { email })}
+            </p>
             <Link
               to={ROUTES.login}
               className="mt-4 inline-flex items-center gap-1.5 text-[13px] font-medium text-teal hover:underline"
