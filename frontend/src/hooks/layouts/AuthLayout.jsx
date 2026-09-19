@@ -1,3 +1,4 @@
+import LanguageSwitcher from '../../components/common/LanguageSwitcher'
 import propertyImage from '../../assets/images/auth-property.jpg'
 
 const PropertyImage = () => (
@@ -12,6 +13,9 @@ const PropertyImage = () => (
 
 const AuthLayout = ({ children }) => (
   <div className="flex min-h-screen flex-col bg-canvas">
+    <div className="flex justify-end px-4 pt-4 sm:px-6">
+      <LanguageSwitcher variant="light" />
+    </div>
     <main className="flex w-full flex-1 flex-col">
       <div className="grid flex-1 grid-cols-1 lg:grid-cols-[1.1fr_1fr]">
         <PropertyImage />

@@ -1,7 +1,10 @@
 import { Link } from "react-router-dom";
 import { Mail, Phone, MapPin } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const Footer = () => {
+  const { t } = useTranslation();
+
   return (
     <footer className="border-t border-[#263C46] bg-[#162831] text-[#94A3B8]">
       <div className="mx-auto w-full max-w-[1240px] px-4 sm:px-6 lg:px-8">
@@ -30,9 +33,10 @@ const Footer = () => {
             </Link>
 
             <p className="mt-3.5 max-w-[360px] text-[12px] leading-[1.55] text-[#8FA1AA]">
-              ይጎብኙ፣ ይምረጡ፣ ይግዙ — Visit, choose, and buy.
-              Explore trusted listings, connect with experienced agents,
-              and make your next property move with confidence.
+              {t("footer_tagline")}
+            </p>
+            <p className="mt-1.5 max-w-[360px] text-[12px] leading-[1.55] text-[#8FA1AA]">
+              {t("footer_tagline_copy")}
             </p>
 
             {/* Contact */}
@@ -76,7 +80,7 @@ const Footer = () => {
                 />
 
                 <span>
-                  Addis Ababa, Ethiopia
+                  {t("footer_contact_address")}
                 </span>
               </div>
 
@@ -86,7 +90,7 @@ const Footer = () => {
           {/*  COMPANY  */}
           <div>
             <h3 className="mb-4 text-[12px] font-semibold leading-5 text-white">
-              Company
+              {t("footer_company")}
             </h3>
 
             <ul className="space-y-2">
@@ -96,7 +100,7 @@ const Footer = () => {
                   to="/about"
                   className="text-[12px] leading-5 transition-colors hover:text-white"
                 >
-                  About Us
+                  {t("footer_about")}
                 </Link>
               </li>
 
@@ -105,7 +109,7 @@ const Footer = () => {
                   to="/properties"
                   className="text-[12px] leading-5 transition-colors hover:text-white"
                 >
-                  Properties
+                  {t("footer_properties")}
                 </Link>
               </li>
 
@@ -114,7 +118,7 @@ const Footer = () => {
                   to="/agents"
                   className="text-[12px] leading-5 transition-colors hover:text-white"
                 >
-                  Agents
+                  {t("footer_agents")}
                 </Link>
               </li>
 
@@ -123,7 +127,7 @@ const Footer = () => {
                   to="/contact"
                   className="text-[12px] leading-5 transition-colors hover:text-white"
                 >
-                  Contact Us
+                  {t("footer_contact")}
                 </Link>
               </li>
 
@@ -133,7 +137,7 @@ const Footer = () => {
           {/*  PROPERTY TYPES  */}
           <div>
             <h3 className="mb-4 text-[12px] font-semibold leading-5 text-white">
-              Properties
+              {t("footer_property_types")}
             </h3>
 
             <ul className="space-y-2">
@@ -143,7 +147,7 @@ const Footer = () => {
                   to="/properties?type=1"
                   className="text-[12px] leading-5 transition-colors hover:text-white"
                 >
-                  Apartments
+                  {t("footer_apartments")}
                 </Link>
               </li>
 
@@ -152,7 +156,7 @@ const Footer = () => {
                   to="/properties?type=2"
                   className="text-[12px] leading-5 transition-colors hover:text-white"
                 >
-                  Villas
+                  {t("footer_villas")}
                 </Link>
               </li>
 
@@ -161,7 +165,7 @@ const Footer = () => {
                   to="/properties?type=3"
                   className="text-[12px] leading-5 transition-colors hover:text-white"
                 >
-                  Townhouses
+                  {t("footer_townhouses")}
                 </Link>
               </li>
 
@@ -170,7 +174,7 @@ const Footer = () => {
                   to="/properties?type=4"
                   className="text-[12px] leading-5 transition-colors hover:text-white"
                 >
-                  Commercial
+                  {t("footer_commercial")}
                 </Link>
               </li>
 
@@ -180,11 +184,11 @@ const Footer = () => {
           {/*  NEWSLETTER  */}
           <div>
             <h3 className="mb-4 text-[12px] font-semibold leading-5 text-white">
-              Stay Updated
+              {t("footer_stay_updated")}
             </h3>
 
             <p className="mb-3 max-w-[270px] text-[12px] leading-[1.5] text-[#8FA1AA]">
-              Get the latest property listings and real estate updates.
+              {t("footer_newsletter_blurb")}
             </p>
 
             <form
@@ -193,7 +197,7 @@ const Footer = () => {
             >
               <input
                 type="email"
-                placeholder="Email address"
+                placeholder={t("footer_email_placeholder")}
                 className="h-9 min-w-0 flex-1 rounded-l-md border border-[#334B56] bg-[#1B3039] px-3 text-[11px] leading-none text-white outline-none placeholder:text-[#647983] focus:border-[#0F9690]"
               />
 
@@ -201,7 +205,7 @@ const Footer = () => {
                 type="submit"
                 className="h-9 shrink-0 rounded-r-md bg-[#0F9690] px-4 text-[11px] font-medium leading-none text-white transition-colors hover:bg-[#0D827D]"
               >
-                Subscribe
+                {t("footer_subscribe")}
               </button>
             </form>
 
@@ -243,7 +247,7 @@ const Footer = () => {
         <div className="flex flex-col gap-3 py-4 sm:flex-row sm:items-center sm:justify-between">
 
           <p className="text-[11px] leading-5 text-[#647983]">
-            © {new Date().getFullYear()} Betnya. All rights reserved.
+            {t("footer_rights", { year: new Date().getFullYear() })}
           </p>
 
           <div className="flex flex-wrap items-center gap-x-5 gap-y-1.5">
@@ -252,21 +256,21 @@ const Footer = () => {
               to="/privacy"
               className="text-[11px] leading-5 text-[#647983] transition-colors hover:text-white"
             >
-              Privacy Policy
+              {t("footer_privacy")}
             </Link>
 
             <Link
               to="/terms"
               className="text-[11px] leading-5 text-[#647983] transition-colors hover:text-white"
             >
-              Terms of Service
+              {t("footer_terms")}
             </Link>
 
             <Link
               to="/cookies"
               className="text-[11px] leading-5 text-[#647983] transition-colors hover:text-white"
             >
-              Cookies
+              {t("footer_cookies")}
             </Link>
 
           </div>

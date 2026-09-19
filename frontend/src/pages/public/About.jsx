@@ -7,48 +7,51 @@ import {
   TrendingUp,
   ArrowRight,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const VALUES = [
   {
     icon: Eye,
-    title: "Transparency",
-    desc: "Clear property information with verified details helps you make confident, informed decisions.",
+    title: "values_transparency",
+    desc: "values_transparency_desc",
   },
   {
     icon: Handshake,
-    title: "Convenience",
-    desc: "Search, compare and connect with agents — all from one modern platform.",
+    title: "values_convenience",
+    desc: "values_convenience_desc",
   },
   {
     icon: ShieldCheck,
-    title: "Trust",
-    desc: "Every listing is backed by professional agents with proven track records.",
+    title: "values_trust",
+    desc: "values_trust_desc",
   },
   {
     icon: Star,
-    title: "Excellence",
-    desc: "We strive to provide the best property search experience in Ethiopia.",
+    title: "values_excellence",
+    desc: "values_excellence_desc",
   },
   {
     icon: Users,
-    title: "Community",
-    desc: "Connecting buyers, renters, sellers and agents in one vibrant ecosystem.",
+    title: "values_community",
+    desc: "values_community_desc",
   },
   {
     icon: TrendingUp,
-    title: "Growth",
-    desc: "Helping you make smart property investment decisions for a better future.",
+    title: "values_growth",
+    desc: "values_growth_desc",
   },
 ];
 
 const TEAM_STATS = [
-  { value: "2,400+", label: "Properties Listed" },
-  { value: "890+", label: "Happy Clients" },
-  { value: "120+", label: "Expert Agents" },
-  { value: "2018", label: "Year Founded" },
+  { value: "2,400+", label: "stat_properties" },
+  { value: "890+", label: "stat_clients" },
+  { value: "120+", label: "stat_agents" },
+  { value: "2018", label: "stat_founded" },
 ];
 
 const About = () => {
+  const { t } = useTranslation("about");
+
   return (
     <div className="w-full min-w-0 overflow-x-hidden bg-[#F7F9FA]">
 
@@ -79,7 +82,7 @@ const About = () => {
               <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#2AC3BB] shadow-[0_0_13px_rgba(42,195,187,0.9)]" />
 
               <span className="text-[9px] font-bold uppercase tracking-[0.22em] text-[#54D4CD] sm:text-[10px]">
-                About Us
+                {t("hero_eyebrow")}
               </span>
 
             </div>
@@ -88,15 +91,14 @@ const About = () => {
               className="text-[36px] font-bold leading-[1.05] tracking-tight text-white min-[480px]:text-[42px] sm:text-[50px] lg:text-[60px]"
               style={{ fontFamily: "var(--font-display)" }}
             >
-              About Betnya
+              {t("hero_title")}
               <span className="block text-[#25B8B1]">
-                (ቤትኛ)
+                {t("hero_brand")}
               </span>
             </h1>
 
             <p className="mt-5 max-w-[600px] text-[13px] leading-6 text-[#C5D3D9] sm:text-[15px] sm:leading-7">
-              Making property search simple, transparent and convenient
-              for everyone.
+              {t("hero_subtitle")}
             </p>
 
           </div>
@@ -128,7 +130,7 @@ const About = () => {
 
                 <img
                   src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=85"
-                  alt="Modern luxury home interior"
+                  alt={t("img_alt")}
                   className="h-[300px] w-full object-cover transition-transform duration-700 hover:scale-[1.035] sm:h-[380px] md:h-[430px] lg:h-[500px]"
                 />
 
@@ -145,11 +147,11 @@ const About = () => {
                   className="text-[25px] font-bold leading-none md:text-[28px]"
                   style={{ fontFamily: "var(--font-display)" }}
                 >
-                  8+
+                  {t("years_value")}
                 </p>
 
                 <p className="mt-1 text-[10px] font-medium text-[#C9F2EF] md:text-[11px]">
-                  Years of Excellence
+                  {t("years_label")}
                 </p>
 
               </div>
@@ -161,27 +163,22 @@ const About = () => {
             <div className="min-w-0 animate-[fadeUp_.7s_.12s_ease-out_both]">
 
               <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-[#0F9690] sm:text-[10px]">
-                Who We Are
+                {t("who_eyebrow")}
               </span>
 
               <h2
                 className="mt-3 max-w-[580px] text-[29px] font-bold leading-[1.14] tracking-tight text-[#162831] sm:text-[34px] lg:text-[40px]"
                 style={{ fontFamily: "var(--font-display)" }}
               >
-                Your Journey to the Right Home Starts Here.
+                {t("who_title")}
               </h2>
 
               <p className="mt-4 max-w-[580px] text-[13px] leading-6 text-[#71818A] sm:text-[14px] sm:leading-7">
-                Betnya (ቤትኛ) is a real estate platform designed to
-                make finding properties easier for buyers, renters and
-                property seekers across Ethiopia and beyond.
+                {t("who_p1")}
               </p>
 
               <p className="mt-3 max-w-[580px] text-[13px] leading-6 text-[#71818A] sm:text-[14px] sm:leading-7">
-                We bring property listings and real estate professionals
-                together in one modern, convenient platform — giving you
-                access to verified listings with the tools to find exactly
-                what you need.
+                {t("who_p2")}
               </p>
 
 
@@ -207,7 +204,7 @@ const About = () => {
                     </p>
 
                     <p className="mt-1.5 text-[10px] text-[#71818A] sm:text-[11px]">
-                      {label}
+                      {t(label)}
                     </p>
 
                   </div>
@@ -236,19 +233,18 @@ const About = () => {
           <div className="mx-auto mb-9 max-w-[620px] text-center sm:mb-12">
 
             <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-[#0F9690] sm:text-[10px]">
-              Our Values
+              {t("values_eyebrow")}
             </span>
 
             <h2
               className="mt-3 text-[29px] font-bold leading-tight tracking-tight text-[#162831] sm:text-[35px] lg:text-[42px]"
               style={{ fontFamily: "var(--font-display)" }}
             >
-              Built Around You.
+              {t("values_title")}
             </h2>
 
             <p className="mt-3 text-[12px] leading-5 text-[#71818A] sm:text-[13px] sm:leading-6">
-              Everything we do is centered around creating a better,
-              simpler and more trustworthy property experience.
+              {t("values_subtitle")}
             </p>
 
           </div>
@@ -284,17 +280,17 @@ const About = () => {
 
 
                 <h3 className="relative mt-4 text-[15px] font-semibold text-[#162831] sm:text-[16px]">
-                  {title}
+                  {t(title)}
                 </h3>
 
                 <p className="relative mt-2 text-[12px] leading-5 text-[#71818A] sm:text-[13px] sm:leading-6">
-                  {desc}
+                  {t(desc)}
                 </p>
 
 
                 {/* Small arrow */}
                 <div className="mt-4 flex items-center gap-1 text-[10px] font-semibold text-[#0F9690] opacity-0 transition-all duration-300 group-hover:translate-x-1 group-hover:opacity-100">
-                  Learn more
+                  {t("learn_more")}
                   <ArrowRight size={12} />
                 </div>
 

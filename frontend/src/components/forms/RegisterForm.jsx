@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { User, Mail, Phone } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import useAuth from '../../hooks/useAuth'
 import FormInput from './FormInput'
 import PasswordInput from './PasswordInput'
@@ -21,6 +22,7 @@ const PHONE_PATTERN = /^\+?[0-9]{7,15}$/
 
 const RegisterForm = ({ initialRole = 'buyer' }) => {
   const navigate = useNavigate()
+  const { t } = useTranslation('auth')
   const { register, isAuthenticated, user } = useAuth()
 
   const [form, setForm] = useState({ ...initialState, role: initialRole })
@@ -50,33 +52,33 @@ const RegisterForm = ({ initialRole = 'buyer' }) => {
 
   const validate = () => {
     const next = {}
-    if (!form.firstName.trim()) next.firstName = 'First name is required.'
-    if (!form.lastName.trim()) next.lastName = 'Last name is required.'
+    if (!form.firstName.trim()) next.firstName = t('register_first_required')
+    if (!form.lastName.trim()) next.lastName = t('register_last_required')
     if (!form.email.trim()) {
-      next.email = 'Email is required.'
+      next.email = t('forgot_email_required')
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
-      next.email = 'Enter a valid email address.'
+      next.email = t('forgot_email_invalid')
     }
     if (!form.phone.trim()) {
-      next.phone = 'Phone is required.'
+      next.phone = t('register_phone_required')
     } else if (!PHONE_PATTERN.test(form.phone.trim())) {
-      next.phone = 'Enter a valid phone number.'
+      next.phone = t('register_phone_invalid')
     }
     if (!form.password) {
-      next.password = 'Password is required.'
+      next.password = t('password_required')
     } else if (form.password.length < 8) {
-      next.password = 'Password must be at least 8 characters.'
+      next.password = t('reset_password_min')
     } else if (!/[A-Z]/.test(form.password)) {
-      next.password = 'Password must contain at least one uppercase letter.'
+      next.password = t('reset_password_upper')
     } else if (!/[a-z]/.test(form.password)) {
-      next.password = 'Password must contain at least one lowercase letter.'
+      next.password = t('reset_password_lower')
     } else if (!/[0-9]/.test(form.password)) {
-      next.password = 'Password must contain at least one number.'
+      next.password = t('reset_password_number')
     }
     if (!form.confirmPassword) {
-      next.confirmPassword = 'Confirm your password.'
+      next.confirmPassword = t('register_confirm_required')
     } else if (form.password !== form.confirmPassword) {
-      next.confirmPassword = 'Passwords do not match.'
+      next.confirmPassword = t('reset_password_mismatch')
     }
     setErrors(next)
     return Object.keys(next).length === 0
@@ -118,7 +120,7 @@ const RegisterForm = ({ initialRole = 'buyer' }) => {
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <FormInput
-          label="First Name"
+          label={t('first_name_label')}
           name="firstName"
           value={form.firstName}
           onChange={handleChange}
@@ -127,7 +129,7 @@ const RegisterForm = ({ initialRole = 'buyer' }) => {
           autoComplete="given-name"
         />
         <FormInput
-          label="Last Name"
+          label={t('last_name_label')}
           name="lastName"
           value={form.lastName}
           onChange={handleChange}
@@ -139,7 +141,7 @@ const RegisterForm = ({ initialRole = 'buyer' }) => {
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <FormInput
-          label="Email Address"
+          label={t('email_label')}
           name="email"
           type="email"
           value={form.email}
@@ -149,7 +151,7 @@ const RegisterForm = ({ initialRole = 'buyer' }) => {
           autoComplete="email"
         />
         <FormInput
-          label="Phone Number"
+          label={t('phone_label')}
           name="phone"
           type="tel"
           value={form.phone}
@@ -161,7 +163,7 @@ const RegisterForm = ({ initialRole = 'buyer' }) => {
       </div>
 
       <PasswordInput
-        label="Password"
+        label={t('password_label')}
         name="password"
         value={form.password}
         onChange={handleChange}
@@ -169,7 +171,7 @@ const RegisterForm = ({ initialRole = 'buyer' }) => {
       />
 
       <PasswordInput
-        label="Confirm Password"
+        label={t('confirm_password_label')}
         name="confirmPassword"
         value={form.confirmPassword}
         onChange={handleChange}
@@ -187,13 +189,13 @@ const RegisterForm = ({ initialRole = 'buyer' }) => {
         disabled={loading}
         className="mt-1 h-[36px] w-full rounded-[5px] bg-teal text-[15px] font-semibold text-white transition-all duration-150 hover:bg-[#0F828A] hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60"
       >
-        {loading ? 'Creating account...' : 'Register'}
+        {loading ? t('register_creating') : t('register_submit')}
       </button>
 
       <p className="mt-1 text-center text-[13px] text-ink">
-        Already have an account?{' '}
+        {t('register_have_account')}{' '}
         <Link to={ROUTES.login} className="font-medium text-teal hover:underline">
-          Login
+          {t('login_link')}
         </Link>
       </p>
     </form>

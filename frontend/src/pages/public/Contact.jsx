@@ -8,33 +8,35 @@ import {
   CheckCircle2,
   ArrowUpRight,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const CONTACT_INFO = [
   {
     icon: MapPin,
-    label: "Our Office",
-    value: "Bole Road, Addis Ababa, Ethiopia",
+    labelKey: "office_label",
+    valueKey: "office_value",
   },
   {
     icon: Phone,
-    label: "Phone Number",
-    value: "+251 911 000 000",
+    labelKey: "phone_label",
+    valueKey: "phone_value",
     href: "tel:+251911000000",
   },
   {
     icon: Mail,
-    label: "Email Address",
-    value: "info@betnya.com",
+    labelKey: "email_label",
+    valueKey: "email_value",
     href: "mailto:info@betnya.com",
   },
   {
     icon: Clock,
-    label: "Business Hours",
-    value: "Mon – Sat: 8:00 AM – 6:00 PM",
+    labelKey: "hours_label",
+    valueKey: "hours_value",
   },
 ];
 
 const Contact = () => {
+  const { t } = useTranslation("contact");
   const [submitted, setSubmitted] = useState(false);
 
   const [form, setForm] = useState({
@@ -94,7 +96,7 @@ const Contact = () => {
               <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#2AC3BB] shadow-[0_0_12px_rgba(42,195,187,0.9)]" />
 
               <span className="text-[9px] font-bold uppercase tracking-[0.22em] text-[#54D4CD] sm:text-[10px]">
-                Get In Touch
+                {t("hero_eyebrow")}
               </span>
 
             </div>
@@ -103,15 +105,14 @@ const Contact = () => {
               className="max-w-[650px] text-[36px] font-bold leading-[1.05] tracking-tight text-white min-[480px]:text-[42px] sm:text-[50px] lg:text-[60px]"
               style={{ fontFamily: "var(--font-display)" }}
             >
-              Let's Find Your
+              {t("hero_title_1")}
               <span className="mt-1 block text-[#25B8B1]">
-                Perfect Property.
+                {t("hero_title_2")}
               </span>
             </h1>
 
             <p className="mt-5 max-w-[570px] text-[13px] leading-6 text-[#C5D3D9] sm:text-[15px] sm:leading-7">
-              Whether you're buying, renting, or simply exploring your
-              options, our team is ready to help you find the right property.
+              {t("hero_subtitle")}
             </p>
 
           </div>
@@ -140,26 +141,25 @@ const Contact = () => {
             <div className="min-w-0 animate-[fadeUp_.7s_.1s_ease-out_both]">
 
               <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-[#0F9690] sm:text-[10px]">
-                Contact Information
+                {t("info_eyebrow")}
               </span>
 
               <h2
                 className="mt-3 max-w-[500px] text-[29px] font-bold leading-[1.15] tracking-tight text-[#162831] sm:text-[34px] lg:text-[38px]"
                 style={{ fontFamily: "var(--font-display)" }}
               >
-                We're Here To Help.
+                {t("info_title")}
               </h2>
 
               <p className="mt-4 max-w-[500px] text-[13px] leading-6 text-[#71818A] sm:text-[14px]">
-                Have a question about a property, want to schedule a viewing,
-                or need help finding the right home? Reach out to our team.
+                {t("info_subtitle")}
               </p>
 
               {/* Contact List */}
               <div className="mt-7 space-y-2.5 sm:mt-8 sm:space-y-3">
 
                 {CONTACT_INFO.map(
-                  ({ icon: Icon, label, value, href }, index) => {
+                  ({ icon: Icon, labelKey, valueKey, href }, index) => {
 
                     const cardClass =
                       "group flex min-w-0 items-center gap-3.5 rounded-xl border border-[#E1E9EC] bg-white px-3.5 py-3.5 shadow-[0_4px_18px_rgba(20,40,50,0.035)] transition-all duration-300 hover:-translate-y-1 hover:border-[#0F9690]/30 hover:shadow-[0_12px_30px_rgba(15,150,144,0.09)] sm:gap-4 sm:px-4 sm:py-4";
@@ -172,11 +172,11 @@ const Contact = () => {
 
                         <div className="min-w-0 flex-1">
                           <p className="text-[8px] font-bold uppercase tracking-[0.15em] text-[#87969D] sm:text-[9px]">
-                            {label}
+                            {t(labelKey)}
                           </p>
 
                           <p className="mt-1 break-words text-[12px] font-medium leading-5 text-[#263B44] sm:text-[13px]">
-                            {value}
+                            {t(valueKey)}
                           </p>
                         </div>
                       </>
@@ -184,7 +184,7 @@ const Contact = () => {
 
                     return href ? (
                       <a
-                        key={label}
+                        key={labelKey}
                         href={href}
                         className={cardClass}
                         style={{
@@ -197,7 +197,7 @@ const Contact = () => {
                       </a>
                     ) : (
                       <div
-                        key={label}
+                        key={labelKey}
                         className={cardClass}
                         style={{
                           animation: `fadeUp .6s ${
@@ -251,12 +251,11 @@ const Contact = () => {
                         className="mt-6 text-[22px] font-bold text-[#162831] sm:text-2xl"
                         style={{ fontFamily: "var(--font-display)" }}
                       >
-                        Message Sent Successfully!
+                        {t("success_title")}
                       </h3>
 
                       <p className="mt-3 max-w-[360px] text-[13px] leading-6 text-[#71818A]">
-                        Thank you for contacting Betnya (ቤትኛ).
-                        Our team will get back to you within 24 hours.
+                        {t("success_body")}
                       </p>
 
                       <button
@@ -264,7 +263,7 @@ const Contact = () => {
                         onClick={() => setSubmitted(false)}
                         className="mt-6 rounded-lg border border-[#D7E2E5] px-5 py-2.5 text-[12px] font-semibold text-[#162831] transition-all duration-200 hover:border-[#0F9690] hover:bg-[#0F9690]/5 hover:text-[#0F9690] cursor-pointer"
                       >
-                        Send Another Message
+                        {t("send_another")}
                       </button>
 
                     </div>
@@ -281,19 +280,18 @@ const Contact = () => {
                       <div className="mb-6">
 
                         <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#0F9690]">
-                          Get Started
+                          {t("form_eyebrow")}
                         </span>
 
                         <h3
                           className="mt-1 text-[22px] font-bold tracking-tight text-[#162831] sm:text-2xl"
                           style={{ fontFamily: "var(--font-display)" }}
                         >
-                          Send Us a Message
+                          {t("form_title")}
                         </h3>
 
                         <p className="mt-1.5 max-w-[480px] text-[12px] leading-relaxed text-[#7A8A92]">
-                          Tell us what you're looking for and our team will help you
-                          find the right property.
+                          {t("form_subtitle")}
                         </p>
 
                       </div>
@@ -308,7 +306,7 @@ const Contact = () => {
                             htmlFor="name"
                             className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-[#667981]"
                           >
-                            Full Name
+                            {t("full_name")}
                           </label>
 
                           <input
@@ -317,7 +315,7 @@ const Contact = () => {
                             name="name"
                             value={form.name}
                             onChange={handleChange}
-                            placeholder="John Doe"
+                            placeholder={t("name_placeholder")}
                             required
                             autoComplete="name"
                             className="box-border h-11 w-full min-w-0 rounded-lg border border-[#DCE5E8] bg-[#FAFCFC] px-3.5 text-[13px] text-[#162831] outline-none transition-all duration-200 placeholder:text-[#9AA8AE] hover:border-[#C5D4D9] focus:border-[#0F9690] focus:bg-white focus:ring-4 focus:ring-[#0F9690]/10"
@@ -332,7 +330,7 @@ const Contact = () => {
                             htmlFor="email"
                             className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-[#667981]"
                           >
-                            Email Address
+                            {t("email_address")}
                           </label>
 
                           <input
@@ -341,7 +339,7 @@ const Contact = () => {
                             name="email"
                             value={form.email}
                             onChange={handleChange}
-                            placeholder="you@email.com"
+                            placeholder={t("email_placeholder")}
                             required
                             autoComplete="email"
                             className="box-border h-11 w-full min-w-0 rounded-lg border border-[#DCE5E8] bg-[#FAFCFC] px-3.5 text-[13px] text-[#162831] outline-none transition-all duration-200 placeholder:text-[#9AA8AE] hover:border-[#C5D4D9] focus:border-[#0F9690] focus:bg-white focus:ring-4 focus:ring-[#0F9690]/10"
@@ -359,7 +357,7 @@ const Contact = () => {
                           htmlFor="phone"
                           className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-[#667981]"
                         >
-                          Phone Number
+                          {t("phone_number")}
                         </label>
 
                         <input
@@ -368,7 +366,7 @@ const Contact = () => {
                           name="phone"
                           value={form.phone}
                           onChange={handleChange}
-                          placeholder="+251 911 000 000"
+                          placeholder={t("phone_placeholder")}
                           autoComplete="tel"
                           className="box-border h-11 w-full min-w-0 rounded-lg border border-[#DCE5E8] bg-[#FAFCFC] px-3.5 text-[13px] text-[#162831] outline-none transition-all duration-200 placeholder:text-[#9AA8AE] hover:border-[#C5D4D9] focus:border-[#0F9690] focus:bg-white focus:ring-4 focus:ring-[#0F9690]/10"
                         />
@@ -383,7 +381,7 @@ const Contact = () => {
                           htmlFor="message"
                           className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-[#667981]"
                         >
-                          Your Message
+                          {t("your_message")}
                         </label>
 
                         <textarea
@@ -392,7 +390,7 @@ const Contact = () => {
                           value={form.message}
                           onChange={handleChange}
                           rows={4}
-                          placeholder="Tell us about the property you're looking for..."
+                          placeholder={t("message_placeholder")}
                           required
                           className="box-border min-h-[120px] w-full min-w-0 resize-none rounded-lg border border-[#DCE5E8] bg-[#FAFCFC] px-3.5 py-3 text-[13px] leading-5 text-[#162831] outline-none transition-all duration-200 placeholder:text-[#9AA8AE] hover:border-[#C5D4D9] focus:border-[#0F9690] focus:bg-white focus:ring-4 focus:ring-[#0F9690]/10"
                         />
@@ -407,7 +405,7 @@ const Contact = () => {
                       >
                         <Send size={15} />
 
-                        <span>Send Message</span>
+                        <span>{t("send_message")}</span>
 
                         <ArrowUpRight
                           size={15}
@@ -417,7 +415,7 @@ const Contact = () => {
 
 
                       <p className="pt-1 text-center text-[10px] leading-4 text-[#98A6AC]">
-                        We respect your privacy and will never share your information.
+                        {t("privacy_note")}
                       </p>
 
                     </form>

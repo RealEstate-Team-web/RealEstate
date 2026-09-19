@@ -1,12 +1,16 @@
+import { useTranslation } from 'react-i18next'
+
 const ROLE_OPTIONS = [
-  { value: 'buyer', label: 'Buyer / Tenant' },
-  { value: 'agent', label: 'Agent' },
+  { value: 'buyer', label: 'role_buyer' },
+  { value: 'agent', label: 'role_agent' },
 ]
 
 const RoleSelector = ({ value, onChange, error }) => {
+  const { t } = useTranslation('auth')
+
   return (
     <div className="flex flex-col gap-1.5">
-      <span className="text-[13px] font-semibold text-[#101820]">Role Selection</span>
+      <span className="text-[13px] font-semibold text-[#101820]">{t('role_selection')}</span>
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
         {ROLE_OPTIONS.map((option) => {
           const checked = value === option.value
@@ -23,7 +27,7 @@ const RoleSelector = ({ value, onChange, error }) => {
                 onChange={() => onChange(option.value)}
                 className="h-4 w-4 accent-[#159FA7]"
               />
-              {option.label}
+              {t(option.label)}
             </label>
           )
         })}

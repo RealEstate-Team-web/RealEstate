@@ -1,6 +1,9 @@
 import { ArrowRight, MapPin, Phone, Mail } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const AgentCard = ({ agent, variant = 'full', onContact }) => {
+  const { t } = useTranslation('agents');
+
   if (variant === 'compact') {
     return (
       <div className="rounded-xl border border-slate-200 bg-white p-3 text-center transition-transform duration-200 hover:-translate-y-1 hover:shadow-md">
@@ -23,8 +26,9 @@ const AgentCard = ({ agent, variant = 'full', onContact }) => {
         <p className="mt-1 text-[10px] text-slate-500">{agent.role}</p>
 
         <p className="mt-1 text-[10px] font-semibold text-[#0F9690]">
-          {agent.propertyCount ?? 0}{' '}
-          {agent.propertyCount === 1 ? 'property' : 'properties'}
+          {t('propertyCount', {
+            count: agent.propertyCount ?? 0,
+          })}
         </p>
       </div>
     );
@@ -46,8 +50,9 @@ const AgentCard = ({ agent, variant = 'full', onContact }) => {
         )}
 
         <div className="absolute bottom-3 left-3 rounded-lg bg-white px-3 py-1.5 text-xs font-bold text-[#162831] shadow">
-          {agent.propertyCount ?? 0}{' '}
-          {agent.propertyCount === 1 ? 'Property' : 'Properties'}
+          {t('propertyCount', {
+            count: agent.propertyCount ?? 0,
+          })}
         </div>
       </div>
 
@@ -82,14 +87,14 @@ const AgentCard = ({ agent, variant = 'full', onContact }) => {
         <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-4">
           <div>
             <p className="text-[10px] uppercase tracking-wide text-slate-400">
-              Experience
+              {t('experience')}
             </p>
 
             <p className="mt-1 text-sm font-bold text-[#162831]">
               {agent.experienceYears != null
-                ? `${agent.experienceYears} ${
-                    agent.experienceYears === 1 ? 'Year' : 'Years'
-                  }`
+                ? t('year', {
+                    count: agent.experienceYears,
+                  })
                 : '—'}
             </p>
           </div>
@@ -101,7 +106,7 @@ const AgentCard = ({ agent, variant = 'full', onContact }) => {
                 onClick={() => onContact(agent)}
                 className="inline-flex items-center gap-1.5 rounded-lg bg-[#0F9690] px-4 py-2 text-xs font-bold text-white transition hover:bg-[#0D827D] cursor-pointer"
               >
-                Contact
+                {t('contact')}
                 <ArrowRight className="h-3.5 w-3.5" />
               </button>
             ) : (
@@ -109,7 +114,7 @@ const AgentCard = ({ agent, variant = 'full', onContact }) => {
                 href={`mailto:${agent.email}`}
                 className="inline-flex items-center gap-1.5 rounded-lg bg-[#0F9690] px-4 py-2 text-xs font-bold text-white transition hover:bg-[#0D827D]"
               >
-                Contact
+                {t('contact')}
                 <ArrowRight className="h-3.5 w-3.5" />
               </a>
             ))}

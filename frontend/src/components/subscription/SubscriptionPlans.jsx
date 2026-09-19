@@ -1,10 +1,8 @@
 import { useEffect, useState } from 'react';
 import { RefreshCw } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import SubscriptionPlanCard from './SubscriptionPlanCard';
 import { getSubscriptionPlans } from '../../services/subscriptionPlan.service';
-
-const EMPTY_MESSAGE = 'No subscription plans are currently available.';
-const ERROR_MESSAGE = 'Unable to load subscription plans. Please try again.';
 
 const OrderClasses = ['lg:order-1', 'lg:order-2', 'lg:order-3'];
 
@@ -20,11 +18,12 @@ const PlanSkeleton = () => (
 );
 
 const SubscriptionPlans = ({
-  ctaLabel = 'Choose Plan',
+  ctaLabel,
   onCta,
   ctaDisabled = false,
   ctaTitle,
 }) => {
+  const { t } = useTranslation('subscription');
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -37,7 +36,7 @@ const SubscriptionPlans = ({
       if (isMounted && Array.isArray(data)) setPlans(data);
       else if (isMounted) setPlans([]);
     } catch {
-      if (isMounted) setError(ERROR_MESSAGE);
+      if (isMounted) setError(t('load_error'));
     } finally {
       if (isMounted) setLoading(false);
     }
@@ -54,7 +53,7 @@ const SubscriptionPlans = ({
           setPlans(Array.isArray(data) ? data : []);
         }
       } catch {
-        if (active) setError(ERROR_MESSAGE);
+        if (active) setError(t('load_error'));
       } finally {
         if (active) setLoading(false);
       }
@@ -62,11 +61,11 @@ const SubscriptionPlans = ({
     return () => {
       active = false;
     };
-  }, []);
+  }, [t]);
 
   if (loading) {
     return (
-      <div role="status" aria-label="Loading subscription plans" className="grid grid-cols-1 items-stretch gap-5 md:grid-cols-2 lg:grid-cols-3 lg:gap-6">
+      <div role="status" aria-label={t('loading_aria')} className="grid grid-cols-1 items-stretch gap-5 md:grid-cols-2 lg:grid-cols-3 lg:gap-6">
         {[1, 2, 3].map((item) => (
           <PlanSkeleton key={item} />
         ))}
@@ -86,7 +85,7 @@ const SubscriptionPlans = ({
           className="inline-flex items-center gap-1.5 rounded-lg bg-[#0F9690] px-4 py-2 text-xs font-bold text-white transition hover:bg-[#0D827D]"
         >
           <RefreshCw size={14} />
-          Retry
+          {t('retry')}
         </button>
       </div>
     );
@@ -95,7 +94,7 @@ const SubscriptionPlans = ({
   if (plans.length === 0) {
     return (
       <div className="rounded-xl border border-slate-200 bg-white px-6 py-12 text-center text-sm text-slate-500">
-        {EMPTY_MESSAGE}
+        {t('empty')}
       </div>
     );
   }
