@@ -12,6 +12,7 @@ import enContact from "./locales/en/contact.json";
 import enNotfound from "./locales/en/notfound.json";
 import enAuth from "./locales/en/auth.json";
 import enSubscription from "./locales/en/subscription.json";
+import enBuyer from "./locales/en/buyer.json";
 import amCommon from "./locales/am/common.json";
 import amLanding from "./locales/am/landing.json";
 import amProperty from "./locales/am/property.json";
@@ -22,6 +23,7 @@ import amContact from "./locales/am/contact.json";
 import amNotfound from "./locales/am/notfound.json";
 import amAuth from "./locales/am/auth.json";
 import amSubscription from "./locales/am/subscription.json";
+import amBuyer from "./locales/am/buyer.json";
 
 i18n
   .use(LanguageDetector)
@@ -39,6 +41,7 @@ i18n
         notfound: enNotfound,
         auth: enAuth,
         subscription: enSubscription,
+        buyer: enBuyer,
       },
       am: {
         common: amCommon,
@@ -51,6 +54,7 @@ i18n
         notfound: amNotfound,
         auth: amAuth,
         subscription: amSubscription,
+        buyer: amBuyer,
       },
     },
     defaultNS: "common",
