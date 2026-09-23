@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Calendar,
   Clock,
@@ -18,6 +19,7 @@ import { getAgentVisitRequests, approveVisit, rejectVisit } from '../../services
 import useToast from '../../hooks/useToast';
 
 export const AgentVisits = () => {
+  const { t } = useTranslation('agents');
   const [visits, setVisits] = useState([]);
   const [pagination, setPagination] = useState({
     total: 0,
@@ -155,23 +157,23 @@ export const AgentVisits = () => {
     switch (status?.toLowerCase()) {
       case 'approved':
         return {
-          label: 'Approved',
+          label: t('visits_approved'),
           className: 'bg-emerald-100 text-emerald-800 border-emerald-200',
         };
       case 'completed':
         return {
-          label: 'Completed',
+          label: t('visits_completed'),
           className: 'bg-blue-100 text-blue-800 border-blue-200',
         };
       case 'cancelled':
         return {
-          label: 'Rejected',
+          label: t('visits_rejected'),
           className: 'bg-rose-100 text-rose-800 border-rose-200',
         };
       case 'pending':
       default:
         return {
-          label: 'Pending',
+          label: t('visits_pending'),
           className: 'bg-amber-100 text-amber-800 border-amber-200',
         };
     }
@@ -201,10 +203,10 @@ export const AgentVisits = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
-            Visit Requests
+            {t('visits_title')}
           </h1>
           <p className="text-xs text-slate-500 mt-1">
-            Approve, reject, and track property visit requests for your listings
+            {t('visits_subtitle')}
           </p>
         </div>
         <button
@@ -214,19 +216,17 @@ export const AgentVisits = () => {
           className="self-start sm:self-auto px-3.5 py-2 text-xs font-semibold bg-white border border-slate-200 rounded-xl text-slate-700 hover:bg-slate-50 shadow-2xs transition cursor-pointer flex items-center space-x-2 disabled:opacity-50"
         >
           <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
-          <span>Refresh</span>
+          <span>{t('visits_refresh')}</span>
         </button>
       </div>
 
       <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-xs space-y-3">
         <div className="flex flex-wrap items-center gap-1.5 border-b border-slate-100 pb-3">
-          {[
-            { key: 'all', label: 'All Requests' },
-            { key: 'pending', label: 'Pending' },
-            { key: 'approved', label: 'Approved' },
-            { key: 'completed', label: 'Completed' },
-            { key: 'cancelled', label: 'Rejected' },
-          ].map((tab) => {
+          {[{ key: 'all', labelKey: 'visits_all_requests' },
+            { key: 'pending', labelKey: 'visits_pending' },
+            { key: 'approved', labelKey: 'visits_approved' },
+            { key: 'completed', labelKey: 'visits_completed' },
+            { key: 'cancelled', labelKey: 'visits_rejected' }].map((tab) => {
             const isActive = statusFilter === tab.key;
             return (
               <button
@@ -239,7 +239,7 @@ export const AgentVisits = () => {
                     : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
                 }`}
               >
-                {tab.label}
+                {t(tab.labelKey)}
               </button>
             );
           })}
@@ -250,7 +250,7 @@ export const AgentVisits = () => {
             <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
               type="text"
-              placeholder="Search by property, city, or buyer name..."
+              placeholder={t('visits_search_placeholder')}
               value={searchQuery}
               onChange={handleSearchChange}
               className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition"
@@ -260,15 +260,15 @@ export const AgentVisits = () => {
           <div className="flex items-center space-x-2 w-full sm:w-auto shrink-0">
             <div className="flex items-center space-x-1.5 text-xs text-slate-500 shrink-0">
               <ArrowUpDown size={14} />
-              <span>Sort:</span>
+              <span>{t('visits_sort')}</span>
             </div>
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
               className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition cursor-pointer"
             >
-              <option value="soonest">Date: Soonest First</option>
-              <option value="latest">Date: Furthest First</option>
+              <option value="soonest">{t('visits_sort_soonest')}</option>
+              <option value="latest">{t('visits_sort_latest')}</option>
             </select>
           </div>
         </div>
@@ -304,7 +304,7 @@ export const AgentVisits = () => {
             <AlertCircle size={24} />
           </div>
           <div>
-            <h3 className="text-sm font-bold text-rose-900">Failed to Load Visit Requests</h3>
+            <h3 className="text-sm font-bold text-rose-900">{t('visits_error_load')}</h3>
             <p className="text-xs text-rose-600 mt-0.5">{error}</p>
           </div>
           <button
@@ -312,7 +312,7 @@ export const AgentVisits = () => {
             onClick={() => loadVisits()}
             className="px-4 py-2 text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 rounded-xl transition cursor-pointer shadow-xs"
           >
-            Try Again
+            {t('visits_error_try')}
           </button>
         </div>
       )}
@@ -323,11 +323,11 @@ export const AgentVisits = () => {
             <Calendar size={28} />
           </div>
           <div>
-            <h3 className="text-base font-bold text-slate-900">No visit requests found</h3>
+            <h3 className="text-base font-bold text-slate-900">{t('visits_empty')}</h3>
             <p className="text-xs text-slate-500 max-w-sm mx-auto mt-1">
               {searchQuery || statusFilter !== 'all'
-                ? 'No visit requests matched your selected filters or search query.'
-                : "You don't have any visit requests yet. Buyers will be able to schedule visits for your listed properties."}
+                ? t('visits_empty_filtered')
+                : t('visits_empty_all')}
             </p>
           </div>
           {(searchQuery || statusFilter !== 'all') && (
@@ -340,7 +340,7 @@ export const AgentVisits = () => {
               }}
               className="px-4 py-2 text-xs font-semibold text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-xl transition cursor-pointer"
             >
-              Clear Filters
+              {t('visits_clear_filters')}
             </button>
           )}
         </div>
@@ -407,14 +407,14 @@ export const AgentVisits = () => {
                     <div className="flex items-center space-x-2 text-slate-700">
                       <Calendar size={15} className="text-blue-600 shrink-0" />
                       <div>
-                        <p className="text-[10px] text-slate-400 font-medium">Date</p>
+                        <p className="text-[10px] text-slate-400 font-medium">{t('visits_date')}</p>
                         <p className="font-semibold text-slate-800">{v.visitDate}</p>
                       </div>
                     </div>
                     <div className="flex items-center space-x-2 text-slate-700">
                       <Clock size={15} className="text-blue-600 shrink-0" />
                       <div>
-                        <p className="text-[10px] text-slate-400 font-medium">Time</p>
+                        <p className="text-[10px] text-slate-400 font-medium">{t('visits_time')}</p>
                         <p className="font-semibold text-slate-800">{v.visitTime?.slice(0, 5)}</p>
                       </div>
                     </div>
@@ -438,7 +438,7 @@ export const AgentVisits = () => {
                           {v.buyerFirstName} {v.buyerLastName}
                         </p>
                         <p className="text-[11px] text-slate-500 truncate">
-                          {v.buyerEmail || 'Buyer'}
+                          {v.buyerEmail || t('visits_buyer')}
                         </p>
                       </div>
                     </div>
@@ -446,7 +446,7 @@ export const AgentVisits = () => {
 
                   {v.notes && (
                     <div className="bg-amber-50/60 border border-amber-100 rounded-lg p-2.5 text-[11px] text-amber-900 leading-snug">
-                      <span className="font-semibold text-amber-800">Note: </span>
+                      <span className="font-semibold text-amber-800">{t('visits_note')}: </span>
                       {v.notes}
                     </div>
                   )}
@@ -461,7 +461,7 @@ export const AgentVisits = () => {
                         className="px-3 py-1.5 text-xs font-semibold text-rose-600 hover:text-rose-700 hover:bg-rose-50 rounded-lg transition cursor-pointer flex items-center space-x-1"
                       >
                         <X size={13} />
-                        <span>Reject</span>
+                        <span>{t('visits_reject')}</span>
                       </button>
                       <button
                         type="button"
@@ -469,26 +469,26 @@ export const AgentVisits = () => {
                         className="px-3 py-1.5 text-xs font-semibold text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 rounded-lg transition cursor-pointer flex items-center space-x-1"
                       >
                         <Check size={13} />
-                        <span>Approve</span>
+                        <span>{t('visits_approve')}</span>
                       </button>
                     </>
                   )}
 
                   {isApproved && (
                     <span className="text-xs font-medium text-emerald-600 px-2 flex items-center gap-1">
-                      <CheckCircle2 size={14} /> Approved
+                      <CheckCircle2 size={14} /> {t('visits_approved')}
                     </span>
                   )}
 
                   {isCancelled && (
                     <span className="text-xs font-medium text-rose-600 px-2 flex items-center gap-1">
-                      <XCircle size={14} /> Rejected
+                      <XCircle size={14} /> {t('visits_rejected')}
                     </span>
                   )}
 
                   {isCompleted && (
                     <span className="text-xs font-medium text-blue-600 px-2 flex items-center gap-1">
-                      <CheckCircle2 size={14} /> Completed
+                      <CheckCircle2 size={14} /> {t('visits_completed')}
                     </span>
                   )}
                 </div>
@@ -504,7 +504,7 @@ export const AgentVisits = () => {
             type="button"
             onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
             disabled={currentPage <= 1}
-            aria-label="Previous page"
+            aria-label={t('visits_prev_page')}
             className="px-3 py-1.5 text-xs font-bold rounded-lg bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed flex items-center"
           >
             <ChevronLeft size={14} />
@@ -527,7 +527,7 @@ export const AgentVisits = () => {
             type="button"
             onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
             disabled={currentPage >= totalPages}
-            aria-label="Next page"
+            aria-label={t('visits_next_page')}
             className="px-3 py-1.5 text-xs font-bold rounded-lg bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed flex items-center"
           >
             <ChevronRight size={14} />
@@ -548,15 +548,15 @@ export const AgentVisits = () => {
                 <CheckCircle2 size={22} />
               </div>
               <h3 id="approve-visit-title" className="text-base font-bold text-slate-900">
-                Approve Visit Request
+                {t('visits_approve_confirm_title')}
               </h3>
             </div>
             <p className="text-xs text-slate-600 leading-relaxed">
-              Are you sure you want to approve the visit request for{' '}
+              {t('visits_approve_confirm_body')}{' '}
               <strong className="text-slate-800 font-semibold">
                 "{approveConfirmTarget.propertyTitle}"
               </strong>{' '}
-              on {approveConfirmTarget.visitDate} at {approveConfirmTarget.visitTime}?
+              {t('visits_on_date')} {approveConfirmTarget.visitDate} {t('visits_at')} {approveConfirmTarget.visitTime}?
             </p>
             <div className="flex items-center justify-end space-x-2.5 pt-3 border-t border-slate-100">
               <button
@@ -565,7 +565,7 @@ export const AgentVisits = () => {
                 disabled={processing}
                 className="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition cursor-pointer"
               >
-                Cancel
+                {t('visits_cancel')}
               </button>
               <button
                 type="button"
@@ -573,7 +573,7 @@ export const AgentVisits = () => {
                 disabled={processing}
                 className="px-4 py-2 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow-xs transition cursor-pointer disabled:opacity-50"
               >
-                {processing ? 'Approving...' : 'Yes, Approve'}
+                {processing ? t('visits_approving') : t('visits_approve_yes')}
               </button>
             </div>
           </div>
@@ -593,15 +593,15 @@ export const AgentVisits = () => {
                 <XCircle size={22} />
               </div>
               <h3 id="reject-visit-title" className="text-base font-bold text-slate-900">
-                Reject Visit Request
+                {t('visits_reject_confirm_title')}
               </h3>
             </div>
             <p className="text-xs text-slate-600 leading-relaxed">
-              Are you sure you want to reject the visit request for{' '}
+              {t('visits_reject_confirm_body')}{' '}
               <strong className="text-slate-800 font-semibold">
                 "{rejectConfirmTarget.propertyTitle}"
               </strong>{' '}
-              on {rejectConfirmTarget.visitDate} at {rejectConfirmTarget.visitTime}?
+              {t('visits_on_date')} {rejectConfirmTarget.visitDate} {t('visits_at')} {rejectConfirmTarget.visitTime}?
             </p>
             <div className="flex items-center justify-end space-x-2.5 pt-3 border-t border-slate-100">
               <button
@@ -610,7 +610,7 @@ export const AgentVisits = () => {
                 disabled={processing}
                 className="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition cursor-pointer"
               >
-                Cancel
+                {t('visits_cancel')}
               </button>
               <button
                 type="button"
@@ -618,7 +618,7 @@ export const AgentVisits = () => {
                 disabled={processing}
                 className="px-4 py-2 text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 rounded-xl shadow-xs transition cursor-pointer disabled:opacity-50"
               >
-                {processing ? 'Rejecting...' : 'Yes, Reject'}
+                {processing ? t('visits_rejecting') : t('visits_reject_yes')}
               </button>
             </div>
           </div>
