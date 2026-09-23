@@ -13,6 +13,7 @@ import KpiCard from '../../components/admin/KpiCard';
 import { useAuth } from '../../hooks/useAuth';
 import { ROUTES } from '../../utils/constants';
 import { getAgentDashboardStats } from '../../services/agent.service';
+import { useTranslation } from 'react-i18next';
 
 const NoData = ({ label = 'No data yet' }) => (
   <div className="flex-1 flex items-center justify-center py-10">
@@ -31,6 +32,7 @@ const Card = ({ title, children, className = '' }) => (
 
 const Dashboard = () => {
   const { user } = useAuth();
+  const { t } = useTranslation('agents');
   const displayName =
     user?.name ||
     [user?.firstName, user?.lastName].filter(Boolean).join(' ') ||
@@ -48,7 +50,7 @@ const Dashboard = () => {
         if (active) setStats(data);
       })
       .catch((err) => {
-        if (active) setError(err?.message || 'We couldn\'t load your dashboard. Please try again.');
+        if (active) setError(err?.message || t('error_loading'));
       })
       .finally(() => {
         if (active) setLoading(false);
@@ -56,44 +58,44 @@ const Dashboard = () => {
     return () => {
       active = false;
     };
-  }, []);
+  }, [t]);
 
   const indicatorFor = (value) =>
-    value > 0 ? null : <span className="text-[#9CA3AF]">No data yet</span>;
+    value > 0 ? null : <span className="text-[#9CA3AF]">{t('no_data')}</span>;
 
   const kpis = [
     {
-      title: 'Total Properties',
+      title: t('kpi.total_properties'),
       value: stats?.totalProperties ?? '—',
-      indicator: loading ? <span className="text-[#9CA3AF]">Loading…</span> : indicatorFor(stats?.totalProperties ?? 0),
+      indicator: loading ? <span className="text-[#9CA3AF]">{t('loading')}</span> : indicatorFor(stats?.totalProperties ?? 0),
       icon: Building2,
       iconBg: 'bg-[#E7F0FB] text-[#4A9FF5]',
     },
     {
-      title: 'Active Listings',
+      title: t('kpi.active_listings'),
       value: stats?.activeListings ?? '—',
-      indicator: loading ? <span className="text-[#9CA3AF]">Loading…</span> : indicatorFor(stats?.activeListings ?? 0),
+      indicator: loading ? <span className="text-[#9CA3AF]">{t('loading')}</span> : indicatorFor(stats?.activeListings ?? 0),
       icon: BadgeCheck,
       iconBg: 'bg-[#E6F4EC] text-[#2F7A55]',
     },
     {
-      title: 'Sold / Rented',
+      title: t('kpi.sold_rented'),
       value: stats?.soldRented ?? '—',
-      indicator: loading ? <span className="text-[#9CA3AF]">Loading…</span> : indicatorFor(stats?.soldRented ?? 0),
+      indicator: loading ? <span className="text-[#9CA3AF]">{t('loading')}</span> : indicatorFor(stats?.soldRented ?? 0),
       icon: CheckCircle2,
       iconBg: 'bg-[#FBF3DD] text-[#E7B85A]',
     },
     {
-      title: 'Scheduled Visits',
+      title: t('kpi.scheduled_visits'),
       value: stats?.scheduledVisits ?? '—',
-      indicator: loading ? <span className="text-[#9CA3AF]">Loading…</span> : indicatorFor(stats?.scheduledVisits ?? 0),
+      indicator: loading ? <span className="text-[#9CA3AF]">{t('loading')}</span> : indicatorFor(stats?.scheduledVisits ?? 0),
       icon: CalendarCheck,
       iconBg: 'bg-[#FBEAE9] text-[#D96B67]',
     },
     {
-      title: 'Unread Messages',
+      title: t('kpi.unread_messages'),
       value: stats?.unreadMessages ?? '—',
-      indicator: loading ? <span className="text-[#9CA3AF]">Loading…</span> : indicatorFor(stats?.unreadMessages ?? 0),
+      indicator: loading ? <span className="text-[#9CA3AF]">{t('loading')}</span> : indicatorFor(stats?.unreadMessages ?? 0),
       icon: MessageSquare,
       iconBg: 'bg-slate-100 text-slate-500',
     },
@@ -104,7 +106,7 @@ const Dashboard = () => {
       {/* Header */}
       <div className="min-w-0">
         <p className="text-[11px] font-semibold uppercase tracking-wider text-[#1D6FD3] mb-1">
-          Overview
+          {t('overview')}
         </p>
         <div className="flex items-center gap-2.5">
           <span
@@ -114,11 +116,11 @@ const Dashboard = () => {
             <LayoutDashboard size={20} />
           </span>
           <h1 className="text-[24px] font-bold text-[#111827] tracking-tight">
-            Welcome, {displayName}
+            {t('welcome', { name: displayName })}
           </h1>
         </div>
         <p className="text-[13px] text-[#6B7280] mt-1">
-          Manage your listings and customer engagements from here
+          {t('subtitle')}
         </p>
       </div>
 
@@ -127,14 +129,7 @@ const Dashboard = () => {
         <div className="flex items-start gap-3 bg-[#F7EFDD] border border-[#D8B878] rounded-xl px-4 py-3">
           <AlertCircle size={18} className="text-[#8A6A2F] shrink-0 mt-0.5" />
           <div className="text-[13px] text-[#8A6A2F]">
-            <span className="font-semibold">Your agent profile is incomplete.</span>{' '}
-            Complete it to activate your account and list properties.{' '}
-            <Link
-              to={ROUTES.completeAgentProfile}
-              className="font-semibold text-[#4A9FF5] hover:underline"
-            >
-              Complete Agent Profile
-            </Link>
+            {t('incomplete_profile')} <Link to={ROUTES.completeAgentProfile} className="font-semibold text-[#4A9FF5] hover:underline">{t('complete_profile')}</Link>
           </div>
         </div>
       )}
@@ -163,11 +158,11 @@ const Dashboard = () => {
 
       {/* Placeholder panels */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-5">
-        <Card title="Property Views Trend">
-          <NoData label="No activity data yet" />
+        <Card title={t('no_activity')}>
+          <NoData label={t('no_activity')} />
         </Card>
-        <Card title="Monthly Inquiries Volume">
-          <NoData label="No inquiry data yet" />
+        <Card title={t('no_inquiry')}>
+          <NoData label={t('no_inquiry')} />
         </Card>
       </div>
     </div>
