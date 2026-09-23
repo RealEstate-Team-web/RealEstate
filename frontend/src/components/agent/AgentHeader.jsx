@@ -1,31 +1,34 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../hooks/useAuth';
 import { Menu, Bell, Search } from 'lucide-react';
 import { ROUTES } from '../../utils/constants';
 import { getAgentInquiries } from '../../services/inquiry.service';
 import { getAgentVisitRequests } from '../../services/visit.service';
 import UserDropdown from '../common/UserDropdown';
+import LanguageSwitcher from '../common/LanguageSwitcher';
 
 const titleMap = {
-  '/agent': 'Dashboard',
-  '/agent/profile': 'Profile',
-  '/agent/settings': 'Settings',
-  '/agent/notifications': 'Notifications',
-  '/agent/properties': 'My Properties',
-  '/agent/properties/new': 'Add Property',
-  '/agent/visits': 'Visit Requests',
-  '/agent/messages': 'Customer Messages',
-  '/agent/analytics': 'Analytics',
-  '/agent/subscription': 'Subscription',
+  '/agent': 'sidebar_dashboard',
+  '/agent/profile': 'sidebar_profile',
+  '/agent/settings': 'sidebar_settings',
+  '/agent/notifications': 'sidebar_notifications',
+  '/agent/properties': 'sidebar_my_properties',
+  '/agent/properties/new': 'sidebar_add_property',
+  '/agent/visits': 'sidebar_visit_requests',
+  '/agent/messages': 'sidebar_customer_messages',
+  '/agent/analytics': 'sidebar_analytics',
+  '/agent/subscription': 'sidebar_subscription',
 };
 
 const getTitle = (pathname) => {
-  if (pathname.startsWith('/agent/properties/edit')) return 'Edit Property';
-  return titleMap[pathname] || 'Dashboard';
+  if (pathname.startsWith('/agent/properties/edit')) return 'sidebar_edit_property';
+  return titleMap[pathname] || 'sidebar_dashboard';
 };
 
 const AgentHeader = ({ onToggleSidebar }) => {
+  const { t } = useTranslation('agents');
   const { user, logout } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
@@ -67,8 +70,8 @@ const AgentHeader = ({ onToggleSidebar }) => {
   const displayName =
     user?.name ||
     [user?.firstName, user?.lastName].filter(Boolean).join(' ') ||
-    'Agent';
-  const title = getTitle(location.pathname);
+    t('sidebar_agent');
+  const title = t(getTitle(location.pathname));
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
@@ -117,34 +120,40 @@ const AgentHeader = ({ onToggleSidebar }) => {
             type="search"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search my properties..."
-            aria-label="Search my properties"
+            placeholder={t('header_search_placeholder')}
+            aria-label={t('header_search_label')}
             className="w-full ml-2 bg-transparent text-[13px] text-[#111827] placeholder:text-slate-400 outline-none"
           />
         </form>
       )}
 
-      {/* Right: notifications + user */}
-      <div className="flex items-center space-x-4">
-        <button
-          onClick={() => navigate(ROUTES.agentNotifications)}
-          className="relative p-2.5 rounded-full text-slate-500 hover:bg-slate-100 hover:text-[#4A9FF5] transition cursor-pointer"
-          title="Notifications"
-          aria-label={`Notifications${unreadCount > 0 ? `, ${unreadCount} unread` : ''}`}
-        >
-          <Bell size={20} />
-          {unreadCount > 0 && (
-            <span className="absolute top-1 right-1 min-w-[16px] h-4 px-1 bg-[#D96B67] text-white text-[9px] font-bold rounded-full border-2 border-white flex items-center justify-center">
-              {unreadCount > 99 ? '99+' : unreadCount}
-            </span>
-          )}
-        </button>
+ {/* Right: notifications + language + user */}
+       <div className="flex items-center space-x-4">
+         <button
+           onClick={() => navigate(ROUTES.agentNotifications)}
+           className="relative p-2.5 rounded-full text-slate-500 hover:bg-slate-100 hover:text-[#4A9FF5] transition cursor-pointer"
+title={t('header_notifications')}
+            aria-label={
+              unreadCount > 0
+                ? t('header_notifications_unread', { count: unreadCount })
+                : t('header_notifications')
+            }
+         >
+           <Bell size={20} />
+{unreadCount > 0 && (
+              <span aria-hidden="true" className="absolute top-1 right-1 min-w-[16px] h-4 px-1 bg-[#D96B67] text-white text-[9px] font-bold rounded-full border-2 border-white flex items-center justify-center">
+                {unreadCount > 99 ? '99+' : unreadCount}
+              </span>
+            )}
+         </button>
 
-        <UserDropdown
-          user={user}
-          displayName={displayName}
-          roleLabel="Agent"
-          onLogout={() => {
+         <LanguageSwitcher />
+
+         <UserDropdown
+           user={user}
+           displayName={displayName}
+           roleLabel={t('sidebar_agent')}
+           onLogout={() => {
             logout();
             navigate(ROUTES.login);
           }}
