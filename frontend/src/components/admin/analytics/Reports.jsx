@@ -27,6 +27,7 @@
  * See reports.types.js for the full Props and payload contract.
  */
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   ResponsiveContainer,
   AreaChart,
@@ -120,13 +121,14 @@ function useCountUp(target, enabled) {
  * -------------------------------------------------------------------------- */
 
 function KpiCard({ config, value, countUp }) {
+  const { t } = useTranslation('admin');
   const tone = DEFAULT_KPI_TONES[config.tone] || DEFAULT_KPI_TONES.info;
   const displayed = useCountUp(value, countUp);
   const Icon = config.icon;
   return (
     <div className="bg-white border border-[#E5E7EB] rounded-lg p-4 shadow-[0_2px_8px_rgba(15,23,42,0.06)] flex flex-col justify-between min-h-[118px] hover:shadow-[0_4px_14px_rgba(15,23,42,0.08)] transition-shadow">
       <div className="flex items-start justify-between">
-        <p className="text-[13px] font-medium text-[#6B7280]">{config.label}</p>
+        <p className="text-[13px] font-medium text-[#6B7280]">{t(config.labelKey || config.label, config.label)}</p>
         {Icon && (
           <span
             aria-hidden="true"
@@ -144,10 +146,11 @@ function KpiCard({ config, value, countUp }) {
 }
 
 function RangePicker({ ranges, value, onChange }) {
+  const { t } = useTranslation('admin');
   return (
     <div
       role="tablist"
-      aria-label="Time range"
+      aria-label={t('reports_aria_range')}
       className="inline-flex items-center gap-0.5 bg-slate-100 rounded-lg p-0.5"
     >
       {ranges.map((r) => {
@@ -213,22 +216,24 @@ function Skeleton({ className = '' }) {
 }
 
 function EmptyState({ message }) {
+  const { t } = useTranslation('admin');
   return (
     <div className="py-12 text-center">
-      <p className="text-[13px] text-[#9CA3AF]">{message || 'No data available yet.'}</p>
+      <p className="text-[13px] text-[#9CA3AF]">{message || t('reports_empty')}</p>
     </div>
   );
 }
 
 function ErrorState({ message, onRetry }) {
+  const { t } = useTranslation('admin');
   return (
     <div className="py-12 text-center">
-      <p className="text-[13px] text-[#D96B67] mb-3">{message || 'Failed to load data.'}</p>
+      <p className="text-[13px] text-[#D96B67] mb-3">{message || t('reports_error_load')}</p>
       <button
         onClick={onRetry}
         className="inline-flex items-center gap-2 px-3.5 py-2 text-[12px] font-semibold text-white bg-[#4A9FF5] rounded-lg hover:bg-[#3b8de0] transition-colors"
       >
-        <RefreshCw size={14} /> Retry
+        <RefreshCw size={14} /> {t('retry')}
       </button>
     </div>
   );
@@ -240,10 +245,10 @@ function ErrorState({ message, onRetry }) {
 
 function defaultKpis() {
   return [
-    { key: 'users', label: 'Users', tone: 'info', format: 'integer' },
-    { key: 'agents', label: 'Agents', tone: 'success', format: 'integer' },
-    { key: 'properties', label: 'Properties', tone: 'warning', format: 'integer' },
-    { key: 'visits', label: 'Visits', tone: 'neutral', format: 'integer' },
+    { key: 'users', labelKey: 'kpi_users', tone: 'info', format: 'integer' },
+    { key: 'agents', labelKey: 'kpi_agents', tone: 'success', format: 'integer' },
+    { key: 'properties', labelKey: 'kpi_properties', tone: 'warning', format: 'integer' },
+    { key: 'visits', labelKey: 'kpi_visits', tone: 'neutral', format: 'integer' },
   ];
 }
 
@@ -256,7 +261,7 @@ function defaultKpis() {
  */
 
 const Reports = ({
-  title = 'Reports',
+  title,
   subtitle,
   eyebrow,
   icon: Icon,
@@ -271,6 +276,8 @@ const Reports = ({
   labels = {},
   className = '',
 }) => {
+  const { t } = useTranslation('admin');
+  const heading = title || t('reports_title');
   const [range, setRange] = useState(defaultRange);
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -283,7 +290,7 @@ const Reports = ({
     const loader =
       typeof fetchAnalytics === 'function'
         ? fetchAnalytics
-        : () => Promise.reject(new Error('fetchAnalytics is required.'));
+        : () => Promise.reject(new Error(t('reports_fetch_required')));
     let active = true;
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setLoading(true);
@@ -293,7 +300,7 @@ const Reports = ({
         if (active) setData(payload);
       })
       .catch((err) => {
-        if (active) setError(err.message || 'Failed to load analytics');
+        if (active) setError(err.message || t('reports_load_failed'));
       })
       .finally(() => {
         if (active) setLoading(false);
@@ -305,10 +312,10 @@ const Reports = ({
   }, [range, reloadKey]);
 
   const chartLabels = {
-    registrations: labels.registrations || 'Registrations',
-    checkins: labels.checkins || 'Check-ins',
-    items: labels.items || 'Items',
-    categories: labels.categories || 'Categories',
+    registrations: labels.registrations || t('reports_chart_registrations'),
+    checkins: labels.checkins || t('reports_chart_checkins'),
+    items: labels.items || t('reports_chart_items'),
+    categories: labels.categories || t('reports_chart_categories'),
   };
 
   const trendData = useMemo(() => {
@@ -323,8 +330,7 @@ const Reports = ({
       });
     }
     return merged;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data]);
+  }, [data, chartLabels.registrations, chartLabels.checkins]);
 
   const getKpiValue = (key) => {
     if (!data) return 0;
@@ -334,10 +340,10 @@ const Reports = ({
   const tableConfig = table
     ? {
         enabled: table.enabled !== false,
-        title: table.title || 'Breakdown',
+        title: table.title || t('reports_table_title'),
         columns: table.columns || [
-          { key: 'name', label: 'Name' },
-          { key: 'status', label: 'Status' },
+          { key: 'name', labelKey: 'col_name' },
+          { key: 'status', labelKey: 'col_status' },
           { key: 'count', label: 'Count', accessor: (row) => Number(row.count) },
         ],
       }
@@ -369,7 +375,7 @@ const Reports = ({
   if (error) {
     return (
       <div className={`space-y-5 font-sans ${className}`}>
-        <Header eyebrow={eyebrow} icon={Icon} title={title} subtitle={subtitle} />
+        <Header eyebrow={eyebrow} icon={Icon} title={heading} subtitle={subtitle} />
         <div className="bg-white border border-[#E5E7EB] rounded-lg">
           <ErrorState message={error} onRetry={() => setReloadKey((k) => k + 1)} />
         </div>
@@ -381,7 +387,7 @@ const Reports = ({
   if (!data) {
     return (
       <div className={`space-y-5 font-sans ${className}`}>
-        <Header eyebrow={eyebrow} icon={Icon} title={title} subtitle={subtitle} />
+        <Header eyebrow={eyebrow} icon={Icon} title={heading} subtitle={subtitle} />
         <div className="bg-white border border-[#E5E7EB] rounded-lg">
           <EmptyState message={labels.emptyState} />
         </div>
@@ -409,12 +415,12 @@ const Reports = ({
                 <Icon size={20} />
               </span>
             )}
-            <h1 className="text-[24px] font-bold text-[#111827] tracking-tight">{title}</h1>
+            <h1 className="text-[24px] font-bold text-[#111827] tracking-tight">{heading}</h1>
           </div>
           {subtitle && <p className="text-[13px] text-[#6B7280] mt-1">{subtitle}</p>}
           {summary && (
             <p className="text-[12px] text-[#9CA3AF] mt-1">
-              {scope === 'self' ? 'Showing your activity. ' : 'Showing platform activity. '}
+              {scope === 'self' ? t('reports_summary_self') : t('reports_summary_platform')}
               {summary}
             </p>
           )}
@@ -442,11 +448,11 @@ const Reports = ({
           {charts.registrations && (
             <ChartCard
               title={chartLabels.registrations}
-              subtitle={`Last ${rangeAsNumber} days`}
+              subtitle={t('reports_last_days', { count: rangeAsNumber })}
               action={<RangePicker ranges={ranges} value={range} onChange={setRange} />}
             >
               {trendData.length === 0 ? (
-                <EmptyState message={`No ${chartLabels.registrations.toLowerCase()} data yet`} />
+                <EmptyState message={t('reports_no_data_yet', { label: chartLabels.registrations.toLowerCase() })} />
               ) : (
                 <ResponsiveContainer width="100%" height={240}>
                   <AreaChart data={trendData} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
@@ -476,11 +482,11 @@ const Reports = ({
           {charts.checkins && (
             <ChartCard
               title={chartLabels.checkins}
-              subtitle={`Last ${rangeAsNumber} days`}
+              subtitle={t('reports_last_days', { count: rangeAsNumber })}
               action={<RangePicker ranges={ranges} value={range} onChange={setRange} />}
             >
               {trendData.length === 0 ? (
-                <EmptyState message={`No ${chartLabels.checkins.toLowerCase()} data yet`} />
+                <EmptyState message={t('reports_no_data_yet', { label: chartLabels.checkins.toLowerCase() })} />
               ) : (
                 <ResponsiveContainer width="100%" height={240}>
                   <AreaChart data={trendData} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
@@ -513,9 +519,9 @@ const Reports = ({
       {(showPerItem || showCategories) && (
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-5">
           {showCategories && (
-            <ChartCard title={chartLabels.categories} subtitle="Distribution across categories">
+            <ChartCard title={chartLabels.categories} subtitle={t('reports_subtitle_categories')}>
               {data.categories.every((c) => c.count === 0) ? (
-                <EmptyState message="No category data yet" />
+                <EmptyState message={t('reports_empty_categories')} />
               ) : (
                 <ResponsiveContainer width="100%" height={240}>
                   <PieChart>
@@ -541,7 +547,7 @@ const Reports = ({
           )}
 
           {showPerItem && (
-            <ChartCard title={chartLabels.items} subtitle="Count by item">
+            <ChartCard title={chartLabels.items} subtitle={t('reports_subtitle_items')}>
               <ResponsiveContainer width="100%" height={240}>
                 <BarChart data={items} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" vertical={false} />
@@ -564,14 +570,14 @@ const Reports = ({
       {tableConfig && tableConfig.enabled && (
         <ChartCard title={tableConfig.title}>
           {items.length === 0 ? (
-            <EmptyState message="Nothing to show yet" />
+            <EmptyState message={t('reports_empty_items')} />
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-left text-[12px] text-[#111827]">
                 <thead className="text-[#9CA3AF] font-semibold uppercase text-[10px] tracking-wider">
                   <tr className="border-b border-slate-100">
                     {tableConfig.columns.map((col) => (
-                      <th key={col.key} className="py-2 px-2">{col.label}</th>
+                      <th key={col.key} className="py-2 px-2">{t(col.labelKey || col.label)}</th>
                     ))}
                   </tr>
                 </thead>

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { CreditCard, Plus, Pencil, Trash2, Loader2, X, Ban, CheckCircle2 } from 'lucide-react';
 import StatusBadge from '../../components/common/StatusBadge';
 import {
@@ -50,6 +51,7 @@ const Field = ({ label, htmlFor, error, children }) => (
 );
 
 const SubscriptionPlans = () => {
+  const { t } = useTranslation('admin');
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -84,7 +86,7 @@ const SubscriptionPlans = () => {
         await fetchPlans();
       } catch (err) {
         if (!active) return;
-        setLoadError(err.message || 'Failed to load subscription plans');
+        setLoadError(err.message || t('plans_error_load'));
       } finally {
         if (active) setLoading(false);
       }
@@ -92,7 +94,7 @@ const SubscriptionPlans = () => {
     return () => {
       active = false;
     };
-  }, []);
+  }, [t]);
 
   const retryInitialLoad = async () => {
     setLoading(true);
@@ -100,7 +102,7 @@ const SubscriptionPlans = () => {
     try {
       await fetchPlans();
     } catch (err) {
-      setLoadError(err.message || 'Failed to load subscription plans');
+      setLoadError(err.message || t('plans_error_load'));
     } finally {
       setLoading(false);
     }
@@ -112,7 +114,7 @@ const SubscriptionPlans = () => {
       await fetchPlans();
       setRefreshError(null);
     } catch (err) {
-      setRefreshError(err.message || 'Failed to refresh subscription plans');
+      setRefreshError(err.message || t('plans_error_refresh'));
     } finally {
       setRefreshing(false);
     }
@@ -128,29 +130,28 @@ const SubscriptionPlans = () => {
     const propertyLimit = Number(values.property_limit);
     const imagesPerProperty = Number(values.images_per_property);
 
-    if (!name) errors.name = 'Plan name is required';
-    else if (name.length > 100) errors.name = 'Plan name must be at most 100 characters';
+    if (!name) errors.name = t('plans_err_name_required');
+    else if (name.length > 100) errors.name = t('plans_err_name_max');
 
-    if (!priceRaw) errors.price = 'Price is required';
-    else if (!Number.isFinite(price) || price < 0) errors.price = 'Price must be a non-negative number';
+    if (!priceRaw) errors.price = t('plans_err_price_required');
+    else if (!Number.isFinite(price) || price < 0) errors.price = t('plans_err_price_number');
 
-    if (!slug) errors.slug = 'Slug is required';
-    else if (slug.length > 100) errors.slug = 'Slug must be at most 100 characters';
-    else if (!slugPattern.test(slug))
-      errors.slug = 'Slug must contain only lowercase letters, numbers, and dashes';
+    if (!slug) errors.slug = t('plans_err_slug_required');
+    else if (slug.length > 100) errors.slug = t('plans_err_slug_max');
+    else if (!slugPattern.test(slug)) errors.slug = t('plans_err_slug_format');
 
-    if (!Number.isFinite(price) || price < 0) errors.price = 'Price must be a non-negative number';
+    if (!Number.isFinite(price) || price < 0) errors.price = t('plans_err_price_number');
     if (!Number.isInteger(durationDays) || durationDays <= 0)
-      errors.duration_days = 'Duration must be a positive integer';
+      errors.duration_days = t('plans_err_duration');
     if (!Number.isInteger(propertyLimit) || propertyLimit <= 0)
-      errors.property_limit = 'Property limit must be a positive integer';
+      errors.property_limit = t('plans_err_prop_limit');
     if (!Number.isInteger(imagesPerProperty) || imagesPerProperty <= 0)
-      errors.images_per_property = 'Image limit must be a positive integer';
+      errors.images_per_property = t('plans_err_image_limit');
 
     const features = parseFeatureText(values.features);
-    if (features.length > 20) errors.features = 'At most 20 features are allowed';
+    if (features.length > 20) errors.features = t('plans_err_features_max');
     else if (features.some((item) => item.length > 100))
-      errors.features = 'Each feature must be at most 100 characters';
+      errors.features = t('plans_err_feature_length');
 
     return errors;
   };
@@ -184,13 +185,13 @@ const SubscriptionPlans = () => {
       const payload = buildPayload(form);
       if (editingId) {
         await updateSubscriptionPlan(editingId, payload);
-        setSuccess(`Subscription plan "${payload.name}" updated`);
+        setSuccess(t('plans_updated', { name: payload.name }));
       } else {
         await createSubscriptionPlan(payload);
-        setSuccess(`Subscription plan "${payload.name}" created`);
+        setSuccess(t('plans_created', { name: payload.name }));
       }
     } catch (err) {
-      setFormErrors({ form: err.message || 'Failed to save subscription plan' });
+      setFormErrors({ form: err.message || t('plans_error_save') });
       setSaving(false);
       return;
     }
@@ -235,14 +236,14 @@ const SubscriptionPlans = () => {
     try {
       await updateSubscriptionPlanStatus(plan.id, nextActive);
     } catch (err) {
-      setError(err.message || 'Failed to update subscription plan status');
+      setError(err.message || t('plans_error_status'));
       setTogglingId(null);
       return;
     }
     setSuccess(
       nextActive
-        ? `Subscription plan "${plan.name}" activated`
-        : `Subscription plan "${plan.name}" deactivated`
+        ? t('plans_activated', { name: plan.name })
+        : t('plans_deactivated', { name: plan.name })
     );
     if (editingId === plan.id) {
       setForm((prev) => ({ ...prev, is_active: nextActive }));
@@ -259,11 +260,11 @@ const SubscriptionPlans = () => {
     try {
       await deleteSubscriptionPlan(id);
     } catch (err) {
-      setError(err.message || 'Failed to delete subscription plan');
+      setError(err.message || t('plans_error_delete'));
       setDeletingId(null);
       return;
     }
-    setSuccess('Subscription plan deleted');
+    setSuccess(t('plans_deleted'));
     if (editingId === id) {
       setEditingId(null);
       setForm(emptyForm);
@@ -277,21 +278,21 @@ const SubscriptionPlans = () => {
   const set = (key, value) => setForm((prev) => ({ ...prev, [key]: value }));
 
   if (loading) {
-    return <div className="py-20 text-center text-[#6B7280]">Loading subscription plans…</div>;
+    return <div className="py-20 text-center text-[#6B7280]">{t('plans_loading')}</div>;
   }
 
   if (loadError) {
     return (
       <div className="py-20 flex flex-col items-center gap-3 font-sans">
         <p role="alert" className="text-[13px] text-[#B23B36]">
-          Failed to load subscription plans: {loadError}
+          {t('plans_load_prefix')}{loadError}
         </p>
         <button
           type="button"
           onClick={retryInitialLoad}
           className="inline-flex items-center h-[36px] px-4 rounded-md bg-[#edf2fa] border border-[#d6deeb] text-[13px] font-medium text-[#374151] hover:bg-[#F3F4F8] transition-colors"
         >
-          Retry
+          {t('retry')}
         </button>
       </div>
     );
@@ -304,7 +305,7 @@ const SubscriptionPlans = () => {
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div className="min-w-0">
           <p className="text-[11px] font-semibold uppercase tracking-wider text-[#1D6FD3] mb-1">
-            Management
+            {t('eyebrow_management')}
           </p>
           <div className="flex items-center gap-2.5">
             <span
@@ -314,11 +315,11 @@ const SubscriptionPlans = () => {
               <CreditCard size={20} />
             </span>
             <h1 className="text-[24px] font-bold text-[#111827] tracking-tight">
-              Subscription Plan Management
+              {t('plans_title')}
             </h1>
           </div>
           <p className="text-[13px] text-[#6B7280] mt-1">
-            Manage pricing, limits, and availability of agent subscription plans
+            {t('plans_subtitle')}
           </p>
         </div>
       </div>
@@ -338,7 +339,7 @@ const SubscriptionPlans = () => {
           role="alert"
           className="rounded-md bg-[#FBF3DD] text-[#8a6d1f] text-[13px] px-4 py-3 flex items-center justify-between gap-3"
         >
-          <span>Saved, but refreshing the list failed: {refreshError}</span>
+          <span>{t('saved_refresh_failed')}{refreshError}</span>
           <button
             type="button"
             onClick={() => reload()}
@@ -346,7 +347,7 @@ const SubscriptionPlans = () => {
             className="inline-flex items-center gap-1.5 h-[30px] px-3 rounded-md bg-white border border-[#e5d9a8] text-[12px] font-medium text-[#8a6d1f] hover:bg-[#fdf8ea] transition-colors disabled:opacity-50 whitespace-nowrap"
           >
             {refreshing ? <Loader2 size={14} className="animate-spin" /> : null}
-            Retry
+            {t('retry')}
           </button>
         </div>
       )}
@@ -359,7 +360,7 @@ const SubscriptionPlans = () => {
       >
         <div className="flex items-center justify-between gap-3 flex-wrap mb-3">
           <h2 className="text-[17px] font-semibold text-[#111827]">
-            {editingId ? 'Edit Subscription Plan' : 'Add New Subscription Plan'}
+            {editingId ? t('plans_edit_title') : t('plans_add_title')}
           </h2>
           {editingId ? (
             <button
@@ -369,35 +370,35 @@ const SubscriptionPlans = () => {
               className="inline-flex items-center gap-1.5 h-[32px] px-3 rounded-md bg-[#edf2fa] border border-[#d6deeb] text-[13px] font-medium text-[#374151] hover:bg-[#F3F4F8] transition-colors disabled:opacity-50"
             >
               <X size={15} />
-              Cancel Edit
+              {t('cancel_edit')}
             </button>
           ) : null}
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-          <Field label="Plan name" htmlFor="plan-name" error={formErrors.name}>
+          <Field label={t('plans_field_name')} htmlFor="plan-name" error={formErrors.name}>
             <input
               id="plan-name"
               type="text"
               value={form.name}
               onChange={(e) => set('name', e.target.value)}
-              placeholder="e.g. Pro"
+              placeholder={t('plans_ph_name')}
               maxLength={100}
               className={inputClass}
             />
           </Field>
-          <Field label="Slug" htmlFor="plan-slug" error={formErrors.slug}>
+          <Field label={t('plans_field_slug')} htmlFor="plan-slug" error={formErrors.slug}>
             <input
               id="plan-slug"
               type="text"
               value={form.slug}
               onChange={(e) => set('slug', e.target.value)}
-              placeholder="e.g. pro"
+              placeholder={t('plans_ph_slug')}
               maxLength={100}
               className={inputClass}
             />
           </Field>
-          <Field label="Price" htmlFor="plan-price" error={formErrors.price}>
+          <Field label={t('plans_field_price')} htmlFor="plan-price" error={formErrors.price}>
             <input
               id="plan-price"
               type="number"
@@ -405,11 +406,11 @@ const SubscriptionPlans = () => {
               step="0.01"
               value={form.price}
               onChange={(e) => set('price', e.target.value)}
-              placeholder="e.g. 1000"
+              placeholder={t('plans_ph_price')}
               className={inputClass}
             />
           </Field>
-          <Field label="Currency" htmlFor="plan-currency" error={formErrors.currency}>
+          <Field label={t('plans_field_currency')} htmlFor="plan-currency" error={formErrors.currency}>
             <select
               id="plan-currency"
               value={form.currency}
@@ -423,7 +424,7 @@ const SubscriptionPlans = () => {
               ))}
             </select>
           </Field>
-          <Field label="Duration (days)" htmlFor="plan-duration" error={formErrors.duration_days}>
+          <Field label={t('plans_field_duration')} htmlFor="plan-duration" error={formErrors.duration_days}>
             <input
               id="plan-duration"
               type="number"
@@ -431,12 +432,12 @@ const SubscriptionPlans = () => {
               step="1"
               value={form.duration_days}
               onChange={(e) => set('duration_days', e.target.value)}
-              placeholder="e.g. 30"
+              placeholder={t('plans_ph_duration')}
               className={inputClass}
             />
           </Field>
           <Field
-            label="Property limit"
+            label={t('plans_field_prop_limit')}
             htmlFor="plan-property-limit"
             error={formErrors.property_limit}
           >
@@ -447,12 +448,12 @@ const SubscriptionPlans = () => {
               step="1"
               value={form.property_limit}
               onChange={(e) => set('property_limit', e.target.value)}
-              placeholder="e.g. 20"
+              placeholder={t('plans_ph_prop_limit')}
               className={inputClass}
             />
           </Field>
           <Field
-            label="Images per property"
+            label={t('plans_field_images')}
             htmlFor="plan-images"
             error={formErrors.images_per_property}
           >
@@ -463,11 +464,11 @@ const SubscriptionPlans = () => {
               step="1"
               value={form.images_per_property}
               onChange={(e) => set('images_per_property', e.target.value)}
-              placeholder="e.g. 10"
+              placeholder={t('plans_ph_images')}
               className={inputClass}
             />
           </Field>
-          <Field label="Visibility" htmlFor="plan-active" error={formErrors.is_active}>
+          <Field label={t('plans_field_visibility')} htmlFor="plan-active" error={formErrors.is_active}>
             <label
               htmlFor="plan-active"
               className="h-[38px] flex items-center gap-2 cursor-pointer"
@@ -479,11 +480,11 @@ const SubscriptionPlans = () => {
                 onChange={(e) => set('is_active', e.target.checked)}
                 className="h-4 w-4 accent-[#E7B85A]"
               />
-              <span className="text-[13px] text-[#374151]">Active</span>
+              <span className="text-[13px] text-[#374151]">{t('plans_visibility_active')}</span>
             </label>
           </Field>
           <Field
-            label="Features (comma separated)"
+            label={t('plans_field_features')}
             htmlFor="plan-features"
             error={formErrors.features}
           >
@@ -492,19 +493,19 @@ const SubscriptionPlans = () => {
               value={form.features}
               onChange={(e) => set('features', e.target.value)}
               rows={2}
-              placeholder="Featured listing, Analytics, Priority placement"
+              placeholder={t('plans_ph_features')}
               className={`${inputClass} h-auto min-h-[60px] py-2 resize-y`}
             />
           </Field>
           <div className="sm:col-span-2 flex flex-col gap-1">
-            <Field label="Description (optional)" htmlFor="plan-description" error={formErrors.description}>
+            <Field label={t('plans_field_description')} htmlFor="plan-description" error={formErrors.description}>
               <textarea
                 id="plan-description"
                 value={form.description}
                 onChange={(e) => set('description', e.target.value)}
                 rows={2}
                 maxLength={1000}
-                placeholder="Short description shown on the pricing cards"
+                placeholder={t('plans_ph_description')}
                 className={`${inputClass} h-auto min-h-[60px] py-2 resize-y`}
               />
             </Field>
@@ -516,7 +517,7 @@ const SubscriptionPlans = () => {
               className="inline-flex items-center justify-center gap-1.5 h-[38px] px-4 rounded-md bg-[#E7B85A] text-[13px] font-semibold text-[#111827] hover:bg-[#dfae49] transition-colors disabled:opacity-50 whitespace-nowrap w-full"
             >
               {saving ? <Loader2 size={16} className="animate-spin" /> : <Plus size={16} />}
-              {editingId ? 'Save Changes' : 'Add Plan'}
+              {editingId ? t('save_changes') : t('plans_add')}
             </button>
           </div>
         </div>
@@ -530,25 +531,25 @@ const SubscriptionPlans = () => {
 
       {/* Plans table */}
       <div className="bg-white border border-[#E5E7EB] rounded-lg shadow-[0_2px_8px_rgba(15,23,42,0.06)] overflow-hidden">
-        <h2 className="text-[17px] font-semibold text-[#111827] px-4 py-3">All Plans</h2>
+        <h2 className="text-[17px] font-semibold text-[#111827] px-4 py-3">{t('plans_all')}</h2>
         <div className="overflow-x-auto">
           <table className="w-full text-left text-[13px] text-[#111827] min-w-[880px]">
             <thead>
               <tr className="bg-[#F3F4F8] text-[#374151] font-medium text-[13px] h-[42px]">
-                <th className="py-0 px-4 rounded-l-lg w-[18%]">Plan</th>
-                <th className="py-0 px-4 w-[12%]">Price</th>
-                <th className="py-0 px-4 w-[12%]">Duration</th>
-                <th className="py-0 px-4 w-[16%]">Limits</th>
-                <th className="py-0 px-4 w-[10%]">Status</th>
-                <th className="py-0 px-4 w-[12%]">Created</th>
-                <th className="py-0 px-4 w-[20%] rounded-r-lg">Actions</th>
+                <th className="py-0 px-4 rounded-l-lg w-[18%]">{t('plans_col_plan')}</th>
+                <th className="py-0 px-4 w-[12%]">{t('plans_col_price')}</th>
+                <th className="py-0 px-4 w-[12%]">{t('plans_col_duration')}</th>
+                <th className="py-0 px-4 w-[16%]">{t('plans_col_limits')}</th>
+                <th className="py-0 px-4 w-[10%]">{t('col_status')}</th>
+                <th className="py-0 px-4 w-[12%]">{t('col_created')}</th>
+                <th className="py-0 px-4 w-[20%] rounded-r-lg">{t('col_actions')}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#E5E7EB]">
               {plans.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="py-10 text-center text-[13px] text-[#6B7280]">
-                    No subscription plans yet. Add your first plan above.
+                    {t('plans_empty')}
                   </td>
                 </tr>
               ) : (
@@ -571,14 +572,14 @@ const SubscriptionPlans = () => {
                       {formatPrice(plan.price)} {plan.currency}
                     </td>
                     <td className="py-0 px-4 text-[#374151] whitespace-nowrap">
-                      {plan.duration_days} {plan.duration_days === 1 ? 'day' : 'days'}
+                      {t('plans_day', { count: plan.duration_days })}
                     </td>
                     <td className="py-0 px-4 text-[#374151] whitespace-nowrap">
-                      {plan.property_limit} props · {plan.images_per_property} img
+                      {plan.property_limit}{t('plans_props_suffix')}{plan.images_per_property}{t('plans_img_suffix')}
                     </td>
                     <td className="py-0 px-4">
                       <StatusBadge status={plan.is_active ? 'active' : 'inactive'}>
-                        {plan.is_active ? 'Active' : 'Inactive'}
+                        {plan.is_active ? t('status_active') : t('status_inactive')}
                       </StatusBadge>
                     </td>
                     <td className="py-0 px-4 text-[#374151] whitespace-nowrap">
@@ -589,7 +590,7 @@ const SubscriptionPlans = () => {
                         {confirmToggleId === plan.id ? (
                           <>
                             <span className="text-[12px] text-[#8a6d1f]">
-                              {plan.is_active ? 'Deactivate?' : 'Activate?'}
+                              {plan.is_active ? t('plans_confirm_deactivate') : t('plans_confirm_activate')}
                             </span>
                             <button
                               type="button"
@@ -602,7 +603,7 @@ const SubscriptionPlans = () => {
                               ) : (
                                 <CheckCircle2 size={14} />
                               )}
-                              Yes
+                              {t('yes')}
                             </button>
                             <button
                               type="button"
@@ -610,12 +611,12 @@ const SubscriptionPlans = () => {
                               disabled={togglingId === plan.id}
                               className="h-[30px] px-2.5 rounded-md bg-[#edf2fa] border border-[#d6deeb] text-[12px] font-medium text-[#374151] hover:bg-[#F3F4F8] transition-colors disabled:opacity-50"
                             >
-                              No
+                              {t('no')}
                             </button>
                           </>
                         ) : confirmDeleteId === plan.id ? (
                           <>
-                            <span className="text-[12px] text-[#B23B36]">Delete?</span>
+                            <span className="text-[12px] text-[#B23B36]">{t('delete_confirm')}</span>
                             <button
                               type="button"
                               disabled={deletingId === plan.id}
@@ -627,7 +628,7 @@ const SubscriptionPlans = () => {
                               ) : (
                                 <Trash2 size={14} />
                               )}
-                              Yes
+                              {t('yes')}
                             </button>
                             <button
                               type="button"
@@ -635,7 +636,7 @@ const SubscriptionPlans = () => {
                               disabled={deletingId === plan.id}
                               className="h-[30px] px-2.5 rounded-md bg-[#edf2fa] border border-[#d6deeb] text-[12px] font-medium text-[#374151] hover:bg-[#F3F4F8] transition-colors disabled:opacity-50"
                             >
-                              No
+                              {t('no')}
                             </button>
                           </>
                         ) : (
@@ -647,7 +648,7 @@ const SubscriptionPlans = () => {
                               className="inline-flex items-center gap-1.5 h-[32px] px-3 rounded-md bg-[#edf2fa] border border-[#d6deeb] text-[13px] font-medium text-[#374151] hover:bg-[#F3F4F8] transition-colors disabled:opacity-50"
                             >
                               <Pencil size={15} />
-                              Edit
+                              {t('edit')}
                             </button>
                             <button
                               type="button"
@@ -660,7 +661,7 @@ const SubscriptionPlans = () => {
                               }`}
                             >
                               {plan.is_active ? <Ban size={15} /> : <CheckCircle2 size={15} />}
-                              {plan.is_active ? 'Deactivate' : 'Activate'}
+                              {plan.is_active ? t('plans_deactivate') : t('plans_activate')}
                             </button>
                             <button
                               type="button"
@@ -669,7 +670,7 @@ const SubscriptionPlans = () => {
                               className="inline-flex items-center gap-1.5 h-[32px] px-3 rounded-md bg-[#edf2fa] border border-[#d6deeb] text-[13px] font-medium text-[#B23B36] hover:bg-[#fbe9e8] transition-colors disabled:opacity-50"
                             >
                               <Trash2 size={15} />
-                              Delete
+                              {t('delete')}
                             </button>
                           </>
                         )}

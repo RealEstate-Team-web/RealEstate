@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Search, X, Users, Home, Building2, ArrowRight } from 'lucide-react';
 import { searchEntities } from '../../services/admin.service';
 
@@ -14,11 +15,16 @@ const ROUTE_MAP = {
 };
 
 const LABEL_MAP = {
-  admin: { users: 'Users', agents: 'Agents', properties: 'Properties' },
+  admin: {
+    users: 'search_section_users',
+    agents: 'search_section_agents',
+    properties: 'search_section_properties',
+  },
 };
 
 const DashboardSearch = ({ role = 'admin' }) => {
   const navigate = useNavigate();
+  const { t } = useTranslation('admin');
   const containerRef = useRef(null);
   const inputRef = useRef(null);
   const debounceRef = useRef(null);
@@ -52,7 +58,7 @@ const DashboardSearch = ({ role = 'admin' }) => {
     } catch {
       if (requestId !== requestIdRef.current) return;
       setResults(null);
-      setError('Search failed. Please try again.');
+      setError('search_error');
     } finally {
       if (requestId === requestIdRef.current) setLoading(false);
     }
@@ -138,14 +144,14 @@ const DashboardSearch = ({ role = 'admin' }) => {
           value={query}
           onChange={handleChange}
           onFocus={() => query.trim() && setOpen(true)}
-          placeholder="Search users, agents, properties..."
-          aria-label="Search dashboard"
+          placeholder={t('search_placeholder')}
+          aria-label={t('search_aria')}
           className="w-full bg-white border border-slate-200 rounded-xl py-2.5 pl-9 pr-9 text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-[#4A9FF5] focus:ring-1 focus:ring-[#4A9FF5]/30 transition font-medium"
         />
         {query && (
           <button
             onClick={handleClear}
-            aria-label="Clear search"
+            aria-label={t('search_clear')}
             className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition cursor-pointer"
           >
             <X size={14} />
@@ -158,19 +164,19 @@ const DashboardSearch = ({ role = 'admin' }) => {
           {loading && (
             <div className="flex items-center justify-center py-6 text-xs text-slate-400">
               <span className="animate-spin mr-2 h-4 w-4 border-2 border-slate-300 border-t-transparent rounded-full" />
-              Searching...
+              {t('search_searching')}
             </div>
           )}
 
           {!loading && error && query.trim() && (
             <div className="py-6 text-center text-xs text-rose-600">
-              {error}
+              {t(error)}
             </div>
           )}
 
           {!loading && !hasResults && !error && query.trim() && (
             <div className="py-6 text-center text-xs text-slate-400">
-              No results for &ldquo;{query}&rdquo;
+              {t('search_no_results', { query })}
             </div>
           )}
 
@@ -185,7 +191,7 @@ const DashboardSearch = ({ role = 'admin' }) => {
                       <Icon size={12} />
                     </span>
                     <span className="text-[11px] font-semibold text-slate-600 uppercase tracking-wider">
-                      {labels[key] || key}
+                      {t(labels[key] || key)}
                     </span>
                   </div>
                   <span className="text-[10px] text-slate-400 font-medium">{items.length}</span>
@@ -211,7 +217,7 @@ const DashboardSearch = ({ role = 'admin' }) => {
                   onClick={() => handleViewAll(routes[key], query)}
                   className="w-full px-4 py-2 text-[11px] font-semibold text-[#4A9FF5] hover:bg-blue-50 transition text-center cursor-pointer"
                 >
-                  View all {labels[key]?.toLowerCase()} results →
+                  {t('search_view_all', { label: t(labels[key]).toLowerCase() })}
                 </button>
               </div>
             );

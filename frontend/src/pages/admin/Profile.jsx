@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   UserCircle,
   Mail,
@@ -22,6 +23,7 @@ const formatDate = (iso) => {
 };
 
 const Profile = () => {
+  const { t } = useTranslation('admin');
   const { updateUser } = useAuth();
   const fileInputRef = useRef(null);
   const [profile, setProfile] = useState(null);
@@ -46,13 +48,13 @@ const Profile = () => {
         });
       })
       .catch((err) => {
-        if (active) setError(err.message || 'Failed to load profile');
+        if (active) setError(err.message || t('admin_profile_error_load'));
       })
       .finally(() => {
         if (active) setLoading(false);
       });
     return () => { active = false; };
-  }, []);
+  }, [t]);
 
   const handleChange = (field) => (e) => {
     setForm((prev) => ({ ...prev, [field]: e.target.value }));
@@ -71,9 +73,9 @@ const Profile = () => {
     const lastName = form.lastName.trim();
     const phone = form.phone.trim();
 
-    if (firstName.length > 100) errors.firstName = 'First name must be at most 100 characters';
-    if (lastName.length > 100) errors.lastName = 'Last name must be at most 100 characters';
-    if (phone && !/^\+?[0-9]{7,15}$/.test(phone)) errors.phone = 'Enter a valid phone number';
+    if (firstName.length > 100) errors.firstName = t('admin_profile_val_first_max');
+    if (lastName.length > 100) errors.lastName = t('admin_profile_val_last_max');
+    if (phone && !/^\+?[0-9]{7,15}$/.test(phone)) errors.phone = t('admin_profile_val_phone');
 
     if (Object.keys(errors).length > 0) {
       setFieldErrors(errors);
@@ -89,9 +91,9 @@ const Profile = () => {
       });
       setProfile(updated);
       updateUser(updated);
-      setSuccess('Profile updated');
+      setSuccess(t('admin_profile_updated'));
     } catch (err) {
-      setError(err.message || 'Failed to save changes');
+      setError(err.message || t('admin_profile_error_save'));
     } finally {
       setSaving(false);
     }
@@ -107,9 +109,9 @@ const Profile = () => {
       const updated = await uploadProfileImage(file);
       setProfile(updated);
       updateUser(updated);
-      setSuccess('Profile image updated');
+      setSuccess(t('admin_profile_image_updated'));
     } catch (err) {
-      setError(err.message || 'Failed to upload image');
+      setError(err.message || t('admin_profile_error_upload'));
     } finally {
       setUploading(false);
       if (fileInputRef.current) fileInputRef.current.value = '';
@@ -132,15 +134,15 @@ const Profile = () => {
   }
 
   const displayName = profile
-    ? [profile.firstName, profile.lastName].filter(Boolean).join(' ') || 'Admin'
-    : 'Admin';
+    ? [profile.firstName, profile.lastName].filter(Boolean).join(' ') || t('role_admin')
+    : t('role_admin');
 
   return (
     <div className="space-y-5 font-sans">
       {/* Header */}
       <div className="min-w-0">
         <p className="text-[11px] font-semibold uppercase tracking-wider text-[#1D6FD3] mb-1">
-          Account
+          {t('admin_profile_account')}
         </p>
         <div className="flex items-center gap-2.5">
           <span
@@ -149,10 +151,10 @@ const Profile = () => {
           >
             <UserCircle size={20} />
           </span>
-          <h1 className="text-[24px] font-bold text-[#111827] tracking-tight">My Profile</h1>
+          <h1 className="text-[24px] font-bold text-[#111827] tracking-tight">{t('admin_profile_title')}</h1>
         </div>
         <p className="text-[13px] text-[#6B7280] mt-1">
-          View and update your account information
+          {t('admin_profile_subtitle')}
         </p>
       </div>
 
@@ -183,7 +185,7 @@ const Profile = () => {
                 onClick={() => fileInputRef.current?.click()}
                 disabled={uploading}
                 className="absolute bottom-0 right-0 p-2 bg-[#4A9FF5] hover:bg-[#3A8FE5] text-white rounded-full shadow-md transition cursor-pointer disabled:opacity-50"
-                title="Update profile image"
+                title={t('admin_profile_update_image')}
               >
                 <Camera size={16} />
               </button>
@@ -198,21 +200,21 @@ const Profile = () => {
 
             <h2 className="text-lg font-bold text-slate-900">{displayName}</h2>
             <p className="text-xs text-slate-500 font-medium mt-0.5 capitalize">
-              {profile?.role || 'Administrator'}
+              {profile?.role ? t(`role_${profile.role}`, profile.role) : t('role_administrator')}
             </p>
 
             <span className="mt-3 px-3 py-1 bg-[#E6F4EC] text-[#1D6FD3] text-xs font-bold rounded-full border border-emerald-200/60 inline-flex items-center gap-1">
               <CheckCircle size={14} />
-              {profile?.status === 'active' ? 'Active' : 'Suspended'}
+              {profile?.status === 'active' ? t('admin_profile_status_active') : t('admin_profile_status_suspended')}
             </span>
 
             <div className="w-full mt-6 pt-6 border-t border-slate-100 space-y-3 text-left">
               <div className="flex items-center justify-between text-xs text-slate-500">
-                <span>Account Role</span>
-                <span className="font-semibold text-slate-900 capitalize">{profile?.role || 'Admin'}</span>
+                <span>{t('admin_profile_role_label')}</span>
+                <span className="font-semibold text-slate-900 capitalize">{profile?.role ? t(`role_${profile.role}`, profile.role) : t('role_admin')}</span>
               </div>
               <div className="flex items-center justify-between text-xs text-slate-500">
-                <span>Member Since</span>
+                <span>{t('admin_profile_member_since')}</span>
                 <span className="font-semibold text-slate-900 flex items-center gap-1">
                   <Calendar size={13} className="text-slate-400" />
                   {formatDate(profile?.createdAt)}
@@ -228,9 +230,9 @@ const Profile = () => {
                 <ShieldCheck size={20} />
               </div>
               <div>
-                <h4 className="text-xs font-bold text-slate-900">Account Security</h4>
+                <h4 className="text-xs font-bold text-slate-900">{t('admin_profile_security_title')}</h4>
                 <p className="text-[11px] text-slate-500 mt-1">
-                  Use strong passwords and keep your account credentials up to date.
+                  {t('admin_profile_security_body')}
                 </p>
               </div>
             </div>
@@ -241,14 +243,14 @@ const Profile = () => {
         <div className="lg:col-span-8 bg-white border border-[#E5E7EB] rounded-2xl p-6 shadow-[0_2px_8px_rgba(15,23,42,0.06)] space-y-6">
           <div>
             <h3 className="text-[16px] font-semibold text-[#111827] pb-3 border-b border-slate-100">
-              Personal Information
+              {t('admin_profile_personal')}
             </h3>
           </div>
 
           <form className="space-y-4" onSubmit={handleSave}>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label htmlFor="firstName" className="block text-xs font-semibold text-slate-600 uppercase mb-1">First Name</label>
+                <label htmlFor="firstName" className="block text-xs font-semibold text-slate-600 uppercase mb-1">{t('admin_profile_first_name')}</label>
                 <input
                   id="firstName"
                   type="text"
@@ -262,7 +264,7 @@ const Profile = () => {
                 )}
               </div>
               <div>
-                <label htmlFor="lastName" className="block text-xs font-semibold text-slate-600 uppercase mb-1">Last Name</label>
+                <label htmlFor="lastName" className="block text-xs font-semibold text-slate-600 uppercase mb-1">{t('admin_profile_last_name')}</label>
                 <input
                   id="lastName"
                   type="text"
@@ -278,7 +280,7 @@ const Profile = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-600 uppercase mb-1">Email Address</label>
+              <label className="block text-xs font-semibold text-slate-600 uppercase mb-1">{t('admin_profile_email')}</label>
               <div className="relative">
                 <Mail className="absolute left-3.5 top-3 text-slate-400" size={16} />
                 <input
@@ -288,11 +290,11 @@ const Profile = () => {
                   className="w-full bg-slate-100 border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-xs text-slate-500 font-medium cursor-not-allowed"
                 />
               </div>
-              <p className="text-[11px] text-slate-400 mt-1">Email cannot be changed from this page</p>
+              <p className="text-[11px] text-slate-400 mt-1">{t('admin_profile_email_hint')}</p>
             </div>
 
             <div>
-              <label htmlFor="phone" className="block text-xs font-semibold text-slate-600 uppercase mb-1">Phone Number</label>
+              <label htmlFor="phone" className="block text-xs font-semibold text-slate-600 uppercase mb-1">{t('admin_profile_phone')}</label>
               <div className="relative">
                 <Phone className="absolute left-3.5 top-3 text-slate-400" size={16} />
                 <input
@@ -316,7 +318,7 @@ const Profile = () => {
                 className="flex items-center space-x-2 bg-[#4A9FF5] hover:bg-[#3A8FE5] text-white px-5 py-2.5 rounded-xl text-xs font-bold transition cursor-pointer shadow-[0_4px_12px_rgba(74,159,245,0.25)] disabled:opacity-50"
               >
                 <Save size={16} />
-                <span>{saving ? 'Saving…' : 'Save Changes'}</span>
+                <span>{saving ? t('admin_profile_saving') : t('save_changes')}</span>
               </button>
             </div>
           </form>

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
   Ban,
   CheckCircle,
@@ -21,6 +22,7 @@ import {
 const PAGE_SIZE = 10;
 
 const UserManagement = () => {
+  const { t } = useTranslation('admin');
   const [searchParams, setSearchParams] = useSearchParams();
   const highlightId = searchParams.get('highlight');
   const searchTerm = searchParams.get('q') || '';
@@ -49,7 +51,7 @@ const UserManagement = () => {
       setStats(result.stats || null);
       setPage(pageNum);
     } catch {
-      if (requestId === requestIdRef.current) setError('Failed to load users');
+      if (requestId === requestIdRef.current) setError(t('users_error_load'));
     } finally {
       if (requestId === requestIdRef.current) setLoading(false);
     }
@@ -68,12 +70,12 @@ const UserManagement = () => {
         setPage(1);
         setError(null);
       } catch {
-        if (requestId === requestIdRef.current) setError('Failed to load users');
+        if (requestId === requestIdRef.current) setError(t('users_error_load'));
       } finally {
         if (requestId === requestIdRef.current) setLoading(false);
       }
     })();
-  }, [searchTerm]);
+  }, [searchTerm, t]);
 
   const reload = async () => {
     const requestId = ++requestIdRef.current;
@@ -98,11 +100,11 @@ const UserManagement = () => {
       setConfirmId(null);
       try {
         await reload();
-      } catch (err) {
-        setRefreshError('Failed to refresh the user list');
+      } catch {
+        setRefreshError(t('users_error_refresh'));
       }
     } catch (err) {
-      setError(err.message || 'Action failed');
+      setError(err.message || t('action_failed'));
     } finally {
       setActionId(null);
     }
@@ -114,7 +116,7 @@ const UserManagement = () => {
   const adminAccounts = stats ? stats.admins : 0;
 
   if (loading) {
-    return <div className="py-20 text-center text-[#6B7280]">Loading users…</div>;
+    return <div className="py-20 text-center text-[#6B7280]">{t('users_loading')}</div>;
   }
 
   return (
@@ -122,18 +124,18 @@ const UserManagement = () => {
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div className="min-w-0">
           <p className="text-[11px] font-semibold uppercase tracking-wider text-[#1D6FD3] mb-1">
-            Management
+            {t('eyebrow_management')}
           </p>
           <div className="flex items-center gap-2.5">
             <span aria-hidden="true" className="w-10 h-10 rounded-xl bg-[#E7F0FB] text-[#4A9FF5] flex items-center justify-center shrink-0">
               <UsersIcon size={20} />
             </span>
             <h1 className="text-[24px] font-bold text-[#111827] tracking-tight">
-              User Management
+              {t('users_title')}
             </h1>
           </div>
           <p className="text-[13px] text-[#6B7280] mt-1">
-            View, suspend, and activate platform accounts
+            {t('users_subtitle')}
           </p>
         </div>
       </div>
@@ -165,52 +167,52 @@ const UserManagement = () => {
               type="button"
               onClick={async () => {
                 setRefreshing(true);
-                try {
-                  await reload();
-                  setRefreshError(null);
-                } catch (err) {
-                  setRefreshError('Failed to refresh the user list');
-                } finally {
+try {
+                    await reload();
+                    setRefreshError(null);
+                  } catch {
+                    setRefreshError(t('users_error_refresh'));
+                  } finally {
                   setRefreshing(false);
                 }
               }}
               disabled={actionId || refreshing}
               className="inline-flex items-center gap-1.5 h-[30px] px-3 rounded-md bg-white border border-[#e5d9a8] text-[12px] font-medium text-[#8a6d1f] hover:bg-[#fdf8ea] transition-colors disabled:opacity-50 whitespace-nowrap"
             >
-            Retry
+            {t('retry')}
           </button>
         </div>
       )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-        <KpiCard title="Total Users" value={totalUsers} icon={UsersIcon} indicator="All accounts" />
+        <KpiCard title={t('kpi_total_users')} value={totalUsers} icon={UsersIcon} indicator={t('users_kpi_all_accounts')} />
         <KpiCard
-          title="Active Users"
+          title={t('kpi_active_users')}
           value={activeUsers}
           icon={CheckCircle}
           iconBg="bg-[#E6F4EC] text-[#4FAF83]"
-          indicator="Can log in"
+          indicator={t('users_kpi_can_log_in')}
         />
         <KpiCard
-          title="Suspended Users"
+          title={t('kpi_suspended_users')}
           value={suspendedUsers}
           icon={Ban}
           iconBg="bg-[#FBE9E8] text-[#D96B67]"
-          indicator="Access blocked"
+          indicator={t('users_kpi_blocked')}
         />
         <KpiCard
-          title="Admin Accounts"
+          title={t('kpi_admin_accounts')}
           value={adminAccounts}
           icon={ShieldCheck}
           iconBg="bg-[#E6F4EC] text-[#1D6FD3]"
-          indicator="Privileged"
+          indicator={t('users_kpi_privileged')}
         />
       </div>
 
       <div className="bg-white border border-[#E5E7EB] rounded-lg shadow-[0_2px_8px_rgba(15,23,42,0.06)] overflow-hidden">
         <div className="flex items-center justify-between px-4 py-3 gap-3">
           <h2 className="text-[17px] font-semibold text-[#111827]">
-            All Users
+            {t('users_all')}
           </h2>
           <div className="relative w-full max-w-xs">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" size={15} />
@@ -226,8 +228,8 @@ const UserManagement = () => {
                   return next;
                 }, { replace: true })
               }
-              placeholder="Search users..."
-              aria-label="Search users"
+              placeholder={t('users_search_placeholder')}
+              aria-label={t('users_search_aria')}
               className="w-full bg-[#F5F5FA] border border-[#E5E7EB] rounded-lg py-2 pl-9 pr-3 text-[13px] text-slate-700 placeholder-slate-400 focus:outline-none focus:border-[#4A9FF5] focus:bg-white transition"
             />
           </div>
@@ -236,20 +238,20 @@ const UserManagement = () => {
           <table className="w-full text-left text-[13px] text-[#111827] min-w-[820px]">
             <thead>
               <tr className="bg-[#F3F4F8] text-[#374151] font-medium text-[13px] h-[42px]">
-                <th className="py-0 px-4 rounded-l-lg w-[5%]">No.</th>
-                <th className="py-0 px-4 w-[22%]">Name</th>
-                <th className="py-0 px-4 w-[26%]">Email</th>
-                <th className="py-0 px-4 w-[16%]">Phone</th>
-                <th className="py-0 px-4 w-[12%]">Role</th>
-                <th className="py-0 px-4 w-[12%]">Status</th>
-                <th className="py-0 px-4 w-[12%] rounded-r-lg">Actions</th>
+                <th className="py-0 px-4 rounded-l-lg w-[5%]">{t('users_col_no')}</th>
+                <th className="py-0 px-4 w-[22%]">{t('col_name')}</th>
+                <th className="py-0 px-4 w-[26%]">{t('users_col_email')}</th>
+                <th className="py-0 px-4 w-[16%]">{t('users_col_phone')}</th>
+                <th className="py-0 px-4 w-[12%]">{t('users_col_role')}</th>
+                <th className="py-0 px-4 w-[12%]">{t('col_status')}</th>
+                <th className="py-0 px-4 w-[12%] rounded-r-lg">{t('col_actions')}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#E5E7EB]">
               {users.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="py-10 text-center text-[13px] text-[#6B7280]">
-                    No users found.
+                    {t('users_empty')}
                   </td>
                 </tr>
               ) : (
@@ -271,16 +273,20 @@ const UserManagement = () => {
                       <td className="py-0 px-4 text-[#374151] whitespace-nowrap">
                         {u.phone || '—'}
                       </td>
-                      <td className="py-0 px-4 capitalize text-[#374151]">{u.role}</td>
+                      <td className="py-0 px-4 capitalize text-[#374151]">
+                        {t(`role_${u.role}`, u.role)}
+                      </td>
                       <td className="py-0 px-4">
-                        <StatusBadge status={u.status}>{u.status}</StatusBadge>
+                        <StatusBadge status={u.status}>
+                          {t(`status_${u.status}`, u.status)}
+                        </StatusBadge>
                       </td>
                       <td className="py-0 px-4">
                         <div className="flex items-center gap-2 whitespace-nowrap">
                           {confirmId === u.id ? (
                             <>
                               <span className="text-[12px] text-[#B23B36]">
-                                {isActive ? 'Suspend?' : 'Activate?'}
+                                {isActive ? t('users_confirm_suspend') : t('users_confirm_activate')}
                               </span>
                               <button
                                 type="button"
@@ -290,7 +296,7 @@ const UserManagement = () => {
                                     isActive ? suspendUser : activateUser,
                                     u.id,
                                     name,
-                                    isActive ? 'suspended' : 'activated'
+                                    isActive ? t('users_suspended') : t('users_activated')
                                   )
                                 }
                                 className="inline-flex items-center gap-1.5 h-[30px] px-2.5 rounded-md bg-[#FBE9E8] border border-[#f0cfce] text-[12px] font-medium text-[#B23B36] hover:bg-[#f6dcd9] transition-colors disabled:opacity-50"
@@ -298,7 +304,7 @@ const UserManagement = () => {
                                 {actionId === u.id ? (
                                   <Loader2 size={14} className="animate-spin" />
                                 ) : null}
-                                Yes
+                                {t('yes')}
                               </button>
                               <button
                                 type="button"
@@ -306,7 +312,7 @@ const UserManagement = () => {
                                 onClick={() => setConfirmId(null)}
                                 className="h-[30px] px-2.5 rounded-md bg-[#edf2fa] border border-[#d6deeb] text-[12px] font-medium text-[#374151] hover:bg-[#F3F4F8] transition-colors disabled:opacity-50"
                               >
-                                No
+                                {t('no')}
                               </button>
                             </>
                           ) : u.role === 'admin' && isActive ? null : (
@@ -319,12 +325,12 @@ const UserManagement = () => {
                               {isActive ? (
                                 <>
                                   <Ban size={15} />
-                                  Suspend
+                                  {t('users_suspend')}
                                 </>
                               ) : (
                                 <>
                                   <CheckCircle size={15} />
-                                  Activate
+                                  {t('users_activate')}
                                 </>
                               )}
                             </button>
@@ -342,7 +348,7 @@ const UserManagement = () => {
         {pagination && (pagination.totalPages > 1 || pagination.hasNextPage || pagination.hasPrevPage) && (
           <div className="flex items-center justify-between px-4 py-3 border-t border-[#E5E7EB] text-[13px] text-[#374151]">
             <span>
-              Page {pagination.page} of {pagination.totalPages}
+              {t('users_page_of', { page: pagination.page, total: pagination.totalPages })}
             </span>
             <div className="flex items-center gap-2">
               <button
@@ -352,7 +358,7 @@ const UserManagement = () => {
                 className="inline-flex items-center gap-1 h-[32px] px-3 rounded-md bg-[#edf2fa] border border-[#d6deeb] text-[13px] font-medium text-[#374151] hover:bg-[#F3F4F8] transition-colors disabled:opacity-50"
               >
                 <ChevronLeft size={15} />
-                Previous
+                {t('users_previous')}
               </button>
               <button
                 type="button"
@@ -360,7 +366,7 @@ const UserManagement = () => {
                 onClick={() => { setConfirmId(null); fetchUsers(pagination.page + 1); }}
                 className="inline-flex items-center gap-1 h-[32px] px-3 rounded-md bg-[#edf2fa] border border-[#d6deeb] text-[13px] font-medium text-[#374151] hover:bg-[#F3F4F8] transition-colors disabled:opacity-50"
               >
-                Next
+                {t('users_next')}
                 <ChevronRight size={15} />
               </button>
             </div>

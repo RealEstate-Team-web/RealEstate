@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Tag, Plus, Pencil, Trash2, Loader2, X } from 'lucide-react';
 import {
   getAdminCategories,
@@ -10,6 +11,7 @@ import {
 const emptyForm = { name: '', description: '' };
 
 const Categories = () => {
+  const { t } = useTranslation('admin');
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -43,7 +45,7 @@ const Categories = () => {
         await fetchCategories();
       } catch (err) {
         if (!active) return;
-        setLoadError(err.message || 'Failed to load categories');
+        setLoadError(err.message || t('categories_error_load'));
       } finally {
         if (active) setLoading(false);
       }
@@ -51,7 +53,7 @@ const Categories = () => {
     return () => {
       active = false;
     };
-  }, []);
+  }, [t]);
 
   const retryInitialLoad = async () => {
     setLoading(true);
@@ -59,7 +61,7 @@ const Categories = () => {
     try {
       await fetchCategories();
     } catch (err) {
-      setLoadError(err.message || 'Failed to load categories');
+      setLoadError(err.message || t('categories_error_load'));
     } finally {
       setLoading(false);
     }
@@ -71,7 +73,7 @@ const Categories = () => {
       await fetchCategories();
       setRefreshError(null);
     } catch (err) {
-      setRefreshError(err.message || 'Failed to refresh categories');
+      setRefreshError(err.message || t('categories_error_refresh'));
     } finally {
       setRefreshing(false);
     }
@@ -81,7 +83,7 @@ const Categories = () => {
     e.preventDefault();
     setFormError(null);
     if (!form.name.trim()) {
-      setFormError('Category name is required');
+      setFormError(t('categories_err_name_required'));
       return;
     }
     setSaving(true);
@@ -93,11 +95,11 @@ const Categories = () => {
         description: form.description.trim() || null,
       });
     } catch (err) {
-      setFormError(err.message || 'Failed to create category');
+      setFormError(err.message || t('categories_err_create'));
       setSaving(false);
       return;
     }
-    setSuccess(`Category "${form.name.trim()}" created`);
+    setSuccess(t('categories_created', { name: form.name.trim() }));
     setForm(emptyForm);
     await reload();
     setSaving(false);
@@ -118,7 +120,7 @@ const Categories = () => {
 
   const handleUpdate = async (id) => {
     if (!editForm.name.trim()) {
-      setEditError('Category name is required');
+      setEditError(t('categories_err_name_required'));
       return;
     }
     setSaving(true);
@@ -130,11 +132,11 @@ const Categories = () => {
         description: editForm.description.trim() || null,
       });
     } catch (err) {
-      setEditError(err.message || 'Failed to update category');
+      setEditError(err.message || t('categories_err_update'));
       setSaving(false);
       return;
     }
-    setSuccess(`Category "${editForm.name.trim()}" updated`);
+    setSuccess(t('categories_updated', { name: editForm.name.trim() }));
     await reload();
     cancelEdit();
     setSaving(false);
@@ -147,32 +149,32 @@ const Categories = () => {
     try {
       await deleteCategory(id);
     } catch (err) {
-      setError(err.message || 'Failed to delete category');
+      setError(err.message || t('categories_err_delete'));
       setDeletingId(null);
       return;
     }
-    setSuccess('Category deleted');
+    setSuccess(t('categories_deleted'));
     setConfirmDeleteId(null);
     await reload();
     setDeletingId(null);
   };
 
   if (loading) {
-    return <div className="py-20 text-center text-[#6B7280]">Loading categories…</div>;
+    return <div className="py-20 text-center text-[#6B7280]">{t('categories_loading')}</div>;
   }
 
   if (loadError) {
     return (
       <div className="py-20 flex flex-col items-center gap-3 font-sans">
         <p role="alert" className="text-[13px] text-[#B23B36]">
-          Failed to load categories: {loadError}
+          {t('categories_load_prefix')}{loadError}
         </p>
         <button
           type="button"
           onClick={retryInitialLoad}
           className="inline-flex items-center h-[36px] px-4 rounded-md bg-[#edf2fa] border border-[#d6deeb] text-[13px] font-medium text-[#374151] hover:bg-[#F3F4F8] transition-colors"
         >
-          Retry
+          {t('retry')}
         </button>
       </div>
     );
@@ -185,18 +187,18 @@ const Categories = () => {
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div className="min-w-0">
           <p className="text-[11px] font-semibold uppercase tracking-wider text-[#1D6FD3] mb-1">
-            Management
+            {t('eyebrow_management')}
           </p>
           <div className="flex items-center gap-2.5">
             <span aria-hidden="true" className="w-10 h-10 rounded-xl bg-[#E7F0FB] text-[#4A9FF5] flex items-center justify-center shrink-0">
               <Tag size={20} />
             </span>
             <h1 className="text-[24px] font-bold text-[#111827] tracking-tight">
-              Category Management
+              {t('categories_title')}
             </h1>
           </div>
           <p className="text-[13px] text-[#6B7280] mt-1">
-            Organize listings with property categories
+            {t('categories_subtitle')}
           </p>
         </div>
       </div>
@@ -216,7 +218,7 @@ const Categories = () => {
           role="alert"
           className="rounded-md bg-[#FBF3DD] text-[#8a6d1f] text-[13px] px-4 py-3 flex items-center justify-between gap-3"
         >
-          <span>Saved, but refreshing the list failed: {refreshError}</span>
+          <span>{t('saved_refresh_failed')}{refreshError}</span>
           <button
             type="button"
             onClick={() => reload()}
@@ -224,7 +226,7 @@ const Categories = () => {
             className="inline-flex items-center gap-1.5 h-[30px] px-3 rounded-md bg-white border border-[#e5d9a8] text-[12px] font-medium text-[#8a6d1f] hover:bg-[#fdf8ea] transition-colors disabled:opacity-50 whitespace-nowrap"
           >
             {refreshing ? <Loader2 size={14} className="animate-spin" /> : null}
-            Retry
+            {t('retry')}
           </button>
         </div>
       )}
@@ -234,15 +236,15 @@ const Categories = () => {
         onSubmit={handleCreate}
         className="bg-white border border-[#E5E7EB] rounded-lg shadow-[0_2px_8px_rgba(15,23,42,0.06)] p-4"
       >
-        <h2 className="text-[17px] font-semibold text-[#111827] mb-3">Add New Category</h2>
+        <h2 className="text-[17px] font-semibold text-[#111827] mb-3">{t('categories_add_new')}</h2>
         <div className="grid grid-cols-1 md:grid-cols-[240px_1fr_auto] gap-3 items-start">
           <div>
             <input
               type="text"
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
-              placeholder="Category name"
-              aria-label="Category name"
+              placeholder={t('categories_name_placeholder')}
+              aria-label={t('categories_name_placeholder')}
               id="create-category-name"
               maxLength={100}
               aria-invalid={Boolean(formError)}
@@ -254,8 +256,8 @@ const Categories = () => {
             type="text"
             value={form.description}
             onChange={(e) => setForm({ ...form, description: e.target.value })}
-            placeholder="Description (optional)"
-            aria-label="Category description"
+            placeholder={t('categories_desc_placeholder')}
+            aria-label={t('categories_desc_aria')}
             maxLength={1000}
             className="w-full h-[38px] px-3 rounded-md border border-[#E5E7EB] text-[13px] text-[#111827] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#E7B85A]/50"
           />
@@ -269,7 +271,7 @@ const Categories = () => {
             ) : (
               <Plus size={16} />
             )}
-            Add Category
+            {t('categories_add')}
           </button>
         </div>
         {formError && (
@@ -286,23 +288,23 @@ const Categories = () => {
       {/* Categories table */}
       <div className="bg-white border border-[#E5E7EB] rounded-lg shadow-[0_2px_8px_rgba(15,23,42,0.06)] overflow-hidden">
         <h2 className="text-[17px] font-semibold text-[#111827] px-4 py-3">
-          All Categories
+          {t('categories_all')}
         </h2>
         <div className="overflow-x-auto">
           <table className="w-full text-left text-[13px] text-[#111827] min-w-[720px]">
             <thead>
               <tr className="bg-[#F3F4F8] text-[#374151] font-medium text-[13px] h-[42px]">
-                <th className="py-0 px-4 rounded-l-lg w-[22%]">Name</th>
-                <th className="py-0 px-4 w-[46%]">Description</th>
-                <th className="py-0 px-4 w-[16%]">Created</th>
-                <th className="py-0 px-4 w-[16%] rounded-r-lg">Actions</th>
+                <th className="py-0 px-4 rounded-l-lg w-[22%]">{t('col_name')}</th>
+                <th className="py-0 px-4 w-[46%]">{t('categories_col_desc')}</th>
+                <th className="py-0 px-4 w-[16%]">{t('col_created')}</th>
+                <th className="py-0 px-4 w-[16%] rounded-r-lg">{t('col_actions')}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#E5E7EB]">
               {categories.length === 0 ? (
                 <tr>
                   <td colSpan={4} className="py-10 text-center text-[13px] text-[#6B7280]">
-                    No categories yet.
+                    {t('categories_empty')}
                   </td>
                 </tr>
               ) : (
@@ -316,8 +318,8 @@ const Categories = () => {
                           onChange={(e) =>
                             setEditForm({ ...editForm, name: e.target.value })
                           }
-                          placeholder="Category name"
-                          aria-label="Category name"
+                          placeholder={t('categories_name_placeholder')}
+                          aria-label={t('categories_name_placeholder')}
                           id={`edit-category-name-${category.id}`}
                           maxLength={100}
                           aria-invalid={Boolean(editError)}
@@ -332,8 +334,8 @@ const Categories = () => {
                           onChange={(e) =>
                             setEditForm({ ...editForm, description: e.target.value })
                           }
-                          placeholder="Description (optional)"
-                          aria-label="Category description"
+                          placeholder={t('categories_desc_placeholder')}
+                          aria-label={t('categories_desc_aria')}
                           maxLength={1000}
                           className="w-full h-[34px] px-2 rounded-md border border-[#E5E7EB] text-[13px] focus:outline-none focus:ring-2 focus:ring-[#E7B85A]/50"
                         />
@@ -349,7 +351,7 @@ const Categories = () => {
                             {saving ? (
                               <Loader2 size={15} className="animate-spin" />
                             ) : null}
-                            Save
+                            {t('save')}
                           </button>
                           <button
                             type="button"
@@ -358,7 +360,7 @@ const Categories = () => {
                             className="inline-flex items-center gap-1.5 h-[32px] px-3 rounded-md bg-[#edf2fa] border border-[#d6deeb] text-[13px] font-medium text-[#374151] hover:bg-[#F3F4F8] transition-colors disabled:opacity-50"
                           >
                             <X size={15} />
-                            Cancel
+                            {t('cancel')}
                           </button>
                           {editError && (
                             <span
@@ -399,7 +401,7 @@ const Categories = () => {
                         <div className="flex items-center gap-2 whitespace-nowrap">
                           {confirmDeleteId === category.id ? (
                             <>
-                              <span className="text-[12px] text-[#B23B36]">Delete?</span>
+                              <span className="text-[12px] text-[#B23B36]">{t('delete_confirm')}</span>
                               <button
                                 type="button"
                                 disabled={deletingId === category.id}
@@ -411,7 +413,7 @@ const Categories = () => {
                                 ) : (
                                   <Trash2 size={14} />
                                 )}
-                                Yes
+                                {t('yes')}
                               </button>
                               <button
                                 type="button"
@@ -419,7 +421,7 @@ const Categories = () => {
                                 disabled={deletingId === category.id}
                                 className="h-[30px] px-2.5 rounded-md bg-[#edf2fa] border border-[#d6deeb] text-[12px] font-medium text-[#374151] hover:bg-[#F3F4F8] transition-colors disabled:opacity-50"
                               >
-                                No
+                                {t('no')}
                               </button>
                             </>
                           ) : (
@@ -431,7 +433,7 @@ const Categories = () => {
                                 className="inline-flex items-center gap-1.5 h-[32px] px-3 rounded-md bg-[#edf2fa] border border-[#d6deeb] text-[13px] font-medium text-[#374151] hover:bg-[#F3F4F8] transition-colors disabled:opacity-50"
                               >
                                 <Pencil size={15} />
-                                Edit
+                                {t('edit')}
                               </button>
                               <button
                                 type="button"
@@ -440,7 +442,7 @@ const Categories = () => {
                                 className="inline-flex items-center gap-1.5 h-[32px] px-3 rounded-md bg-[#edf2fa] border border-[#d6deeb] text-[13px] font-medium text-[#B23B36] hover:bg-[#fbe9e8] transition-colors disabled:opacity-50"
                               >
                                 <Trash2 size={15} />
-                                Delete
+                                {t('delete')}
                               </button>
                             </>
                           )}
