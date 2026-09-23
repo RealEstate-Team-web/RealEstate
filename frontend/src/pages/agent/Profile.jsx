@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import {
   UserCircle,
   Mail,
@@ -28,30 +29,28 @@ import { uploadProfileImage } from "../../services/user.service";
 
 const STATUS_META = {
   incomplete: {
-    label: "Incomplete",
+    labelKey: "profile_status_incomplete",
     className: "bg-[#F7EFDD] text-[#8A6A2F] border-amber-200/60",
     icon: AlertCircle,
-    helper:
-      "Complete your agent profile to activate your account and list properties.",
+    helperKey: "profile_helper_incomplete",
   },
   pending: {
-    label: "Pending Approval",
+    labelKey: "profile_status_pending",
     className: "bg-[#FBF3DD] text-[#8A6A2F] border-amber-200/60",
     icon: Clock,
-    helper: "Your profile is under review by an administrator.",
+    helperKey: "profile_helper_pending",
   },
   approved: {
-    label: "Approved",
+    labelKey: "profile_status_approved",
     className: "bg-[#E6F4EC] text-[#2F7A55] border-emerald-200/60",
     icon: CheckCircle,
-    helper: "Your agent account is active and you can list properties.",
+    helperKey: "profile_helper_approved",
   },
   rejected: {
-    label: "Rejected",
+    labelKey: "profile_status_rejected",
     className: "bg-[#FBEAE9] text-[#B23B36] border-rose-200/60",
     icon: XCircle,
-    helper:
-      "Your profile was rejected. Update your details and contact support for next steps.",
+    helperKey: "profile_helper_rejected",
   },
 };
 
@@ -75,6 +74,7 @@ const formatDate = (iso) => {
 
 const Profile = () => {
   const { user, updateUser } = useAuth();
+  const { t } = useTranslation('agents');
   const fileInputRef = useRef(null);
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -103,7 +103,7 @@ const Profile = () => {
         });
       })
       .catch((err) => {
-        if (active) setError(err.message || "Failed to load profile");
+        if (active) setError(err.message || 'profile_error_load');
       })
       .finally(() => {
         if (active) setLoading(false);
@@ -127,27 +127,27 @@ const Profile = () => {
     const phone = form.phone.trim();
     const agencyName = form.agencyName.trim();
 
-    if (!firstName) errors.firstName = "First name is required";
+    if (!firstName) errors.firstName = "profile_val_first_required";
     else if (firstName.length > 100)
-      errors.firstName = "First name must be at most 100 characters";
-    if (!lastName) errors.lastName = "Last name is required";
+      errors.firstName = "profile_val_first_max";
+    if (!lastName) errors.lastName = "profile_val_last_required";
     else if (lastName.length > 100)
-      errors.lastName = "Last name must be at most 100 characters";
+      errors.lastName = "profile_val_last_max";
     if (phone && !/^\+?[0-9]{7,15}$/.test(phone))
-      errors.phone = "Enter a valid phone number";
+      errors.phone = "profile_val_phone";
     if (form.agencyName.length > 150)
-      errors.agencyName = "Agency name must be at most 150 characters";
+      errors.agencyName = "profile_val_agency_max";
     if (form.specialization.length > 100)
-      errors.specialization = "Specialization must be at most 100 characters";
+      errors.specialization = "profile_val_specialization_max";
     if (form.city.length > 100)
-      errors.city = "City must be at most 100 characters";
+      errors.city = "profile_val_city_max";
     if (form.officeAddress.length > 255)
-      errors.officeAddress = "Office address must be at most 255 characters";
+      errors.officeAddress = "profile_val_office_max";
     if (form.bio.length > 1000)
-      errors.bio = "Bio must be at most 1000 characters";
+      errors.bio = "profile_val_bio_max";
 
     if (profile && profile.verificationStatus === "approved" && !agencyName)
-      errors.agencyName = "Agency name cannot be empty once approved";
+      errors.agencyName = "profile_val_agency_approved";
 
     return errors;
   };
@@ -188,9 +188,9 @@ const Profile = () => {
         profileImageUrl: updated.profileImageUrl,
         agentProfileStatus: updated.verificationStatus,
       });
-      setSuccess("Profile updated");
+      setSuccess(t("profile_updated"));
     } catch (err) {
-      setError(err.message || "Failed to save changes");
+      setError(err.message || t("profile_save_error"));
     } finally {
       setSaving(false);
     }
@@ -267,7 +267,7 @@ const Profile = () => {
       {/* Feedback */}
       {error && (
         <div role="status" className="flex items-center gap-2 bg-rose-50 border border-rose-200 text-rose-700 text-[13px] px-4 py-2.5 rounded-xl">
-          <AlertCircle size={16} /> {error}
+          <AlertCircle size={16} /> {t(error)}
         </div>
       )}
       {success && (
@@ -316,14 +316,14 @@ const Profile = () => {
               className={`mt-3 px-3 py-1 text-xs font-bold rounded-full border inline-flex items-center gap-1 ${status.className}`}
             >
               <StatusIcon size={14} />
-              {status.label}
+              {t(status.labelKey)}
             </span>
 
             <div className="w-full mt-6 pt-6 border-t border-slate-100 space-y-3 text-left">
               <div className="flex items-center justify-between text-xs text-slate-500">
                 <span className="flex items-center gap-1">
                   <Mail size={13} className="text-slate-400" />
-                  Email
+                  {t('profile_email')}
                 </span>
                 <span className="font-semibold text-slate-900 truncate max-w-[220px]">
                   {profile?.email || "—"}
@@ -332,7 +332,7 @@ const Profile = () => {
               <div className="flex items-center justify-between text-xs text-slate-500">
                 <span className="flex items-center gap-1">
                   <Briefcase size={13} className="text-slate-400" />
-                  Account Role
+                  {t('profile_role')}
                 </span>
                 <span className="font-semibold text-slate-900 capitalize">
                   {profile?.role || "Agent"}
@@ -341,7 +341,7 @@ const Profile = () => {
               <div className="flex items-center justify-between text-xs text-slate-500">
                 <span className="flex items-center gap-1">
                   <Calendar size={13} className="text-slate-400" />
-                  Member Since
+                  {t('profile_member_since')}
                 </span>
                 <span className="font-semibold text-slate-900">
                   {formatDate(profile?.memberSince)}
@@ -356,12 +356,11 @@ const Profile = () => {
                 <ShieldCheck size={20} />
               </div>
               <div>
-                <h4 className="text-xs font-bold text-slate-900">
-                  Account Security
+                 <h4 className="text-xs font-bold text-slate-900">
+                  {t('profile_security_title')}
                 </h4>
                 <p className="text-[11px] text-slate-500 mt-1">
-                  Your profile is private. Update your details below and
-                  contact support to change your password or email.
+                  {t('profile_security_body')}
                 </p>
               </div>
             </div>
@@ -371,10 +370,10 @@ const Profile = () => {
         {/* Right column — Profile details + verification */}
         <div className="lg:col-span-8 space-y-6">
           <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 shadow-[0_2px_8px_rgba(15,23,42,0.06)]">
-            <h3 className="text-[16px] font-semibold text-[#111827] pb-3 border-b border-slate-100">
-              Verification Status
+             <h3 className="text-[16px] font-semibold text-[#111827] pb-3 border-b border-slate-100">
+              {t('profile_verification')}
             </h3>
-            <p className="text-[13px] text-[#6B7280] mt-4">{status.helper}</p>
+            <p className="text-[13px] text-[#6B7280] mt-4">{t(status.helperKey)}</p>
 
             {profile?.licenseNumber && (
               <p className="text-[12px] text-slate-500 mt-3">
@@ -400,15 +399,15 @@ const Profile = () => {
                 className="mt-4 inline-flex items-center gap-2 bg-[#4A9FF5] hover:bg-[#3A8FE5] text-white px-5 py-2.5 rounded-xl text-xs font-bold transition cursor-pointer shadow-[0_4px_12px_rgba(74,159,245,0.25)]"
               >
                 <ShieldCheck size={16} />
-                Complete Agent Profile
+                {t('profile_complete')}
               </Link>
             )}
           </div>
 
           <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 shadow-[0_2px_8px_rgba(15,23,42,0.06)] space-y-6">
             <div>
-              <h3 className="text-[16px] font-semibold text-[#111827] pb-3 border-b border-slate-100">
-                Personal Information
+               <h3 className="text-[16px] font-semibold text-[#111827] pb-3 border-b border-slate-100">
+                {t('profile_personal')}
               </h3>
             </div>
 
@@ -418,8 +417,8 @@ const Profile = () => {
                   <label
                     htmlFor="firstName"
                     className="block text-xs font-semibold text-slate-600 uppercase mb-1"
-                  >
-                    First Name
+                   >
+                    {t('profile_first_name')}
                   </label>
                   <input
                     id="firstName"
@@ -432,7 +431,7 @@ const Profile = () => {
                   />
                   {fieldErrors.firstName && (
                     <p id="firstNameError" className="text-[11px] text-[#B23B36] mt-1">
-                      {fieldErrors.firstName}
+                      {t(fieldErrors.firstName)}
                     </p>
                   )}
                 </div>
@@ -440,8 +439,8 @@ const Profile = () => {
                   <label
                     htmlFor="lastName"
                     className="block text-xs font-semibold text-slate-600 uppercase mb-1"
-                  >
-                    Last Name
+                   >
+                    {t('profile_last_name')}
                   </label>
                   <input
                     id="lastName"
@@ -454,7 +453,7 @@ const Profile = () => {
                   />
                   {fieldErrors.lastName && (
                     <p id="lastNameError" className="text-[11px] text-[#B23B36] mt-1">
-                      {fieldErrors.lastName}
+                      {t(fieldErrors.lastName)}
                     </p>
                   )}
                 </div>
@@ -464,8 +463,8 @@ const Profile = () => {
                 <label
                   htmlFor="email"
                   className="block text-xs font-semibold text-slate-600 uppercase mb-1"
-                >
-                  Email Address
+                 >
+                  {t('profile_email_address')}
                 </label>
                 <div className="relative">
                   <Mail
@@ -482,7 +481,7 @@ const Profile = () => {
                   />
                 </div>
                 <p className="text-[11px] text-slate-400 mt-1">
-                  Email cannot be changed from this page
+                  {t('profile_email_hint')}
                 </p>
               </div>
 
@@ -490,8 +489,8 @@ const Profile = () => {
                 <label
                   htmlFor="phone"
                   className="block text-xs font-semibold text-slate-600 uppercase mb-1"
-                >
-                  Phone Number
+                 >
+                  {t('profile_phone')}
                 </label>
                 <div className="relative">
                   <Phone
@@ -510,7 +509,7 @@ const Profile = () => {
                 </div>
                 {fieldErrors.phone && (
                   <p id="phoneError" className="text-[11px] text-[#B23B36] mt-1">
-                    {fieldErrors.phone}
+                    {t(fieldErrors.phone)}
                   </p>
                 )}
               </div>
@@ -520,8 +519,8 @@ const Profile = () => {
                   <label
                     htmlFor="agencyName"
                     className="block text-xs font-semibold text-slate-600 uppercase mb-1"
-                  >
-                    Agency Name
+                   >
+                    {t('profile_agency')}
                   </label>
                   <div className="relative">
                     <Building2
@@ -540,7 +539,7 @@ const Profile = () => {
                   </div>
                   {fieldErrors.agencyName && (
                     <p id="agencyNameError" className="text-[11px] text-[#B23B36] mt-1">
-                      {fieldErrors.agencyName}
+                      {t(fieldErrors.agencyName)}
                     </p>
                   )}
                 </div>
@@ -548,8 +547,8 @@ const Profile = () => {
                   <label
                     htmlFor="specialization"
                     className="block text-xs font-semibold text-slate-600 uppercase mb-1"
-                  >
-                    Specialization
+                   >
+                    {t('profile_specialization')}
                   </label>
                   <div className="relative">
                     <Award
@@ -568,7 +567,7 @@ const Profile = () => {
                   </div>
                   {fieldErrors.specialization && (
                     <p id="specializationError" className="text-[11px] text-[#B23B36] mt-1">
-                      {fieldErrors.specialization}
+                      {t(fieldErrors.specialization)}
                     </p>
                   )}
                 </div>
@@ -576,8 +575,8 @@ const Profile = () => {
                   <label
                     htmlFor="city"
                     className="block text-xs font-semibold text-slate-600 uppercase mb-1"
-                  >
-                    City
+                   >
+                    {t('profile_city')}
                   </label>
                   <div className="relative">
                     <MapPin
@@ -596,7 +595,7 @@ const Profile = () => {
                   </div>
                   {fieldErrors.city && (
                     <p id="cityError" className="text-[11px] text-[#B23B36] mt-1">
-                      {fieldErrors.city}
+                      {t(fieldErrors.city)}
                     </p>
                   )}
                 </div>
@@ -604,8 +603,8 @@ const Profile = () => {
                   <label
                     htmlFor="officeAddress"
                     className="block text-xs font-semibold text-slate-600 uppercase mb-1"
-                  >
-                    Office Address
+                   >
+                    {t('profile_office')}
                   </label>
                   <input
                     id="officeAddress"
@@ -618,7 +617,7 @@ const Profile = () => {
                   />
                   {fieldErrors.officeAddress && (
                     <p id="officeAddressError" className="text-[11px] text-[#B23B36] mt-1">
-                      {fieldErrors.officeAddress}
+                      {t(fieldErrors.officeAddress)}
                     </p>
                   )}
                 </div>
@@ -628,8 +627,8 @@ const Profile = () => {
                 <label
                   htmlFor="bio"
                   className="block text-xs font-semibold text-slate-600 uppercase mb-1"
-                >
-                  Bio
+                 >
+                  {t('profile_bio')}
                 </label>
                 <textarea
                   id="bio"
@@ -639,12 +638,12 @@ const Profile = () => {
                   aria-invalid={!!fieldErrors.bio}
                   aria-describedby={fieldErrors.bio ? "bioError" : undefined}
                   className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3.5 text-xs text-slate-800 focus:outline-none focus:border-[#4A9FF5] font-medium transition resize-none"
-                  placeholder="Tell buyers about your experience, focus areas, and approach."
+                  placeholder={t('profile_bio_hint')}
                 />
                 <div className="flex items-center justify-between mt-1">
                   {fieldErrors.bio ? (
                     <p id="bioError" className="text-[11px] text-[#B23B36]">
-                      {fieldErrors.bio}
+                      {t(fieldErrors.bio)}
                     </p>
                   ) : (
                     <span />
@@ -661,8 +660,8 @@ const Profile = () => {
                   disabled={saving}
                   className="flex items-center space-x-2 bg-[#4A9FF5] hover:bg-[#3A8FE5] text-white px-5 py-2.5 rounded-xl text-xs font-bold transition cursor-pointer shadow-[0_4px_12px_rgba(74,159,245,0.25)] disabled:opacity-50"
                 >
-                  <Save size={16} />
-                  <span>{saving ? "Saving…" : "Save Changes"}</span>
+                   <Save size={16} />
+                  <span>{saving ? t('profile_saving') : t('profile_save')}</span>
                 </button>
               </div>
             </form>
