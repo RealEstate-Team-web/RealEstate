@@ -17,7 +17,7 @@ const PLANS = [
       "Buyer inquiries and visit requests",
     ]),
     description:
-      "The starter plan for agents getting started with Betnya, with limited listings per month.",
+      "The starter plan for agents getting started with Betenya, with limited listings per month.",
   },
   {
     name: "Pro",

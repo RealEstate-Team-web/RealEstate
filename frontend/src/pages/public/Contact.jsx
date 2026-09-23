@@ -26,7 +26,7 @@ const CONTACT_INFO = [
     icon: Mail,
     labelKey: "email_label",
     valueKey: "email_value",
-    href: "mailto:info@betnya.com",
+    href: "mailto:info@betenya.com",
   },
   {
     icon: Clock,

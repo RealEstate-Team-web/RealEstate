@@ -118,7 +118,7 @@ const PageLoader = ({ loading = true }) => {
           <div className="absolute inset-0 flex items-center justify-center">
             <img
               src="/logo.png"
-              alt="ቤትኛ (Betnya) logo"
+              alt="ቤተኛ (Betenya) logo"
               className="h-8 w-8 rounded-md object-contain"
             />
           </div>
@@ -127,7 +127,7 @@ const PageLoader = ({ loading = true }) => {
 
         {/* Brand */}
         <h1 className="mt-5 text-lg font-semibold tracking-tight text-white">
-          ቤትኛ (Betnya)
+          ቤተኛ (Betenya)
         </h1>
 
         <p className="mt-1 text-[10px] font-medium uppercase tracking-[0.25em] text-[#0F9690]">
