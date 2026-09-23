@@ -1,13 +1,15 @@
 import { CreditCard } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import SubscriptionPlans from '../../components/subscription/SubscriptionPlans';
 
 const AgentSubscription = () => {
+  const { t } = useTranslation('agents');
   return (
     <div className="space-y-6 font-sans">
       <div className="flex items-start gap-4 flex-wrap">
         <div className="min-w-0">
           <p className="text-[11px] font-semibold uppercase tracking-wider text-[#1D6FD3] mb-1">
-            Subscription
+            {t('subscription_title')}
           </p>
           <div className="flex items-center gap-2.5">
             <span
@@ -17,12 +19,11 @@ const AgentSubscription = () => {
               <CreditCard size={20} />
             </span>
             <h1 className="text-[24px] font-bold text-[#111827] tracking-tight">
-              Choose a Plan
+              {t('subscription_choose_plan')}
             </h1>
           </div>
           <p className="text-[13px] text-[#6B7280] mt-1">
-            Select a subscription plan to start publishing your properties.
-            Online payment is coming soon.
+            {t('subscription_choose_plan_sub')}
           </p>
         </div>
       </div>
@@ -31,14 +32,13 @@ const AgentSubscription = () => {
         role="note"
         className="rounded-md bg-[#E7F0FB] text-[#1F5FA8] text-[13px] px-4 py-3"
       >
-        Payment integration is not available yet. Plan selection will be enabled
-        once online payment is launched.
+        {t('subscription_payment_note')}
       </div>
 
       <SubscriptionPlans
-        ctaLabel="Payment Coming Soon"
+        ctaLabel={t('subscription_coming_soon')}
         ctaDisabled
-        ctaTitle="Online payment is coming soon"
+        ctaTitle={t('subscription_coming_soon_title')}
       />
     </div>
   );
