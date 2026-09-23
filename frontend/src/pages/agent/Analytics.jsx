@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   RefreshCw,
   AlertCircle,
@@ -99,6 +100,7 @@ const ChartTooltip = ({ active, payload, label, formatter }) => {
 };
 
 const ProgressRing = ({ value, total }) => {
+  const { t } = useTranslation("agents");
   const size = 150;
   const stroke = 16;
   const radius = (size - stroke) / 2;
@@ -134,7 +136,7 @@ const ProgressRing = ({ value, total }) => {
           {numberFormat(value)}
         </span>
         <span className="text-[11px] text-[#6B7280] mt-1">
-          {pct}% of {numberFormat(total)}
+          {pct}% {t("analytics_of")} {numberFormat(total)}
         </span>
       </div>
     </div>
@@ -142,6 +144,7 @@ const ProgressRing = ({ value, total }) => {
 };
 
 const CompletedVisitsGauge = ({ gauge }) => {
+  const { t } = useTranslation("agents");
   const { completed = 0, scheduled = 0, rate = 0 } = gauge || {};
   const width = 220;
   const height = 128;
@@ -175,20 +178,20 @@ const CompletedVisitsGauge = ({ gauge }) => {
         <p className="text-[32px] font-bold text-[#111827] leading-none">
           {rate}%
         </p>
-        <p className="text-[11px] text-[#6B7280] mt-1">completion rate</p>
+        <p className="text-[11px] text-[#6B7280] mt-1">{t("analytics_completion_rate")}</p>
       </div>
       <div className="grid grid-cols-2 gap-x-8 gap-y-1 mt-5 text-center">
         <div>
           <p className="text-[18px] font-bold text-[#111827] leading-none">
             {numberFormat(completed)}
           </p>
-          <p className="text-[11px] text-[#6B7280] mt-0.5">Completed</p>
+          <p className="text-[11px] text-[#6B7280] mt-0.5">{t("analytics_completed")}</p>
         </div>
         <div>
           <p className="text-[18px] font-bold text-[#111827] leading-none">
             {numberFormat(scheduled)}
           </p>
-          <p className="text-[11px] text-[#6B7280] mt-0.5">Scheduled</p>
+          <p className="text-[11px] text-[#6B7280] mt-0.5">{t("analytics_scheduled")}</p>
         </div>
       </div>
     </div>
@@ -196,11 +199,12 @@ const CompletedVisitsGauge = ({ gauge }) => {
 };
 
 const StarRating = ({ score }) => {
+  const { t } = useTranslation("agents");
   const rounded = Math.max(0, Math.min(5, Math.round(Number(score) || 0)));
   return (
     <span
       className="inline-flex items-center gap-0.5"
-      aria-label={`${rounded} out of 5`}
+      aria-label={t("analytics_out_of_five", { score: rounded })}
       title={`${rounded} / 5`}
     >
       {Array.from({ length: 5 }).map((_, i) => (
@@ -219,6 +223,7 @@ const StarRating = ({ score }) => {
 };
 
 const Analytics = () => {
+  const { t } = useTranslation("agents");
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -239,7 +244,7 @@ const Analytics = () => {
         const payload = await getAgentAnalytics();
         if (active) setData(payload);
       } catch (err) {
-        if (active) setError(err.message || "Failed to load analytics");
+        if (active) setError(err.message || t("analytics_error"));
       } finally {
         if (active) setLoading(false);
       }
@@ -247,7 +252,7 @@ const Analytics = () => {
     return () => {
       active = false;
     };
-  }, [reloadKey]);
+  }, [reloadKey, t]);
 
   useEffect(() => {
     if (!filterOpen) return undefined;
@@ -274,13 +279,13 @@ const Analytics = () => {
 
   const statusSegments = useMemo(() => {
     const segments = [
-      { name: "Pending", value: Number(inquiryStatus.pending) || 0 },
-      { name: "Read", value: Number(inquiryStatus.read) || 0 },
-      { name: "Responded", value: Number(inquiryStatus.responded) || 0 },
-      { name: "Archived", value: Number(inquiryStatus.archived) || 0 },
+      { name: t("analytics_inquiry_pending"), value: Number(inquiryStatus.pending) || 0 },
+      { name: t("analytics_inquiry_read"), value: Number(inquiryStatus.read) || 0 },
+      { name: t("analytics_inquiry_responded"), value: Number(inquiryStatus.responded) || 0 },
+      { name: t("analytics_inquiry_archived"), value: Number(inquiryStatus.archived) || 0 },
     ];
     return segments.filter((s) => s.value > 0);
-  }, [inquiryStatus]);
+  }, [inquiryStatus, t]);
 
   const respondedInquiries = Number(inquiryStatus.responded) || 0;
   const totalInquiries = Number(kpis.totalInquiries) || 0;
@@ -290,17 +295,20 @@ const Analytics = () => {
     const labels = ft.labels || [];
     const current = ft.current || [];
     const previous = ft.previous || [];
+    const thisWeek = t("analytics_this_week");
+    const lastWeek = t("analytics_last_week");
     return labels.map((label, i) => ({
       label,
-      "This week": current[i] || 0,
-      "Last week": previous[i] || 0,
+      [thisWeek]: current[i] || 0,
+      [lastWeek]: previous[i] || 0,
     }));
-  }, [data]);
+  }, [data, t]);
 
-  const hasFavorites = useMemo(
-    () => favoritesTrendData.some((d) => d["This week"] > 0 || d["Last week"] > 0),
-    [favoritesTrendData]
-  );
+  const hasFavorites = useMemo(() => {
+    const thisWeek = t("analytics_this_week");
+    const lastWeek = t("analytics_last_week");
+    return favoritesTrendData.some((d) => d[thisWeek] > 0 || d[lastWeek] > 0);
+  }, [favoritesTrendData, t]);
 
   const hasEngagement = useMemo(
     () => engagementTrend.some((d) => d.favorites > 0 || d.inquiries > 0),
@@ -409,13 +417,13 @@ const Analytics = () => {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div className="min-w-0">
           <p className="text-[11px] font-semibold uppercase tracking-wider text-[#1D6FD3] mb-1">
-            Insights
+            {t("analytics_insights")}
           </p>
           <h1 className="text-[24px] font-bold text-[#111827] tracking-tight">
-            Analytics Dashboard
+            {t("analytics_title")}
           </h1>
           <p className="text-[13px] text-[#6B7280] mt-1">
-            Favorites, inquiries, and visits across your listings
+            {t("analytics_subtitle")}
           </p>
         </div>
         <button
@@ -425,7 +433,7 @@ const Analytics = () => {
           className="inline-flex items-center gap-2 px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50 transition cursor-pointer disabled:opacity-60"
         >
           <RefreshCw size={14} className={loading ? "animate-spin" : ""} />
-          Refresh
+          {t("analytics_refresh")}
         </button>
       </div>
 
@@ -447,18 +455,18 @@ const Analytics = () => {
             <div className={`${chartCardClass} lg:col-span-2`}>
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <h3 className={CARD_TITLE_CLASS}>Engagement Trend</h3>
+                  <h3 className={CARD_TITLE_CLASS}>{t("analytics_engagement_trend")}</h3>
                   <p className={CARD_SUBTITLE_CLASS}>
-                    Favorites and inquiries per day · last 30 days
+                    {t("analytics_engagement_trend_sub")}
                   </p>
                 </div>
                 <SummaryPill
                   value={Number(kpis.favoritesCount) || 0}
-                  trendLabel="favorites"
+                  trendLabel={t("analytics_favorites")}
                 />
               </div>
               {!hasEngagement ? (
-                <EmptyState message="No engagement activity yet" />
+                <EmptyState message={t("analytics_no_engagement")} />
               ) : (
                 <div className="mt-4">
                   <ResponsiveContainer width="100%" height={240}>
@@ -496,7 +504,7 @@ const Analytics = () => {
                       <Area
                         type="monotone"
                         dataKey="favorites"
-                        name="Favorites"
+                        name={t("analytics_favorites")}
                         stroke={BLUE}
                         strokeWidth={2.5}
                         fill="url(#gradFavorites)"
@@ -506,7 +514,7 @@ const Analytics = () => {
                       <Area
                         type="monotone"
                         dataKey="inquiries"
-                        name="Inquiries"
+                        name={t("analytics_inquiries")}
                         stroke={GREEN}
                         strokeWidth={2.5}
                         fill="url(#gradInquiries)"
@@ -517,8 +525,8 @@ const Analytics = () => {
                   </ResponsiveContainer>
                   <div className="flex items-center justify-center gap-6 mt-2">
                     {[
-                      { label: "Favorites", color: BLUE },
-                      { label: "Inquiries", color: GREEN },
+                      { label: t("analytics_favorites"), color: BLUE },
+                      { label: t("analytics_inquiries"), color: GREEN },
                     ].map((s) => (
                       <div key={s.label} className="flex items-center gap-1.5">
                         <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: s.color }} />
@@ -533,13 +541,13 @@ const Analytics = () => {
             <div className={`${chartCardClass} lg:col-span-1`}>
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <h3 className={CARD_TITLE_CLASS}>Favorites Count</h3>
-                  <p className={CARD_SUBTITLE_CLASS}>This week vs last week</p>
+                  <h3 className={CARD_TITLE_CLASS}>{t("analytics_favorites_count")}</h3>
+                  <p className={CARD_SUBTITLE_CLASS}>{t("analytics_this_vs_last_week")}</p>
                 </div>
                 <SummaryPill value={Number(kpis.favoritesCount) || 0} />
               </div>
               {!hasFavorites ? (
-                <EmptyState message="No favorites yet" />
+                <EmptyState message={t("analytics_no_favorites")} />
               ) : (
                 <div className="mt-4">
                   <ResponsiveContainer width="100%" height={240}>
@@ -567,8 +575,8 @@ const Analytics = () => {
                         content={<ChartTooltip />}
                         cursor={{ fill: "rgba(15,23,42,0.04)" }}
                       />
-                      <Bar dataKey="This week" fill={BLUE} radius={[6, 6, 0, 0]} maxBarSize={18} />
-                      <Bar dataKey="Last week" fill={GREEN} radius={[6, 6, 0, 0]} maxBarSize={18} />
+                      <Bar dataKey={t("analytics_this_week")} fill={BLUE} radius={[6, 6, 0, 0]} maxBarSize={18} />
+                      <Bar dataKey={t("analytics_last_week")} fill={GREEN} radius={[6, 6, 0, 0]} maxBarSize={18} />
                       <Legend
                         wrapperStyle={{ fontSize: 11, color: "#6B7280" }}
                         iconType="circle"
@@ -585,11 +593,11 @@ const Analytics = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             <div className={`${chartCardClass} flex flex-col`}>
-              <h3 className={CARD_TITLE_CLASS}>Inquiry Status</h3>
-              <p className={CARD_SUBTITLE_CLASS}>Distribution of your inquiries</p>
+              <h3 className={CARD_TITLE_CLASS}>{t("analytics_inquiry_status")}</h3>
+              <p className={CARD_SUBTITLE_CLASS}>{t("analytics_inquiry_status_sub")}</p>
               {statusSegments.length === 0 ? (
                 <div className="flex-1 flex items-center">
-                  <EmptyState message="No inquiries yet" />
+                  <EmptyState message={t("analytics_no_inquiries")} />
                 </div>
               ) : (
                 <div className="mt-4 flex-1">
@@ -634,14 +642,14 @@ const Analytics = () => {
 
             <div className={`${chartCardClass} flex flex-col items-center`}>
               <div className="self-start">
-                <h3 className={CARD_TITLE_CLASS}>Inquiries</h3>
-                <p className={CARD_SUBTITLE_CLASS}>Responded share</p>
+                <h3 className={CARD_TITLE_CLASS}>{t("analytics_inquiries")}</h3>
+                <p className={CARD_SUBTITLE_CLASS}>{t("analytics_responded_share")}</p>
               </div>
               <div className="mt-6 flex-1 flex flex-col justify-center">
                 <div className="flex flex-col items-center gap-2">
                   <ProgressRing value={respondedInquiries} total={totalInquiries} />
                   <p className="text-[12px] font-medium text-[#6B7280]">
-                    responded of total inquiries
+                    {t("analytics_responded_of_total")}
                   </p>
                 </div>
               </div>
@@ -649,8 +657,8 @@ const Analytics = () => {
 
             <div className={`${chartCardClass} flex flex-col items-center`}>
               <div className="self-start">
-                <h3 className={CARD_TITLE_CLASS}>Completed Visits</h3>
-                <p className={CARD_SUBTITLE_CLASS}>Visit completion performance</p>
+                <h3 className={CARD_TITLE_CLASS}>{t("analytics_completed_visits")}</h3>
+                <p className={CARD_SUBTITLE_CLASS}>{t("analytics_visit_performance")}</p>
               </div>
               <div className="mt-2 flex-1 flex flex-col justify-center">
                 <CompletedVisitsGauge gauge={visitsGauge} />
@@ -661,9 +669,9 @@ const Analytics = () => {
           <div className={`${chartCardClass} p-0 overflow-hidden`}>
             <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
               <div>
-                <h3 className={CARD_TITLE_CLASS}>Top Performing Properties</h3>
+                <h3 className={CARD_TITLE_CLASS}>{t("analytics_top_performing")}</h3>
                 <p className="text-[12px] text-[#6B7280] mt-0.5">
-                  Listings ranked by performance
+                  {t("analytics_top_performing_sub")}
                 </p>
               </div>
               <div className="relative" ref={filterRef}>
@@ -677,7 +685,9 @@ const Analytics = () => {
                   }`}
                 >
                   <Filter size={13} />
-                  {statusFilter === "all" ? "Status" : statusFilter}
+                  {statusFilter === "all"
+                    ? t("analytics_status")
+                    : t(`properties_status_${statusFilter}`, statusFilter)}
                 </button>
                 {filterOpen && (
                   <div className="absolute right-0 mt-1 w-40 bg-white border border-slate-200 rounded-xl shadow-lg py-1 z-10">
@@ -689,7 +699,7 @@ const Analytics = () => {
                       }}
                       className="w-full text-left px-3 py-1.5 text-[12px] text-slate-700 hover:bg-slate-50 cursor-pointer"
                     >
-                      All statuses
+                      {t("analytics_all_statuses")}
                     </button>
                     {availableStatuses.map((s) => (
                       <button
@@ -701,7 +711,7 @@ const Analytics = () => {
                         }}
                         className="w-full text-left px-3 py-1.5 text-[12px] text-slate-700 capitalize hover:bg-slate-50 cursor-pointer"
                       >
-                        {s}
+                        {t(`properties_status_${s}`, s)}
                       </button>
                     ))}
                   </div>
@@ -715,10 +725,10 @@ const Analytics = () => {
                   <Building2 size={26} />
                 </div>
                 <p className="text-[14px] font-semibold text-slate-700">
-                  No properties yet
+                  {t("analytics_no_properties")}
                 </p>
                 <p className="text-[12px] text-slate-500 max-w-sm mx-auto">
-                  Once you list a property, you'll see its performance here.
+                  {t("analytics_no_properties_sub")}
                 </p>
               </div>
             ) : (
@@ -726,12 +736,12 @@ const Analytics = () => {
                 <table className="w-full text-[12px]">
                   <thead>
                     <tr className="text-left text-[11px] uppercase tracking-wider text-slate-500 bg-slate-50/50">
-                      {renderSortableTh("title", "Property")}
-                      {renderSortableTh("views", "Total Views", "text-right")}
-                      {renderSortableTh("favorites", "Favorites", "text-right")}
-                      {renderSortableTh("inquiries", "Inquiries", "text-right")}
-                      {renderSortableTh("status", "Status")}
-                      {renderSortableTh("score", "Performance Score", "text-right")}
+                      {renderSortableTh("title", t("analytics_property"))}
+                      {renderSortableTh("views", t("analytics_total_views"), "text-right")}
+                      {renderSortableTh("favorites", t("analytics_favorites"), "text-right")}
+                      {renderSortableTh("inquiries", t("analytics_inquiries"), "text-right")}
+                      {renderSortableTh("status", t("analytics_status"))}
+                      {renderSortableTh("score", t("analytics_performance_score"), "text-right")}
                     </tr>
                   </thead>
                   <tbody>
@@ -780,7 +790,7 @@ const Analytics = () => {
                             <span
                               className={`px-2 py-0.5 rounded-full border text-[11px] font-bold capitalize ${badge}`}
                             >
-                              {p.status}
+                              {t(`properties_status_${p.status}`, p.status)}
                             </span>
                           </td>
                           <td className="px-6 py-3 text-right">
