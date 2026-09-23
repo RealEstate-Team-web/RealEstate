@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import {
   Search,
   Send,
@@ -30,11 +31,18 @@ const STATUS_TABS = [
   { key: "responded", label: "Responded" },
 ];
 
+const STATUS_TAB_KEYS = {
+  all: "messages_all",
+  pending: "messages_new",
+  read: "messages_read",
+  responded: "messages_responded",
+};
+
 const STATUS_BADGE = {
-  pending: { label: "New", className: "bg-amber-100 text-amber-800 border-amber-200" },
-  read: { label: "Read", className: "bg-blue-100 text-blue-800 border-blue-200" },
-  responded: { label: "Responded", className: "bg-emerald-100 text-emerald-800 border-emerald-200" },
-  archived: { label: "Archived", className: "bg-slate-100 text-slate-700 border-slate-200" },
+  pending: { labelKey: "messages_new", className: "bg-amber-100 text-amber-800 border-amber-200" },
+  read: { labelKey: "messages_read", className: "bg-blue-100 text-blue-800 border-blue-200" },
+  responded: { labelKey: "messages_responded", className: "bg-emerald-100 text-emerald-800 border-emerald-200" },
+  archived: { labelKey: "messages_archived", className: "bg-slate-100 text-slate-700 border-slate-200" },
 };
 
 const formatShortDate = (dateString) => {
@@ -68,6 +76,7 @@ const formatPrice = (amount) => {
 const Messages = () => {
   const { user } = useAuth();
   const { toastMessage, toastTone, showToast } = useToast();
+  const { t } = useTranslation("agents");
   const messagesEndRef = useRef(null);
 
   const [inquiries, setInquiries] = useState([]);
@@ -126,12 +135,12 @@ const Messages = () => {
         }
       } catch (err) {
         if (!isMountedRef.current || requestId !== loadRequestIdRef.current) return;
-        setError(err.message || "Failed to load conversations");
+        setError(err.message || t("messages_error_load"));
       } finally {
         if (isMountedRef.current && requestId === loadRequestIdRef.current) setLoading(false);
       }
     },
-    [statusFilter, debouncedSearch],
+    [statusFilter, debouncedSearch, t],
   );
 
   useEffect(() => {
@@ -185,7 +194,7 @@ const Messages = () => {
       } catch (err) {
         if (isCurrent) {
           setActiveError(
-            err.message || "Failed to load this conversation. Please try again.",
+            err.message || t("messages_conversation_error"),
           );
         }
       } finally {
@@ -197,7 +206,7 @@ const Messages = () => {
     return () => {
       isCurrent = false;
     };
-  }, [activeInquiryId, threadReloadKey]);
+  }, [activeInquiryId, threadReloadKey, t]);
 
   useEffect(() => {
     scrollToBottom();
@@ -233,7 +242,7 @@ const Messages = () => {
     try {
       const messageText = newMessage.trim();
       const updatedInquiry = await replyToInquiry(activeInquiryId, messageText);
-      showToast("Message sent");
+      showToast(t("messages_sent"));
       setNewMessage("");
 
       if (updatedInquiry) {
@@ -254,7 +263,7 @@ const Messages = () => {
         ),
       );
     } catch (err) {
-      showToast(err.message || "Failed to send message", { tone: "error" });
+      showToast(err.message || t("messages_send_error"), { tone: "error" });
     } finally {
       setSending(false);
     }
@@ -303,10 +312,10 @@ const Messages = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
-            Customer Messages
+            {t("messages_title")}
           </h1>
           <p className="text-xs text-slate-500 mt-1">
-            Respond to inquiries from buyers about your listings
+            {t("messages_subtitle")}
           </p>
         </div>
         <button
@@ -319,7 +328,7 @@ const Messages = () => {
           className="self-start sm:self-auto px-3.5 py-2 text-xs font-semibold bg-white border border-slate-200 rounded-xl text-slate-700 hover:bg-slate-50 shadow-xs transition cursor-pointer flex items-center space-x-2 disabled:opacity-50"
         >
           <RefreshCw size={14} className={loading ? "animate-spin" : ""} />
-          <span>Refresh</span>
+          <span>{t("messages_refresh")}</span>
         </button>
       </div>
 
@@ -327,7 +336,7 @@ const Messages = () => {
         <div className="bg-white border border-slate-200/80 rounded-2xl shadow-xs p-8 text-center space-y-4 min-h-[400px] flex flex-col items-center justify-center">
           <div className="w-8 h-8 border-[3px] border-blue-600/20 border-t-blue-600 rounded-full animate-spin mx-auto" />
           <p className="text-xs font-semibold text-slate-600">
-            Loading conversations...
+            {t("messages_loading")}
           </p>
         </div>
       )}
@@ -338,7 +347,7 @@ const Messages = () => {
             <AlertCircle size={24} />
           </div>
           <div>
-            <h3 className="text-sm font-bold text-rose-900">Failed to Load Messages</h3>
+            <h3 className="text-sm font-bold text-rose-900">{t("messages_error_try")}</h3>
             <p className="text-xs text-rose-600 mt-0.5">{error}</p>
           </div>
           <button
@@ -346,7 +355,7 @@ const Messages = () => {
             onClick={() => loadInquiries()}
             className="px-4 py-2 text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 rounded-xl transition cursor-pointer shadow-xs"
           >
-            Try Again
+            {t("messages_retry")}
           </button>
         </div>
       )}
@@ -358,17 +367,17 @@ const Messages = () => {
           </div>
           <div>
             <h3 className="text-base font-bold text-slate-900">
-              No inquiries yet
+              {t("messages_empty")}
             </h3>
             <p className="text-xs text-slate-500 max-w-sm mx-auto mt-1">
-              When buyers send inquiries on your listings, they will appear here for you to respond.
+              {t("messages_empty_body")}
             </p>
           </div>
           <Link
             to="/agent/properties"
             className="inline-block px-5 py-2.5 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-xs transition cursor-pointer"
           >
-            Manage Listings
+            {t("messages_manage_listings")}
           </Link>
         </div>
       )}
@@ -397,7 +406,7 @@ const Messages = () => {
                     }`}
                     aria-pressed={statusFilter === tab.key}
                   >
-                    {tab.label}
+                    {t(STATUS_TAB_KEYS[tab.key] || "messages_all")}
                   </button>
                 ))}
               </div>
@@ -408,7 +417,7 @@ const Messages = () => {
                 />
                 <input
                   type="text"
-                  placeholder="Search inquiries..."
+                  placeholder={t("messages_search_placeholder")}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full bg-white border border-slate-200 rounded-xl py-1.5 pl-8 pr-3 text-xs text-slate-800 focus:outline-none focus:border-blue-600 transition"
@@ -419,7 +428,7 @@ const Messages = () => {
             <div className="divide-y divide-slate-100 overflow-y-auto flex-1 max-h-[500px]">
               {filteredInquiries.length === 0 ? (
                 <div className="p-6 text-center text-slate-400 text-xs">
-                  No matching inquiries.
+                  {t("messages_no_match")}
                 </div>
               ) : (
                 filteredInquiries.map((inq) => {
@@ -470,7 +479,7 @@ const Messages = () => {
                         </div>
                         <p className="text-[11px] text-slate-500 font-medium truncate mt-0.5 flex items-center gap-1">
                           <Building2 size={11} className="text-slate-400 shrink-0" />
-                          <span className="truncate">{inq.propertyTitle || 'General inquiry'}</span>
+                          <span className="truncate">{inq.propertyTitle || t("messages_general_inquiry")}</span>
                         </p>
                         <p className="text-xs text-slate-500 truncate mt-1">
                           {displayMessage}
@@ -479,7 +488,7 @@ const Messages = () => {
                           <span
                             className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-semibold border ${badge.className}`}
                           >
-                            {badge.label}
+                            {t(badge.labelKey)}
                           </span>
                           {isUnread && (
                             <span
@@ -501,7 +510,7 @@ const Messages = () => {
                     disabled={loading}
                     className="w-full py-2 text-xs font-bold text-blue-700 bg-blue-50 hover:bg-blue-100 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg transition cursor-pointer"
                   >
-                    {loading ? "Loading…" : "Load more"}
+                    {loading ? t("messages_loading") : t("messages_load_more")}
                   </button>
                 </div>
               )}
@@ -516,7 +525,7 @@ const Messages = () => {
             {activeLoading ? (
               <div className="flex-1 flex flex-col items-center justify-center p-12 text-slate-400 space-y-3">
                 <div className="w-8 h-8 border-[3px] border-blue-600 border-t-transparent rounded-full animate-spin" />
-                <p className="text-xs font-medium">Loading conversation...</p>
+                <p className="text-xs font-medium">{t("messages_conversation_loading")}</p>
               </div>
             ) : activeError ? (
               <div className="flex-1 flex flex-col items-center justify-center p-12 text-slate-500 space-y-3">
@@ -527,7 +536,7 @@ const Messages = () => {
                   onClick={() => setThreadReloadKey((k) => k + 1)}
                   className="px-3 py-1.5 text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg font-semibold transition cursor-pointer"
                 >
-                  Retry
+                  {t("messages_retry")}
                 </button>
               </div>
             ) : activeInquiry ? (
@@ -538,7 +547,7 @@ const Messages = () => {
                       type="button"
                       onClick={() => setMobileView("list")}
                       className="p-1 text-slate-600 hover:text-slate-900 lg:hidden cursor-pointer shrink-0"
-                      title="Back to inquiries list"
+                      title={t("messages_back_to_list")}
                     >
                       <ArrowLeft size={18} />
                     </button>
@@ -590,7 +599,7 @@ const Messages = () => {
                     )}
                     <div className="min-w-0">
                       <h4 className="font-bold text-slate-900 truncate">
-                        {activeInquiry.propertyTitle || 'General inquiry'}
+                        {activeInquiry.propertyTitle || t("messages_general_inquiry")}
                       </h4>
                       <p className="text-[11px] text-slate-500 truncate flex items-center gap-1">
                         <MapPin size={11} className="text-slate-400" />
@@ -611,7 +620,7 @@ const Messages = () => {
                     to={`/properties/${activeInquiry.propertyId}`}
                     className="px-3 py-1.5 bg-white border border-blue-200 text-blue-700 hover:bg-blue-50 rounded-lg text-xs font-bold transition shrink-0"
                   >
-                    View Listing
+                    {t("messages_view_listing")}
                   </Link>
                 </div>
                 )}
@@ -656,7 +665,7 @@ const Messages = () => {
                             <span>{formatFullDateTime(msg.createdAt)}</span>
                             {isFromUser && (
                               <span className="flex items-center gap-0.5">
-                                <Check size={11} /> Sent
+                                <Check size={11} /> {t("messages_sent_badge")}
                               </span>
                             )}
                           </div>
@@ -675,10 +684,10 @@ const Messages = () => {
                     type="text"
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
-                    placeholder="Type a reply..."
+                    placeholder={t("messages_reply_placeholder")}
                     disabled={sending}
                     className="flex-1 bg-white border border-slate-200 rounded-xl py-2 px-3.5 text-xs text-slate-800 focus:outline-none focus:border-blue-600 transition min-w-0 disabled:opacity-50"
-                    aria-label="Reply message"
+                    aria-label={t("messages_reply_placeholder")}
                   />
                   <button
                     type="submit"
@@ -689,7 +698,7 @@ const Messages = () => {
                       <span className="inline-block w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                     ) : (
                       <>
-                        <span>Send</span>
+                        <span>{t("messages_send")}</span>
                         <Send size={13} />
                       </>
                     )}
@@ -698,7 +707,7 @@ const Messages = () => {
               </>
             ) : (
               <div className="p-8 text-center text-slate-400 text-xs my-auto">
-                Select an inquiry from the list to view the conversation.
+                {t("messages_select")}
               </div>
             )}
           </div>

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Loader2, ArrowLeft } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useToast } from '../../hooks/useToast';
 import PropertyForm from '../../components/forms/PropertyForm';
 import SaveNotice from '../../components/agent/SaveNotice';
@@ -31,6 +32,7 @@ const mapPropertyToFormInitial = (property) => ({
 const EditProperty = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { t } = useTranslation('agents');
   const { toastMessage, toastTone, showToast } = useToast();
   const redirectRef = useRef(null);
 
@@ -61,7 +63,7 @@ const EditProperty = () => {
       .catch(() => {
         if (cancelled) return;
         setLoadedId(id);
-        setLoadError('Property not found or no longer accessible.');
+        setLoadError('editproperty_load_error');
       });
 
     return () => {
@@ -74,10 +76,10 @@ const EditProperty = () => {
   const handleSaved = (status, notice) => {
     const base =
       status === 'draft'
-        ? 'Draft updated successfully.'
+        ? t('editproperty_draft_updated')
         : status === 'available'
-          ? 'Property updated and published!'
-          : 'Property updated successfully.';
+          ? t('editproperty_updated_published')
+          : t('editproperty_updated');
     if (notice) {
       setSaveFailed(true);
       showToast(`${base} ${notice}`, { tone: 'error', duration: 12000 });
@@ -94,9 +96,9 @@ const EditProperty = () => {
 
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-[19px] font-bold text-[#101820] tracking-tight">Edit Property</h2>
+          <h2 className="text-[19px] font-bold text-[#101820] tracking-tight">{t('editproperty_title')}</h2>
           <p className="text-[12px] text-slate-500 mt-0.5">
-            Update the listing details and press Publish when ready.
+            {t('editproperty_subtitle')}
           </p>
         </div>
         <button
@@ -105,26 +107,26 @@ const EditProperty = () => {
           className="inline-flex items-center gap-1.5 h-9 px-3.5 rounded-lg border border-slate-200 bg-white text-[13px] font-semibold text-slate-600 hover:border-slate-300 transition cursor-pointer"
         >
           <ArrowLeft size={15} />
-          Back
+          {t('editproperty_back')}
         </button>
       </div>
 
       {loading && (
         <div className="flex items-center justify-center py-16 text-slate-500 text-[13px] gap-2">
           <Loader2 size={18} className="animate-spin" />
-          Loading listing...
+          {t('editproperty_loading')}
         </div>
       )}
 
       {!loading && loadError && (
         <div className="rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs px-4 py-3">
-          {loadError}
+          {t(loadError)}
           <button
             type="button"
             onClick={() => navigate(ROUTES.agentProperties)}
             className="ml-3 underline font-semibold cursor-pointer"
           >
-            Back to My Properties
+            {t('editproperty_back_my_properties')}
           </button>
         </div>
       )}

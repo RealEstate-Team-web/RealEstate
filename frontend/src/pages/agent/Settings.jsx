@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Settings as SettingsIcon,
   Lock,
@@ -45,9 +46,9 @@ const readJson = (key, fallback) => {
 };
 
 const CONNECTED_ACCOUNTS = [
-  { id: 'google', name: 'Google', description: 'Sign in and access your inbox', icon: 'G' },
-  { id: 'apple', name: 'Apple', description: 'Use Apple to sign in on supported devices', icon: '' },
-  { id: 'googleCalendar', name: 'Google Calendar', description: 'Sync visit schedules to your calendar', icon: '' },
+  { id: 'google', name: 'Google', descriptionKey: 'settings_account_google', icon: 'G' },
+  { id: 'apple', name: 'Apple', descriptionKey: 'settings_account_apple', icon: '' },
+  { id: 'googleCalendar', name: 'Google Calendar', descriptionKey: 'settings_account_calendar', icon: '' },
 ];
 
 const FIELD_STYLE =
@@ -55,6 +56,7 @@ const FIELD_STYLE =
 
 const Settings = () => {
   const { toastMessage, toastTone, showToast } = useToast();
+  const { t } = useTranslation('agents');
 
   const [prefs, setPrefs] = useState(() => readJson(PREFS_KEY, DEFAULT_PREFS));
   const [listingPrefs, setListingPrefs] = useState(() =>
@@ -79,18 +81,19 @@ const Settings = () => {
       .then((list) => {
         if (!active) return;
         setCategories(Array.isArray(list) ? list : []);
+        setCategoriesError('');
         setCategoriesLoading(false);
       })
       .catch(() => {
         if (!active) return;
         setCategories([]);
-        setCategoriesError('Could not load categories. Please try again later.');
+        setCategoriesError(t('settings_error_categories'));
         setCategoriesLoading(false);
       });
     return () => {
       active = false;
     };
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     let status = 'saved';
@@ -121,11 +124,11 @@ const Settings = () => {
   };
 
   const validateNewPassword = () => {
-    if (newPassword !== confirmPassword) return 'New passwords do not match';
-    if (newPassword.length < 8) return 'New password must be at least 8 characters';
-    if (!/[A-Z]/.test(newPassword)) return 'New password must contain at least one uppercase letter';
-    if (!/[a-z]/.test(newPassword)) return 'New password must contain at least one lowercase letter';
-    if (!/[0-9]/.test(newPassword)) return 'New password must contain at least one number';
+    if (newPassword !== confirmPassword) return t('settings_password_mismatch');
+    if (newPassword.length < 8) return t('settings_password_length');
+    if (!/[A-Z]/.test(newPassword)) return t('settings_password_uppercase');
+    if (!/[a-z]/.test(newPassword)) return t('settings_password_lowercase');
+    if (!/[0-9]/.test(newPassword)) return t('settings_password_number');
     return null;
   };
 
@@ -140,12 +143,12 @@ const Settings = () => {
     setPasswordSaving(true);
     try {
       await authService.changePassword({ currentPassword, newPassword });
-      setPasswordSuccess('Password updated successfully');
+      setPasswordSuccess(t('settings_password_success'));
       setCurrentPassword('');
       setNewPassword('');
       setConfirmPassword('');
     } catch (err) {
-      setPasswordError(err?.message || 'Failed to update password');
+      setPasswordError(err?.message || t('settings_password_update_error'));
     } finally {
       setPasswordSaving(false);
     }
@@ -177,7 +180,7 @@ const Settings = () => {
     <div className="space-y-5 font-sans">
       <div className="min-w-0">
         <p className="text-[11px] font-semibold uppercase tracking-wider text-[#1D6FD3] mb-1">
-          Settings
+          {t('settings_title')}
         </p>
         <div className="flex items-center gap-2.5">
           <span
@@ -186,10 +189,10 @@ const Settings = () => {
           >
             <SettingsIcon size={20} />
           </span>
-          <h1 className="text-[24px] font-bold text-[#111827] tracking-tight">Account Settings</h1>
+          <h1 className="text-[24px] font-bold text-[#111827] tracking-tight">{t('settings_account_title')}</h1>
         </div>
         <p className="text-[13px] text-[#6B7280] mt-1">
-          Manage your security, notifications and listing preferences
+          {t('settings_account_sub')}
         </p>
       </div>
 
@@ -200,8 +203,8 @@ const Settings = () => {
               <Lock size={20} />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-slate-900">Security & Password</h3>
-              <p className="text-xs text-slate-500">Update your account password.</p>
+              <h3 className="text-sm font-bold text-slate-900">{t('settings_security_password')}</h3>
+              <p className="text-xs text-slate-500">{t('settings_security_password_sub')}</p>
             </div>
           </div>
 
@@ -219,7 +222,7 @@ const Settings = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
             <div>
               <label className="block text-xs font-semibold text-slate-600 uppercase mb-1" htmlFor="currentPassword">
-                Current Password
+                {t('settings_current_password')}
               </label>
               <input
                 id="currentPassword"
@@ -233,7 +236,7 @@ const Settings = () => {
             <div />
             <div>
               <label className="block text-xs font-semibold text-slate-600 uppercase mb-1" htmlFor="newPassword">
-                New Password
+                {t('settings_new_password')}
               </label>
               <input
                 id="newPassword"
@@ -246,7 +249,7 @@ const Settings = () => {
             </div>
             <div>
               <label className="block text-xs font-semibold text-slate-600 uppercase mb-1" htmlFor="confirmPassword">
-                Confirm New Password
+                {t('settings_confirm_new_password')}
               </label>
               <input
                 id="confirmPassword"
@@ -267,7 +270,7 @@ const Settings = () => {
               className="flex items-center space-x-2 bg-[#4A9FF5] hover:bg-[#3A8FE5] text-white px-5 py-2.5 rounded-xl text-xs font-bold transition cursor-pointer shadow-[0_4px_12px_rgba(74,159,245,0.25)] disabled:opacity-50"
             >
               <Save size={16} />
-              <span>{passwordSaving ? 'Updating…' : 'Update Password'}</span>
+              <span>{passwordSaving ? t('settings_updating') : t('settings_update_password')}</span>
             </button>
           </div>
         </div>
@@ -278,17 +281,15 @@ const Settings = () => {
               <Bell size={20} />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-slate-900">Notification Preferences</h3>
-              <p className="text-xs text-slate-500">Manage how you receive platform notifications.</p>
+              <h3 className="text-sm font-bold text-slate-900">{t('settings_notification_prefs')}</h3>
+              <p className="text-xs text-slate-500">{t('settings_notification_prefs_sub')}</p>
             </div>
           </div>
 
           <div className="space-y-3 pt-2">
-            {[
-              { key: 'emailNotifications', title: 'Email Notifications', description: 'Receive updates about your account and properties via email.' },
-              { key: 'visitRequestAlerts', title: 'Visit Request Alerts', description: 'Get notified when a buyer requests to visit your property.' },
-              { key: 'inquiryAlerts', title: 'Inquiry Alerts', description: 'Get notified when a buyer sends you a message about a listing.' },
-            ].map((item) => (
+            {[{ key: 'emailNotifications', title: t('settings_email_notif'), description: t('settings_email_notif_sub') },
+              { key: 'visitRequestAlerts', title: t('settings_visit_alerts'), description: t('settings_visit_alerts_sub') },
+              { key: 'inquiryAlerts', title: t('settings_inquiry_alerts'), description: t('settings_inquiry_alerts_sub') }].map((item) => (
               <label
                 key={item.key}
                 className="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-200/60 cursor-pointer hover:bg-slate-100/50 transition"
@@ -316,8 +317,8 @@ const Settings = () => {
               <Link2 size={20} />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-slate-900">Linked Accounts</h3>
-              <p className="text-xs text-slate-500">Connect accounts to unlock integrations.</p>
+              <h3 className="text-sm font-bold text-slate-900">{t('settings_linked_accounts')}</h3>
+              <p className="text-xs text-slate-500">{t('settings_linked_accounts_sub')}</p>
             </div>
           </div>
           <div className="space-y-3 pt-1">
@@ -332,15 +333,15 @@ const Settings = () => {
                   </span>
                   <div className="min-w-0">
                     <p className="text-xs font-bold text-slate-800">{provider.name}</p>
-                    <p className="text-[11px] text-slate-500 truncate">{provider.description}</p>
+                    <p className="text-[11px] text-slate-500 truncate">{t(provider.descriptionKey)}</p>
                   </div>
                 </div>
                 <button
                   type="button"
-                  onClick={() => showToast(`${provider.name} linking is coming soon`)}
+                  onClick={() => showToast(t('settings_linking_soon', { name: provider.name }))}
                   className="text-[#4A9FF5] hover:bg-blue-50 border border-[#4A9FF5] px-4 py-1.5 rounded-lg text-[11px] font-bold transition cursor-pointer shrink-0"
                 >
-                  Connect
+                  {t('settings_connect')}
                 </button>
               </div>
             ))}
@@ -356,21 +357,21 @@ const Settings = () => {
                 <Tag size={20} />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-slate-900">Listing Preferences</h3>
-                <p className="text-xs text-slate-500">Property categories you focus on.</p>
+                <h3 className="text-sm font-bold text-slate-900">{t('settings_listing_prefs')}</h3>
+                <p className="text-xs text-slate-500">{t('settings_listing_prefs_sub')}</p>
               </div>
             </div>
-            <p className="text-xs font-semibold text-slate-700 mb-2">Property Interests</p>
+            <p className="text-xs font-semibold text-slate-700 mb-2">{t('settings_property_interests')}</p>
             <div className="border border-slate-200 rounded-xl divide-y divide-slate-100 bg-white">
               {categoriesLoading ? (
-                <p className="p-4 text-xs text-slate-500">Loading categories…</p>
+                <p className="p-4 text-xs text-slate-500">{t('settings_loading_categories')}</p>
               ) : categoriesError ? (
                 <p className="flex items-center space-x-2 p-4 text-xs text-rose-600">
                   <AlertCircle size={14} className="shrink-0" />
                   <span>{categoriesError}</span>
                 </p>
               ) : categories.length === 0 ? (
-                <p className="p-4 text-xs text-slate-500">No categories available.</p>
+                <p className="p-4 text-xs text-slate-500">{t('settings_no_categories')}</p>
               ) : (
                 categories.map((category) => {
                   const isExpanded = expandedCategory === category.name;
@@ -398,7 +399,7 @@ const Settings = () => {
                           className="flex items-center space-x-2 shrink-0 rounded-lg px-2 py-1 -mr-1 hover:bg-slate-100 transition cursor-pointer"
                           aria-label={isExpanded ? `Hide details for ${category.name}` : `Show details for ${category.name}`}
                         >
-                          <span className="text-[11px] text-slate-400">{isSelected ? 'Added' : 'Add'}</span>
+                          <span className="text-[11px] text-slate-400">{isSelected ? t('settings_added') : t('settings_add')}</span>
                           {isExpanded ? (
                             <ChevronUp size={16} className="text-slate-400" />
                           ) : (
@@ -409,8 +410,7 @@ const Settings = () => {
                       {isExpanded && (
                         <div className="px-4 pb-3 -mt-1">
                           <p className="text-[11px] text-slate-500 leading-relaxed">
-                            {category.description} Select this category if you regularly list this type
-                            of property.
+                            {category.description} {t('settings_select_category_hint')}
                           </p>
                         </div>
                       )}
@@ -421,8 +421,8 @@ const Settings = () => {
             </div>
             <p className="text-[11px] text-slate-400 mt-2">
               {selectedInterestCount > 0
-                ? `${selectedInterestCount} categor${selectedInterestCount > 1 ? 'ies' : 'y'} selected`
-                : 'No categories selected yet'}
+                ? t('settings_categories_selected', { count: selectedInterestCount })
+                : t('settings_no_categories_selected')}
             </p>
           </div>
         </div>
@@ -434,14 +434,14 @@ const Settings = () => {
                 <Wallet size={20} />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-slate-900">Pricing &amp; Alerts</h3>
-                <p className="text-xs text-slate-500">Set your target client budget range.</p>
+                <h3 className="text-sm font-bold text-slate-900">{t('settings_pricing_alerts')}</h3>
+                <p className="text-xs text-slate-500">{t('settings_pricing_alerts_sub')}</p>
               </div>
             </div>
 
             <div>
               <div className="flex items-center justify-between mb-2">
-                <p className="text-xs font-semibold text-slate-700">Budget Range</p>
+                <p className="text-xs font-semibold text-slate-700">{t('settings_budget_range')}</p>
                 <p className="text-xs font-bold text-[#4A9FF5]">
                   {budgetFormatter(listingPrefs.minBudget)} – {budgetFormatter(listingPrefs.maxBudget)}
                 </p>
@@ -463,7 +463,7 @@ const Settings = () => {
                   step={5000}
                   value={listingPrefs.minBudget}
                   onChange={(e) => updateBudget('minBudget', e.target.value)}
-                  aria-label="Minimum budget"
+                  aria-label={t('settings_min_budget')}
                   className="budget-range absolute inset-x-0 top-0 h-6 w-full appearance-none bg-transparent cursor-pointer pointer-events-none"
                 />
                 <input
@@ -473,7 +473,7 @@ const Settings = () => {
                   step={5000}
                   value={listingPrefs.maxBudget}
                   onChange={(e) => updateBudget('maxBudget', e.target.value)}
-                  aria-label="Maximum budget"
+                  aria-label={t('settings_max_budget')}
                   className="budget-range absolute inset-x-0 top-0 h-6 w-full appearance-none bg-transparent cursor-pointer pointer-events-none"
                 />
               </div>
@@ -485,7 +485,7 @@ const Settings = () => {
 
             <div>
               <label className="block text-xs font-semibold text-slate-700 mb-1.5" htmlFor="preferredLocations">
-                Preferred Locations
+                {t('settings_preferred_locations')}
               </label>
               <div className="relative">
                 <MapPin size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -494,20 +494,20 @@ const Settings = () => {
                   type="text"
                   value={listingPrefs.preferredLocations}
                   onChange={(e) => setListingPrefs((prev) => ({ ...prev, preferredLocations: e.target.value }))}
-                  placeholder="e.g. Bole, Kazanchis, …"
+                  placeholder={t('settings_locations_placeholder')}
                   className={`${FIELD_STYLE} pl-10`}
                 />
               </div>
               <p className="text-[11px] text-slate-400 mt-1.5">
-                Comma-separated areas you mostly work in.
+                {t('settings_locations_hint')}
               </p>
             </div>
 
             <label className="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-200/60 cursor-pointer hover:bg-slate-100/50 transition">
               <div>
-                <p className="text-xs font-bold text-slate-800">Listing Alerts</p>
+                <p className="text-xs font-bold text-slate-800">{t('settings_listing_alerts')}</p>
                 <p className="text-[11px] text-slate-500">
-                  Notify me when a new property matches my profile interests.
+                  {t('settings_listing_alerts_sub')}
                 </p>
               </div>
               <input
@@ -526,12 +526,12 @@ const Settings = () => {
           {storageStatus === 'saved' ? (
             <>
               <CheckCircle2 size={15} className="text-emerald-600" />
-              <span className="text-emerald-700 font-semibold">Notification and listing preferences saved locally</span>
+              <span className="text-emerald-700 font-semibold">{t('settings_saved_local')}</span>
             </>
           ) : (
             <>
               <AlertCircle size={15} className="text-rose-500" />
-              <span className="text-slate-500">Preferences active, but couldn't save to this browser</span>
+              <span className="text-slate-500">{t('settings_save_failed')}</span>
             </>
           )}
         </div>

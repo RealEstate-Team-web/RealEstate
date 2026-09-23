@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { NavLink, Link, useNavigate, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../hooks/useAuth';
 import {
   LayoutDashboard,
@@ -20,32 +21,33 @@ import { useAgentListingPermission } from '../../hooks/useAgentListingPermission
 import ApprovalRequiredModal from './ApprovalRequiredModal';
 
 const primaryNavItems = [
-  { label: 'Dashboard', path: ROUTES.agent, icon: LayoutDashboard, end: true, disabled: false },
+  { labelKey: 'sidebar_dashboard', path: ROUTES.agent, icon: LayoutDashboard, end: true, disabled: false },
 ];
 
 const secondaryNavItems = [
-  { label: 'Notifications', path: ROUTES.agentNotifications, icon: Bell, disabled: false },
-  { label: 'Visit Requests', path: ROUTES.agentVisits, icon: CalendarCheck, disabled: false },
-  { label: 'Customer Messages', path: ROUTES.agentMessages, icon: MessageSquare, disabled: false },
-  { label: 'Analytics', path: ROUTES.agentAnalytics, icon: BarChart3, disabled: false },
-  { label: 'Subscription', path: ROUTES.agentSubscription, icon: CreditCard, disabled: false },
-  { label: 'Profile', path: ROUTES.agentProfile, icon: UserCircle, disabled: false },
-  { label: 'Settings', path: ROUTES.agentSettings, icon: Settings, disabled: false },
+  { labelKey: 'sidebar_notifications', path: ROUTES.agentNotifications, icon: Bell, disabled: false },
+  { labelKey: 'sidebar_visit_requests', path: ROUTES.agentVisits, icon: CalendarCheck, disabled: false },
+  { labelKey: 'sidebar_customer_messages', path: ROUTES.agentMessages, icon: MessageSquare, disabled: false },
+  { labelKey: 'sidebar_analytics', path: ROUTES.agentAnalytics, icon: BarChart3, disabled: false },
+  { labelKey: 'sidebar_subscription', path: ROUTES.agentSubscription, icon: CreditCard, disabled: false },
+  { labelKey: 'sidebar_profile', path: ROUTES.agentProfile, icon: UserCircle, disabled: false },
+  { labelKey: 'sidebar_settings', path: ROUTES.agentSettings, icon: Settings, disabled: false },
 ];
 
 const propertySubLinks = [
-  { label: 'All Properties', to: '/agent/properties', match: (location) => {
+  { labelKey: 'sidebar_all_properties', to: '/agent/properties', match: (location) => {
       const status = new URLSearchParams(location.search).get('status');
       return location.pathname === '/agent/properties' && status !== 'sold' && status !== 'rented';
     } },
-  { label: 'Add Property', to: '/agent/properties/new', match: (location) => location.pathname === '/agent/properties/new' },
-  { label: 'Sold / Rented', to: '/agent/properties?status=sold', match: (location) => {
+  { labelKey: 'sidebar_add_property', to: '/agent/properties/new', match: (location) => location.pathname === '/agent/properties/new' },
+  { labelKey: 'sidebar_sold_rented', to: '/agent/properties?status=sold', match: (location) => {
       const status = new URLSearchParams(location.search).get('status');
       return status === 'sold' || status === 'rented';
     } },
 ];
 
 const AgentSidebar = ({ isOpen, onClose }) => {
+  const { t } = useTranslation('agents');
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -58,8 +60,8 @@ const AgentSidebar = ({ isOpen, onClose }) => {
   const displayName =
     user?.name ||
     [user?.firstName, user?.lastName].filter(Boolean).join(' ') ||
-    'Agent';
-  const roleLabel = 'Agent';
+    t('sidebar_agent');
+  const roleLabel = t('sidebar_agent');
 
   const handleLogout = async () => {
     await logout();
@@ -75,10 +77,10 @@ const AgentSidebar = ({ isOpen, onClose }) => {
       >
         <div className="flex items-center space-x-3">
           <item.icon size={19} />
-          <span>{item.label}</span>
+          <span>{t(item.labelKey)}</span>
         </div>
         <span className="text-[9px] uppercase tracking-wider text-slate-600 font-semibold">
-          Soon
+          {t('sidebar_soon')}
         </span>
       </span>
     ) : (
@@ -95,13 +97,13 @@ const AgentSidebar = ({ isOpen, onClose }) => {
           }`
         }
       >
-        <div className="flex items-center space-x-3">
-          <item.icon
-            size={19}
-            className="transition-transform duration-200 group-hover:scale-105"
-          />
-          <span>{item.label}</span>
-        </div>
+<div className="flex items-center space-x-3">
+           <item.icon
+             size={19}
+             className="transition-transform duration-200 group-hover:scale-105"
+           />
+           <span>{t(item.labelKey)}</span>
+         </div>
       </NavLink>
     );
 
@@ -159,10 +161,10 @@ const AgentSidebar = ({ isOpen, onClose }) => {
                   : "text-slate-300 hover:bg-white/5 hover:text-white"
               }`}
             >
-              <div className="flex items-center space-x-3">
-                <Building2 size={19} />
-                <span>My Properties</span>
-              </div>
+<div className="flex items-center space-x-3">
+                 <Building2 size={19} />
+                 <span>{t('sidebar_my_properties')}</span>
+               </div>
               <ChevronDown
                 size={16}
                 className={`transition-transform duration-200 ${propertiesOpen ? "rotate-180" : ""}`}
@@ -183,7 +185,7 @@ const AgentSidebar = ({ isOpen, onClose }) => {
                           : 'text-slate-400 hover:text-white hover:bg-white/5'
                       }`}
                     >
-                      <span className="truncate">{link.label}</span>
+                      <span className="truncate">{t(link.labelKey)}</span>
                     </button>
                   ) : (
                     <NavLink
@@ -198,7 +200,7 @@ const AgentSidebar = ({ isOpen, onClose }) => {
                         }`
                       }
                     >
-                      <span className="truncate">{link.label}</span>
+                      <span className="truncate">{t(link.labelKey)}</span>
                     </NavLink>
                   ),
                 )}
@@ -235,7 +237,7 @@ const AgentSidebar = ({ isOpen, onClose }) => {
           className="w-full flex items-center justify-center gap-2 h-[38px] rounded-lg bg-white/5 border border-white/10 text-[13px] font-medium text-slate-200 hover:bg-white/10 hover:text-white transition cursor-pointer"
         >
           <LogOut size={16} />
-          Logout
+          {t('sidebar_logout')}
         </button>
       </div>
       </aside>

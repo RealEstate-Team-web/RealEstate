@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
   Bell,
   MessageSquare,
@@ -13,9 +14,9 @@ import { getAgentVisitRequests } from '../../services/visit.service';
 import { ROUTES } from '../../utils/constants';
 
 const TABS = [
-  { key: 'all', label: 'All' },
-  { key: 'inquiry', label: 'Inquiries' },
-  { key: 'visit', label: 'Visit Requests' },
+  { key: 'all', labelKey: 'notif_all' },
+  { key: 'inquiry', labelKey: 'notif_inquiry' },
+  { key: 'visit', labelKey: 'notif_visit' },
 ];
 
 const formatTime = (value) => {
@@ -29,6 +30,7 @@ const formatTime = (value) => {
 
 const Notifications = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation('agents');
   const [tab, setTab] = useState('all');
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -52,8 +54,11 @@ const Notifications = () => {
         kind: 'inquiry',
         inquiryId: inquiry.id,
         unread: true,
-        title: 'New Inquiry',
-        description: `${[inquiry.buyerFirstName, inquiry.buyerLastName].filter(Boolean).join(' ') || 'A buyer'} asked about ${inquiry.propertyTitle || 'your property'}`,
+        title: t('notif_inquiry_title'),
+        description: t('notif_buyer_asked', {
+          name: [inquiry.buyerFirstName, inquiry.buyerLastName].filter(Boolean).join(' ') || t('notif_buyer'),
+          property: inquiry.propertyTitle || t('notif_your_property'),
+        }),
         detail: inquiry.latestMessage || inquiry.message || '',
         createdAt: inquiry.createdAt,
       }));
@@ -63,9 +68,12 @@ const Notifications = () => {
         kind: 'visit',
         visitId: visit.id,
         unread: true,
-        title: 'New Visit Request',
-        description: `${[visit.buyerFirstName, visit.buyerLastName].filter(Boolean).join(' ') || 'A buyer'} requested a visit for ${visit.propertyTitle || 'your property'}`,
-        detail: visit.visitDate ? `${visit.visitDate}${visit.visitTime ? ` at ${visit.visitTime.slice(0, 5)}` : ''}` : '',
+        title: t('notif_visit_title'),
+        description: t('notif_buyer_visit', {
+          name: [visit.buyerFirstName, visit.buyerLastName].filter(Boolean).join(' ') || t('notif_buyer'),
+          property: visit.propertyTitle || t('notif_your_property'),
+        }),
+        detail: visit.visitDate ? `${visit.visitDate}${visit.visitTime ? ` ${t('notif_at')} ${visit.visitTime.slice(0, 5)}` : ''}` : '',
         createdAt: visit.createdAt || visit.created_at,
       }));
 
@@ -75,14 +83,14 @@ const Notifications = () => {
       setItems(combined);
     } catch (err) {
       if (requestIdRef.current === requestId) {
-        setError(err?.message || 'Failed to load notifications');
+        setError(err?.message || t('notif_error_load'));
       }
     } finally {
       if (requestIdRef.current === requestId) {
         setLoading(false);
       }
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     const mountedRef = { current: true };
@@ -131,7 +139,7 @@ const Notifications = () => {
     <div className="space-y-5 font-sans">
       <div className="min-w-0">
         <p className="text-[11px] font-semibold uppercase tracking-wider text-[#1D6FD3] mb-1">
-          Notifications
+          {t('notif_title')}
         </p>
         <div className="flex items-center gap-2.5">
           <span
@@ -140,10 +148,10 @@ const Notifications = () => {
           >
             <Bell size={20} />
           </span>
-          <h1 className="text-[24px] font-bold text-[#111827] tracking-tight">Notifications</h1>
+          <h1 className="text-[24px] font-bold text-[#111827] tracking-tight">{t('notif_title')}</h1>
         </div>
         <p className="text-[13px] text-[#6B7280] mt-1">
-          New inquiries and visit requests for your listings
+          {t('notif_subtitle')}
         </p>
       </div>
 
@@ -160,7 +168,7 @@ const Notifications = () => {
                   : 'text-slate-500 hover:text-slate-700'
               }`}
             >
-              {option.label}
+              {t(option.labelKey)}
               {counts[option.key] > 0 && (
                 <span className="ml-1.5 inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-[#4A9FF5] text-white text-[10px] font-bold">
                   {counts[option.key]}
@@ -178,7 +186,7 @@ const Notifications = () => {
             className="flex items-center space-x-2 text-[#4A9FF5] hover:bg-blue-50 border border-[#4A9FF5] px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer disabled:opacity-50"
           >
             <CheckCheck size={15} />
-            <span>{markingAll ? 'Marking…' : 'Mark all read'}</span>
+            <span>{markingAll ? t('notif_marking') : t('notif_mark_all_read')}</span>
           </button>
         )}
       </div>
@@ -192,7 +200,7 @@ const Notifications = () => {
 
       {loading ? (
         <div className="bg-white border border-[#E5E7EB] rounded-2xl p-10 flex items-center justify-center">
-          <p className="text-[13px] text-[#9CA3AF]">Loading notifications…</p>
+          <p className="text-[13px] text-[#9CA3AF]">{t('notif_loading')}</p>
         </div>
       ) : visibleItems.length === 0 ? (
         <div className="bg-white border border-[#E5E7EB] rounded-2xl p-10 flex flex-col items-center gap-3">
@@ -200,7 +208,7 @@ const Notifications = () => {
             <Inbox size={24} />
           </span>
           <p className="text-[13px] text-[#9CA3AF]">
-            {tab === 'all' ? 'You are all caught up' : `No ${TABS.find((t) => t.key === tab)?.label.toLowerCase()} notifications`}
+            {tab === 'all' ? t('notif_empty_all') : t('notif_empty_tab', { tab: t(TABS.find((o) => o.key === tab)?.labelKey || 'notif_all').toLowerCase() || '' })}
           </p>
         </div>
       ) : (
@@ -232,7 +240,10 @@ const Notifications = () => {
                         {item.title}
                       </span>
                       {item.unread && (
-                        <span className="w-2 h-2 rounded-full bg-[#4A9FF5] shrink-0" aria-label="Unread" />
+                        <>
+                          <span className="sr-only">{t('notif_unread')}</span>
+                          <span aria-hidden="true" className="w-2 h-2 rounded-full bg-[#4A9FF5] shrink-0" />
+                        </>
                       )}
                     </span>
                     <span className="text-[11px] text-slate-400 shrink-0">
