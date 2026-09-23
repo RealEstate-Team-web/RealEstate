@@ -44,16 +44,16 @@ export const Sidebar = ({ isOpen, onClose }) => {
       {/* Top Header & Brand Logo */}
       <div>
         <div className="flex items-center justify-between h-20 px-6 border-b border-slate-800/80">
-          <Link to="/" className="flex items-center space-x-3 group" aria-label="ቤትኛ (Betnya) home">
+          <Link to="/" className="flex items-center space-x-3 group" aria-label="ቤተኛ (Betenya) home">
             <div className="w-10 h-10 bg-white rounded-xl border border-slate-700 flex items-center justify-center shadow-inner p-0.5">
               <img
                 src="/logo.png"
-                alt="ቤትኛ (Betnya) logo"
+                alt="ቤተኛ (Betenya) logo"
                 className="h-full w-full rounded-lg object-contain"
               />
             </div>
             <div>
-              <h1 className="font-bold text-white text-lg tracking-tight leading-tight">ቤትኛ (Betnya)</h1>
+              <h1 className="font-bold text-white text-lg tracking-tight leading-tight">ቤተኛ (Betenya)</h1>
               <p className="text-[11px] text-slate-400 font-medium">ይጎብኙ፣ ይምረጡ፣ ይግዙ</p>
             </div>
           </Link>

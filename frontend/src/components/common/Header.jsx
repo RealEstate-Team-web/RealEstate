@@ -74,12 +74,12 @@ const Header = () => {
         <Link to="/" className="flex items-center gap-2.5 shrink-0">
           <img
             src="/logo.png"
-            alt="ቤትኛ (Betnya) logo"
+            alt="ቤተኛ (Betenya) logo"
             className="w-9 h-9 rounded-md object-contain"
           />
           <span className="flex flex-col leading-tight">
             <span className="font-bold text-[17px] tracking-tight text-[#162831]">
-              ቤትኛ (Betnya)
+              ቤተኛ (Betenya)
             </span>
             <span className="text-[10px] font-medium tracking-wide text-[#647983]">
               ይጎብኙ፣ ይምረጡ፣ ይግዙ

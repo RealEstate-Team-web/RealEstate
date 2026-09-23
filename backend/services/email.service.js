@@ -2,7 +2,7 @@ const nodemailer = require("nodemailer");
 
 const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS } = process.env;
 const MAIL_FROM = String(
-  process.env.MAIL_FROM || SMTP_USER || "Betnya <no-reply@betnya.com>"
+  process.env.MAIL_FROM || SMTP_USER || "Betenya <no-reply@betenya.com>"
 ).replace(/^["']|["']$/g, "");
 
 function getTransporter() {
@@ -20,12 +20,12 @@ function getTransporter() {
 
 async function sendPasswordResetEmail(to, resetLink) {
   const transporter = getTransporter();
-  const subject = "Reset your Betnya password";
-  const text = `You requested a password reset for your Betnya account.\n\nReset your password using this link (valid for 1 hour):\n${resetLink}\n\nIf you did not request this, you can safely ignore this email.`;
+  const subject = "Reset your Betenya password";
+  const text = `You requested a password reset for your Betenya account.\n\nReset your password using this link (valid for 1 hour):\n${resetLink}\n\nIf you did not request this, you can safely ignore this email.`;
   const html = `
     <div style="font-family:Arial,Helvetica,sans-serif;max-width:480px;margin:0 auto;">
-      <h2 style="color:#111827;">Reset your Betnya password</h2>
-      <p>You requested a password reset for your Betnya account. This link is valid for 1 hour.</p>
+      <h2 style="color:#111827;">Reset your Betenya password</h2>
+      <p>You requested a password reset for your Betenya account. This link is valid for 1 hour.</p>
       <p>
         <a href="${resetLink}"
            style="display:inline-block;background:#E7B85A;color:#111827;padding:10px 18px;border-radius:8px;text-decoration:none;font-weight:600;">
@@ -70,13 +70,13 @@ async function sendPasswordResetEmail(to, resetLink) {
 
 async function sendSuspensionEmail(to) {
   const transporter = getTransporter();
-  const subject = "Your Betnya account has been suspended";
-  const text = `Your Betnya account has been suspended by an administrator.\n\nYou will not be able to log in or access Betnya while your account is suspended. If you believe this was done in error, please contact support.\n\nThank you for your understanding.`;
+  const subject = "Your Betenya account has been suspended";
+  const text = `Your Betenya account has been suspended by an administrator.\n\nYou will not be able to log in or access Betenya while your account is suspended. If you believe this was done in error, please contact support.\n\nThank you for your understanding.`;
   const html = `
     <div style="font-family:Arial,Helvetica,sans-serif;max-width:480px;margin:0 auto;">
       <h2 style="color:#111827;">Account suspended</h2>
-      <p>Your Betnya account has been suspended by an administrator.</p>
-      <p style="color:#6B7280;font-size:13px;">You will not be able to log in or access Betnya while your account is suspended. If you believe this was done in error, please contact support.</p>
+      <p>Your Betenya account has been suspended by an administrator.</p>
+      <p style="color:#6B7280;font-size:13px;">You will not be able to log in or access Betenya while your account is suspended. If you believe this was done in error, please contact support.</p>
     </div>`;
 
   if (!transporter) {
@@ -104,13 +104,13 @@ async function sendSuspensionEmail(to) {
 
 async function sendActivationEmail(to) {
   const transporter = getTransporter();
-  const subject = "Your Betnya account has been reactivated";
-  const text = `Good news — your Betnya account has been reactivated by an administrator.\n\nYou can now log in and access Betnya again. Welcome back!`;
+  const subject = "Your Betenya account has been reactivated";
+  const text = `Good news — your Betenya account has been reactivated by an administrator.\n\nYou can now log in and access Betenya again. Welcome back!`;
   const html = `
     <div style="font-family:Arial,Helvetica,sans-serif;max-width:480px;margin:0 auto;">
       <h2 style="color:#111827;">Account reactivated</h2>
-      <p>Good news — your Betnya account has been reactivated by an administrator.</p>
-      <p style="color:#6B7280;font-size:13px;">You can now log in and access Betnya again. Welcome back!</p>
+      <p>Good news — your Betenya account has been reactivated by an administrator.</p>
+      <p style="color:#6B7280;font-size:13px;">You can now log in and access Betenya again. Welcome back!</p>
     </div>`;
 
   if (!transporter) {

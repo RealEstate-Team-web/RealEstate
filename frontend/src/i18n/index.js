@@ -68,7 +68,7 @@ i18n
     detection: {
       order: ["localStorage", "navigator"],
       caches: ["localStorage"],
-      lookupLocalStorage: "betnya:lng",
+      lookupLocalStorage: "betenya:lng",
     },
     interpolation: {
       escapeValue: false,

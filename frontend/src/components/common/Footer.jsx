@@ -22,13 +22,13 @@ const Footer = () => {
               <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-md bg-[#0F9690] p-0.5">
                 <img
                   src="/logo.png"
-                  alt="ቤትኛ (Betnya) logo"
+                  alt="ቤተኛ (Betenya) logo"
                   className="h-full w-full rounded object-contain"
                 />
               </div>
 
               <span className="text-[17px] font-bold leading-none tracking-tight text-white">
-                ቤትኛ (Betnya)
+                ቤተኛ (Betenya)
               </span>
             </Link>
 
@@ -43,7 +43,7 @@ const Footer = () => {
             <div className="mt-5 space-y-2.5">
 
               <a
-                href="mailto:info@betnya.com"
+                href="mailto:info@betenya.com"
                 className="flex items-center gap-3 text-[12px] leading-5 transition-colors hover:text-white"
               >
                 <Mail
@@ -53,7 +53,7 @@ const Footer = () => {
                 />
 
                 <span>
-                  info@betnya.com
+                  info@betenya.com
                 </span>
               </a>
 
@@ -213,7 +213,7 @@ const Footer = () => {
             <div className="mt-4 flex gap-2">
 
               <a
-                href="https://www.facebook.com/betnyarealestate"
+                href="https://www.facebook.com/betenyarealestate"
                 aria-label="Facebook"
                 className="flex h-8 w-8 items-center justify-center rounded-md border border-[#304650] text-[11px] font-semibold leading-none text-[#8FA1AA] transition-all hover:border-[#0F9690] hover:bg-[#0F9690] hover:text-white"
               >
@@ -221,7 +221,7 @@ const Footer = () => {
               </a>
 
               <a
-                href="https://www.linkedin.com/company/betnyarealestate"
+                href="https://www.linkedin.com/company/betenyarealestate"
                 aria-label="Instagram"
                 className="flex h-8 w-8 items-center justify-center rounded-md border border-[#304650] text-[10px] font-semibold leading-none text-[#8FA1AA] transition-all hover:border-[#0F9690] hover:bg-[#0F9690] hover:text-white"
               >
@@ -229,7 +229,7 @@ const Footer = () => {
               </a>
 
               <a
-                href="https://www.linkedin.com/company/betnyarealestate"
+                href="https://www.linkedin.com/company/betenyarealestate"
                 aria-label="LinkedIn"
                 className="flex h-8 w-8 items-center justify-center rounded-md border border-[#304650] text-[10px] font-semibold leading-none text-[#8FA1AA] transition-all hover:border-[#0F9690] hover:bg-[#0F9690] hover:text-white"
               >

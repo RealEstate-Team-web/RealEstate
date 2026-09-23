@@ -11,7 +11,7 @@
   "phone_label": "ስልክ ቁጥር",
   "phone_value": "+251 911 000 000",
   "email_label": "የኢሜይል አድራሻ",
-  "email_value": "info@betnya.com",
+  "email_value": "info@betenya.com",
   "hours_label": "የስራ ሰዓት",
   "hours_value": "ሰኞ – ቅዳሜ: ከጠዋቱ 8:00 – ከምሽቱ 6:00",
   "form_eyebrow": "ይጀምሩ",
@@ -28,6 +28,6 @@
   "send_message": "መልዕክት ይላኩ",
   "privacy_note": "የግላዊነትዎን ሚስጥር እናከብራለን እና መረጃዎን በጭራሽ አንጋራም።",
   "success_title": "መልዕክት በተሳካ ሁኔታ ተልኳል!",
-  "success_body": "ቤትኛን (Betnya) ስላገኙን እናመሰግናለን። ቡድናችን በ24 ሰዓታት ውስጥ ይመልስልዎታል።",
+  "success_body": "ቤተኛን (Betenya) ስላገኙን እናመሰግናለን። ቡድናችን በ24 ሰዓታት ውስጥ ይመልስልዎታል።",
   "send_another": "ሌላ መልዕክት ይላኩ"
 }

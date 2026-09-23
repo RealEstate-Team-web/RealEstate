@@ -1,4 +1,4 @@
-# Betnya (ቤትኛ) — Real Estate Website
+# Betenya (ቤተኛ) — Real Estate Website
 
 Full-stack real estate marketplace where **buyers** browse and visit properties, **agents** create and manage their own listings, and **admins** manage the platform.
 

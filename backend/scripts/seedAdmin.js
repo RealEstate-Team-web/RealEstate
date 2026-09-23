@@ -5,7 +5,7 @@ const { pool } = require("../config/db.config");
 const ADMIN = {
   firstName: "Mila",
   lastName: "",
-  email: "admin@betnya.com",
+  email: "admin@betenya.com",
   phone: "0900000001",
   password: "Admin@123",
   role: "admin",
