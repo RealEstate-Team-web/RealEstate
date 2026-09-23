@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { MapContainer, TileLayer, Marker, useMapEvents, useMap } from 'react-leaflet';
 import L from 'leaflet';
+import { useTranslation } from 'react-i18next';
 import 'leaflet/dist/leaflet.css';
 import {
   Info,
@@ -25,37 +26,37 @@ import {
 } from '../../services/property.service';
 
 const AMENITIES = [
-  'Parking',
-  'Wi-Fi',
-  'Swimming Pool',
-  'Gym',
-  'Balcony',
-  'Elevator',
-  'Furnished',
-  'Garden',
-  'Air Conditioning',
-  'Security System',
-  'Backup Power',
-  'Water Tank',
+  { value: 'Parking', labelKey: 'propertyform_amenity_parking' },
+  { value: 'Wi-Fi', labelKey: 'propertyform_amenity_wifi' },
+  { value: 'Swimming Pool', labelKey: 'propertyform_amenity_pool' },
+  { value: 'Gym', labelKey: 'propertyform_amenity_gym' },
+  { value: 'Balcony', labelKey: 'propertyform_amenity_balcony' },
+  { value: 'Elevator', labelKey: 'propertyform_amenity_elevator' },
+  { value: 'Furnished', labelKey: 'propertyform_amenity_furnished' },
+  { value: 'Garden', labelKey: 'propertyform_amenity_garden' },
+  { value: 'Air Conditioning', labelKey: 'propertyform_amenity_ac' },
+  { value: 'Security System', labelKey: 'propertyform_amenity_security' },
+  { value: 'Backup Power', labelKey: 'propertyform_amenity_power' },
+  { value: 'Water Tank', labelKey: 'propertyform_amenity_water_tank' },
 ];
 
 const DEFAULT_CENTER = [9.03, 38.74];
 const MAX_IMAGES = 10;
 
 const steps = [
-  { key: 'basic', label: 'Basic Info', icon: Info },
-  { key: 'pricing', label: 'Pricing', icon: DollarSign },
-  { key: 'location', label: 'Location', icon: MapPin },
-  { key: 'details', label: 'Details', icon: ListChecks },
-  { key: 'media', label: 'Media', icon: ImageIcon },
-  { key: 'review', label: 'Review', icon: Eye },
+  { key: 'basic', labelKey: 'propertyform_step_basic', icon: Info },
+  { key: 'pricing', labelKey: 'propertyform_step_pricing', icon: DollarSign },
+  { key: 'location', labelKey: 'propertyform_step_location', icon: MapPin },
+  { key: 'details', labelKey: 'propertyform_step_details', icon: ListChecks },
+  { key: 'media', labelKey: 'propertyform_step_media', icon: ImageIcon },
+  { key: 'review', labelKey: 'propertyform_step_review', icon: Eye },
 ];
 
-const getApiError = (err) => {
+const getApiError = (err, t) => {
   const errors = Array.isArray(err?.errors) ? err.errors : [];
   const message = err?.message || '';
   if (!message) {
-    return 'Something went wrong. Please try again.';
+    return t('propertyform_error_generic');
   }
   return errors.length ? `${message}: ${errors.join(', ')}` : message;
 };
@@ -106,6 +107,7 @@ const MapCenterSync = ({ position }) => {
 };
 
 const MapPicker = ({ latitude, longitude, onChange }) => {
+  const { t } = useTranslation('agents');
   const hasStoredCoords = latitude != null && longitude != null;
   const [position, setPosition] = useState(
     hasStoredCoords ? [latitude, longitude] : DEFAULT_CENTER,
@@ -155,13 +157,14 @@ const MapPicker = ({ latitude, longitude, onChange }) => {
       </MapContainer>
       <p className="text-xs text-slate-500 bg-white px-3 py-2 flex items-center space-x-1.5">
         <MapPin size={13} className="text-[#4A9FF5]" />
-        <span>Click the map or drag the pin to set the exact location.</span>
+        <span>{t('propertyform_map_hint')}</span>
       </p>
     </div>
   );
 };
 
 const PropertyForm = ({ initial, onSaved, onCancel }) => {
+  const { t } = useTranslation('agents');
   const isEdit = Boolean(initial);
   const [categories, setCategories] = useState([]);
   const [categoriesError, setCategoriesError] = useState('');
@@ -198,10 +201,21 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
   const createdIdRef = useRef(null);
 
   useEffect(() => {
+    let active = true;
     getCategories()
-      .then((data) => setCategories(data))
-      .catch(() => setCategoriesError('Failed to load categories. Please refresh the page.'));
-  }, []);
+      .then((data) => {
+        if (active) {
+          setCategories(data);
+          setCategoriesError('');
+        }
+      })
+      .catch(() => {
+        if (active) setCategoriesError(t('propertyform_categories_error'));
+      });
+    return () => {
+      active = false;
+    };
+  }, [t]);
 
   useEffect(
     () => () => {
@@ -273,30 +287,30 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
     };
 
     if (stepIndex === 0) {
-      if (!form.title.trim()) push('title', 'Title is required');
-      else if (form.title.trim().length < 3) push('title', 'Title must be at least 3 characters');
-      if (!form.description.trim()) push('description', 'Description is required');
-      if (!form.listingType) push('listingType', 'Select a listing type');
-      if (!form.categoryId) push('categoryId', 'Select a category');
+      if (!form.title.trim()) push('title', t('propertyform_err_title_required'));
+      else if (form.title.trim().length < 3) push('title', t('propertyform_err_title_min'));
+      if (!form.description.trim()) push('description', t('propertyform_err_description_required'));
+      if (!form.listingType) push('listingType', t('propertyform_err_listing_type'));
+      if (!form.categoryId) push('categoryId', t('propertyform_err_category'));
     }
 
     if (stepIndex === 1) {
       const price = numberOrUndefined(form.price);
-      if (price === undefined || price <= 0) push('price', 'Enter a price greater than zero');
+      if (price === undefined || price <= 0) push('price', t('propertyform_err_price'));
       const area = numberOrUndefined(form.area);
-      if (area !== undefined && area <= 0) push('area', 'Area must be greater than zero');
+      if (area !== undefined && area <= 0) push('area', t('propertyform_err_area'));
     }
 
     if (stepIndex === 2) {
-      if (!form.country.trim()) push('country', 'Country is required');
-      if (!form.city.trim()) push('city', 'City is required');
+      if (!form.country.trim()) push('country', t('propertyform_err_country'));
+      if (!form.city.trim()) push('city', t('propertyform_err_city'));
       const latitude = Number(form.latitude);
       const longitude = Number(form.longitude);
       if (form.latitude !== '' && (Number.isNaN(latitude) || latitude < -90 || latitude > 90)) {
-        push('latitude', 'Latitude must be between -90 and 90');
+        push('latitude', t('propertyform_err_latitude'));
       }
       if (form.longitude !== '' && (Number.isNaN(longitude) || longitude < -180 || longitude > 180)) {
-        push('longitude', 'Longitude must be between -180 and 180');
+        push('longitude', t('propertyform_err_longitude'));
       }
     }
 
@@ -304,7 +318,7 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
       ['bedrooms', 'bathrooms', 'parkingSpaces'].forEach((field) => {
         const value = numberOrUndefined(form[field]);
         if (value !== undefined && (!Number.isInteger(value) || value <= 0)) {
-          push(field, 'Must be a positive whole number (no decimals or zero)');
+          push(field, t('propertyform_err_positive_int'));
         }
       });
     }
@@ -396,14 +410,17 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
         try {
           await uploadPropertyImages(propertyId, pendingImages.map((image) => image.file));
         } catch (uploadErr) {
-          const action = status === 'draft' ? 'Draft saved' : 'Published';
-          uploadNotice = `${action}, but image upload failed: ${getApiError(uploadErr)}. Add images later from Edit Property.`;
+          const action = status === 'draft' ? t('propertyform_draft_saved') : t('propertyform_published');
+          uploadNotice = t('propertyform_upload_failed_notice', {
+            action,
+            error: getApiError(uploadErr, t),
+          });
         }
       }
 
       onSaved(effectiveStatusFor(status), uploadNotice);
     } catch (err) {
-      setSubmitError(getApiError(err));
+      setSubmitError(getApiError(err, t));
     } finally {
       setSubmitting(false);
     }
@@ -419,13 +436,13 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
           <div className="space-y-5">
             <div>
               <label htmlFor="title" className="text-[13px] font-semibold text-[#101820]">
-                Property Title
+                {t('propertyform_label_title')}
               </label>
               <input
                 id="title"
                 value={form.title}
                 onChange={(e) => setField('title', e.target.value)}
-                placeholder="e.g. Sunny 3BR Apartment in Bole"
+                placeholder={t('propertyform_placeholder_title')}
                 className="mt-1.5 w-full rounded-lg border bg-white px-3.5 py-2.5 text-[13px] outline-none transition-colors focus:border-[#4A9FF5] focus:ring-2 focus:ring-[#4A9FF5]/20"
                 style={{ borderColor: errors.title ? '#E5484D' : '#D5DDE0' }}
               />
@@ -433,11 +450,11 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
             </div>
 
             <div>
-              <span className="text-[13px] font-semibold text-[#101820]">Listing Type</span>
+              <span className="text-[13px] font-semibold text-[#101820]">{t('propertyform_label_listing_type')}</span>
               <div className="mt-1.5 grid grid-cols-2 gap-3">
                 {[
-                  { value: 'sale', label: 'For Sale' },
-                  { value: 'rent', label: 'For Rent' },
+                  { value: 'sale', labelKey: 'propertyform_for_sale' },
+                  { value: 'rent', labelKey: 'propertyform_for_rent' },
                 ].map((option) => (
                   <button
                     key={option.value}
@@ -449,7 +466,7 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
                         : 'border-[#D5DDE0] bg-white text-slate-600 hover:border-slate-300'
                     }`}
                   >
-                    {option.label}
+                    {t(option.labelKey)}
                   </button>
                 ))}
               </div>
@@ -458,7 +475,7 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
 
             <div>
               <label htmlFor="categoryId" className="text-[13px] font-semibold text-[#101820]">
-                Category
+                {t('propertyform_label_category')}
               </label>
               {categoriesError ? (
                 <p className="mt-1.5 text-xs text-amber-600">{categoriesError}</p>
@@ -470,7 +487,7 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
                   className="mt-1.5 w-full rounded-lg border bg-white px-3 py-2.5 text-[13px] outline-none transition-colors focus:border-[#4A9FF5] focus:ring-2 focus:ring-[#4A9FF5]/20"
                   style={{ borderColor: errors.categoryId ? '#E5484D' : '#D5DDE0' }}
                 >
-                  <option value="">Select a category...</option>
+                  <option value="">{t('propertyform_placeholder_category')}</option>
                   {categories.map((category) => (
                     <option key={category.id} value={category.id}>
                       {category.name}
@@ -483,14 +500,14 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
 
             <div>
               <label htmlFor="description" className="text-[13px] font-semibold text-[#101820]">
-                Description
+                {t('propertyform_label_description')}
               </label>
               <textarea
                 id="description"
                 value={form.description}
                 onChange={(e) => setField('description', e.target.value)}
                 rows={4}
-                placeholder="Describe the property — condition, neighborhood, highlights..."
+                placeholder={t('propertyform_placeholder_description')}
                 className="mt-1.5 w-full resize-y rounded-lg border bg-white px-3.5 py-2.5 text-[13px] outline-none transition-colors focus:border-[#4A9FF5] focus:ring-2 focus:ring-[#4A9FF5]/20"
                 style={{ borderColor: errors.description ? '#E5484D' : '#D5DDE0' }}
               />
@@ -504,7 +521,7 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
           <div className="space-y-5">
             <div>
               <label htmlFor="price" className="text-[13px] font-semibold text-[#101820]">
-                Price (Br)
+                {t('propertyform_label_price')}
               </label>
               <input
                 id="price"
@@ -513,7 +530,7 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
                 step="0.01"
                 value={form.price}
                 onChange={(e) => setField('price', e.target.value)}
-                placeholder="e.g. 150000"
+                placeholder={t('propertyform_placeholder_price')}
                 className="mt-1.5 w-full rounded-lg border bg-white px-3.5 py-2.5 text-[13px] outline-none transition-colors focus:border-[#4A9FF5] focus:ring-2 focus:ring-[#4A9FF5]/20"
                 style={{ borderColor: errors.price ? '#E5484D' : '#D5DDE0' }}
               />
@@ -522,7 +539,7 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
 
             <div>
               <label htmlFor="area" className="text-[13px] font-semibold text-[#101820]">
-                Area (m²) — optional
+                {t('propertyform_label_area')}
               </label>
               <input
                 id="area"
@@ -531,7 +548,7 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
                 step="0.01"
                 value={form.area}
                 onChange={(e) => setField('area', e.target.value)}
-                placeholder="e.g. 120"
+                placeholder={t('propertyform_placeholder_area')}
                 className="mt-1.5 w-full rounded-lg border bg-white px-3.5 py-2.5 text-[13px] outline-none transition-colors focus:border-[#4A9FF5] focus:ring-2 focus:ring-[#4A9FF5]/20"
                 style={{ borderColor: errors.area ? '#E5484D' : '#D5DDE0' }}
               />
@@ -539,7 +556,7 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
             </div>
 
             <div className="rounded-xl bg-sky-50 border border-sky-100 px-4 py-3 text-xs text-sky-800">
-              Pricing information is shown on your public listing. You can change it anytime.
+              {t('propertyform_pricing_note')}
             </div>
           </div>
         );
@@ -550,13 +567,13 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label htmlFor="country" className="text-[13px] font-semibold text-[#101820]">
-                  Country
+                  {t('propertyform_label_country')}
                 </label>
                 <input
                   id="country"
                   value={form.country}
                   onChange={(e) => setField('country', e.target.value)}
-                  placeholder="e.g. Ethiopia"
+                  placeholder={t('propertyform_placeholder_country')}
                   className="mt-1.5 w-full rounded-lg border bg-white px-3.5 py-2.5 text-[13px] outline-none transition-colors focus:border-[#4A9FF5] focus:ring-2 focus:ring-[#4A9FF5]/20"
                   style={{ borderColor: errors.country ? '#E5484D' : '#D5DDE0' }}
                 />
@@ -564,13 +581,13 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
               </div>
               <div>
                 <label htmlFor="city" className="text-[13px] font-semibold text-[#101820]">
-                  City
+                  {t('propertyform_label_city')}
                 </label>
                 <input
                   id="city"
                   value={form.city}
                   onChange={(e) => setField('city', e.target.value)}
-                  placeholder="e.g. Addis Ababa"
+                  placeholder={t('propertyform_placeholder_city')}
                   className="mt-1.5 w-full rounded-lg border bg-white px-3.5 py-2.5 text-[13px] outline-none transition-colors focus:border-[#4A9FF5] focus:ring-2 focus:ring-[#4A9FF5]/20"
                   style={{ borderColor: errors.city ? '#E5484D' : '#D5DDE0' }}
                 />
@@ -580,13 +597,13 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
 
             <div>
               <label htmlFor="address" className="text-[13px] font-semibold text-[#101820]">
-                Address — optional
+                {t('propertyform_label_address')}
               </label>
               <input
                 id="address"
                 value={form.address}
                 onChange={(e) => setField('address', e.target.value)}
-                placeholder="e.g. Bole Road, near Friendship Building"
+                placeholder={t('propertyform_placeholder_address')}
                 className="mt-1.5 w-full rounded-lg border bg-white px-3.5 py-2.5 text-[13px] outline-none transition-colors focus:border-[#4A9FF5] focus:ring-2 focus:ring-[#4A9FF5]/20"
                 style={{ borderColor: errors.address ? '#E5484D' : '#D5DDE0' }}
               />
@@ -601,7 +618,7 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label htmlFor="latitude" className="text-[13px] font-semibold text-[#101820]">
-                  Latitude
+                  {t('propertyform_label_latitude')}
                 </label>
                 <input
                   id="latitude"
@@ -609,7 +626,7 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
                   step="any"
                   value={form.latitude}
                   onChange={(e) => setField('latitude', e.target.value)}
-                  placeholder="e.g. 9.03"
+                  placeholder={t('propertyform_placeholder_latitude')}
                   className="mt-1.5 w-full rounded-lg border bg-white px-3.5 py-2.5 text-[13px] outline-none transition-colors focus:border-[#4A9FF5] focus:ring-2 focus:ring-[#4A9FF5]/20"
                   style={{ borderColor: errors.latitude ? '#E5484D' : '#D5DDE0' }}
                 />
@@ -617,7 +634,7 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
               </div>
               <div>
                 <label htmlFor="longitude" className="text-[13px] font-semibold text-[#101820]">
-                  Longitude
+                  {t('propertyform_label_longitude')}
                 </label>
                 <input
                   id="longitude"
@@ -625,7 +642,7 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
                   step="any"
                   value={form.longitude}
                   onChange={(e) => setField('longitude', e.target.value)}
-                  placeholder="e.g. 38.74"
+                  placeholder={t('propertyform_placeholder_longitude')}
                   className="mt-1.5 w-full rounded-lg border bg-white px-3.5 py-2.5 text-[13px] outline-none transition-colors focus:border-[#4A9FF5] focus:ring-2 focus:ring-[#4A9FF5]/20"
                   style={{ borderColor: errors.longitude ? '#E5484D' : '#D5DDE0' }}
                 />
@@ -640,13 +657,13 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
           <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {[
-                { key: 'bedrooms', label: 'Bedrooms' },
-                { key: 'bathrooms', label: 'Bathrooms' },
-                { key: 'parkingSpaces', label: 'Parking Spaces' },
+                { key: 'bedrooms', labelKey: 'propertyform_label_bedrooms' },
+                { key: 'bathrooms', labelKey: 'propertyform_label_bathrooms' },
+                { key: 'parkingSpaces', labelKey: 'propertyform_label_parking' },
               ].map((field) => (
                 <div key={field.key}>
                   <label htmlFor={field.key} className="text-[13px] font-semibold text-[#101820]">
-                    {field.label}
+                    {t(field.labelKey)}
                   </label>
                   <input
                     id={field.key}
@@ -666,16 +683,16 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
             </div>
 
             <div>
-              <span className="text-[13px] font-semibold text-[#101820]">Amenities</span>
-              <p className="text-xs text-slate-500 mt-0.5 mb-2.5">Select everything the property offers.</p>
+              <span className="text-[13px] font-semibold text-[#101820]">{t('propertyform_label_amenities')}</span>
+              <p className="text-xs text-slate-500 mt-0.5 mb-2.5">{t('propertyform_amenities_hint')}</p>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-2.5">
                 {AMENITIES.map((amenity) => {
-                  const selected = amenities.includes(amenity);
+                  const selected = amenities.includes(amenity.value);
                   return (
                     <button
-                      key={amenity}
+                      key={amenity.value}
                       type="button"
-                      onClick={() => toggleAmenity(amenity)}
+                      onClick={() => toggleAmenity(amenity.value)}
                       className={`h-10 px-3 rounded-lg border text-[13px] font-medium text-left transition cursor-pointer ${
                         selected
                           ? 'border-[#4A9FF5] bg-[#4A9FF5]/10 text-[#1f6fd0]'
@@ -693,7 +710,7 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
                         >
                           ✓
                         </span>
-                        <span className="truncate">{amenity}</span>
+                        <span className="truncate">{t(amenity.labelKey)}</span>
                       </span>
                     </button>
                   );
@@ -712,8 +729,8 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
                 className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-[12px] text-amber-800"
               >
                 {sizeRejection === 1
-                  ? '1 image was skipped because it exceeds 5MB.'
-                  : `${sizeRejection} images were skipped because each exceeds 5MB.`}
+                  ? t('propertyform_size_reject_one')
+                  : t('propertyform_size_reject_many', { count: sizeRejection })}
               </p>
             )}
             {typeRejection > 0 && (
@@ -722,8 +739,8 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
                 className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-[12px] text-red-700"
               >
                 {typeRejection === 1
-                  ? '1 image was skipped because it is not a JPG, PNG, or WebP file.'
-                  : `${typeRejection} images were skipped because they are not JPG, PNG, or WebP files.`}
+                  ? t('propertyform_type_reject_one')
+                  : t('propertyform_type_reject_many', { count: typeRejection })}
               </p>
             )}
             {budgetRejection > 0 && (
@@ -732,8 +749,8 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
                 className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-[12px] text-amber-800"
               >
                 {budgetRejection === 1
-                  ? `1 image was skipped because the ${MAX_IMAGES}-image limit was reached.`
-                  : `${budgetRejection} images were skipped because the ${MAX_IMAGES}-image limit was reached.`}
+                  ? t('propertyform_budget_reject_one', { max: MAX_IMAGES })
+                  : t('propertyform_budget_reject_many', { count: budgetRejection, max: MAX_IMAGES })}
               </p>
             )}
             <div
@@ -746,13 +763,13 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
             >
               <UploadCloud size={34} className="text-slate-400 mb-2" />
               <p className="text-[13px] font-semibold text-slate-700">
-                Drag &amp; drop images here
+                {t('propertyform_drop_hint')}
               </p>
               <p className="text-xs text-slate-500 mt-0.5 mb-3">
-                JPG, PNG or WebP · up to 5MB each · {MAX_IMAGES} max
+                {t('propertyform_drop_formats', { max: MAX_IMAGES })}
               </p>
               <label className="cursor-pointer inline-flex items-center justify-center h-9 px-4 rounded-lg bg-[#4A9FF5] text-white text-[13px] font-medium hover:bg-[#3d8be0] transition focus-within:ring-2 focus-within:ring-[#4A9FF5]/40 focus-within:ring-offset-2">
-                Browse files
+                {t('propertyform_browse_files')}
                 <input
                   type="file"
                   accept="image/jpeg,image/png,image/webp"
@@ -769,7 +786,7 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
               </label>
               {maxReached && (
                 <p className="mt-2 text-xs text-amber-600">
-                  Maximum of {MAX_IMAGES} images reached for this property.
+                  {t('propertyform_max_images', { max: MAX_IMAGES })}
                 </p>
               )}
             </div>
@@ -777,7 +794,7 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
             {existingImages.length > 0 && (
               <div>
                 <p className="text-[13px] font-semibold text-[#101820] mb-2">
-                  Current images ({existingImages.length})
+                  {t('propertyform_current_images', { count: existingImages.length })}
                 </p>
                 <div className="grid grid-cols-3 md:grid-cols-5 gap-3">
                   {existingImages.map((image, index) => (
@@ -791,7 +808,7 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
                         className="w-full h-24 object-cover"
                       />
                       <span className="absolute bottom-1 left-1 bg-black/60 text-white text-[9px] px-1.5 py-0.5 rounded">
-                        {image.isCover ? 'Cover' : `#${index + 1}`}
+                        {image.isCover ? t('propertyform_cover') : `#${index + 1}`}
                       </span>
                     </div>
                   ))}
@@ -802,7 +819,7 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
             {pendingImages.length > 0 && (
               <div>
                 <p className="text-[13px] font-semibold text-[#101820] mb-2">
-                  New images ({pendingImages.length})
+                  {t('propertyform_new_images', { count: pendingImages.length })}
                 </p>
                 <div className="grid grid-cols-3 md:grid-cols-5 gap-3">
                   {pendingImages.map((image) => (
@@ -814,7 +831,7 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
                       <button
                         type="button"
                         onClick={() => removePendingImage(image.preview)}
-                        aria-label="Remove image"
+                        aria-label={t('propertyform_remove_image')}
                         className="absolute top-1 right-1 w-6 h-6 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-red-500 transition cursor-pointer"
                       >
                         <X size={13} />
@@ -832,23 +849,23 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
           <div className="space-y-6">
             <div className="rounded-xl border border-slate-200 divide-y divide-slate-100 bg-white">
               {[
-                { label: 'Title', value: form.title || '—' },
+                { labelKey: 'propertyform_review_title', value: form.title || '—' },
                 {
-                  label: 'Listing type',
-                  value: form.listingType === 'sale' ? 'For Sale' : 'For Rent',
+                  labelKey: 'propertyform_review_type',
+                  value: form.listingType === 'sale' ? t('propertyform_for_sale') : t('propertyform_for_rent'),
                 },
-                { label: 'Category', value: categories.find((c) => String(c.id) === String(form.categoryId))?.name || '—' },
+                { labelKey: 'propertyform_review_category', value: categories.find((c) => String(c.id) === String(form.categoryId))?.name || '—' },
                 {
-                  label: 'Price',
+                  labelKey: 'propertyform_review_price',
                   value: form.price ? `Br ${Number(form.price).toLocaleString()}` : '—',
                 },
                 {
-                  label: 'Location',
+                  labelKey: 'propertyform_review_location',
                   value: [form.city, form.country].filter(Boolean).join(', ') || '—',
                 },
               ].map((row) => (
-                <div key={row.label} className="flex justify-between px-4 py-2.5 text-[13px]">
-                  <span className="text-slate-500 font-medium">{row.label}</span>
+                <div key={row.labelKey} className="flex justify-between px-4 py-2.5 text-[13px]">
+                  <span className="text-slate-500 font-medium">{t(row.labelKey)}</span>
                   <span className="font-semibold text-slate-800 text-right max-w-[55%] truncate">
                     {row.value}
                   </span>
@@ -858,16 +875,19 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
 
             {amenities.length > 0 && (
               <div>
-                <p className="text-[13px] font-semibold text-[#101820] mb-2">Amenities</p>
+                <p className="text-[13px] font-semibold text-[#101820] mb-2">{t('propertyform_label_amenities')}</p>
                 <div className="flex flex-wrap gap-2">
-                  {amenities.map((amenity) => (
+                  {amenities.map((amenity) => {
+                  const meta = AMENITIES.find((a) => a.value === amenity);
+                  return (
                     <span
                       key={amenity}
                       className="px-3 py-1 rounded-full bg-[#4A9FF5]/10 text-[#1f6fd0] text-[12px] font-medium border border-[#4A9FF5]/20"
                     >
-                      {amenity}
+                      {meta ? t(meta.labelKey) : amenity}
                     </span>
-                  ))}
+                  );
+                })}
                 </div>
               </div>
             )}
@@ -875,7 +895,7 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
             {totalImages > 0 && (
               <div>
                 <p className="text-[13px] font-semibold text-[#101820] mb-2">
-                  Images ({totalImages})
+                  {t('propertyform_review_images', { count: totalImages })}
                 </p>
                 <div className="grid grid-cols-4 md:grid-cols-6 gap-3">
                   {existingImages.map((image) => (
@@ -922,7 +942,7 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
                 disabled={locked}
                 onClick={() => index < step && setStep(index)}
                 aria-current={active ? 'step' : undefined}
-                title={locked ? `Step ${index + 1}: ${item.label} is not available yet` : undefined}
+                title={locked ? t('propertyform_step_locked', { number: index + 1, label: t(item.labelKey) }) : undefined}
                 className={`flex items-center space-x-2 py-1.5 px-2.5 rounded-lg transition ${
                   locked ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'
                 }`}
@@ -943,7 +963,7 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
                     active ? 'text-[#101820]' : 'text-slate-500'
                   }`}
                 >
-                  {item.label}
+                  {t(item.labelKey)}
                 </span>
               </button>
               {index < steps.length - 1 && <div className="w-6 md:w-10 h-px bg-slate-200" />}
@@ -959,7 +979,7 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
             const Icon = steps[step].icon;
             return <Icon size={18} className="text-[#4A9FF5]" />;
           })()}
-          <span>{steps[step].label}</span>
+          <span>{t(steps[step].labelKey)}</span>
         </h2>
 
         {renderStepContent()}
@@ -976,12 +996,12 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
               className="flex items-center space-x-1.5 h-11 px-5 rounded-lg border border-slate-200 bg-white text-[13px] font-semibold text-slate-600 hover:bg-slate-50 transition w-full md:w-auto justify-center cursor-pointer disabled:opacity-50"
             >
               <ChevronLeft size={16} />
-              <span>Back</span>
+              <span>{t('propertyform_back')}</span>
             </button>
           )}
           {isEdit && !isLastStep && (
             <span className="ml-3 text-[11px] text-slate-400">
-              Saved fields are kept until you reach Review.
+              {t('propertyform_saved_fields_note')}
             </span>
           )}
         </div>
@@ -996,7 +1016,7 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
                 className="flex items-center justify-center space-x-1.5 h-11 px-6 rounded-lg border border-slate-200 bg-white text-[13px] font-semibold text-slate-700 hover:bg-slate-50 transition cursor-pointer disabled:opacity-50"
               >
                 {submitting ? <Loader2 size={16} className="animate-spin" /> : <Save size={15} />}
-                <span>Save as Draft</span>
+                <span>{t('propertyform_save_draft')}</span>
               </button>
               <button
                 type="button"
@@ -1005,7 +1025,7 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
                 className="flex items-center justify-center space-x-1.5 h-11 px-6 rounded-lg bg-[#4A9FF5] text-white text-[13px] font-bold hover:bg-[#3d8be0] transition shadow-[0_4px_12px_rgba(74,159,245,0.35)] cursor-pointer disabled:opacity-50"
               >
                 {submitting ? <Loader2 size={16} className="animate-spin" /> : <Rocket size={15} />}
-                <span>Publish</span>
+                <span>{t('propertyform_publish')}</span>
               </button>
             </>
           ) : (
@@ -1014,7 +1034,7 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
               onClick={handleNext}
               className="flex items-center justify-center space-x-1.5 h-11 px-6 rounded-lg bg-[#4A9FF5] text-white text-[13px] font-bold hover:bg-[#3d8be0] transition shadow-[0_4px_12px_rgba(74,159,245,0.35)] cursor-pointer"
             >
-              <span>Continue</span>
+              <span>{t('propertyform_continue')}</span>
               <ChevronRight size={16} />
             </button>
           )}
@@ -1037,7 +1057,7 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
           disabled={submitting}
           className="mt-4 h-9 px-4 text-[12px] font-medium text-slate-500 hover:text-slate-700 transition cursor-pointer disabled:opacity-50"
         >
-          Cancel and go back
+          {t('propertyform_cancel_go_back')}
         </button>
       )}
     </div>
