@@ -1,8 +1,11 @@
 import { Link } from 'react-router-dom';
 import { Check, AlertTriangle } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { ROUTES } from '../../utils/constants';
 
-const SaveNotice = ({ toastMessage, toastTone, saveFailed }) => (
+const SaveNotice = ({ toastMessage, toastTone, saveFailed }) => {
+  const { t } = useTranslation('agents');
+  return (
   <>
     {toastMessage && (
       <div
@@ -25,15 +28,16 @@ const SaveNotice = ({ toastMessage, toastTone, saveFailed }) => (
       <div role="alert" className="rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs px-4 py-3 flex items-center space-x-2">
         <AlertTriangle size={15} className="shrink-0" />
         <span>
-          The property was saved, but some images failed to upload.{' '}
+          {t('savenotice_images_failed')}{' '}
           <Link to={ROUTES.agentProperties} className="underline font-semibold hover:text-rose-900">
-            Open My Properties
+            {t('savenotice_open_properties')}
           </Link>{' '}
-          to add images later.
+          {t('savenotice_add_later')}
         </span>
       </div>
     )}
   </>
-);
+  );
+};
 
 export default SaveNotice;
