@@ -1,4 +1,5 @@
 import { NavLink, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../hooks/useAuth';
 import {
   LayoutDashboard,
@@ -14,31 +15,32 @@ import {
 } from 'lucide-react';
 
 const navItems = [
-  { label: 'Dashboard', path: '/admin', icon: LayoutDashboard, end: true },
+  { labelKey: 'sidebar_dashboard', path: '/admin', icon: LayoutDashboard, end: true },
   {
-    label: 'Agent Approval',
+    labelKey: 'sidebar_agent_approval',
     path: '/admin/agents',
     icon: ShieldCheck,
     badgeKey: 'pendingAgents',
     badgeColor: 'bg-[#E7B85A]',
   },
-  { label: 'Categories', path: '/admin/categories', icon: Tag },
-  { label: 'Subscription Plans', path: '/admin/subscription-plans', icon: CreditCard },
-  { label: 'Users', path: '/admin/users', icon: Users },
-  { label: 'Reports', path: '/admin/reports', icon: BarChart3 },
-  { label: 'Analytics', path: '/admin/analytics', icon: Activity },
-  { label: 'Profile', path: '/admin/profile', icon: UserCircle },
-  { label: 'Settings', path: '/admin/settings', icon: Settings },
+  { labelKey: 'sidebar_categories', path: '/admin/categories', icon: Tag },
+  { labelKey: 'sidebar_subscription_plans', path: '/admin/subscription-plans', icon: CreditCard },
+  { labelKey: 'sidebar_users', path: '/admin/users', icon: Users },
+  { labelKey: 'sidebar_reports', path: '/admin/reports', icon: BarChart3 },
+  { labelKey: 'sidebar_analytics', path: '/admin/analytics', icon: Activity },
+  { labelKey: 'sidebar_profile', path: '/admin/profile', icon: UserCircle },
+  { labelKey: 'sidebar_settings', path: '/admin/settings', icon: Settings },
 ];
 
 const AdminSidebar = ({ isOpen, onClose, pendingAgents = 0 }) => {
   const { user } = useAuth();
+  const { t } = useTranslation('admin');
   const displayName =
     user?.name ||
     [user?.firstName, user?.lastName].filter(Boolean).join(' ') ||
-    'Admin';
+    t('role_admin');
   const isAdmin = user?.role === 'admin';
-  const roleLabel = isAdmin ? 'System Administrator' : user?.role || 'User';
+  const roleLabel = isAdmin ? t('sidebar_role_system_admin') : user?.role || t('sidebar_role_user');
 
   return (
     <aside
@@ -71,7 +73,7 @@ const AdminSidebar = ({ isOpen, onClose, pendingAgents = 0 }) => {
           <button
             onClick={onClose}
             className="lg:hidden p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition cursor-pointer"
-            aria-label="Close sidebar"
+            aria-label={t('sidebar_close')}
           >
             <X size={20} />
           </button>
@@ -98,7 +100,7 @@ const AdminSidebar = ({ isOpen, onClose, pendingAgents = 0 }) => {
                   size={19}
                   className="transition-transform duration-200 group-hover:scale-105"
                 />
-                <span>{item.label}</span>
+                <span>{t(item.labelKey)}</span>
               </div>
               <div className="flex items-center">
                 {item.badgeKey === 'pendingAgents' && pendingAgents > 0 && (

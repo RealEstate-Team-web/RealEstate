@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Settings as SettingsIcon,
   Lock,
@@ -23,6 +24,7 @@ const readPrefs = () => {
 };
 
 const Settings = () => {
+  const { t } = useTranslation('admin');
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -54,35 +56,35 @@ const Settings = () => {
     setPasswordSuccess(null);
 
     if (newPassword !== confirmPassword) {
-      setPasswordError('New passwords do not match');
+      setPasswordError(t('settings_err_mismatch'));
       return;
     }
     if (newPassword.length < 8) {
-      setPasswordError('New password must be at least 8 characters');
+      setPasswordError(t('settings_err_min_chars'));
       return;
     }
     if (!/[A-Z]/.test(newPassword)) {
-      setPasswordError('New password must contain at least one uppercase letter');
+      setPasswordError(t('settings_err_upper'));
       return;
     }
     if (!/[a-z]/.test(newPassword)) {
-      setPasswordError('New password must contain at least one lowercase letter');
+      setPasswordError(t('settings_err_lower'));
       return;
     }
     if (!/[0-9]/.test(newPassword)) {
-      setPasswordError('New password must contain at least one number');
+      setPasswordError(t('settings_err_digit'));
       return;
     }
 
     setPasswordSaving(true);
     try {
       await authService.changePassword({ currentPassword, newPassword });
-      setPasswordSuccess('Password updated successfully');
+      setPasswordSuccess(t('settings_password_updated'));
       setCurrentPassword('');
       setNewPassword('');
       setConfirmPassword('');
     } catch (err) {
-      setPasswordError(err.message || 'Failed to update password');
+      setPasswordError(err.message || t('settings_error_password'));
     } finally {
       setPasswordSaving(false);
     }
@@ -93,7 +95,7 @@ const Settings = () => {
       {/* Header */}
       <div className="min-w-0">
         <p className="text-[11px] font-semibold uppercase tracking-wider text-[#1D6FD3] mb-1">
-          Settings
+          {t('settings_title')}
         </p>
         <div className="flex items-center gap-2.5">
           <span
@@ -102,10 +104,10 @@ const Settings = () => {
           >
             <SettingsIcon size={20} />
           </span>
-          <h1 className="text-[24px] font-bold text-[#111827] tracking-tight">Account Settings</h1>
+          <h1 className="text-[24px] font-bold text-[#111827] tracking-tight">{t('settings_account_settings')}</h1>
         </div>
         <p className="text-[13px] text-[#6B7280] mt-1">
-          Manage your security preferences and notifications
+          {t('settings_subtitle')}
         </p>
       </div>
 
@@ -117,8 +119,8 @@ const Settings = () => {
               <Lock size={20} />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-slate-900">Security & Password</h3>
-              <p className="text-xs text-slate-500">Update your account password.</p>
+              <h3 className="text-sm font-bold text-slate-900">{t('settings_security_heading')}</h3>
+              <p className="text-xs text-slate-500">{t('settings_security_body')}</p>
             </div>
           </div>
 
@@ -135,7 +137,7 @@ const Settings = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
             <div>
-              <label className="block text-xs font-semibold text-slate-600 uppercase mb-1">Current Password</label>
+              <label className="block text-xs font-semibold text-slate-600 uppercase mb-1">{t('settings_current_password')}</label>
               <input
                 type="password"
                 value={currentPassword}
@@ -146,7 +148,7 @@ const Settings = () => {
             </div>
             <div />
             <div>
-              <label className="block text-xs font-semibold text-slate-600 uppercase mb-1">New Password</label>
+              <label className="block text-xs font-semibold text-slate-600 uppercase mb-1">{t('settings_new_password')}</label>
               <input
                 type="password"
                 value={newPassword}
@@ -156,7 +158,7 @@ const Settings = () => {
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-slate-600 uppercase mb-1">Confirm New Password</label>
+              <label className="block text-xs font-semibold text-slate-600 uppercase mb-1">{t('settings_confirm_password')}</label>
               <input
                 type="password"
                 value={confirmPassword}
@@ -174,7 +176,7 @@ const Settings = () => {
               className="flex items-center space-x-2 bg-[#4A9FF5] hover:bg-[#3A8FE5] text-white px-5 py-2.5 rounded-xl text-xs font-bold transition cursor-pointer shadow-[0_4px_12px_rgba(74,159,245,0.25)] disabled:opacity-50"
             >
               <Save size={16} />
-              <span>{passwordSaving ? 'Updating…' : 'Update Password'}</span>
+              <span>{passwordSaving ? t('settings_updating') : t('settings_update_password')}</span>
             </button>
           </div>
         </div>
@@ -186,16 +188,16 @@ const Settings = () => {
               <Bell size={20} />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-slate-900">Notification Preferences</h3>
-              <p className="text-xs text-slate-500">Manage how you receive platform notifications.</p>
+              <h3 className="text-sm font-bold text-slate-900">{t('settings_notif_heading')}</h3>
+              <p className="text-xs text-slate-500">{t('settings_notif_body')}</p>
             </div>
           </div>
 
           <div className="space-y-3 pt-2">
             <label className="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-200/60 cursor-pointer hover:bg-slate-100/50 transition">
               <div>
-                <p className="text-xs font-bold text-slate-800">Email Notifications</p>
-                <p className="text-[11px] text-slate-500">Receive admin alerts and system updates via email.</p>
+                <p className="text-xs font-bold text-slate-800">{t('settings_email_notif')}</p>
+                <p className="text-[11px] text-slate-500">{t('settings_email_notif_body')}</p>
               </div>
               <input
                 type="checkbox"
@@ -207,8 +209,8 @@ const Settings = () => {
 
             <label className="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-200/60 cursor-pointer hover:bg-slate-100/50 transition">
               <div>
-                <p className="text-xs font-bold text-slate-800">SMS / Phone Alerts</p>
-                <p className="text-[11px] text-slate-500">Get instant SMS alerts for critical platform events.</p>
+                <p className="text-xs font-bold text-slate-800">{t('settings_sms_alerts')}</p>
+                <p className="text-[11px] text-slate-500">{t('settings_sms_alerts_body')}</p>
               </div>
               <input
                 type="checkbox"
@@ -220,8 +222,8 @@ const Settings = () => {
 
             <label className="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-200/60 cursor-pointer hover:bg-slate-100/50 transition">
               <div>
-                <p className="text-xs font-bold text-slate-800">Agent Approval Alerts</p>
-                <p className="text-[11px] text-slate-500">Receive alerts when agents submit registration requests.</p>
+                <p className="text-xs font-bold text-slate-800">{t('settings_agent_alerts')}</p>
+                <p className="text-[11px] text-slate-500">{t('settings_agent_alerts_body')}</p>
               </div>
               <input
                 type="checkbox"
@@ -239,12 +241,12 @@ const Settings = () => {
             {storageStatus === 'saved' ? (
               <>
                 <CheckCircle size={16} />
-                <span>Notification preferences saved locally</span>
+                <span>{t('settings_prefs_saved')}</span>
               </>
             ) : (
               <>
                 <AlertCircle size={16} />
-                <span>Preferences active, but couldn't save to this browser</span>
+                <span>{t('settings_prefs_browser')}</span>
               </>
             )}
           </div>

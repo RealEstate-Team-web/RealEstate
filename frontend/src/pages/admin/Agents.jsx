@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Clock, UserCheck, Ban, CheckCircle, XCircle, Loader2, Search, ShieldCheck } from 'lucide-react';
 import KpiCard from '../../components/admin/KpiCard';
 import Avatar from '../../components/common/Avatar';
@@ -21,6 +22,7 @@ const formatDate = (iso) => {
 };
 
 const AgentApproval = () => {
+  const { t } = useTranslation('admin');
   const [searchParams, setSearchParams] = useSearchParams();
   const highlightId = searchParams.get('highlight');
   const searchTerm = searchParams.get('q') || '';
@@ -49,7 +51,7 @@ const AgentApproval = () => {
         setError(null);
       } catch (err) {
         if (!active) return;
-        setError(err.message || 'Failed to load agents');
+        setError(err.message || t('agents_error_load'));
       } finally {
         if (active) setLoading(false);
       }
@@ -57,7 +59,7 @@ const AgentApproval = () => {
     return () => {
       active = false;
     };
-  }, [searchTerm]);
+  }, [searchTerm, t]);
 
   const reload = async () => {
     const requestId = ++reloadRequestIdRef.current;
@@ -82,7 +84,7 @@ const AgentApproval = () => {
       setSuccess(`${label} ${successMsg}`);
       await reload();
     } catch (err) {
-      setError(err.message || 'Action failed');
+      setError(err.message || t('agents_action_failed'));
     } finally {
       setActionId(null);
     }
@@ -91,25 +93,25 @@ const AgentApproval = () => {
   const kpis = stats
     ? [
         {
-          title: 'Total Pending Agents',
+          title: t('kpi_total_pending_agents'),
           value: stats.pendingAgents,
           icon: Clock,
           iconBg: 'bg-[#FBF3DD] text-[#E7B85A]',
         },
         {
-          title: 'Total Approved Agents',
+          title: t('kpi_total_approved_agents'),
           value: stats.approvedAgents,
           icon: UserCheck,
           iconBg: 'bg-[#E7F4EE] text-[#4FAF83]',
         },
         {
-          title: 'Total Rejected Agents',
+          title: t('kpi_total_rejected_agents'),
           value: stats.rejectedAgents,
           icon: XCircle,
           iconBg: 'bg-[#FBEAE9] text-[#D96B67]',
         },
         {
-          title: 'Total Suspended Users',
+          title: t('kpi_total_suspended_users'),
           value: stats.suspendedUsers,
           icon: Ban,
           iconBg: 'bg-[#FBEAE9] text-[#D96B67]',
@@ -118,7 +120,7 @@ const AgentApproval = () => {
     : [];
 
   if (loading) {
-    return <div className="py-20 text-center text-[#6B7280]">Loading agent approvals…</div>;
+    return <div className="py-20 text-center text-[#6B7280]">{t('agents_loading')}</div>;
   }
 
   return (
@@ -126,18 +128,18 @@ const AgentApproval = () => {
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div className="min-w-0">
           <p className="text-[11px] font-semibold uppercase tracking-wider text-[#1D6FD3] mb-1">
-            Approvals
+            {t('agents_approvals')}
           </p>
           <div className="flex items-center gap-2.5">
             <span aria-hidden="true" className="w-10 h-10 rounded-xl bg-[#E7F0FB] text-[#4A9FF5] flex items-center justify-center shrink-0">
               <ShieldCheck size={20} />
             </span>
             <h1 className="text-[24px] font-bold text-[#111827] tracking-tight">
-              Agent Approval Dashboard
+              {t('agents_title')}
             </h1>
           </div>
           <p className="text-[13px] text-[#6B7280] mt-1">
-            Review, approve, or reject agent verification requests
+            {t('agents_subtitle')}
           </p>
         </div>
       </div>
@@ -169,7 +171,7 @@ const AgentApproval = () => {
       <div className="bg-white border border-[#E5E7EB] rounded-lg shadow-[0_2px_8px_rgba(15,23,42,0.06)] overflow-hidden">
         <div className="flex items-center justify-between px-4 py-3 gap-3">
           <h2 className="text-[17px] font-semibold text-[#111827]">
-            {searchTerm.trim() ? 'Agent Search Results' : 'Pending Verification Requests'}
+            {searchTerm.trim() ? t('agents_search_results') : t('agents_pending_requests')}
           </h2>
           <div className="relative w-full max-w-xs">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" size={15} />
@@ -185,8 +187,8 @@ const AgentApproval = () => {
                   return next;
                 }, { replace: true })
               }
-              placeholder="Search agents..."
-              aria-label="Search agents"
+              placeholder={t('agents_search_placeholder')}
+              aria-label={t('agents_search_aria')}
               className="w-full bg-[#F5F5FA] border border-[#E5E7EB] rounded-lg py-2 pl-9 pr-3 text-[13px] text-slate-700 placeholder-slate-400 focus:outline-none focus:border-[#4A9FF5] focus:bg-white transition"
             />
           </div>
@@ -195,19 +197,19 @@ const AgentApproval = () => {
           <table className="w-full text-left text-[13px] text-[#111827] min-w-[920px]">
             <thead>
               <tr className="bg-[#F3F4F8] text-[#374151] font-medium text-[13px] h-[42px]">
-                <th className="py-0 px-4 rounded-l-lg w-[18%]">Applicant Name</th>
-                <th className="py-0 px-4 w-[18%]">Agency Name</th>
-                <th className="py-0 px-4 w-[15%]">Registration Date</th>
-                <th className="py-0 px-4 w-[18%]">License</th>
-                <th className="py-0 px-4 w-[10%]">Status</th>
-                <th className="py-0 px-4 w-[21%] rounded-r-lg">Actions</th>
+                <th className="py-0 px-4 rounded-l-lg w-[18%]">{t('agents_col_applicant')}</th>
+                <th className="py-0 px-4 w-[18%]">{t('agents_col_agency')}</th>
+                <th className="py-0 px-4 w-[15%]">{t('agents_col_registration')}</th>
+                <th className="py-0 px-4 w-[18%]">{t('agents_col_license')}</th>
+                <th className="py-0 px-4 w-[10%]">{t('col_status')}</th>
+                <th className="py-0 px-4 w-[21%] rounded-r-lg">{t('col_actions')}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#E5E7EB]">
               {agents.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="py-10 text-center text-[13px] text-[#6B7280]">
-                    {searchTerm.trim() ? 'No agents match your search.' : 'No pending verification requests.'}
+                    {searchTerm.trim() ? t('agents_empty_search') : t('agents_empty_pending')}
                   </td>
                 </tr>
               ) : (
@@ -240,19 +242,19 @@ const AgentApproval = () => {
                           <span className="text-[#9CA3AF]">—</span>
                         )}
                       </td>
-                      <td className="py-0 px-4">
-                        <StatusBadge status={a.status}>{a.status}</StatusBadge>
+<td className="py-0 px-4">
+                        <StatusBadge status={a.status}>{t(`status_${a.status}`, a.status)}</StatusBadge>
                       </td>
                        <td className="py-0 px-4">
                          {a.status === 'pending' && actionId === a.id ? (
                            <div className="flex items-center gap-2 whitespace-nowrap">
                              <Loader2 size={17} className="animate-spin text-[#4FAF83]" />
-                             <span className="text-[12px] text-[#6B7280]">Updating…</span>
+                             <span className="text-[12px] text-[#6B7280]">{t('agents_updating')}</span>
                            </div>
                          ) : confirmAction?.id === a.id ? (
                            <div className="flex items-center gap-2 whitespace-nowrap">
                              <span className="text-[12px] font-medium text-[#374151]">
-                               {confirmAction.action === 'approve' ? 'Approve?' : 'Reject?'}
+                               {confirmAction.action === 'approve' ? t('agents_confirm_approve') : t('agents_confirm_reject')}
                              </span>
                              <button
                                type="button"
@@ -260,12 +262,12 @@ const AgentApproval = () => {
                                onClick={() => {
                                  const action = confirmAction.action;
                                  setConfirmAction(null);
-                                 if (action === 'approve') act(approveAgent, a.id, a.first_name, 'approved');
-                                 else act(rejectAgent, a.id, a.first_name, 'rejected');
+                                 if (action === 'approve') act(approveAgent, a.id, a.first_name, t('agents_approved'));
+                                 else act(rejectAgent, a.id, a.first_name, t('agents_rejected'));
                                }}
                                className="inline-flex items-center gap-1.5 h-[30px] px-3 rounded-md bg-[#2F7A55] text-[12px] font-medium text-white hover:bg-[#256b49] transition-colors disabled:opacity-50"
                              >
-                               Yes
+                               {t('yes')}
                              </button>
                              <button
                                type="button"
@@ -273,7 +275,7 @@ const AgentApproval = () => {
                                onClick={() => setConfirmAction(null)}
                                className="h-[30px] px-3 rounded-md bg-[#edf2fa] border border-[#d6deeb] text-[12px] font-medium text-[#374151] hover:bg-[#F3F4F8] transition-colors disabled:opacity-50"
                              >
-                               No
+                               {t('no')}
                              </button>
                            </div>
                          ) : a.status === 'pending' ? (
@@ -281,22 +283,22 @@ const AgentApproval = () => {
                            <button
                              type="button"
                              disabled={actionId === a.id}
-onClick={() => setConfirmAction({ id: a.id, action: 'approve' })}
+ onClick={() => setConfirmAction({ id: a.id, action: 'approve' })}
                                className="inline-flex items-center gap-1.5 h-[34px] px-[10px] rounded-md bg-[#E7F4EE] text-[13px] font-medium text-[#2F7A55] hover:bg-[#d3efe1] transition-colors disabled:opacity-50"
                              >
                              <CheckCircle size={19} className="text-[#2F7A55]" />
-                             Approve Account
-                          </button>
-                          <button
-                            type="button"
-                            disabled={actionId === a.id}
-                            onClick={() => setConfirmAction({ id: a.id, action: 'reject' })}
-                            className="inline-flex items-center gap-1.5 h-[34px] px-[10px] rounded-md bg-[#FBEAE9] text-[13px] font-medium text-[#B23B36] hover:bg-[#f5d8d6] transition-colors disabled:opacity-50"
-                          >
-                            <XCircle size={19} className="text-[#B23B36]" />
-                            Reject Account
-                          </button>
-                        </div>
+                             {t('agents_approve_account')}
+                           </button>
+                           <button
+                             type="button"
+                             disabled={actionId === a.id}
+                             onClick={() => setConfirmAction({ id: a.id, action: 'reject' })}
+                             className="inline-flex items-center gap-1.5 h-[34px] px-[10px] rounded-md bg-[#FBEAE9] text-[13px] font-medium text-[#B23B36] hover:bg-[#f5d8d6] transition-colors disabled:opacity-50"
+                           >
+                             <XCircle size={19} className="text-[#B23B36]" />
+                             {t('agents_reject_account')}
+                           </button>
+                         </div>
                          ) : (
                            <span className="text-[#9CA3AF]">—</span>
                          )}
@@ -313,11 +315,11 @@ onClick={() => setConfirmAction({ id: a.id, action: 'approve' })}
       {/* Bottom grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 items-stretch">
         <div className="bg-white border border-[#E5E7EB] rounded-lg shadow-[0_2px_8px_rgba(15,23,42,0.06)] p-4 flex flex-col">
-          <h2 className="text-[17px] font-semibold text-[#111827] mb-2">Recent Activity Log</h2>
+          <h2 className="text-[17px] font-semibold text-[#111827] mb-2">{t('agents_recent_activity')}</h2>
           <div className="flex-1 max-h-[260px] overflow-y-auto scrollbar-thin">
             {!stats || stats.recentAgents.length === 0 ? (
               <p className="text-[13px] text-[#6B7280] py-6 text-center">
-                No recent activity.
+                {t('agents_no_activity')}
               </p>
             ) : (
               <div className="divide-y divide-slate-100">
@@ -333,7 +335,7 @@ onClick={() => setConfirmAction({ id: a.id, action: 'approve' })}
                         {r.first_name} {r.last_name}
                       </span>
                     </div>
-                    <StatusBadge status={r.status}>{r.status}</StatusBadge>
+                    <StatusBadge status={r.status}>{t(`status_${r.status}`, r.status)}</StatusBadge>
                   </div>
                 ))}
               </div>

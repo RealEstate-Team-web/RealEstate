@@ -1,8 +1,25 @@
+import { useTranslation } from 'react-i18next';
+
 const SERIES = {
-  logins: { label: 'Logins', color: '#2F6FED' },
-  views: { label: 'Property Views', color: '#4FAF83' },
-  regs: { label: 'New Registrations', color: '#23B5C4' },
+  logins: { labelKey: 'chart_logins', color: '#2F6FED' },
+  views: { labelKey: 'chart_property_views', color: '#4FAF83' },
+  regs: { labelKey: 'chart_new_registrations', color: '#23B5C4' },
 };
+
+const MONTH_KEYS = [
+  'chart_month_jan',
+  'chart_month_feb',
+  'chart_month_mar',
+  'chart_month_apr',
+  'chart_month_may',
+  'chart_month_jun',
+  'chart_month_jul',
+  'chart_month_aug',
+  'chart_month_sep',
+  'chart_month_oct',
+  'chart_month_nov',
+  'chart_month_dec',
+];
 
 const buildSmoothPath = (pts) => {
   if (pts.length < 2) return '';
@@ -22,6 +39,7 @@ const buildSmoothPath = (pts) => {
 };
 
 const ActivityTrendChart = () => {
+  const { t } = useTranslation('admin');
   const w = 600;
   const h = 230;
   const padL = 34;
@@ -32,7 +50,7 @@ const ActivityTrendChart = () => {
   const plotH = h - padT - padB;
   const yMax = 3000;
 
-  const xLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const xLabels = MONTH_KEYS;
   const data = {
     logins: [400, 520, 610, 700, 820, 900, 980, 1100, 1200, 1300, 1450, 1600],
     views: [300, 420, 560, 700, 880, 1050, 1200, 1400, 1600, 1850, 2100, 2400],
@@ -95,11 +113,11 @@ const ActivityTrendChart = () => {
         })}
 
         {/* X labels */}
-        {xLabels.map((label, i) => {
+        {xLabels.map((labelKey, i) => {
           const x = padL + (i * plotW) / (xLabels.length - 1);
           return (
-            <text key={label} x={x} y={h - 8} textAnchor="middle" className="fill-[#9CA3AF]" style={{ fontSize: 9 }}>
-              {label}
+            <text key={labelKey} x={x} y={h - 8} textAnchor="middle" className="fill-[#9CA3AF]" style={{ fontSize: 9 }}>
+              {t(labelKey)}
             </text>
           );
         })}
@@ -108,9 +126,9 @@ const ActivityTrendChart = () => {
       {/* Legend */}
       <div className="flex items-center justify-center gap-5 mt-1">
         {Object.values(SERIES).map((s) => (
-          <div key={s.label} className="flex items-center gap-1.5">
+          <div key={s.labelKey} className="flex items-center gap-1.5">
             <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: s.color }} />
-            <span className="text-[11px] text-[#6B7280]">{s.label}</span>
+            <span className="text-[11px] text-[#6B7280]">{t(s.labelKey)}</span>
           </div>
         ))}
       </div>

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Users,
   UserCheck,
@@ -40,6 +41,7 @@ const NoData = ({ label = 'No data yet' }) => (
 );
 
 const Dashboard = () => {
+  const { t } = useTranslation('admin');
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -51,7 +53,7 @@ const Dashboard = () => {
         if (active) setStats(data);
       })
       .catch((err) => {
-        if (active) setError(err.message || 'Failed to load dashboard');
+        if (active) setError(err.message || t('dashboard_error_load'));
       })
       .finally(() => {
         if (active) setLoading(false);
@@ -59,10 +61,10 @@ const Dashboard = () => {
     return () => {
       active = false;
     };
-  }, []);
+  }, [t]);
 
   if (loading) {
-    return <div className="py-20 text-center text-[#6B7280]">Loading dashboard…</div>;
+    return <div className="py-20 text-center text-[#6B7280]">{t('dashboard_loading')}</div>;
   }
   if (error) {
     return <div className="py-20 text-center text-[#D96B67]">{error}</div>;
@@ -70,51 +72,54 @@ const Dashboard = () => {
 
   const kpis = [
     {
-      title: 'Total Users',
+      title: t('kpi_total_users'),
       value: stats.totalUsers,
-      indicator: <span className="text-[#4FAF83]">Live</span>,
+      indicator: <span className="text-[#4FAF83]">{t('kpi_live')}</span>,
       icon: Users,
       iconBg: 'bg-[#E7F0FB] text-[#4A9FF5]',
     },
     {
-      title: 'Total Agents',
+      title: t('kpi_total_agents'),
       value: stats.totalAgents,
-      indicator: <span className="text-[#4FAF83]">Live</span>,
+      indicator: <span className="text-[#4FAF83]">{t('kpi_live')}</span>,
       icon: UserCheck,
       iconBg: 'bg-[#E7F0FB] text-[#4A9FF5]',
     },
     {
-      title: 'Pending Agents',
+      title: t('kpi_pending_agents'),
       value: stats.pendingAgents,
-      indicator: <span className="text-[#D96B67] font-semibold">{stats.pendingAgents} pending</span>,
+      indicator: (
+        <span className="text-[#D96B67] font-semibold">
+          {t('dashboard_count_pending', { count: stats.pendingAgents })}
+        </span>
+      ),
       icon: Clock,
       iconBg: 'bg-[#FBF3DD] text-[#E7B85A]',
     },
     {
-      title: 'Total Properties',
+      title: t('kpi_total_properties'),
       value: stats.totalProperties ?? '—',
-      indicator: <span className="text-[#4FAF83]">Live</span>,
+      indicator: <span className="text-[#4FAF83]">{t('kpi_live')}</span>,
       icon: Building2,
       iconBg: 'bg-[#FBF3DD] text-[#E7B85A]',
     },
     {
-      title: 'Draft Properties',
+      title: t('kpi_draft_properties'),
       value: stats.propertiesByStatus?.draft ?? '—',
       indicator: (
         <span className="text-[#9CA3AF]">
-          {stats.propertiesByStatus?.draft ?? '—'}{' '}
-          {(stats.propertiesByStatus?.draft ?? 0) === 1 ? 'draft' : 'drafts'}
+          {t('dashboard_draft', { count: stats.propertiesByStatus?.draft ?? 0 })}
         </span>
       ),
       icon: Building,
       iconBg: 'bg-[#FBEAE9] text-[#D96B67]',
     },
     {
-      title: 'Scheduled Visits',
+      title: t('kpi_scheduled_visits'),
       value: stats.scheduledVisits ?? '—',
       indicator: (
         <span className="text-[#9CA3AF]">
-          {stats.scheduledVisits ?? '—'} scheduled
+          {t('dashboard_count_scheduled', { count: stats.scheduledVisits ?? 0 })}
         </span>
       ),
       icon: CalendarCheck,
@@ -134,18 +139,18 @@ const Dashboard = () => {
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div className="min-w-0">
           <p className="text-[11px] font-semibold uppercase tracking-wider text-[#1D6FD3] mb-1">
-            Overview
+            {t('dashboard_overview')}
           </p>
           <div className="flex items-center gap-2.5">
             <span aria-hidden="true" className="w-10 h-10 rounded-xl bg-[#E7F0FB] text-[#4A9FF5] flex items-center justify-center shrink-0">
               <LayoutDashboard size={20} />
             </span>
             <h1 className="text-[24px] font-bold text-[#111827] tracking-tight">
-              System Health Dashboard
+              {t('dashboard_title')}
             </h1>
           </div>
           <p className="text-[13px] text-[#6B7280] mt-1">
-            Users, agents, and platform activity at a glance
+            {t('dashboard_subtitle')}
           </p>
         </div>
         <div className="shrink-0 self-start">
@@ -167,9 +172,9 @@ const Dashboard = () => {
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-5">
-        <Card title="Recent Agent Registrations" className="xl:col-span-4">
+        <Card title={t('dashboard_card_registrations')} className="xl:col-span-4">
           {recent.length === 0 ? (
-            <NoData label="No recent registrations" />
+            <NoData label={t('dashboard_no_registrations')} />
           ) : (
             <div className="divide-y divide-slate-100">
               {recent.map((r) => (
@@ -185,7 +190,7 @@ const Dashboard = () => {
                         {r.first_name} {r.last_name}
                       </p>
                       <p className="text-[11px] text-[#6B7280] truncate">
-                        {r.agency || 'Agency'}
+                        {r.agency || t('dashboard_agency_fallback')}
                       </p>
                     </div>
                   </div>
@@ -198,13 +203,13 @@ const Dashboard = () => {
           )}
         </Card>
 
-        <Card title="Property Activity Trend" className="xl:col-span-5">
-          <NoData label="No activity data yet" />
+        <Card title={t('dashboard_card_trend')} className="xl:col-span-5">
+          <NoData label={t('dashboard_no_activity')} />
         </Card>
 
-        <Card title="Agent Status Breakdown" className="xl:col-span-3 flex flex-col">
+        <Card title={t('dashboard_card_status')} className="xl:col-span-3 flex flex-col">
           {totalStatus === 0 ? (
-            <NoData label="No agent status data" />
+            <NoData label={t('dashboard_no_status')} />
           ) : (
             <div className="flex-1 flex items-center justify-center">
               <StatusDonutChart data={donutData} />
@@ -217,25 +222,25 @@ const Dashboard = () => {
         <Card>
           <div className="mb-1">
             <h2 className="text-[16px] font-semibold text-[#111827]">
-              Recent Agent Applications
+              {t('dashboard_recent_applications')}
             </h2>
-            <p className="text-[12px] text-[#6B7280]">Latest agent sign-ups</p>
+            <p className="text-[12px] text-[#6B7280]">{t('dashboard_latest_signups')}</p>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-left text-[12px] text-[#111827] mt-2">
               <thead className="text-[#9CA3AF] font-semibold uppercase text-[10px] tracking-wider">
                 <tr className="border-b border-slate-100">
-                  <th className="py-2 px-2">Applicant</th>
-                  <th className="py-2 px-2">Agent</th>
-                  <th className="py-2 px-2">Application</th>
-                  <th className="py-2 px-2 text-right">Status</th>
+                  <th className="py-2 px-2">{t('dashboard_col_applicant')}</th>
+                  <th className="py-2 px-2">{t('dashboard_col_agent')}</th>
+                  <th className="py-2 px-2">{t('dashboard_col_application')}</th>
+                  <th className="py-2 px-2 text-right">{t('col_status')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {recent.length === 0 ? (
                   <tr>
                     <td colSpan={4} className="py-8 text-center text-[#6B7280]">
-                      No applications yet.
+                      {t('dashboard_no_applications')}
                     </td>
                   </tr>
                 ) : (
@@ -253,12 +258,12 @@ const Dashboard = () => {
                           </span>
                         </div>
                       </td>
-                      <td className="py-2.5 px-2 text-[#6B7280]">{a.agency || 'Agency'}</td>
+                      <td className="py-2.5 px-2 text-[#6B7280]">{a.agency || t('dashboard_agency_fallback')}</td>
                       <td className="py-2.5 px-2 text-[#6B7280]">
                         {formatDate(a.created_at)}
                       </td>
                       <td className="py-2.5 px-2 text-right">
-                        <StatusBadge status={a.status}>{a.status}</StatusBadge>
+                        <StatusBadge status={a.status}>{t(`status_${a.status}`, a.status)}</StatusBadge>
                       </td>
                     </tr>
                   ))
@@ -271,11 +276,11 @@ const Dashboard = () => {
         <Card>
           <div className="mb-1">
             <h2 className="text-[16px] font-semibold text-[#111827]">
-              Recent Property Submissions
+              {t('dashboard_recent_submissions')}
             </h2>
-            <p className="text-[12px] text-[#6B7280]">Newest property submissions</p>
+            <p className="text-[12px] text-[#6B7280]">{t('dashboard_newest_submissions')}</p>
           </div>
-          <NoData label="No property submissions yet" />
+          <NoData label={t('dashboard_no_submissions')} />
         </Card>
       </div>
     </div>
