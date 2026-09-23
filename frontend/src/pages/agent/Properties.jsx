@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
   Search,
   MapPin,
@@ -26,11 +27,11 @@ import {
 } from '../../services/property.service';
 
 const STATUS_TABS = [
-  { key: 'all', label: 'All' },
-  { key: 'draft', label: 'Draft' },
-  { key: 'available', label: 'Available' },
-  { key: 'sold', label: 'Sold' },
-  { key: 'rented', label: 'Rented' },
+  { key: 'all', labelKey: 'properties_status_all' },
+  { key: 'draft', labelKey: 'properties_status_draft' },
+  { key: 'available', labelKey: 'properties_status_available' },
+  { key: 'sold', labelKey: 'properties_status_sold' },
+  { key: 'rented', labelKey: 'properties_status_rented' },
 ];
 
 const statusStyles = {
@@ -47,6 +48,7 @@ const Properties = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const { toastMessage, toastTone, showToast } = useToast();
+  const { t } = useTranslation('agents');
 
   const activeStatus = searchParams.get('status') || 'all';
   const q = searchParams.get('search') || '';
@@ -101,12 +103,12 @@ const Properties = () => {
         setLoadError('');
       } catch {
         if (isCancelled?.()) return;
-        setLoadError('Failed to load your properties. Please try again.');
+        setLoadError(t('properties_error_load'));
       } finally {
         if (!isCancelled?.()) setLoadedKey(fetchKey);
       }
     },
-    [fetchKey],
+    [fetchKey, t],
   );
 
   useEffect(() => {
@@ -150,11 +152,11 @@ const Properties = () => {
     setBusyId(property.id);
     try {
       await duplicateProperty(property.id);
-      showToast(`"${property.title}" duplicated as a draft`);
+      showToast(`"${property.title}" ${t('properties_duplicate_success')}`);
       setConfirmDeleteId(null);
       await refresh();
     } catch (err) {
-      showToast(err?.message || 'Failed to duplicate property.', { tone: 'error' });
+      showToast(err?.message || t('properties_duplicate_error'), { tone: 'error' });
     } finally {
       setBusyId(null);
     }
@@ -169,11 +171,11 @@ const Properties = () => {
     setBusyId(property.id);
     try {
       await deleteProperty(property.id);
-      showToast('Property deleted successfully.');
+      showToast(t('properties_delete_success'));
       setConfirmDeleteId(null);
       await refresh();
     } catch (err) {
-      showToast(err?.message || 'Failed to delete property.', { tone: 'error' });
+      showToast(err?.message || t('properties_delete_error'), { tone: 'error' });
     } finally {
       setBusyId(null);
     }
@@ -209,15 +211,15 @@ const Properties = () => {
               type="search"
               value={localSearch}
               onChange={(e) => setLocalSearch(e.target.value)}
-              placeholder="Search by title, city or address..."
-              aria-label="Search properties"
+               placeholder={t('properties_search')}
+              aria-label={t('properties_search_aria')}
               className="w-full ml-2 bg-transparent text-[13px] outline-none"
             />
             {q && (
               <button
                 type="button"
                 onClick={() => updateQuery({ search: '', page: 1 })}
-                aria-label="Clear search"
+                aria-label={t('properties_clear_search')}
                 className="text-slate-400 hover:text-slate-600 cursor-pointer"
               >
                 <X size={14} />
@@ -227,9 +229,9 @@ const Properties = () => {
           <button
             type="submit"
             className="ml-2 h-10 px-4 rounded-lg bg-[#4A9FF5] text-white text-[13px] font-semibold hover:bg-[#3d8be0] transition cursor-pointer"
-          >
-            Search
-          </button>
+             >
+                {t('properties_search_action')}
+              </button>
         </form>
 
         <button
@@ -237,10 +239,10 @@ const Properties = () => {
           onClick={handleAddPropertyClick}
           className="inline-flex items-center justify-center gap-1.5 h-10 px-4 rounded-lg bg-[#142238] text-white text-[13px] font-semibold hover:bg-[#1d3357] transition cursor-pointer"
         >
-          <Plus size={16} />
-          Add Property
-        </button>
-      </div>
+           <Plus size={16} />
+              {t('properties_add')}
+            </button>
+        </div>
 
       {/* Status tabs */}
       <div className="flex items-center gap-1.5 overflow-x-auto">
@@ -258,7 +260,7 @@ const Properties = () => {
                   : 'bg-white text-slate-600 border border-slate-200 hover:border-slate-300'
               }`}
             >
-              {tab.label}
+              {t(tab.labelKey)}
             </button>
           );
         })}
@@ -295,13 +297,13 @@ const Properties = () => {
           <div className="w-14 h-14 rounded-full bg-slate-100 flex items-center justify-center mb-4">
             <Building2 size={26} className="text-slate-400" />
           </div>
-          <h3 className="text-[15px] font-bold text-[#101820]">
-            {q || activeStatus !== 'all' ? 'No matching properties' : 'No properties yet'}
-          </h3>
+           <h3 className="text-[15px] font-bold text-[#101820]">
+              {q || activeStatus !== 'all' ? t('properties_no_results') : t('properties_empty')}
+            </h3>
           <p className="text-xs text-slate-500 mt-1 max-w-sm">
-            {q || activeStatus !== 'all'
-              ? 'Try a different search or status filter.'
-              : 'Add your first listing to start receiving buyer inquiries.'}
+             {q || activeStatus !== 'all'
+               ? t('properties_no_results_hint')
+               : t('properties_empty_add')}
           </p>
           {!q && activeStatus === 'all' && (
             <button
@@ -310,7 +312,7 @@ const Properties = () => {
               className="mt-4 inline-flex items-center gap-1.5 h-10 px-4 rounded-lg bg-[#4A9FF5] text-white text-[13px] font-semibold hover:bg-[#3d8be0] transition cursor-pointer"
             >
               <Plus size={16} />
-              Add Property
+              {t('properties_add')}
             </button>
           )}
         </div>
@@ -323,13 +325,13 @@ const Properties = () => {
             <table className="w-full text-[13px] min-w-[760px]">
               <thead>
                 <tr className="bg-slate-50 text-left text-[11px] uppercase tracking-wider text-slate-500">
-                  <th className="px-4 py-3 font-semibold">Property</th>
-                  <th className="px-4 py-3 font-semibold">Location</th>
-                  <th className="px-4 py-3 font-semibold">Price</th>
-                  <th className="px-4 py-3 font-semibold">Status</th>
-                  <th className="px-4 py-3 font-semibold text-center">Views</th>
-                  <th className="px-4 py-3 font-semibold text-center">Leads</th>
-                  <th className="px-4 py-3 font-semibold text-right">Actions</th>
+                   <th className="px-4 py-3 font-semibold">{t('properties_col_property')}</th>
+                  <th className="px-4 py-3 font-semibold">{t('properties_col_location')}</th>
+                  <th className="px-4 py-3 font-semibold">{t('properties_col_price')}</th>
+                  <th className="px-4 py-3 font-semibold">{t('properties_col_status')}</th>
+                  <th className="px-4 py-3 font-semibold text-center">{t('properties_col_views')}</th>
+                  <th className="px-4 py-3 font-semibold text-center">{t('properties_col_leads')}</th>
+                  <th className="px-4 py-3 font-semibold text-right">{t('properties_col_actions')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
@@ -359,7 +361,7 @@ const Properties = () => {
                             {property.title}
                           </button>
                           <p className="text-[11px] text-slate-400 mt-0.5 capitalize">
-                            {property.listingType === 'sale' ? 'For Sale' : 'For Rent'}
+                             {property.listingType === 'sale' ? t('properties_for_sale') : t('properties_for_rent')}
                             {property.bedrooms ? ` · ${property.bedrooms} bd` : ''}
                             {property.bathrooms ? ` · ${property.bathrooms} ba` : ''}
                             {property.area ? ` · ${property.area} m²` : ''}
@@ -382,7 +384,7 @@ const Properties = () => {
                       <span
                         className={`inline-flex px-2.5 py-1 rounded-full text-[11px] font-semibold capitalize border ${statusStyles[property.status] || statusStyles.draft}`}
                       >
-                        {property.status}
+                        {t(`properties_status_${property.status}`, property.status)}
                       </span>
                     </td>
                     <td className="px-4 py-3 text-center">
@@ -402,7 +404,7 @@ const Properties = () => {
                         <button
                           type="button"
                           onClick={() => handleEdit(property.id)}
-                          title="Edit"
+                           title={t('properties_edit')}
                           className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-[#4A9FF5] hover:bg-[#4A9FF5]/10 transition cursor-pointer"
                         >
                           <Pencil size={15} />
@@ -411,7 +413,7 @@ const Properties = () => {
                           type="button"
                           onClick={() => handleDuplicate(property)}
                           disabled={busyId === property.id}
-                          title="Duplicate as draft"
+                           title={t('properties_duplicate')}
                           className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-indigo-500 hover:bg-indigo-50 transition cursor-pointer disabled:opacity-50"
                         >
                           {busyId === property.id ? (
@@ -424,7 +426,7 @@ const Properties = () => {
                           type="button"
                           onClick={() => handleDelete(property)}
                           disabled={busyId === property.id}
-                          title={confirmDeleteId === property.id ? 'Click again to confirm delete' : 'Delete'}
+                           title={confirmDeleteId === property.id ? t('properties_delete_confirm') : t('properties_delete')}
                           className={`w-8 h-8 rounded-lg flex items-center justify-center transition cursor-pointer disabled:opacity-50 ${
                             confirmDeleteId === property.id
                               ? 'bg-[#D96B67] text-white'
@@ -447,16 +449,16 @@ const Properties = () => {
       {confirmDeleteId && (
         <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-rose-50 border border-rose-200 text-xs text-rose-700">
           <AlertTriangle size={15} className="shrink-0" />
-          <span className="flex-1">
-            Press the red trash icon again to permanently delete this listing. This cannot be undone.
-          </span>
-          <button
+            <span className="flex-1">
+              {t('properties_delete_hint')}
+            </span>
+            <button
             type="button"
             onClick={() => setConfirmDeleteId(null)}
             className="px-3 py-1.5 rounded-lg border border-rose-200 bg-white text-rose-700 font-semibold hover:bg-rose-100 transition cursor-pointer"
-          >
-            Cancel
-          </button>
+            >
+              {t('properties_delete_cancel')}
+            </button>
         </div>
       )}
 
@@ -474,7 +476,7 @@ const Properties = () => {
               onClick={() => updateQuery({ page: page - 1 })}
               className="px-3.5 h-9 rounded-lg bg-white border border-slate-200 text-[13px] font-semibold text-slate-600 hover:border-slate-300 disabled:opacity-40 transition cursor-pointer"
             >
-              Previous
+              {t('properties_pagination_prev')}
             </button>
             <button
               type="button"
@@ -482,7 +484,7 @@ const Properties = () => {
               onClick={() => updateQuery({ page: page + 1 })}
               className="px-3.5 h-9 rounded-lg bg-white border border-slate-200 text-[13px] font-semibold text-slate-600 hover:border-slate-300 disabled:opacity-40 transition cursor-pointer"
             >
-              Next
+              {t('properties_pagination_next')}
             </button>
           </div>
         </div>
@@ -491,12 +493,10 @@ const Properties = () => {
       {/* Tips footer */}
       {!loading && !loadError && properties.length > 0 && (
         <div className="flex items-start gap-2.5 px-4 py-3.5 rounded-xl bg-sky-50 border border-sky-100 text-xs text-sky-800">
-          <Landmark size={15} className="shrink-0 mt-0.5" />
-          <p>
-            <span className="font-bold">Submission Note:</span> Listings are published immediately —
-            no administrator approval is required. Use <span className="font-medium">Save as Draft</span>{' '}
-            to keep a listing private, then press <span className="font-medium">Publish</span> when ready.
-          </p>
+             <Landmark size={15} className="shrink-0 mt-0.5" />
+            <p>
+              <span className="font-bold">{t('properties_note')}</span> {t('properties_note_text')}
+            </p>
         </div>
       )}
 
