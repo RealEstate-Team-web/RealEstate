@@ -23,5 +23,7 @@
   "pricing_eyebrow": "Pricing",
   "pricing_title": "Subscription Plans",
   "pricing_subtitle": "Choose the plan that fits your needs and start publishing your properties to thousands of buyers.",
-  "pricing_cta": "Get Started"
+  "pricing_cta": "Get Started",
+  "pricing_cta_checkout_starting": "Starting Checkout...",
+  "pricing_checkout_error": "We couldn't start the checkout. Please try again."
 }

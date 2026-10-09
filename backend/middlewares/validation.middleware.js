@@ -328,6 +328,18 @@ const validateSubscriptionPlanStatus = (req, res, next) => {
   next();
 };
 
+const validateCheckout = (req, res, next) => {
+  const errors = [];
+  const { planId } = req.body || {};
+
+  if (!isValidPositiveBigInt(planId)) {
+    errors.push("planId is required and must be a valid positive integer");
+  }
+
+  if (errors.length > 0) return next(validationError(errors));
+  next();
+};
+
 const validateLogin = (req, res, next) => {
   const errors = [];
   const { email, password } = req.body || {};
@@ -939,6 +951,7 @@ module.exports = {
   validateCreateSubscriptionPlan,
   validateUpdateSubscriptionPlan,
   validateSubscriptionPlanStatus,
+  validateCheckout,
   validateForgotPassword,
   validateResetPassword,
   validateUpdateProfile,

@@ -33,7 +33,13 @@ app.use(
   }),
 );
 
-app.use(express.json());
+app.use(
+  express.json({
+    verify: (req, res, buf) => {
+      if (buf && buf.length) req.rawBody = buf;
+    },
+  }),
+);
 app.use(express.urlencoded({ extended: true }));
 
 app.use(morgan(process.env.NODE_ENV === "production" ? "combined" : "dev"));

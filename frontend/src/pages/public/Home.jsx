@@ -9,6 +9,8 @@ import { useTranslation } from "react-i18next";
 import { ROUTES } from "../../utils/constants";
 import { getLanding } from "../../services/property.service";
 import { getPublicAgents } from "../../services/agent.service";
+import { checkout } from "../../services/subscription.service";
+import { useAuth } from "../../hooks/useAuth";
 import PropertyCard from "../../components/property/PropertyCard";
 import AgentCard from "../../components/agent/AgentCard";
 import AgentCardSkeleton from "../../components/agent/AgentCardSkeleton";
@@ -18,6 +20,7 @@ import SubscriptionPlans from "../../components/subscription/SubscriptionPlans";
 
 const Home = () => {
   const { t } = useTranslation("landing");
+  const { user, isAuthenticated } = useAuth();
   const [properties, setProperties] = useState([]);
   const [propertiesLoading, setPropertiesLoading] = useState(true);
   const [propertiesError, setPropertiesError] = useState("");
@@ -27,11 +30,30 @@ const Home = () => {
   const [location, setLocation] = useState("");
   const [type, setType] = useState("");
   const [price, setPrice] = useState("");
+  const [pricingLoading, setPricingLoading] = useState(false);
+  const [pricingError, setPricingError] = useState("");
 
   const navigate = useNavigate();
 
-  const handlePlanSelect = () => {
-    navigate(ROUTES.registerAgent);
+  const handlePlanSelect = async (plan) => {
+    if (!isAuthenticated || user?.role !== "agent") {
+      navigate(ROUTES.registerAgent);
+      return;
+    }
+    if (pricingLoading) return;
+    setPricingLoading(true);
+    setPricingError("");
+    try {
+      const data = await checkout(plan.id);
+      window.location.href = data.checkoutUrl;
+    } catch (error) {
+      if (error.status === 409) {
+        navigate(ROUTES.agentSubscription);
+        return;
+      }
+      setPricingError(error.message || t("pricing_checkout_error"));
+      setPricingLoading(false);
+    }
   };
 
  useEffect(() => {
@@ -325,7 +347,23 @@ const Home = () => {
             {t("pricing_subtitle")}
           </p>
 
-          <SubscriptionPlans ctaLabel={t("pricing_cta")} onCta={handlePlanSelect} />
+          {pricingError ? (
+            <div
+              role="alert"
+              className="mb-6 max-w-2xl rounded-md bg-red-50 px-4 py-3 text-[13px] text-red-700"
+            >
+              {pricingError}
+            </div>
+          ) : null}
+
+          <SubscriptionPlans
+            ctaLabel={
+              pricingLoading ? t("pricing_cta_checkout_starting") : t("pricing_cta")
+            }
+            onCta={handlePlanSelect}
+            ctaDisabled={pricingLoading}
+            ctaTitle={t("pricing_cta_checkout_starting")}
+          />
 
         </div>
       </section>

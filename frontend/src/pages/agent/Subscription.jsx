@@ -1,9 +1,27 @@
-import { CreditCard } from 'lucide-react';
+import { useState } from 'react';
+import { CreditCard, Loader2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import SubscriptionPlans from '../../components/subscription/SubscriptionPlans';
+import { checkout } from '../../services/subscription.service';
 
 const AgentSubscription = () => {
   const { t } = useTranslation('agents');
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const [checkoutError, setCheckoutError] = useState(null);
+
+  const handleChoose = async (plan) => {
+    if (checkoutLoading) return;
+    setCheckoutLoading(true);
+    setCheckoutError(null);
+    try {
+      const data = await checkout(plan.id);
+      window.location.href = data.checkoutUrl;
+    } catch (error) {
+      setCheckoutError(error.message || t('subscription_checkout_error'));
+      setCheckoutLoading(false);
+    }
+  };
+
   return (
     <div className="space-y-6 font-sans">
       <div className="flex items-start gap-4 flex-wrap">
@@ -35,11 +53,30 @@ const AgentSubscription = () => {
         {t('subscription_payment_note')}
       </div>
 
+      {checkoutError ? (
+        <div
+          role="alert"
+          className="rounded-md bg-red-50 text-red-700 text-[13px] px-4 py-3"
+        >
+          {checkoutError}
+        </div>
+      ) : null}
+
       <SubscriptionPlans
-        ctaLabel={t('subscription_coming_soon')}
-        ctaDisabled
-        ctaTitle={t('subscription_coming_soon_title')}
+        ctaLabel={
+          checkoutLoading ? t('subscription_checkout_starting') : t('subscription_choose_cta')
+        }
+        onCta={handleChoose}
+        ctaDisabled={checkoutLoading}
+        ctaTitle={t('subscription_checkout_starting')}
       />
+
+      {checkoutLoading ? (
+        <div className="flex items-center gap-2 text-[13px] text-[#6B7280]">
+          <Loader2 size={16} className="animate-spin" />
+          {t('subscription_checkout_redirect')}
+        </div>
+      ) : null}
     </div>
   );
 };
