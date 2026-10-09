@@ -48,7 +48,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(morgan(process.env.NODE_ENV === "production" ? "combined" : "dev"));
 
-app.use("/api", apiRoutes);
+app.use("/", apiRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
