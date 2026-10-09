@@ -100,71 +100,71 @@ const Settings = () => {
         <div className="flex items-center gap-2.5">
           <span
             aria-hidden="true"
-            className="w-10 h-10 rounded-xl bg-[#E7F0FB] text-[#4A9FF5] flex items-center justify-center shrink-0"
+            className="w-10 h-10 rounded-xl bg-[#E7F0FB] text-[#4A9FF5] flex items-center justify-center shrink-0 dark:bg-blue-500/10 dark:text-blue-300"
           >
             <SettingsIcon size={20} />
           </span>
-          <h1 className="text-[24px] font-bold text-[#111827] tracking-tight">{t('settings_account_settings')}</h1>
+          <h1 className="text-[24px] font-bold text-[#111827] tracking-tight dark:text-white">{t('settings_account_settings')}</h1>
         </div>
-        <p className="text-[13px] text-[#6B7280] mt-1">
+        <p className="text-[13px] text-[#6B7280] mt-1 dark:text-slate-400">
           {t('settings_subtitle')}
         </p>
       </div>
 
       {/* Security & Password */}
-      <div className="bg-white border border-[#E5E7EB] rounded-2xl divide-y divide-slate-100 shadow-[0_2px_8px_rgba(15,23,42,0.06)]">
+      <div className="bg-white border border-[#E5E7EB] rounded-2xl divide-y divide-slate-100 shadow-[0_2px_8px_rgba(15,23,42,0.06)] dark:bg-[#111827] dark:border-slate-800 dark:divide-slate-800">
         <div className="p-6 space-y-4">
           <div className="flex items-center space-x-3 mb-2">
-            <div className="w-9 h-9 bg-[#E6F4EC] text-[#1D6FD3] rounded-xl flex items-center justify-center">
+            <div className="w-9 h-9 bg-[#E6F4EC] text-[#1D6FD3] rounded-xl flex items-center justify-center dark:bg-emerald-500/10 dark:text-emerald-300">
               <Lock size={20} />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-slate-900">{t('settings_security_heading')}</h3>
-              <p className="text-xs text-slate-500">{t('settings_security_body')}</p>
+              <h3 className="text-sm font-bold text-slate-900 dark:text-white">{t('settings_security_heading')}</h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400">{t('settings_security_body')}</p>
             </div>
           </div>
 
           {passwordError && (
-            <div className="flex items-center gap-2 bg-rose-50 border border-rose-200 text-rose-700 text-[13px] px-4 py-2.5 rounded-xl">
+            <div className="flex items-center gap-2 bg-rose-50 border border-rose-200 text-rose-700 text-[13px] px-4 py-2.5 rounded-xl dark:bg-rose-500/10 dark:border-rose-500/30 dark:text-rose-300">
               <AlertCircle size={16} /> {passwordError}
             </div>
           )}
           {passwordSuccess && (
-            <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-200 text-emerald-700 text-[13px] px-4 py-2.5 rounded-xl">
+            <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-200 text-emerald-700 text-[13px] px-4 py-2.5 rounded-xl dark:bg-emerald-500/10 dark:border-emerald-500/30 dark:text-emerald-300">
               <CheckCircle size={16} /> {passwordSuccess}
             </div>
           )}
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
             <div>
-              <label className="block text-xs font-semibold text-slate-600 uppercase mb-1">{t('settings_current_password')}</label>
+              <label className="block text-xs font-semibold text-slate-600 uppercase mb-1 dark:text-slate-300">{t('settings_current_password')}</label>
               <input
                 type="password"
                 value={currentPassword}
                 onChange={(e) => { setCurrentPassword(e.target.value); setPasswordError(null); setPasswordSuccess(null); }}
                 placeholder="••••••••"
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3.5 text-xs text-slate-800 focus:outline-none focus:border-[#4A9FF5] font-medium transition"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3.5 text-xs text-slate-800 focus:outline-none focus:border-[#4A9FF5] font-medium transition dark:bg-[#1E293B] dark:border-slate-700 dark:text-white"
               />
             </div>
             <div />
             <div>
-              <label className="block text-xs font-semibold text-slate-600 uppercase mb-1">{t('settings_new_password')}</label>
+              <label className="block text-xs font-semibold text-slate-600 uppercase mb-1 dark:text-slate-300">{t('settings_new_password')}</label>
               <input
                 type="password"
                 value={newPassword}
                 onChange={(e) => { setNewPassword(e.target.value); setPasswordError(null); setPasswordSuccess(null); }}
                 placeholder="••••••••"
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3.5 text-xs text-slate-800 focus:outline-none focus:border-[#4A9FF5] font-medium transition"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3.5 text-xs text-slate-800 focus:outline-none focus:border-[#4A9FF5] font-medium transition dark:bg-[#1E293B] dark:border-slate-700 dark:text-white"
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-slate-600 uppercase mb-1">{t('settings_confirm_password')}</label>
+              <label className="block text-xs font-semibold text-slate-600 uppercase mb-1 dark:text-slate-300">{t('settings_confirm_password')}</label>
               <input
                 type="password"
                 value={confirmPassword}
                 onChange={(e) => { setConfirmPassword(e.target.value); setPasswordError(null); setPasswordSuccess(null); }}
                 placeholder="••••••••"
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3.5 text-xs text-slate-800 focus:outline-none focus:border-[#4A9FF5] font-medium transition"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3.5 text-xs text-slate-800 focus:outline-none focus:border-[#4A9FF5] font-medium transition dark:bg-[#1E293B] dark:border-slate-700 dark:text-white"
               />
             </div>
           </div>
@@ -184,20 +184,20 @@ const Settings = () => {
         {/* Notification Preferences */}
         <div className="p-6 space-y-4">
           <div className="flex items-center space-x-3 mb-2">
-            <div className="w-9 h-9 bg-[#F5F0EB] text-[#E7B85A] rounded-xl flex items-center justify-center">
+            <div className="w-9 h-9 bg-[#F5F0EB] text-[#E7B85A] rounded-xl flex items-center justify-center dark:bg-amber-500/10 dark:text-amber-300">
               <Bell size={20} />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-slate-900">{t('settings_notif_heading')}</h3>
-              <p className="text-xs text-slate-500">{t('settings_notif_body')}</p>
+              <h3 className="text-sm font-bold text-slate-900 dark:text-white">{t('settings_notif_heading')}</h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400">{t('settings_notif_body')}</p>
             </div>
           </div>
 
           <div className="space-y-3 pt-2">
-            <label className="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-200/60 cursor-pointer hover:bg-slate-100/50 transition">
+            <label className="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-200/60 cursor-pointer hover:bg-slate-100/50 transition dark:bg-slate-800/60 dark:border-slate-700 dark:hover:bg-slate-800">
               <div>
-                <p className="text-xs font-bold text-slate-800">{t('settings_email_notif')}</p>
-                <p className="text-[11px] text-slate-500">{t('settings_email_notif_body')}</p>
+                <p className="text-xs font-bold text-slate-800 dark:text-slate-100">{t('settings_email_notif')}</p>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">{t('settings_email_notif_body')}</p>
               </div>
               <input
                 type="checkbox"
@@ -207,10 +207,10 @@ const Settings = () => {
               />
             </label>
 
-            <label className="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-200/60 cursor-pointer hover:bg-slate-100/50 transition">
+            <label className="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-200/60 cursor-pointer hover:bg-slate-100/50 transition dark:bg-slate-800/60 dark:border-slate-700 dark:hover:bg-slate-800">
               <div>
-                <p className="text-xs font-bold text-slate-800">{t('settings_sms_alerts')}</p>
-                <p className="text-[11px] text-slate-500">{t('settings_sms_alerts_body')}</p>
+                <p className="text-xs font-bold text-slate-800 dark:text-slate-100">{t('settings_sms_alerts')}</p>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">{t('settings_sms_alerts_body')}</p>
               </div>
               <input
                 type="checkbox"
@@ -220,10 +220,10 @@ const Settings = () => {
               />
             </label>
 
-            <label className="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-200/60 cursor-pointer hover:bg-slate-100/50 transition">
+            <label className="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-200/60 cursor-pointer hover:bg-slate-100/50 transition dark:bg-slate-800/60 dark:border-slate-700 dark:hover:bg-slate-800">
               <div>
-                <p className="text-xs font-bold text-slate-800">{t('settings_agent_alerts')}</p>
-                <p className="text-[11px] text-slate-500">{t('settings_agent_alerts_body')}</p>
+                <p className="text-xs font-bold text-slate-800 dark:text-slate-100">{t('settings_agent_alerts')}</p>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">{t('settings_agent_alerts_body')}</p>
               </div>
               <input
                 type="checkbox"
@@ -236,8 +236,8 @@ const Settings = () => {
         </div>
 
         {/* Footer */}
-        <div className="p-6 bg-slate-50/50 flex items-center justify-between rounded-b-2xl">
-          <div className="flex items-center space-x-2 text-xs text-emerald-700 font-semibold">
+        <div className="p-6 bg-slate-50/50 flex items-center justify-between rounded-b-2xl dark:bg-slate-800/40">
+          <div className="flex items-center space-x-2 text-xs text-emerald-700 font-semibold dark:text-emerald-300">
             {storageStatus === 'saved' ? (
               <>
                 <CheckCircle size={16} />

@@ -27,16 +27,16 @@ const formatDate = (iso) => {
 
 const Card = ({ title, children, className = '' }) => (
   <div
-    className={`bg-white border border-[#E5E7EB] rounded-lg shadow-[0_2px_8px_rgba(15,23,42,0.06)] p-4 ${className}`}
+    className={`bg-white border border-[#E5E7EB] rounded-lg shadow-[0_2px_8px_rgba(15,23,42,0.06)] p-4 ${className} dark:bg-[#111827] dark:border-slate-800`}
   >
-    {title && <h2 className="text-[16px] font-semibold text-[#111827] mb-3">{title}</h2>}
+    {title && <h2 className="text-[16px] font-semibold text-[#111827] mb-3 dark:text-white">{title}</h2>}
     {children}
   </div>
 );
 
 const NoData = ({ label = 'No data yet' }) => (
   <div className="flex-1 flex items-center justify-center py-10">
-    <p className="text-[13px] text-[#9CA3AF]">{label}</p>
+    <p className="text-[13px] text-[#9CA3AF] dark:text-slate-500">{label}</p>
   </div>
 );
 
@@ -64,66 +64,66 @@ const Dashboard = () => {
   }, [t]);
 
   if (loading) {
-    return <div className="py-20 text-center text-[#6B7280]">{t('dashboard_loading')}</div>;
+    return <div className="py-20 text-center text-[#6B7280] dark:text-slate-400">{t('dashboard_loading')}</div>;
   }
   if (error) {
-    return <div className="py-20 text-center text-[#D96B67]">{error}</div>;
+    return <div className="py-20 text-center text-[#D96B67] dark:text-rose-300">{error}</div>;
   }
 
   const kpis = [
     {
       title: t('kpi_total_users'),
       value: stats.totalUsers,
-      indicator: <span className="text-[#4FAF83]">{t('kpi_live')}</span>,
+      indicator: <span className="text-[#4FAF83] dark:text-emerald-300">{t('kpi_live')}</span>,
       icon: Users,
-      iconBg: 'bg-[#E7F0FB] text-[#4A9FF5]',
+      iconBg: 'bg-[#E7F0FB] text-[#4A9FF5] dark:bg-blue-500/10 dark:text-blue-300',
     },
     {
       title: t('kpi_total_agents'),
       value: stats.totalAgents,
-      indicator: <span className="text-[#4FAF83]">{t('kpi_live')}</span>,
+      indicator: <span className="text-[#4FAF83] dark:text-emerald-300">{t('kpi_live')}</span>,
       icon: UserCheck,
-      iconBg: 'bg-[#E7F0FB] text-[#4A9FF5]',
+      iconBg: 'bg-[#E7F0FB] text-[#4A9FF5] dark:bg-blue-500/10 dark:text-blue-300',
     },
     {
       title: t('kpi_pending_agents'),
       value: stats.pendingAgents,
       indicator: (
-        <span className="text-[#D96B67] font-semibold">
+        <span className="text-[#D96B67] font-semibold dark:text-rose-300">
           {t('dashboard_count_pending', { count: stats.pendingAgents })}
         </span>
       ),
       icon: Clock,
-      iconBg: 'bg-[#FBF3DD] text-[#E7B85A]',
+      iconBg: 'bg-[#FBF3DD] text-[#E7B85A] dark:bg-amber-500/10 dark:text-amber-300',
     },
     {
       title: t('kpi_total_properties'),
       value: stats.totalProperties ?? '—',
-      indicator: <span className="text-[#4FAF83]">{t('kpi_live')}</span>,
+      indicator: <span className="text-[#4FAF83] dark:text-emerald-300">{t('kpi_live')}</span>,
       icon: Building2,
-      iconBg: 'bg-[#FBF3DD] text-[#E7B85A]',
+      iconBg: 'bg-[#FBF3DD] text-[#E7B85A] dark:bg-amber-500/10 dark:text-amber-300',
     },
     {
       title: t('kpi_draft_properties'),
       value: stats.propertiesByStatus?.draft ?? '—',
       indicator: (
-        <span className="text-[#9CA3AF]">
+        <span className="text-[#9CA3AF] dark:text-slate-500">
           {t('dashboard_draft', { count: stats.propertiesByStatus?.draft ?? 0 })}
         </span>
       ),
       icon: Building,
-      iconBg: 'bg-[#FBEAE9] text-[#D96B67]',
+      iconBg: 'bg-[#FBEAE9] text-[#D96B67] dark:bg-rose-500/10 dark:text-rose-300',
     },
     {
       title: t('kpi_scheduled_visits'),
       value: stats.scheduledVisits ?? '—',
       indicator: (
-        <span className="text-[#9CA3AF]">
+        <span className="text-[#9CA3AF] dark:text-slate-500">
           {t('dashboard_count_scheduled', { count: stats.scheduledVisits ?? 0 })}
         </span>
       ),
       icon: CalendarCheck,
-      iconBg: 'bg-slate-100 text-slate-500',
+      iconBg: 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400',
     },
   ];
 
@@ -142,14 +142,14 @@ const Dashboard = () => {
             {t('dashboard_overview')}
           </p>
           <div className="flex items-center gap-2.5">
-            <span aria-hidden="true" className="w-10 h-10 rounded-xl bg-[#E7F0FB] text-[#4A9FF5] flex items-center justify-center shrink-0">
+            <span aria-hidden="true" className="w-10 h-10 rounded-xl bg-[#E7F0FB] text-[#4A9FF5] flex items-center justify-center shrink-0 dark:bg-blue-500/10 dark:text-blue-300">
               <LayoutDashboard size={20} />
             </span>
-            <h1 className="text-[24px] font-bold text-[#111827] tracking-tight">
+            <h1 className="text-[24px] font-bold text-[#111827] tracking-tight dark:text-white">
               {t('dashboard_title')}
             </h1>
           </div>
-          <p className="text-[13px] text-[#6B7280] mt-1">
+          <p className="text-[13px] text-[#6B7280] mt-1 dark:text-slate-400">
             {t('dashboard_subtitle')}
           </p>
         </div>
@@ -176,7 +176,7 @@ const Dashboard = () => {
           {recent.length === 0 ? (
             <NoData label={t('dashboard_no_registrations')} />
           ) : (
-            <div className="divide-y divide-slate-100">
+            <div className="divide-y divide-slate-100 dark:divide-slate-800">
               {recent.map((r) => (
                 <div key={r.id} className="flex items-center justify-between py-2.5">
                   <div className="flex items-center space-x-3 min-w-0">
@@ -186,15 +186,15 @@ const Dashboard = () => {
                       alt={`${r.first_name} ${r.last_name}`}
                     />
                     <div className="min-w-0">
-                      <p className="text-[13px] font-semibold text-[#111827] truncate">
+                      <p className="text-[13px] font-semibold text-[#111827] truncate dark:text-white">
                         {r.first_name} {r.last_name}
                       </p>
-                      <p className="text-[11px] text-[#6B7280] truncate">
+                      <p className="text-[11px] text-[#6B7280] truncate dark:text-slate-400">
                         {r.agency || t('dashboard_agency_fallback')}
                       </p>
                     </div>
                   </div>
-                  <span className="text-[11px] text-[#6B7280] shrink-0">
+                  <span className="text-[11px] text-[#6B7280] shrink-0 dark:text-slate-400">
                     {formatDate(r.created_at)}
                   </span>
                 </div>
@@ -221,31 +221,31 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-5">
         <Card>
           <div className="mb-1">
-            <h2 className="text-[16px] font-semibold text-[#111827]">
+            <h2 className="text-[16px] font-semibold text-[#111827] dark:text-white">
               {t('dashboard_recent_applications')}
             </h2>
-            <p className="text-[12px] text-[#6B7280]">{t('dashboard_latest_signups')}</p>
+            <p className="text-[12px] text-[#6B7280] dark:text-slate-400">{t('dashboard_latest_signups')}</p>
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-[12px] text-[#111827] mt-2">
+            <table className="w-full text-left text-[12px] text-[#111827] mt-2 dark:text-white">
               <thead className="text-[#9CA3AF] font-semibold uppercase text-[10px] tracking-wider">
-                <tr className="border-b border-slate-100">
+                <tr className="border-b border-slate-100 dark:border-slate-800">
                   <th className="py-2 px-2">{t('dashboard_col_applicant')}</th>
                   <th className="py-2 px-2">{t('dashboard_col_agent')}</th>
                   <th className="py-2 px-2">{t('dashboard_col_application')}</th>
                   <th className="py-2 px-2 text-right">{t('col_status')}</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                 {recent.length === 0 ? (
                   <tr>
-                    <td colSpan={4} className="py-8 text-center text-[#6B7280]">
+                    <td colSpan={4} className="py-8 text-center text-[#6B7280] dark:text-slate-400">
                       {t('dashboard_no_applications')}
                     </td>
                   </tr>
                 ) : (
                   recent.map((a) => (
-                    <tr key={a.id} className="hover:bg-slate-50 transition">
+                    <tr key={a.id} className="hover:bg-slate-50 transition dark:hover:bg-slate-800/60">
                       <td className="py-2.5 px-2">
                         <div className="flex items-center space-x-2.5">
                           <Avatar
@@ -258,8 +258,8 @@ const Dashboard = () => {
                           </span>
                         </div>
                       </td>
-                      <td className="py-2.5 px-2 text-[#6B7280]">{a.agency || t('dashboard_agency_fallback')}</td>
-                      <td className="py-2.5 px-2 text-[#6B7280]">
+                      <td className="py-2.5 px-2 text-[#6B7280] dark:text-slate-400">{a.agency || t('dashboard_agency_fallback')}</td>
+                      <td className="py-2.5 px-2 text-[#6B7280] dark:text-slate-400">
                         {formatDate(a.created_at)}
                       </td>
                       <td className="py-2.5 px-2 text-right">
@@ -275,10 +275,10 @@ const Dashboard = () => {
 
         <Card>
           <div className="mb-1">
-            <h2 className="text-[16px] font-semibold text-[#111827]">
+            <h2 className="text-[16px] font-semibold text-[#111827] dark:text-white">
               {t('dashboard_recent_submissions')}
             </h2>
-            <p className="text-[12px] text-[#6B7280]">{t('dashboard_newest_submissions')}</p>
+            <p className="text-[12px] text-[#6B7280] dark:text-slate-400">{t('dashboard_newest_submissions')}</p>
           </div>
           <NoData label={t('dashboard_no_submissions')} />
         </Card>

@@ -127,7 +127,7 @@ const MapPicker = ({ latitude, longitude, onChange }) => {
   };
 
   return (
-    <div className="rounded-xl overflow-hidden border border-[#D5DDE0]">
+    <div className="rounded-xl overflow-hidden border border-[#D5DDE0] dark:border-slate-700">
       <MapContainer
         center={[position[0], position[1]]}
         zoom={12}
@@ -155,7 +155,7 @@ const MapPicker = ({ latitude, longitude, onChange }) => {
           />
         )}
       </MapContainer>
-      <p className="text-xs text-slate-500 bg-white px-3 py-2 flex items-center space-x-1.5">
+      <p className="text-xs text-slate-500 bg-white px-3 py-2 flex items-center space-x-1.5 dark:text-slate-400 dark:bg-[#111827]">
         <MapPin size={13} className="text-[#4A9FF5]" />
         <span>{t('propertyform_map_hint')}</span>
       </p>
@@ -435,7 +435,7 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
         return (
           <div className="space-y-5">
             <div>
-              <label htmlFor="title" className="text-[13px] font-semibold text-[#101820]">
+              <label htmlFor="title" className="text-[13px] font-semibold text-[#101820] dark:text-white">
                 {t('propertyform_label_title')}
               </label>
               <input
@@ -443,14 +443,15 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
                 value={form.title}
                 onChange={(e) => setField('title', e.target.value)}
                 placeholder={t('propertyform_placeholder_title')}
-                className="mt-1.5 w-full rounded-lg border bg-white px-3.5 py-2.5 text-[13px] outline-none transition-colors focus:border-[#4A9FF5] focus:ring-2 focus:ring-[#4A9FF5]/20"
-                style={{ borderColor: errors.title ? '#E5484D' : '#D5DDE0' }}
+                className={`mt-1.5 w-full rounded-lg border bg-white px-3.5 py-2.5 text-[13px] outline-none transition-colors focus:border-[#4A9FF5] focus:ring-2 focus:ring-[#4A9FF5]/20 dark:bg-[#1E293B] dark:text-white dark:placeholder:text-slate-400 ${
+                  errors.title ? 'border-[#E5484D] dark:border-[#E5484D]' : 'border-[#D5DDE0] dark:border-slate-700'
+                }`}
               />
-              {errors.title && <p className="mt-1 text-xs text-[#E5484D]">{errors.title}</p>}
+              {errors.title && <p className="mt-1 text-xs text-[#E5484D] dark:text-rose-400">{errors.title}</p>}
             </div>
 
             <div>
-              <span className="text-[13px] font-semibold text-[#101820]">{t('propertyform_label_listing_type')}</span>
+              <span className="text-[13px] font-semibold text-[#101820] dark:text-white">{t('propertyform_label_listing_type')}</span>
               <div className="mt-1.5 grid grid-cols-2 gap-3">
                 {[
                   { value: 'sale', labelKey: 'propertyform_for_sale' },
@@ -462,30 +463,31 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
                     onClick={() => setField('listingType', option.value)}
                     className={`h-11 rounded-lg border text-[13px] font-semibold transition cursor-pointer ${
                       form.listingType === option.value
-                        ? 'border-[#4A9FF5] bg-[#4A9FF5]/10 text-[#1f6fd0]'
-                        : 'border-[#D5DDE0] bg-white text-slate-600 hover:border-slate-300'
+                        ? 'border-[#4A9FF5] bg-[#4A9FF5]/10 text-[#1f6fd0] dark:text-blue-300'
+                        : 'border-[#D5DDE0] bg-white text-slate-600 hover:border-slate-300 dark:border-slate-700 dark:bg-[#1E293B] dark:text-slate-300 dark:hover:border-slate-600'
                     }`}
                   >
                     {t(option.labelKey)}
                   </button>
                 ))}
               </div>
-              {errors.listingType && <p className="mt-1 text-xs text-[#E5484D]">{errors.listingType}</p>}
+              {errors.listingType && <p className="mt-1 text-xs text-[#E5484D] dark:text-rose-400">{errors.listingType}</p>}
             </div>
 
             <div>
-              <label htmlFor="categoryId" className="text-[13px] font-semibold text-[#101820]">
+              <label htmlFor="categoryId" className="text-[13px] font-semibold text-[#101820] dark:text-white">
                 {t('propertyform_label_category')}
               </label>
               {categoriesError ? (
-                <p className="mt-1.5 text-xs text-amber-600">{categoriesError}</p>
+                <p className="mt-1.5 text-xs text-amber-600 dark:text-amber-400">{categoriesError}</p>
               ) : (
                 <select
                   id="categoryId"
                   value={form.categoryId}
                   onChange={(e) => setField('categoryId', e.target.value)}
-                  className="mt-1.5 w-full rounded-lg border bg-white px-3 py-2.5 text-[13px] outline-none transition-colors focus:border-[#4A9FF5] focus:ring-2 focus:ring-[#4A9FF5]/20"
-                  style={{ borderColor: errors.categoryId ? '#E5484D' : '#D5DDE0' }}
+                  className={`mt-1.5 w-full rounded-lg border bg-white px-3 py-2.5 text-[13px] outline-none transition-colors focus:border-[#4A9FF5] focus:ring-2 focus:ring-[#4A9FF5]/20 dark:bg-[#1E293B] dark:text-white ${
+                    errors.categoryId ? 'border-[#E5484D] dark:border-[#E5484D]' : 'dark:border-slate-700'
+                  }`}
                 >
                   <option value="">{t('propertyform_placeholder_category')}</option>
                   {categories.map((category) => (
@@ -495,11 +497,11 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
                   ))}
                 </select>
               )}
-              {errors.categoryId && <p className="mt-1 text-xs text-[#E5484D]">{errors.categoryId}</p>}
+              {errors.categoryId && <p className="mt-1 text-xs text-[#E5484D] dark:text-rose-400">{errors.categoryId}</p>}
             </div>
 
             <div>
-              <label htmlFor="description" className="text-[13px] font-semibold text-[#101820]">
+              <label htmlFor="description" className="text-[13px] font-semibold text-[#101820] dark:text-white">
                 {t('propertyform_label_description')}
               </label>
               <textarea
@@ -508,10 +510,11 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
                 onChange={(e) => setField('description', e.target.value)}
                 rows={4}
                 placeholder={t('propertyform_placeholder_description')}
-                className="mt-1.5 w-full resize-y rounded-lg border bg-white px-3.5 py-2.5 text-[13px] outline-none transition-colors focus:border-[#4A9FF5] focus:ring-2 focus:ring-[#4A9FF5]/20"
-                style={{ borderColor: errors.description ? '#E5484D' : '#D5DDE0' }}
+                className={`mt-1.5 w-full resize-y rounded-lg border bg-white px-3.5 py-2.5 text-[13px] outline-none transition-colors focus:border-[#4A9FF5] focus:ring-2 focus:ring-[#4A9FF5]/20 dark:bg-[#1E293B] dark:text-white dark:placeholder:text-slate-400 ${
+                  errors.description ? 'border-[#E5484D] dark:border-[#E5484D]' : 'border-[#D5DDE0] dark:border-slate-700'
+                }`}
               />
-              {errors.description && <p className="mt-1 text-xs text-[#E5484D]">{errors.description}</p>}
+              {errors.description && <p className="mt-1 text-xs text-[#E5484D] dark:text-rose-400">{errors.description}</p>}
             </div>
           </div>
         );
@@ -520,7 +523,7 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
         return (
           <div className="space-y-5">
             <div>
-              <label htmlFor="price" className="text-[13px] font-semibold text-[#101820]">
+<label htmlFor="price" className="text-[13px] font-semibold text-[#101820] dark:text-white">
                 {t('propertyform_label_price')}
               </label>
               <input
@@ -530,15 +533,16 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
                 step="0.01"
                 value={form.price}
                 onChange={(e) => setField('price', e.target.value)}
-                placeholder={t('propertyform_placeholder_price')}
-                className="mt-1.5 w-full rounded-lg border bg-white px-3.5 py-2.5 text-[13px] outline-none transition-colors focus:border-[#4A9FF5] focus:ring-2 focus:ring-[#4A9FF5]/20"
-                style={{ borderColor: errors.price ? '#E5484D' : '#D5DDE0' }}
+placeholder={t('propertyform_placeholder_price')}
+                className={`mt-1.5 w-full rounded-lg border bg-white px-3.5 py-2.5 text-[13px] outline-none transition-colors focus:border-[#4A9FF5] focus:ring-2 focus:ring-[#4A9FF5]/20 dark:bg-[#1E293B] dark:text-white dark:placeholder:text-slate-400 ${
+                  errors.price ? 'border-[#E5484D] dark:border-[#E5484D]' : 'border-[#D5DDE0] dark:border-slate-700'
+                }`}
               />
-              {errors.price && <p className="mt-1 text-xs text-[#E5484D]">{errors.price}</p>}
+              {errors.price && <p className="mt-1 text-xs text-[#E5484D] dark:text-rose-400">{errors.price}</p>}
             </div>
 
             <div>
-              <label htmlFor="area" className="text-[13px] font-semibold text-[#101820]">
+<label htmlFor="area" className="text-[13px] font-semibold text-[#101820] dark:text-white">
                 {t('propertyform_label_area')}
               </label>
               <input
@@ -548,14 +552,15 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
                 step="0.01"
                 value={form.area}
                 onChange={(e) => setField('area', e.target.value)}
-                placeholder={t('propertyform_placeholder_area')}
-                className="mt-1.5 w-full rounded-lg border bg-white px-3.5 py-2.5 text-[13px] outline-none transition-colors focus:border-[#4A9FF5] focus:ring-2 focus:ring-[#4A9FF5]/20"
-                style={{ borderColor: errors.area ? '#E5484D' : '#D5DDE0' }}
+placeholder={t('propertyform_placeholder_area')}
+                className={`mt-1.5 w-full rounded-lg border bg-white px-3.5 py-2.5 text-[13px] outline-none transition-colors focus:border-[#4A9FF5] focus:ring-2 focus:ring-[#4A9FF5]/20 dark:bg-[#1E293B] dark:text-white dark:placeholder:text-slate-400 ${
+                  errors.area ? 'border-[#E5484D] dark:border-[#E5484D]' : 'border-[#D5DDE0] dark:border-slate-700'
+                }`}
               />
-              {errors.area && <p className="mt-1 text-xs text-[#E5484D]">{errors.area}</p>}
+              {errors.area && <p className="mt-1 text-xs text-[#E5484D] dark:text-rose-400">{errors.area}</p>}
             </div>
 
-            <div className="rounded-xl bg-sky-50 border border-sky-100 px-4 py-3 text-xs text-sky-800">
+<div className="rounded-xl bg-sky-50 border border-sky-100 px-4 py-3 text-xs text-sky-800 dark:bg-sky-500/10 dark:border-sky-500/20 dark:text-sky-300">
               {t('propertyform_pricing_note')}
             </div>
           </div>
@@ -566,46 +571,49 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
           <div className="space-y-5">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label htmlFor="country" className="text-[13px] font-semibold text-[#101820]">
+<label htmlFor="country" className="text-[13px] font-semibold text-[#101820] dark:text-white">
                   {t('propertyform_label_country')}
                 </label>
                 <input
                   id="country"
                   value={form.country}
                   onChange={(e) => setField('country', e.target.value)}
-                  placeholder={t('propertyform_placeholder_country')}
-                  className="mt-1.5 w-full rounded-lg border bg-white px-3.5 py-2.5 text-[13px] outline-none transition-colors focus:border-[#4A9FF5] focus:ring-2 focus:ring-[#4A9FF5]/20"
-                  style={{ borderColor: errors.country ? '#E5484D' : '#D5DDE0' }}
+placeholder={t('propertyform_placeholder_country')}
+                  className={`mt-1.5 w-full rounded-lg border bg-white px-3.5 py-2.5 text-[13px] outline-none transition-colors focus:border-[#4A9FF5] focus:ring-2 focus:ring-[#4A9FF5]/20 dark:bg-[#1E293B] dark:text-white dark:placeholder:text-slate-400 ${
+                    errors.country ? 'border-[#E5484D] dark:border-[#E5484D]' : 'border-[#D5DDE0] dark:border-slate-700'
+                  }`}
                 />
-                {errors.country && <p className="mt-1 text-xs text-[#E5484D]">{errors.country}</p>}
+                {errors.country && <p className="mt-1 text-xs text-[#E5484D] dark:text-rose-400">{errors.country}</p>}
               </div>
               <div>
-                <label htmlFor="city" className="text-[13px] font-semibold text-[#101820]">
+<label htmlFor="city" className="text-[13px] font-semibold text-[#101820] dark:text-white">
                   {t('propertyform_label_city')}
                 </label>
                 <input
                   id="city"
                   value={form.city}
                   onChange={(e) => setField('city', e.target.value)}
-                  placeholder={t('propertyform_placeholder_city')}
-                  className="mt-1.5 w-full rounded-lg border bg-white px-3.5 py-2.5 text-[13px] outline-none transition-colors focus:border-[#4A9FF5] focus:ring-2 focus:ring-[#4A9FF5]/20"
-                  style={{ borderColor: errors.city ? '#E5484D' : '#D5DDE0' }}
+placeholder={t('propertyform_placeholder_city')}
+                  className={`mt-1.5 w-full rounded-lg border bg-white px-3.5 py-2.5 text-[13px] outline-none transition-colors focus:border-[#4A9FF5] focus:ring-2 focus:ring-[#4A9FF5]/20 dark:bg-[#1E293B] dark:text-white dark:placeholder:text-slate-400 ${
+                    errors.city ? 'border-[#E5484D] dark:border-[#E5484D]' : 'border-[#D5DDE0] dark:border-slate-700'
+                  }`}
                 />
-                {errors.city && <p className="mt-1 text-xs text-[#E5484D]">{errors.city}</p>}
+                {errors.city && <p className="mt-1 text-xs text-[#E5484D] dark:text-rose-400">{errors.city}</p>}
               </div>
             </div>
 
             <div>
-              <label htmlFor="address" className="text-[13px] font-semibold text-[#101820]">
+<label htmlFor="address" className="text-[13px] font-semibold text-[#101820] dark:text-white">
                 {t('propertyform_label_address')}
               </label>
               <input
                 id="address"
                 value={form.address}
                 onChange={(e) => setField('address', e.target.value)}
-                placeholder={t('propertyform_placeholder_address')}
-                className="mt-1.5 w-full rounded-lg border bg-white px-3.5 py-2.5 text-[13px] outline-none transition-colors focus:border-[#4A9FF5] focus:ring-2 focus:ring-[#4A9FF5]/20"
-                style={{ borderColor: errors.address ? '#E5484D' : '#D5DDE0' }}
+placeholder={t('propertyform_placeholder_address')}
+                className={`mt-1.5 w-full rounded-lg border bg-white px-3.5 py-2.5 text-[13px] outline-none transition-colors focus:border-[#4A9FF5] focus:ring-2 focus:ring-[#4A9FF5]/20 dark:bg-[#1E293B] dark:text-white dark:placeholder:text-slate-400 ${
+                  errors.address ? 'border-[#E5484D] dark:border-[#E5484D]' : 'border-[#D5DDE0] dark:border-slate-700'
+                }`}
               />
             </div>
 
@@ -617,7 +625,7 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label htmlFor="latitude" className="text-[13px] font-semibold text-[#101820]">
+<label htmlFor="latitude" className="text-[13px] font-semibold text-[#101820] dark:text-white">
                   {t('propertyform_label_latitude')}
                 </label>
                 <input
@@ -626,14 +634,15 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
                   step="any"
                   value={form.latitude}
                   onChange={(e) => setField('latitude', e.target.value)}
-                  placeholder={t('propertyform_placeholder_latitude')}
-                  className="mt-1.5 w-full rounded-lg border bg-white px-3.5 py-2.5 text-[13px] outline-none transition-colors focus:border-[#4A9FF5] focus:ring-2 focus:ring-[#4A9FF5]/20"
-                  style={{ borderColor: errors.latitude ? '#E5484D' : '#D5DDE0' }}
+placeholder={t('propertyform_placeholder_latitude')}
+                  className={`mt-1.5 w-full rounded-lg border bg-white px-3.5 py-2.5 text-[13px] outline-none transition-colors focus:border-[#4A9FF5] focus:ring-2 focus:ring-[#4A9FF5]/20 dark:bg-[#1E293B] dark:text-white dark:placeholder:text-slate-400 ${
+                    errors.latitude ? 'border-[#E5484D] dark:border-[#E5484D]' : 'border-[#D5DDE0] dark:border-slate-700'
+                  }`}
                 />
-                {errors.latitude && <p className="mt-1 text-xs text-[#E5484D]">{errors.latitude}</p>}
+                {errors.latitude && <p className="mt-1 text-xs text-[#E5484D] dark:text-rose-400">{errors.latitude}</p>}
               </div>
               <div>
-                <label htmlFor="longitude" className="text-[13px] font-semibold text-[#101820]">
+<label htmlFor="longitude" className="text-[13px] font-semibold text-[#101820] dark:text-white">
                   {t('propertyform_label_longitude')}
                 </label>
                 <input
@@ -642,11 +651,12 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
                   step="any"
                   value={form.longitude}
                   onChange={(e) => setField('longitude', e.target.value)}
-                  placeholder={t('propertyform_placeholder_longitude')}
-                  className="mt-1.5 w-full rounded-lg border bg-white px-3.5 py-2.5 text-[13px] outline-none transition-colors focus:border-[#4A9FF5] focus:ring-2 focus:ring-[#4A9FF5]/20"
-                  style={{ borderColor: errors.longitude ? '#E5484D' : '#D5DDE0' }}
+placeholder={t('propertyform_placeholder_longitude')}
+                  className={`mt-1.5 w-full rounded-lg border bg-white px-3.5 py-2.5 text-[13px] outline-none transition-colors focus:border-[#4A9FF5] focus:ring-2 focus:ring-[#4A9FF5]/20 dark:bg-[#1E293B] dark:text-white dark:placeholder:text-slate-400 ${
+                    errors.longitude ? 'border-[#E5484D] dark:border-[#E5484D]' : 'border-[#D5DDE0] dark:border-slate-700'
+                  }`}
                 />
-                {errors.longitude && <p className="mt-1 text-xs text-[#E5484D]">{errors.longitude}</p>}
+                {errors.longitude && <p className="mt-1 text-xs text-[#E5484D] dark:text-rose-400">{errors.longitude}</p>}
               </div>
             </div>
           </div>
@@ -662,7 +672,7 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
                 { key: 'parkingSpaces', labelKey: 'propertyform_label_parking' },
               ].map((field) => (
                 <div key={field.key}>
-                  <label htmlFor={field.key} className="text-[13px] font-semibold text-[#101820]">
+<label htmlFor={field.key} className="text-[13px] font-semibold text-[#101820] dark:text-white">
                     {t(field.labelKey)}
                   </label>
                   <input
@@ -672,19 +682,20 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
                     step="1"
                     value={form[field.key]}
                     onChange={(e) => setField(field.key, e.target.value)}
-                    className="mt-1.5 w-full rounded-lg border bg-white px-3.5 py-2.5 text-[13px] outline-none transition-colors focus:border-[#4A9FF5] focus:ring-2 focus:ring-[#4A9FF5]/20"
-                    style={{ borderColor: errors[field.key] ? '#E5484D' : '#D5DDE0' }}
+                    className={`mt-1.5 w-full rounded-lg border bg-white px-3.5 py-2.5 text-[13px] outline-none transition-colors focus:border-[#4A9FF5] focus:ring-2 focus:ring-[#4A9FF5]/20 dark:bg-[#1E293B] dark:text-white dark:placeholder:text-slate-400 ${
+                      errors[field.key] ? 'border-[#E5484D] dark:border-[#E5484D]' : 'dark:border-slate-700'
+                    }`}
                   />
                   {errors[field.key] && (
-                    <p className="mt-1 text-xs text-[#E5484D]">{errors[field.key]}</p>
+                    <p className="mt-1 text-xs text-[#E5484D] dark:text-rose-400">{errors[field.key]}</p>
                   )}
                 </div>
               ))}
             </div>
 
             <div>
-              <span className="text-[13px] font-semibold text-[#101820]">{t('propertyform_label_amenities')}</span>
-              <p className="text-xs text-slate-500 mt-0.5 mb-2.5">{t('propertyform_amenities_hint')}</p>
+<span className="text-[13px] font-semibold text-[#101820] dark:text-white">{t('propertyform_label_amenities')}</span>
+              <p className="text-xs text-slate-500 mt-0.5 mb-2.5 dark:text-slate-400">{t('propertyform_amenities_hint')}</p>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-2.5">
                 {AMENITIES.map((amenity) => {
                   const selected = amenities.includes(amenity.value);
@@ -695,8 +706,8 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
                       onClick={() => toggleAmenity(amenity.value)}
                       className={`h-10 px-3 rounded-lg border text-[13px] font-medium text-left transition cursor-pointer ${
                         selected
-                          ? 'border-[#4A9FF5] bg-[#4A9FF5]/10 text-[#1f6fd0]'
-                          : 'border-[#D5DDE0] bg-white text-slate-600 hover:border-slate-300'
+                          ? 'border-[#4A9FF5] bg-[#4A9FF5]/10 text-[#1f6fd0] dark:text-blue-300'
+                          : 'border-[#D5DDE0] bg-white text-slate-600 hover:border-slate-300 dark:border-slate-700 dark:bg-[#1E293B] dark:text-slate-300 dark:hover:border-slate-600'
                       }`}
                       aria-pressed={selected}
                     >
@@ -705,7 +716,7 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
                           className={`w-4 h-4 rounded flex items-center justify-center border text-[10px] font-bold ${
                             selected
                               ? 'bg-[#4A9FF5] border-[#4A9FF5] text-white'
-                              : 'border-slate-300 text-transparent'
+                              : 'border-slate-300 text-transparent dark:border-slate-600'
                           }`}
                         >
                           ✓
@@ -726,7 +737,7 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
             {sizeRejection > 0 && (
               <p
                 role="alert"
-                className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-[12px] text-amber-800"
+                className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-[12px] text-amber-800 dark:bg-amber-500/10 dark:border-amber-500/20 dark:text-amber-300"
               >
                 {sizeRejection === 1
                   ? t('propertyform_size_reject_one')
@@ -736,7 +747,7 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
             {typeRejection > 0 && (
               <p
                 role="alert"
-                className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-[12px] text-red-700"
+                className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-[12px] text-red-700 dark:bg-red-500/10 dark:border-red-500/20 dark:text-red-300"
               >
                 {typeRejection === 1
                   ? t('propertyform_type_reject_one')
@@ -746,7 +757,7 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
             {budgetRejection > 0 && (
               <p
                 role="alert"
-                className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-[12px] text-amber-800"
+                className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-[12px] text-amber-800 dark:bg-amber-500/10 dark:border-amber-500/20 dark:text-amber-300"
               >
                 {budgetRejection === 1
                   ? t('propertyform_budget_reject_one', { max: MAX_IMAGES })
@@ -759,13 +770,13 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
                 e.preventDefault();
                 if (!maxReached) addPendingImages(e.dataTransfer.files);
               }}
-              className="rounded-xl border-2 border-dashed border-slate-300 bg-slate-50/60 flex flex-col items-center justify-center px-6 py-10 text-center transition-colors hover:border-[#4A9FF5] hover:bg-sky-50/40"
+              className="rounded-xl border-2 border-dashed border-slate-300 bg-slate-50/60 flex flex-col items-center justify-center px-6 py-10 text-center transition-colors hover:border-[#4A9FF5] hover:bg-sky-50/40 dark:border-slate-600 dark:bg-slate-800/40 dark:hover:bg-sky-500/10"
             >
-              <UploadCloud size={34} className="text-slate-400 mb-2" />
-              <p className="text-[13px] font-semibold text-slate-700">
+<UploadCloud size={34} className="text-slate-400 mb-2 dark:text-slate-500" />
+              <p className="text-[13px] font-semibold text-slate-700 dark:text-slate-200">
                 {t('propertyform_drop_hint')}
               </p>
-              <p className="text-xs text-slate-500 mt-0.5 mb-3">
+              <p className="text-xs text-slate-500 mt-0.5 mb-3 dark:text-slate-400">
                 {t('propertyform_drop_formats', { max: MAX_IMAGES })}
               </p>
               <label className="cursor-pointer inline-flex items-center justify-center h-9 px-4 rounded-lg bg-[#4A9FF5] text-white text-[13px] font-medium hover:bg-[#3d8be0] transition focus-within:ring-2 focus-within:ring-[#4A9FF5]/40 focus-within:ring-offset-2">
@@ -785,7 +796,7 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
                 />
               </label>
               {maxReached && (
-                <p className="mt-2 text-xs text-amber-600">
+                <p className="mt-2 text-xs text-amber-600 dark:text-amber-400">
                   {t('propertyform_max_images', { max: MAX_IMAGES })}
                 </p>
               )}
@@ -793,14 +804,14 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
 
             {existingImages.length > 0 && (
               <div>
-                <p className="text-[13px] font-semibold text-[#101820] mb-2">
+<p className="text-[13px] font-semibold text-[#101820] mb-2 dark:text-white">
                   {t('propertyform_current_images', { count: existingImages.length })}
                 </p>
                 <div className="grid grid-cols-3 md:grid-cols-5 gap-3">
                   {existingImages.map((image, index) => (
                     <div
                       key={image.publicId || image.imageUrl}
-                      className="relative rounded-lg overflow-hidden bg-slate-100 border border-slate-200"
+                      className="relative rounded-lg overflow-hidden bg-slate-100 border border-slate-200 dark:bg-slate-800 dark:border-slate-700"
                     >
                       <img
                         src={image.imageUrl}
@@ -818,14 +829,14 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
 
             {pendingImages.length > 0 && (
               <div>
-                <p className="text-[13px] font-semibold text-[#101820] mb-2">
+<p className="text-[13px] font-semibold text-[#101820] mb-2 dark:text-white">
                   {t('propertyform_new_images', { count: pendingImages.length })}
                 </p>
                 <div className="grid grid-cols-3 md:grid-cols-5 gap-3">
                   {pendingImages.map((image) => (
                     <div
                       key={image.preview}
-                      className="relative rounded-lg overflow-hidden bg-slate-100 border border-slate-200"
+                      className="relative rounded-lg overflow-hidden bg-slate-100 border border-slate-200 dark:bg-slate-800 dark:border-slate-700"
                     >
                       <img src={image.preview} alt="" className="w-full h-24 object-cover" />
                       <button
@@ -847,7 +858,7 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
       case 5:
         return (
           <div className="space-y-6">
-            <div className="rounded-xl border border-slate-200 divide-y divide-slate-100 bg-white">
+            <div className="rounded-xl border border-slate-200 divide-y divide-slate-100 bg-white dark:border-slate-800 dark:divide-slate-800 dark:bg-[#111827]">
               {[
                 { labelKey: 'propertyform_review_title', value: form.title || '—' },
                 {
@@ -864,9 +875,9 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
                   value: [form.city, form.country].filter(Boolean).join(', ') || '—',
                 },
               ].map((row) => (
-                <div key={row.labelKey} className="flex justify-between px-4 py-2.5 text-[13px]">
-                  <span className="text-slate-500 font-medium">{t(row.labelKey)}</span>
-                  <span className="font-semibold text-slate-800 text-right max-w-[55%] truncate">
+<div key={row.labelKey} className="flex justify-between px-4 py-2.5 text-[13px]">
+                  <span className="text-slate-500 font-medium dark:text-slate-400">{t(row.labelKey)}</span>
+                  <span className="font-semibold text-slate-800 text-right max-w-[55%] truncate dark:text-slate-100">
                     {row.value}
                   </span>
                 </div>
@@ -875,14 +886,14 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
 
             {amenities.length > 0 && (
               <div>
-                <p className="text-[13px] font-semibold text-[#101820] mb-2">{t('propertyform_label_amenities')}</p>
+<p className="text-[13px] font-semibold text-[#101820] mb-2 dark:text-white">{t('propertyform_label_amenities')}</p>
                 <div className="flex flex-wrap gap-2">
                   {amenities.map((amenity) => {
                   const meta = AMENITIES.find((a) => a.value === amenity);
                   return (
                     <span
                       key={amenity}
-                      className="px-3 py-1 rounded-full bg-[#4A9FF5]/10 text-[#1f6fd0] text-[12px] font-medium border border-[#4A9FF5]/20"
+                      className="px-3 py-1 rounded-full bg-[#4A9FF5]/10 text-[#1f6fd0] text-[12px] font-medium border border-[#4A9FF5]/20 dark:text-blue-300"
                     >
                       {meta ? t(meta.labelKey) : amenity}
                     </span>
@@ -894,7 +905,7 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
 
             {totalImages > 0 && (
               <div>
-                <p className="text-[13px] font-semibold text-[#101820] mb-2">
+<p className="text-[13px] font-semibold text-[#101820] mb-2 dark:text-white">
                   {t('propertyform_review_images', { count: totalImages })}
                 </p>
                 <div className="grid grid-cols-4 md:grid-cols-6 gap-3">
@@ -903,7 +914,7 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
                       key={image.publicId || image.imageUrl}
                       src={image.imageUrl}
                       alt=""
-                      className="h-16 w-full object-cover rounded-lg border border-slate-200"
+                      className="h-16 w-full object-cover rounded-lg border border-slate-200 dark:border-slate-700"
                     />
                   ))}
                   {pendingImages.map((image) => (
@@ -911,7 +922,7 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
                       key={image.preview}
                       src={image.preview}
                       alt=""
-                      className="h-16 w-full object-cover rounded-lg border border-slate-200"
+                      className="h-16 w-full object-cover rounded-lg border border-slate-200 dark:border-slate-700"
                     />
                   ))}
                 </div>
@@ -953,28 +964,28 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
                       ? 'border-[#4A9FF5] bg-[#4A9FF5] text-white'
                       : active
                         ? 'border-[#4A9FF5] text-[#1f6fd0] bg-[#4A9FF5]/10'
-                        : 'border-slate-300 text-slate-400'
+                        : 'border-slate-300 text-slate-400 dark:border-slate-600 dark:text-slate-500'
                   }`}
                 >
                   {complete ? '✓' : index + 1}
                 </span>
                 <span
                   className={`hidden md:block text-[12px] font-semibold ${
-                    active ? 'text-[#101820]' : 'text-slate-500'
+                    active ? 'text-[#101820] dark:text-white' : 'text-slate-500 dark:text-slate-400'
                   }`}
                 >
                   {t(item.labelKey)}
                 </span>
               </button>
-              {index < steps.length - 1 && <div className="w-6 md:w-10 h-px bg-slate-200" />}
+              {index < steps.length - 1 && <div className="w-6 md:w-10 h-px bg-slate-200 dark:bg-slate-700" />}
             </li>
           );
         })}
       </ol>
 
       {/* Card */}
-      <div className="mt-4 bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
-        <h2 className="text-[17px] font-bold text-[#101820] mb-5 flex items-center space-x-2">
+      <div className="mt-4 bg-white rounded-2xl border border-slate-200 p-6 shadow-sm dark:bg-[#111827] dark:border-slate-800">
+        <h2 className="text-[17px] font-bold text-[#101820] mb-5 flex items-center space-x-2 dark:text-white">
           {(() => {
             const Icon = steps[step].icon;
             return <Icon size={18} className="text-[#4A9FF5]" />;
@@ -993,14 +1004,14 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
               type="button"
               onClick={handleBack}
               disabled={submitting}
-              className="flex items-center space-x-1.5 h-11 px-5 rounded-lg border border-slate-200 bg-white text-[13px] font-semibold text-slate-600 hover:bg-slate-50 transition w-full md:w-auto justify-center cursor-pointer disabled:opacity-50"
+              className="flex items-center space-x-1.5 h-11 px-5 rounded-lg border border-slate-200 bg-white text-[13px] font-semibold text-slate-600 hover:bg-slate-50 transition w-full md:w-auto justify-center cursor-pointer disabled:opacity-50 dark:bg-[#111827] dark:border-slate-800 dark:text-slate-300 dark:hover:bg-slate-800/60"
             >
               <ChevronLeft size={16} />
               <span>{t('propertyform_back')}</span>
             </button>
           )}
           {isEdit && !isLastStep && (
-            <span className="ml-3 text-[11px] text-slate-400">
+<span className="ml-3 text-[11px] text-slate-400 dark:text-slate-500">
               {t('propertyform_saved_fields_note')}
             </span>
           )}
@@ -1013,7 +1024,7 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
                 type="button"
                 onClick={() => handleSave('draft')}
                 disabled={submitting}
-                className="flex items-center justify-center space-x-1.5 h-11 px-6 rounded-lg border border-slate-200 bg-white text-[13px] font-semibold text-slate-700 hover:bg-slate-50 transition cursor-pointer disabled:opacity-50"
+                className="flex items-center justify-center space-x-1.5 h-11 px-6 rounded-lg border border-slate-200 bg-white text-[13px] font-semibold text-slate-700 hover:bg-slate-50 transition cursor-pointer disabled:opacity-50 dark:bg-[#111827] dark:border-slate-800 dark:text-slate-200 dark:hover:bg-slate-800/60"
               >
                 {submitting ? <Loader2 size={16} className="animate-spin" /> : <Save size={15} />}
                 <span>{t('propertyform_save_draft')}</span>
@@ -1044,7 +1055,7 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
       {submitError && (
         <p
           role="alert"
-          className="mt-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs px-4 py-3"
+          className="mt-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs px-4 py-3 dark:bg-rose-500/10 dark:border-rose-500/30 dark:text-rose-300"
         >
           {submitError}
         </p>
@@ -1055,7 +1066,7 @@ const PropertyForm = ({ initial, onSaved, onCancel }) => {
           type="button"
           onClick={onCancel}
           disabled={submitting}
-          className="mt-4 h-9 px-4 text-[12px] font-medium text-slate-500 hover:text-slate-700 transition cursor-pointer disabled:opacity-50"
+          className="mt-4 h-9 px-4 text-[12px] font-medium text-slate-500 hover:text-slate-700 transition cursor-pointer disabled:opacity-50 dark:text-slate-400 dark:hover:text-slate-200"
         >
           {t('propertyform_cancel_go_back')}
         </button>

@@ -39,8 +39,8 @@ const StatusDonutChart = ({ data, size = 160, stroke = 22 }) => {
           </g>
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-[26px] font-bold text-[#111827] leading-none">{t('donut_center_value')}</span>
-          <span className="text-[11px] text-[#6B7280] mt-0.5">{t('donut_center_label')}</span>
+          <span className="text-[26px] font-bold text-[#111827] leading-none dark:text-white">{t('donut_center_value')}</span>
+          <span className="text-[11px] text-[#6B7280] mt-0.5 dark:text-slate-400">{t('donut_center_label')}</span>
         </div>
       </div>
 
@@ -50,9 +50,9 @@ const StatusDonutChart = ({ data, size = 160, stroke = 22 }) => {
           <div key={d.label} className="flex items-center justify-between text-[12px]">
             <div className="flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: d.color }} />
-              <span className="text-[#6B7280]">{labelForKey(d.label)}</span>
+              <span className="text-[#6B7280] dark:text-slate-400">{labelForKey(d.label)}</span>
             </div>
-            <span className="font-semibold text-[#111827]">{d.value}%</span>
+            <span className="font-semibold text-[#111827] dark:text-white">{d.value}%</span>
           </div>
         ))}
       </div>

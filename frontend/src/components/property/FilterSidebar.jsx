@@ -30,18 +30,18 @@ const FilterSidebar = ({ filters, setFilters, onSearch }) => {
   };
 
   return (
-    <div className="w-full lg:w-[280px] shrink-0 bg-white border border-[#E2E8F0] rounded-xl p-4 sm:p-5 shadow-xs">
+    <div className="w-full lg:w-[280px] shrink-0 bg-white border border-[#E2E8F0] rounded-xl p-4 sm:p-5 shadow-xs dark:bg-[#111827] dark:border-slate-800">
 
       {/* Header with Title & Clear All */}
-      <div className="flex items-center justify-between mb-4 pb-3 border-b border-[#F1F5F9]">
+      <div className="flex items-center justify-between mb-4 pb-3 border-b border-[#F1F5F9] dark:border-slate-800">
         <div className="flex items-center gap-2">
           <SlidersHorizontal className="w-4 h-4 text-[#0F9690]" />
-          <span className="font-bold text-[#162831] text-[15px]">Filters</span>
+          <span className="font-bold text-[#162831] text-[15px] dark:text-white">Filters</span>
         </div>
         <button
           type="button"
           onClick={clearAll}
-          className="text-[12px] text-[#64748B] hover:text-[#0F9690] font-medium transition-colors cursor-pointer"
+          className="text-[12px] text-[#64748B] hover:text-[#0F9690] font-medium transition-colors cursor-pointer dark:text-slate-400"
         >
           Clear all
         </button>
@@ -51,7 +51,7 @@ const FilterSidebar = ({ filters, setFilters, onSearch }) => {
 
         {/* City Input */}
         <div>
-          <label className="block text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1.5">
+          <label className="block text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1.5 dark:text-slate-400">
             City
           </label>
           <input
@@ -59,13 +59,13 @@ const FilterSidebar = ({ filters, setFilters, onSearch }) => {
             placeholder="e.g. Addis Ababa"
             value={filters.city || ""}
             onChange={(e) => updateFilter("city", e.target.value)}
-            className="w-full border border-[#E2E8F0] rounded-lg px-3 py-2 text-[13px] text-[#1E293B] placeholder-[#94A3B8] focus:outline-none focus:border-[#0F9690] transition-colors"
+            className="w-full border border-[#E2E8F0] rounded-lg px-3 py-2 text-[13px] text-[#1E293B] placeholder-[#94A3B8] focus:outline-none focus:border-[#0F9690] transition-colors dark:bg-[#1E293B] dark:border-slate-700 dark:text-white dark:placeholder:text-slate-400"
           />
         </div>
 
         {/* Location / Area Input */}
         <div>
-          <label className="block text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1.5">
+          <label className="block text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1.5 dark:text-slate-400">
             Location / Area
           </label>
           <input
@@ -73,20 +73,20 @@ const FilterSidebar = ({ filters, setFilters, onSearch }) => {
             placeholder="e.g. Bole, CMC..."
             value={filters.location || ""}
             onChange={(e) => updateFilter("location", e.target.value)}
-            className="w-full border border-[#E2E8F0] rounded-lg px-3 py-2 text-[13px] text-[#1E293B] placeholder-[#94A3B8] focus:outline-none focus:border-[#0F9690] transition-colors"
+            className="w-full border border-[#E2E8F0] rounded-lg px-3 py-2 text-[13px] text-[#1E293B] placeholder-[#94A3B8] focus:outline-none focus:border-[#0F9690] transition-colors dark:bg-[#1E293B] dark:border-slate-700 dark:text-white dark:placeholder:text-slate-400"
           />
         </div>
 
         {/* Property Type Dropdown */}
         <div>
-          <label className="block text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1.5">
+          <label className="block text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1.5 dark:text-slate-400">
             Property Type
           </label>
           <div className="relative">
             <select
               value={filters.categoryId || ""}
               onChange={(e) => updateFilter("categoryId", e.target.value)}
-              className="w-full appearance-none border border-[#E2E8F0] rounded-lg pl-3 pr-8 py-2 text-[13px] text-[#1E293B] bg-white focus:outline-none focus:border-[#0F9690] transition-colors cursor-pointer"
+              className="w-full appearance-none border border-[#E2E8F0] rounded-lg pl-3 pr-8 py-2 text-[13px] text-[#1E293B] bg-white focus:outline-none focus:border-[#0F9690] transition-colors cursor-pointer dark:bg-[#1E293B] dark:border-slate-700 dark:text-white"
             >
               <option value="">All Types</option>
               {PROPERTY_TYPES.map(({ value, label }) => (
@@ -95,13 +95,13 @@ const FilterSidebar = ({ filters, setFilters, onSearch }) => {
                 </option>
               ))}
             </select>
-            <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#94A3B8] pointer-events-none" />
+            <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#94A3B8] pointer-events-none dark:text-slate-500" />
           </div>
         </div>
 
         {/* Price Range */}
         <div>
-          <label className="block text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1.5">
+          <label className="block text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1.5 dark:text-slate-400">
             Price Range ($)
           </label>
           <div className="grid grid-cols-2 gap-2">
@@ -110,21 +110,21 @@ const FilterSidebar = ({ filters, setFilters, onSearch }) => {
               placeholder="Min"
               value={filters.minPrice || ""}
               onChange={(e) => updateFilter("minPrice", e.target.value)}
-              className="w-full border border-[#E2E8F0] rounded-lg px-3 py-2 text-[13px] text-[#1E293B] placeholder-[#94A3B8] focus:outline-none focus:border-[#0F9690] transition-colors"
+              className="w-full border border-[#E2E8F0] rounded-lg px-3 py-2 text-[13px] text-[#1E293B] placeholder-[#94A3B8] focus:outline-none focus:border-[#0F9690] transition-colors dark:bg-[#1E293B] dark:border-slate-700 dark:text-white dark:placeholder:text-slate-400"
             />
             <input
               type="number"
               placeholder="Max"
               value={filters.maxPrice || ""}
               onChange={(e) => updateFilter("maxPrice", e.target.value)}
-              className="w-full border border-[#E2E8F0] rounded-lg px-3 py-2 text-[13px] text-[#1E293B] placeholder-[#94A3B8] focus:outline-none focus:border-[#0F9690] transition-colors"
+              className="w-full border border-[#E2E8F0] rounded-lg px-3 py-2 text-[13px] text-[#1E293B] placeholder-[#94A3B8] focus:outline-none focus:border-[#0F9690] transition-colors dark:bg-[#1E293B] dark:border-slate-700 dark:text-white dark:placeholder:text-slate-400"
             />
           </div>
         </div>
 
         {/* Bedrooms Pill Selection */}
         <div>
-          <label className="block text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1.5">
+          <label className="block text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1.5 dark:text-slate-400">
             Bedrooms
           </label>
           <div className="flex gap-1.5 flex-wrap">
@@ -134,7 +134,7 @@ const FilterSidebar = ({ filters, setFilters, onSearch }) => {
               className={`px-3 py-1 rounded-md text-[12px] font-semibold border transition-all cursor-pointer ${
                 !filters.bedrooms
                   ? "bg-[#0F9690] text-white border-[#0F9690] shadow-2xs"
-                  : "bg-white text-[#64748B] border-[#E2E8F0] hover:border-[#0F9690]"
+                  : "bg-white text-[#64748B] border-[#E2E8F0] hover:border-[#0F9690] dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700 dark:hover:border-[#0F9690]"
               }`}
             >
               Any
@@ -147,7 +147,7 @@ const FilterSidebar = ({ filters, setFilters, onSearch }) => {
                 className={`px-2.5 py-1 rounded-md text-[12px] font-semibold border transition-all cursor-pointer ${
                   filters.bedrooms === n
                     ? "bg-[#0F9690] text-white border-[#0F9690] shadow-2xs"
-                    : "bg-white text-[#64748B] border-[#E2E8F0] hover:border-[#0F9690]"
+                    : "bg-white text-[#64748B] border-[#E2E8F0] hover:border-[#0F9690] dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700 dark:hover:border-[#0F9690]"
                 }`}
               >
                 {n}+
@@ -158,7 +158,7 @@ const FilterSidebar = ({ filters, setFilters, onSearch }) => {
 
         {/* Bathrooms Pill Selection */}
         <div>
-          <label className="block text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1.5">
+          <label className="block text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1.5 dark:text-slate-400">
             Bathrooms
           </label>
           <div className="flex gap-1.5 flex-wrap">
@@ -168,7 +168,7 @@ const FilterSidebar = ({ filters, setFilters, onSearch }) => {
               className={`px-3 py-1 rounded-md text-[12px] font-semibold border transition-all cursor-pointer ${
                 !filters.bathrooms
                   ? "bg-[#0F9690] text-white border-[#0F9690] shadow-2xs"
-                  : "bg-white text-[#64748B] border-[#E2E8F0] hover:border-[#0F9690]"
+                  : "bg-white text-[#64748B] border-[#E2E8F0] hover:border-[#0F9690] dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700 dark:hover:border-[#0F9690]"
               }`}
             >
               Any
@@ -181,7 +181,7 @@ const FilterSidebar = ({ filters, setFilters, onSearch }) => {
                 className={`px-2.5 py-1 rounded-md text-[12px] font-semibold border transition-all cursor-pointer ${
                   filters.bathrooms === n
                     ? "bg-[#0F9690] text-white border-[#0F9690] shadow-2xs"
-                    : "bg-white text-[#64748B] border-[#E2E8F0] hover:border-[#0F9690]"
+                    : "bg-white text-[#64748B] border-[#E2E8F0] hover:border-[#0F9690] dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700 dark:hover:border-[#0F9690]"
                 }`}
               >
                 {n}+

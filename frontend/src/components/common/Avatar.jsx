@@ -6,7 +6,7 @@ const Avatar = ({ src, alt, size = 36, className = '' }) => {
       src={src || fallback}
       alt={alt || 'User'}
       style={{ width: size, height: size }}
-      className={`rounded-full object-cover shrink-0 bg-slate-200 ${className}`}
+      className={`rounded-full object-cover shrink-0 bg-slate-200 dark:bg-slate-700 ${className}`}
     />
   );
 };

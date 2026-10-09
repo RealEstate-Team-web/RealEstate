@@ -61,7 +61,7 @@ const SearchBar = ({
   return (
     <form
       onSubmit={handleSearchSubmit}
-      className="flex flex-col items-stretch gap-3 rounded-2xl bg-white p-4 shadow-xl shadow-navy/10 sm:flex-row sm:items-center sm:p-5"
+      className="flex flex-col items-stretch gap-3 rounded-2xl bg-white p-4 shadow-xl shadow-navy/10 sm:flex-row sm:items-center sm:p-5 dark:bg-[#111827]"
     >
       {/* Search */}
       <div className="relative min-w-0 flex-1">
@@ -82,7 +82,7 @@ const SearchBar = ({
       <select
         value={type}
         onChange={(e) => setType(e.target.value)}
-        className="min-w-[150px] rounded-lg border border-border bg-white px-4 py-3 text-[14px] text-ink transition-colors focus:border-teal focus:outline-none"
+        className="min-w-[150px] rounded-lg border border-border bg-white px-4 py-3 text-[14px] text-ink transition-colors focus:border-teal focus:outline-none dark:bg-[#1E293B]"
       >
         {PROPERTY_TYPES.map(({ value, label }) => (
           <option

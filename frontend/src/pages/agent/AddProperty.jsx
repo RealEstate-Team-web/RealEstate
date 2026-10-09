@@ -88,15 +88,15 @@ const AddProperty = () => {
       <SaveNotice toastMessage={toastMessage} toastTone={toastTone} saveFailed={saveFailed} />
 
       {saved && (
-        <div className="rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs px-4 py-3">
+        <div className="rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs px-4 py-3 dark:bg-emerald-500/10 dark:border-emerald-500/30 dark:text-emerald-300">
           {t('addproperty_redirecting')}
         </div>
       )}
 
       <div className="flex items-center gap-3">
         <div>
-          <h2 className="text-[19px] font-bold text-[#101820] tracking-tight">{t('addproperty_title')}</h2>
-          <p className="text-[12px] text-slate-500 mt-0.5">
+          <h2 className="text-[19px] font-bold text-[#101820] tracking-tight dark:text-white">{t('addproperty_title')}</h2>
+          <p className="text-[12px] text-slate-500 mt-0.5 dark:text-slate-400">
             {t('addproperty_subtitle')}
           </p>
         </div>

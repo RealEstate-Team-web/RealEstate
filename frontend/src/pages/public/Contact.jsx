@@ -67,7 +67,7 @@ const Contact = () => {
   };
 
   return (
-    <div className="w-full min-w-0 overflow-x-hidden bg-[#F7F9FA]">
+    <div className="w-full min-w-0 overflow-x-hidden bg-[#F7F9FA] dark:bg-[#0B1120]">
 
       {/* HERO*/}
       <section className="relative isolate min-h-[380px] w-full overflow-hidden sm:min-h-[430px] lg:min-h-[470px]">
@@ -119,7 +119,7 @@ const Contact = () => {
         </div>
 
         {/* Bottom transition */}
-        <div className="pointer-events-none absolute bottom-0 left-0 h-24 w-full bg-gradient-to-t from-[#F7F9FA] to-transparent" />
+        <div className="pointer-events-none absolute bottom-0 left-0 h-24 w-full bg-gradient-to-t from-[#F7F9FA] to-transparent dark:from-[#0B1120]" />
 
       </section>
 
@@ -145,13 +145,13 @@ const Contact = () => {
               </span>
 
               <h2
-                className="mt-3 max-w-[500px] text-[29px] font-bold leading-[1.15] tracking-tight text-[#162831] sm:text-[34px] lg:text-[38px]"
+                className="mt-3 max-w-[500px] text-[29px] font-bold leading-[1.15] tracking-tight text-[#162831] dark:text-white sm:text-[34px] lg:text-[38px]"
                 style={{ fontFamily: "var(--font-display)" }}
               >
                 {t("info_title")}
               </h2>
 
-              <p className="mt-4 max-w-[500px] text-[13px] leading-6 text-[#71818A] sm:text-[14px]">
+              <p className="mt-4 max-w-[500px] text-[13px] leading-6 text-[#71818A] dark:text-slate-400 sm:text-[14px]">
                 {t("info_subtitle")}
               </p>
 
@@ -162,7 +162,7 @@ const Contact = () => {
                   ({ icon: Icon, labelKey, valueKey, href }, index) => {
 
                     const cardClass =
-                      "group flex min-w-0 items-center gap-3.5 rounded-xl border border-[#E1E9EC] bg-white px-3.5 py-3.5 shadow-[0_4px_18px_rgba(20,40,50,0.035)] transition-all duration-300 hover:-translate-y-1 hover:border-[#0F9690]/30 hover:shadow-[0_12px_30px_rgba(15,150,144,0.09)] sm:gap-4 sm:px-4 sm:py-4";
+                      "group flex min-w-0 items-center gap-3.5 rounded-xl border border-[#E1E9EC] bg-white px-3.5 py-3.5 shadow-[0_4px_18px_rgba(20,40,50,0.035)] transition-all duration-300 hover:-translate-y-1 hover:border-[#0F9690]/30 hover:shadow-[0_12px_30px_rgba(15,150,144,0.09)] sm:gap-4 sm:px-4 sm:py-4 dark:border-slate-800 dark:bg-[#111827]";
 
                     const content = (
                       <>
@@ -221,7 +221,7 @@ const Contact = () => {
               {/* Form Glow */}
               <div className="pointer-events-none absolute -inset-2 rounded-[24px] bg-[#0F9690]/7 blur-2xl sm:-inset-3" />
 
-              <div className="relative w-full overflow-hidden rounded-2xl border border-[#DDE7EA] bg-white shadow-[0_15px_45px_rgba(16,42,52,0.09)] transition-shadow duration-300 hover:shadow-[0_18px_55px_rgba(16,42,52,0.12)]">
+              <div className="relative w-full overflow-hidden rounded-2xl border border-[#DDE7EA] bg-white shadow-[0_15px_45px_rgba(16,42,52,0.09)] transition-shadow duration-300 hover:shadow-[0_18px_55px_rgba(16,42,52,0.12)] dark:border-slate-800 dark:bg-[#111827]">
 
                 {/* Top Accent Line */}
                 <div className="h-1.5 w-full bg-gradient-to-r from-[#0F9690] via-[#24B9B1] to-[#0F9690]" />
@@ -248,20 +248,20 @@ const Contact = () => {
                       </div>
 
                       <h3
-                        className="mt-6 text-[22px] font-bold text-[#162831] sm:text-2xl"
+                        className="mt-6 text-[22px] font-bold text-[#162831] dark:text-white sm:text-2xl"
                         style={{ fontFamily: "var(--font-display)" }}
                       >
                         {t("success_title")}
                       </h3>
 
-                      <p className="mt-3 max-w-[360px] text-[13px] leading-6 text-[#71818A]">
+                      <p className="mt-3 max-w-[360px] text-[13px] leading-6 text-[#71818A] dark:text-slate-400">
                         {t("success_body")}
                       </p>
 
                       <button
                         type="button"
                         onClick={() => setSubmitted(false)}
-                        className="mt-6 rounded-lg border border-[#D7E2E5] px-5 py-2.5 text-[12px] font-semibold text-[#162831] transition-all duration-200 hover:border-[#0F9690] hover:bg-[#0F9690]/5 hover:text-[#0F9690] cursor-pointer"
+                        className="mt-6 rounded-lg border border-[#D7E2E5] px-5 py-2.5 text-[12px] font-semibold text-[#162831] dark:text-white transition-all duration-200 hover:border-[#0F9690] hover:bg-[#0F9690]/5 hover:text-[#0F9690] cursor-pointer"
                       >
                         {t("send_another")}
                       </button>
@@ -284,7 +284,7 @@ const Contact = () => {
                         </span>
 
                         <h3
-                          className="mt-1 text-[22px] font-bold tracking-tight text-[#162831] sm:text-2xl"
+                          className="mt-1 text-[22px] font-bold tracking-tight text-[#162831] dark:text-white sm:text-2xl"
                           style={{ fontFamily: "var(--font-display)" }}
                         >
                           {t("form_title")}
@@ -318,7 +318,7 @@ const Contact = () => {
                             placeholder={t("name_placeholder")}
                             required
                             autoComplete="name"
-                            className="box-border h-11 w-full min-w-0 rounded-lg border border-[#DCE5E8] bg-[#FAFCFC] px-3.5 text-[13px] text-[#162831] outline-none transition-all duration-200 placeholder:text-[#9AA8AE] hover:border-[#C5D4D9] focus:border-[#0F9690] focus:bg-white focus:ring-4 focus:ring-[#0F9690]/10"
+                            className="box-border h-11 w-full min-w-0 rounded-lg border border-[#DCE5E8] bg-[#FAFCFC] px-3.5 text-[13px] text-[#162831] dark:text-white outline-none transition-all duration-200 placeholder:text-[#9AA8AE] hover:border-[#C5D4D9] focus:border-[#0F9690] focus:bg-white focus:ring-4 focus:ring-[#0F9690]/10 dark:border-slate-700 dark:bg-[#1E293B] dark:text-white dark:placeholder:text-slate-500 dark:hover:border-slate-600 dark:focus:bg-[#1E293B]"
                           />
 
                         </div>
@@ -342,7 +342,7 @@ const Contact = () => {
                             placeholder={t("email_placeholder")}
                             required
                             autoComplete="email"
-                            className="box-border h-11 w-full min-w-0 rounded-lg border border-[#DCE5E8] bg-[#FAFCFC] px-3.5 text-[13px] text-[#162831] outline-none transition-all duration-200 placeholder:text-[#9AA8AE] hover:border-[#C5D4D9] focus:border-[#0F9690] focus:bg-white focus:ring-4 focus:ring-[#0F9690]/10"
+                            className="box-border h-11 w-full min-w-0 rounded-lg border border-[#DCE5E8] bg-[#FAFCFC] px-3.5 text-[13px] text-[#162831] dark:text-white outline-none transition-all duration-200 placeholder:text-[#9AA8AE] hover:border-[#C5D4D9] focus:border-[#0F9690] focus:bg-white focus:ring-4 focus:ring-[#0F9690]/10 dark:border-slate-700 dark:bg-[#1E293B] dark:text-white dark:placeholder:text-slate-500 dark:hover:border-slate-600 dark:focus:bg-[#1E293B]"
                           />
 
                         </div>
@@ -368,7 +368,7 @@ const Contact = () => {
                           onChange={handleChange}
                           placeholder={t("phone_placeholder")}
                           autoComplete="tel"
-                          className="box-border h-11 w-full min-w-0 rounded-lg border border-[#DCE5E8] bg-[#FAFCFC] px-3.5 text-[13px] text-[#162831] outline-none transition-all duration-200 placeholder:text-[#9AA8AE] hover:border-[#C5D4D9] focus:border-[#0F9690] focus:bg-white focus:ring-4 focus:ring-[#0F9690]/10"
+                          className="box-border h-11 w-full min-w-0 rounded-lg border border-[#DCE5E8] bg-[#FAFCFC] px-3.5 text-[13px] text-[#162831] dark:text-white outline-none transition-all duration-200 placeholder:text-[#9AA8AE] hover:border-[#C5D4D9] focus:border-[#0F9690] focus:bg-white focus:ring-4 focus:ring-[#0F9690]/10 dark:border-slate-700 dark:bg-[#1E293B] dark:text-white dark:placeholder:text-slate-500 dark:hover:border-slate-600 dark:focus:bg-[#1E293B]"
                         />
 
                       </div>
@@ -392,7 +392,7 @@ const Contact = () => {
                           rows={4}
                           placeholder={t("message_placeholder")}
                           required
-                          className="box-border min-h-[120px] w-full min-w-0 resize-none rounded-lg border border-[#DCE5E8] bg-[#FAFCFC] px-3.5 py-3 text-[13px] leading-5 text-[#162831] outline-none transition-all duration-200 placeholder:text-[#9AA8AE] hover:border-[#C5D4D9] focus:border-[#0F9690] focus:bg-white focus:ring-4 focus:ring-[#0F9690]/10"
+                          className="box-border min-h-[120px] w-full min-w-0 resize-none rounded-lg border border-[#DCE5E8] bg-[#FAFCFC] px-3.5 py-3 text-[13px] leading-5 text-[#162831] dark:text-white outline-none transition-all duration-200 placeholder:text-[#9AA8AE] hover:border-[#C5D4D9] focus:border-[#0F9690] focus:bg-white focus:ring-4 focus:ring-[#0F9690]/10 dark:border-slate-700 dark:bg-[#1E293B] dark:text-white dark:placeholder:text-slate-500 dark:hover:border-slate-600 dark:focus:bg-[#1E293B]"
                         />
 
                       </div>

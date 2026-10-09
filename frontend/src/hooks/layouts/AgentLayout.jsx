@@ -7,7 +7,7 @@ const AgentLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-[#F5F5FA] flex font-sans text-[#111827]">
+    <div className="min-h-screen bg-[#F5F5FA] flex font-sans text-[#111827] dark:bg-[#0B1120] dark:text-slate-100">
       {/* Fixed Sidebar */}
       <AgentSidebar
         isOpen={sidebarOpen}

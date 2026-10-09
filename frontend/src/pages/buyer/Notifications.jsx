@@ -34,7 +34,7 @@ export const Notifications = () => {
       description: 'Your visit request for Luxury Villa in Bole has been approved by the seller.',
       time: 'Mon, 10:30 AM',
       icon: CheckCircle,
-      color: 'text-emerald-600 bg-emerald-50 border-emerald-200',
+      color: 'text-emerald-600 bg-emerald-50 border-emerald-200 dark:text-emerald-300 dark:bg-emerald-500/10 dark:border-emerald-500/30',
     },
     {
       id: 2,
@@ -44,7 +44,7 @@ export const Notifications = () => {
       description: 'New match found: Modern Apartment in Kazanchis, $120,000.',
       time: 'Mon, 9:15 AM',
       icon: Star,
-      color: 'text-blue-600 bg-blue-50 border-blue-200',
+      color: 'text-blue-600 bg-blue-50 border-blue-200 dark:text-blue-300 dark:bg-blue-500/10 dark:border-blue-500/30',
     },
     {
       id: 3,
@@ -54,7 +54,7 @@ export const Notifications = () => {
       description: 'Abebe Kebede replied to your message about the Family House.',
       time: 'Sun, 4:50 PM',
       icon: MessageSquare,
-      color: 'text-sky-600 bg-sky-50 border-sky-200',
+      color: 'text-sky-600 bg-sky-50 border-sky-200 dark:text-sky-300 dark:bg-sky-500/10 dark:border-sky-500/30',
     },
     {
       id: 4,
@@ -64,7 +64,7 @@ export const Notifications = () => {
       description: 'Price drop alert! The Luxury Villa in Yeka is now $330,000.',
       time: 'Sun, 2:10 PM',
       icon: TrendingDown,
-      color: 'text-rose-600 bg-rose-50 border-rose-200',
+      color: 'text-rose-600 bg-rose-50 border-rose-200 dark:text-rose-300 dark:bg-rose-500/10 dark:border-rose-500/30',
     },
     {
       id: 5,
@@ -74,7 +74,7 @@ export const Notifications = () => {
       description: 'The seller cancelled the visit for the Modern Apartment in Kazanchis.',
       time: 'Sat, 11:05 AM',
       icon: XCircle,
-      color: 'text-rose-600 bg-rose-50 border-rose-200',
+      color: 'text-rose-600 bg-rose-50 border-rose-200 dark:text-rose-300 dark:bg-rose-500/10 dark:border-rose-500/30',
     },
     {
       id: 6,
@@ -84,7 +84,7 @@ export const Notifications = () => {
       description: 'New match found: Family House in CMC, $210,000.',
       time: 'Sat, 9:00 AM',
       icon: Star,
-      color: 'text-blue-600 bg-blue-50 border-blue-200',
+      color: 'text-blue-600 bg-blue-50 border-blue-200 dark:text-blue-300 dark:bg-blue-500/10 dark:border-blue-500/30',
     },
     {
       id: 7,
@@ -94,7 +94,7 @@ export const Notifications = () => {
       description: 'Your visit request for Family House in Yeka has been approved.',
       time: 'Fri, 3:20 PM',
       icon: CheckCircle,
-      color: 'text-emerald-600 bg-emerald-50 border-emerald-200',
+      color: 'text-emerald-600 bg-emerald-50 border-emerald-200 dark:text-emerald-300 dark:bg-emerald-500/10 dark:border-emerald-500/30',
     },
   ]);
 
@@ -119,21 +119,21 @@ export const Notifications = () => {
     <div className="space-y-6 font-sans">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-        <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
+        <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight dark:text-white">
           {t('title_notifications')}{' '}
-          <span className="text-slate-400 font-normal">({t('notif_unread_count', { count: notifications.filter(n => n.unread).length })})</span>
+          <span className="text-slate-400 font-normal dark:text-slate-500">({t('notif_unread_count', { count: notifications.filter(n => n.unread).length })})</span>
         </h1>
       </div>
 
       {/* Action Bar */}
-      <div className="bg-white border border-slate-200/80 rounded-xl p-3.5 sm:p-4 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="bg-white border border-slate-200/80 rounded-xl p-3.5 sm:p-4 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 dark:bg-[#111827] dark:border-slate-800">
         <div className="flex items-center space-x-2">
-          <Filter size={15} className="text-slate-400 shrink-0" />
-          <span className="text-xs text-slate-500 font-medium">{t('notif_filter')}</span>
+          <Filter size={15} className="text-slate-400 shrink-0 dark:text-slate-500" />
+          <span className="text-xs text-slate-500 font-medium dark:text-slate-400">{t('notif_filter')}</span>
           <select
             value={filterType}
             onChange={(e) => setFilterType(e.target.value)}
-            className="bg-slate-50 border border-slate-200 text-xs font-medium text-slate-700 rounded-lg px-3 py-1.5 focus:outline-none"
+            className="bg-slate-50 border border-slate-200 text-xs font-medium text-slate-700 rounded-lg px-3 py-1.5 focus:outline-none dark:bg-[#1E293B] dark:border-slate-700 dark:text-white"
           >
             <option value="all">{t('notif_show_all')}</option>
             <option value="unread">{t('notif_unread_only')}</option>
@@ -144,7 +144,7 @@ export const Notifications = () => {
 
         <button
           onClick={handleMarkAllRead}
-          className="flex items-center justify-center space-x-1.5 text-xs font-semibold text-slate-700 hover:text-blue-600 border border-slate-200 px-3 py-1.5 rounded-lg hover:bg-slate-50 transition cursor-pointer self-start sm:self-auto"
+          className="flex items-center justify-center space-x-1.5 text-xs font-semibold text-slate-700 hover:text-blue-600 border border-slate-200 px-3 py-1.5 rounded-lg hover:bg-slate-50 transition cursor-pointer self-start sm:self-auto dark:text-slate-300 dark:border-slate-700 dark:hover:bg-slate-800 dark:hover:text-blue-300"
         >
           <CheckCheck size={16} />
           <span>{t('notif_mark_all_read')}</span>
@@ -152,15 +152,15 @@ export const Notifications = () => {
       </div>
 
       {/* Notifications List Container */}
-      <div className="bg-white border border-slate-200/80 rounded-xl divide-y divide-slate-100 shadow-2xs overflow-hidden">
+      <div className="bg-white border border-slate-200/80 rounded-xl divide-y divide-slate-100 shadow-2xs overflow-hidden dark:bg-[#111827] dark:border-slate-800 dark:divide-slate-800">
         {filteredNotifications.length === 0 ? (
           <div className="p-12 text-center flex flex-col items-center justify-center space-y-3">
-            <div className="w-12 h-12 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center">
+            <div className="w-12 h-12 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center dark:bg-slate-800 dark:text-slate-500">
               <CheckCircle size={24} />
             </div>
             <div>
-              <h4 className="text-sm font-bold text-slate-900">{t('notif_empty_title')}</h4>
-              <p className="text-xs text-slate-500 mt-0.5">
+              <h4 className="text-sm font-bold text-slate-900 dark:text-white">{t('notif_empty_title')}</h4>
+              <p className="text-xs text-slate-500 mt-0.5 dark:text-slate-400">
                 {filterType === 'unread'
                   ? t('notif_empty_unread')
                   : t('notif_empty_filter')}
@@ -181,8 +181,8 @@ export const Notifications = () => {
                 }
               }}
               aria-pressed={!notif.unread}
-              className={`p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-50/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 cursor-pointer ${
-                notif.unread ? 'bg-blue-50/20' : ''
+              className={`p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-50/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 cursor-pointer dark:hover:bg-slate-800/60 ${
+                notif.unread ? 'bg-blue-50/20 dark:bg-blue-500/10' : ''
               }`}
               title={notif.unread ? t('notif_mark_read') : t('notif_mark_unread')}
             >
@@ -192,7 +192,7 @@ export const Notifications = () => {
                   {notif.unread ? (
                     <span className="w-2.5 h-2.5 rounded-full bg-blue-600 shadow-2xs" title={t('notif_unread')}></span>
                   ) : (
-                    <span className="text-[10px] text-slate-400 font-medium sm:hidden">{t('notif_read')}</span>
+                    <span className="text-[10px] text-slate-400 font-medium sm:hidden dark:text-slate-500">{t('notif_read')}</span>
                   )}
                 </div>
 
@@ -203,13 +203,13 @@ export const Notifications = () => {
 
                 {/* Message Details */}
                 <div className="min-w-0">
-                  <h4 className="text-xs font-bold text-slate-900">{notifTitle(notif.type)}</h4>
-                  <p className="text-xs text-slate-500 mt-0.5 leading-normal">{notif.description}</p>
+                  <h4 className="text-xs font-bold text-slate-900 dark:text-white">{notifTitle(notif.type)}</h4>
+                  <p className="text-xs text-slate-500 mt-0.5 leading-normal dark:text-slate-400">{notif.description}</p>
                 </div>
               </div>
 
               {/* Time */}
-              <span className="text-[11px] font-semibold text-slate-400 shrink-0 self-end sm:self-center pl-6 sm:pl-0">
+              <span className="text-[11px] font-semibold text-slate-400 shrink-0 self-end sm:self-center pl-6 sm:pl-0 dark:text-slate-500">
                 {notif.time}
               </span>
             </div>
