@@ -11,29 +11,55 @@ const errorHandler = require("./middlewares/error.middleware");
 
 const app = express();
 
-// 1. HELMET CONFIGURATION (Must allow cross-origin)
+// Helper function to remove trailing slash if present
+const cleanUrl = (url) => (url ? url.replace(/\/+$/, "") : "");
+
+const clientUrl = cleanUrl(process.env.CLIENT_URL) || "http://localhost:3000";
+const frontendUrl = cleanUrl(process.env.FRONTEND_URL);
+
+// List of allowed origins
+const allowedOrigins = [
+  clientUrl,
+  frontendUrl,
+  "https://betenya.vercel.app",
+  "http://localhost:3000",
+  "http://localhost:5173",
+].filter(Boolean); // removes empty strings/undefined
+
+// 1. HELMET
 app.use(
   helmet({
     crossOriginResourcePolicy: { policy: "cross-origin" },
   })
 );
 
-// 2. CORS CONFIGURATION
+// 2. CORS
 const corsOptions = {
-  origin: [
-    "https://betenya.vercel.app",
-    "http://localhost:3000",
-    "http://localhost:5173",
-  ],
+  origin: (origin, callback) => {
+    // Allow server-to-server / curl / postman without origin header
+    if (!origin) return callback(null, true);
+
+    const formattedOrigin = cleanUrl(origin);
+
+    if (allowedOrigins.includes(formattedOrigin)) {
+      return callback(null, true);
+    }
+
+    if (
+      process.env.NODE_ENV !== "production" &&
+      /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)
+    ) {
+      return callback(null, true);
+    }
+
+    return callback(null, false);
+  },
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
 };
 
-// Enable CORS for all routes
 app.use(cors(corsOptions));
-
-// ALSO explicitly handle preflight OPTIONS requests across all routes
 app.options("*", cors(corsOptions));
 
 // 3. BODY PARSERS
