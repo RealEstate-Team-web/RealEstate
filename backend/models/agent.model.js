@@ -20,6 +20,7 @@ const Agent = {
   },
 
   async recentAgents(limit = 5) {
+    const safeLimit = Math.max(1, Number.parseInt(limit, 10) || 5);
     return query(
       `SELECT ap.id, ap.agency_name AS agency, ap.license_number AS licenseNumber,
               ap.experience_years AS experienceYears, ap.specialization, ap.city,
@@ -29,8 +30,7 @@ const Agent = {
        FROM agent_profiles ap
        JOIN users u ON u.id = ap.user_id
        ORDER BY ap.created_at DESC
-       LIMIT ?`,
-      [limit],
+       LIMIT ${safeLimit}`,
     );
   },
 
@@ -83,8 +83,7 @@ const Agent = {
        WHERE ap.verification_status = 'approved'
          AND u.status = 'active'
        ORDER BY ap.experience_years DESC, ap.created_at DESC
-       LIMIT ?`,
-      [safeLimit],
+       LIMIT ${safeLimit}`,
     );
   },
 

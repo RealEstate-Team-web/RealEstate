@@ -117,8 +117,14 @@ const propertyModel = {
             sortOptions[sort] ||
             sortOptions.newest;
 
-        const offset =
-            (page - 1) * limit;
+        const safeLimit =
+            Math.max(1, Number.parseInt(limit, 10) || 12);
+
+        const safePage =
+            Math.max(1, Number.parseInt(page, 10) || 1);
+
+        const safeOffset =
+            (safePage - 1) * safeLimit;
 
         const sql = `
             SELECT
@@ -159,11 +165,8 @@ const propertyModel = {
 
             ORDER BY ${orderBy}
 
-            LIMIT ? OFFSET ?
+            LIMIT ${safeLimit} OFFSET ${safeOffset}
         `;
-
-        params.push(Number(limit));
-        params.push(Number(offset));
 
         const properties =
             await query(sql, params);
@@ -175,13 +178,10 @@ const propertyModel = {
             WHERE ${conditions.join(" AND ")}
         `;
 
-        const countParams =
-            params.slice(0, -2);
-
         const countResult =
             await query(
                 countSql,
-                countParams
+                params
             );
 
 
@@ -236,10 +236,10 @@ const propertyModel = {
             FROM properties p
             WHERE p.status = 'available'
             ORDER BY p.views DESC, p.created_at DESC
-            LIMIT ?
+            LIMIT ${featuredLimit}
         `;
 
-        const properties = await query(sql, [featuredLimit]);
+        const properties = await query(sql);
 
         return properties;
     },
@@ -512,7 +512,15 @@ const propertyModel = {
         };
 
         const orderBy = sortOptions[sort] || sortOptions.newest;
-        const offset = (page - 1) * limit;
+
+        const safeLimit =
+            Math.max(1, Number.parseInt(limit, 10) || 10);
+
+        const safePage =
+            Math.max(1, Number.parseInt(page, 10) || 1);
+
+        const safeOffset =
+            (safePage - 1) * safeLimit;
 
         const sql = `
             SELECT
@@ -544,14 +552,10 @@ const propertyModel = {
             FROM properties p
             WHERE ${conditions.join(" AND ")}
             ORDER BY ${orderBy}
-            LIMIT ? OFFSET ?
+            LIMIT ${safeLimit} OFFSET ${safeOffset}
         `;
 
-        const properties = await query(sql, [
-            ...params,
-            Number(limit),
-            Number(offset),
-        ]);
+        const properties = await query(sql, params);
 
         const countSql = `
             SELECT COUNT(*) AS total

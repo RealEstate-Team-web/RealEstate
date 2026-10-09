@@ -39,16 +39,16 @@ const User = {
       params
     );
 
-    const l = Math.max(1, Math.min(Number(limit) || 10, 100));
-    const p = Math.max(1, Number(page) || 1);
+    const l = Math.max(1, Math.min(Number.parseInt(limit, 10) || 10, 100));
+    const p = Math.max(1, Number.parseInt(page, 10) || 1);
     const offset = (p - 1) * l;
 
     const items = await query(
       `SELECT id, first_name AS firstName, last_name AS lastName, email, phone, role, status, created_at AS createdAt
          FROM users${where}
          ORDER BY created_at DESC, id DESC
-         LIMIT ? OFFSET ?`,
-      [...params, l, offset]
+         LIMIT ${l} OFFSET ${offset}`,
+      params
     );
 
     const [activeRow] = await query(

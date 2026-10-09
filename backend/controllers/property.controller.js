@@ -88,20 +88,27 @@ const {
   next
 ) => {
   try {
+    let limit;
     if (req.query.limit !== undefined) {
-      const parsed = Number(req.query.limit);
-      if (!Number.isInteger(parsed) || parsed < 1 || parsed > 50) {
+      const parsed = Number.parseInt(req.query.limit, 10);
+      if (
+        String(parsed) !== String(req.query.limit).trim() ||
+        !Number.isInteger(parsed) ||
+        parsed < 1 ||
+        parsed > 50
+      ) {
         return res.status(400).json({
           success: false,
           message: "Invalid query parameter: limit must be an integer between 1 and 50",
           errors: ["limit must be an integer between 1 and 50"],
         });
       }
+      limit = parsed;
     }
 
     const result =
       await propertyService.getFeaturedProperties({
-        limit: req.query.limit,
+        limit,
       });
 
     res.status(200).json({

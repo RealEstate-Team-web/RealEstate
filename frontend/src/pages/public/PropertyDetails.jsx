@@ -25,7 +25,6 @@ import {
   getProperties,
 } from "../../services/property.service";
 import { PropertyMap } from "./PropertyMap.jsx";
-import PageLoader from "../../components/common/Loader.jsx";
 import { submitInquiry } from "../../services/inquiry.service";
 import useAuth from "../../hooks/useAuth";
 import { getPropertyImageList } from "../../utils/helpers";
@@ -131,9 +130,34 @@ const PropertyDetails = () => {
 
   if (loading) {
     return (
-      <div className="flex min-h-[500px] items-center justify-center bg-[#F7FAFA]">
-        <div className="text-sm font-semibold text-[#0F9690]">
-          <PageLoader />
+      <div className="w-full min-w-0 overflow-x-hidden bg-[#F7FAFA]">
+        <div className="mx-auto w-full max-w-[1240px] px-4 py-5 sm:px-6 sm:py-7 lg:px-8 lg:py-8">
+          <div className="mb-6 h-3 w-56 max-w-full animate-pulse rounded bg-slate-200 sm:mb-8" />
+
+          <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_360px]">
+            <div className="space-y-5">
+              <div className="h-[260px] w-full animate-pulse rounded-2xl bg-slate-200 sm:h-[380px] lg:h-[500px]" />
+
+              <div className="grid grid-cols-4 gap-3">
+                {[0, 1, 2, 3].map((slot) => (
+                  <div
+                    key={slot}
+                    className="h-20 animate-pulse rounded-xl bg-slate-200"
+                  />
+                ))}
+              </div>
+
+              <div className="h-7 w-2/3 animate-pulse rounded bg-slate-200" />
+              <div className="h-4 w-1/2 animate-pulse rounded bg-slate-200" />
+              <div className="h-4 w-5/6 animate-pulse rounded bg-slate-200" />
+            </div>
+
+            <div className="space-y-5">
+              <div className="h-44 animate-pulse rounded-2xl bg-slate-200" />
+              <div className="h-32 animate-pulse rounded-2xl bg-slate-200" />
+              <div className="h-56 animate-pulse rounded-2xl bg-slate-200" />
+            </div>
+          </div>
         </div>
       </div>
     );
