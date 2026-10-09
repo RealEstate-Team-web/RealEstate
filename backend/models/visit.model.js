@@ -161,8 +161,9 @@ const Visit = {
     sql += ` ORDER BY v.visit_date ${sortDirection}, v.visit_time ${sortDirection}, v.created_at DESC`;
 
     if (limit !== undefined && offset !== undefined) {
-      sql += " LIMIT ? OFFSET ?";
-      params.push(Number(limit), Number(offset));
+      const safeLimit = Math.max(1, Number.parseInt(limit, 10) || 10);
+      const safeOffset = Math.max(0, Number.parseInt(offset, 10) || 0);
+      sql += ` LIMIT ${safeLimit} OFFSET ${safeOffset}`;
     }
 
     return query(sql, params);
@@ -408,8 +409,9 @@ const Visit = {
     sql += ` ORDER BY v.visit_date ${sortDirection}, v.visit_time ${sortDirection}, v.created_at DESC`;
 
     if (limit !== undefined && offset !== undefined) {
-      sql += " LIMIT ? OFFSET ?";
-      params.push(Number(limit), Number(offset));
+      const safeLimit = Math.max(1, Number.parseInt(limit, 10) || 10);
+      const safeOffset = Math.max(0, Number.parseInt(offset, 10) || 0);
+      sql += ` LIMIT ${safeLimit} OFFSET ${safeOffset}`;
     }
 
     return query(sql, params);
