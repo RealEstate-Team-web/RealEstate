@@ -13,7 +13,18 @@ const app = express();
 
 const clientUrl = process.env.CLIENT_URL || "http://localhost:3000";
 
-app.use(helmet());
+const allowedOrigins = [
+  clientUrl,
+  "https://betenya.vercel.app",
+  "http://localhost:3000",
+  "http://localhost:5173",
+];
+
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+  })
+);
 
 app.use(
   cors({
