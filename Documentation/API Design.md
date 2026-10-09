@@ -956,6 +956,166 @@ Public
 
 ---
 
+# Subscription & Payment APIs
+
+Subscription checkout is processed by **Chapa** (payment provider) in **test mode** only for now.
+
+Public (no auth): plan list, Chapa webhook, Chapa callback.
+Agent auth (`Authorization: Bearer <JWT>`, role `agent`): checkout, current subscription.
+Admin auth: plan CRUD (see `subscription_plans` admin routes).
+
+---
+
+## List Subscription Plans (public)
+
+GET
+
+```
+/api/subscription-plans
+```
+
+Response
+
+```json
+{
+    "success": true,
+    "data": [
+        {
+            "id": 1,
+            "slug": "basic",
+            "name": "Basic",
+            "description": "Publish up to 5 properties",
+            "price": "500.00",
+            "currency": "ETB",
+            "durationDays": 30,
+            "isActive": true
+        }
+    ]
+}
+```
+
+---
+
+## Checkout Subscription (agent)
+
+POST
+
+```
+/api/subscriptions/checkout
+```
+
+Request
+
+```json
+{
+    "planId": 1
+}
+```
+
+Response — 200 with the Chapa redirect URL. The frontend redirects the browser to `checkoutUrl`.
+
+```json
+{
+    "success": true,
+    "message": "Checkout initialized",
+    "data": {
+        "checkoutUrl": "https://checkout.chapa.global/test/payment/hosted/TESTN90180698f",
+        "txRef": "SUB0004muebd2k0gmxr",
+        "subscriptionId": 3
+    }
+}
+```
+
+Errors (HTTP handled by backend)
+
+- `401` — unauthenticated or not an agent
+- `404` — plan not found or inactive
+- `409` — agent already has an active subscription
+- `503` — payment provider unreachable/misconfigured
+
+Price/currency/duration are snapshotted from the plan row (the database is the source of truth, never the request).
+
+---
+
+## Webhook from Chapa (public, signed)
+
+POST
+
+```
+/api/payments/chapa/webhook
+```
+
+Chapa sends `payment.success` / `payment.failed` / `payment.cancelled` / `payment.incomplete` / `payment.blocked` events carrying `merchant_reference` and `chapa_reference`. Signature verification applies over the raw body (HMAC-SHA256, webhook secret) sent in the `chapa-signature` header. Only `mode = test` events are honored.
+
+Replies
+
+- `200` — processed (stops Chapa retries)
+- `401` — signature verification failed (no processing)
+- `502` — processing failed (Chapa will retry)
+
+On success the backend re-verifies the payment via `GET /payments/{chapa_reference}/verify` (status `success`, cents amount, currency, merchant reference) before activating the subscription.
+
+---
+
+## Chapa Callback (public)
+
+GET
+
+```
+/api/payments/chapa/callback
+```
+
+Query params: `status`, `tx_ref` (or `merchant_reference`).
+
+Backend re-verifies via the Chapa API (never trusts the query string), then redirects the browser to
+
+```
+{CLIENT_URL}/agent/subscription/result?status=<outcome>&tx_ref=<txRef>
+```
+
+---
+
+## Current Subscription (agent)
+
+GET
+
+```
+/api/subscriptions/current
+```
+
+Response — normalizes expiration lazily. `isActive` is derived from DB state and the `expiresAt`.
+
+```json
+{
+    "success": true,
+    "data": {
+        "subscription": null,
+        "payment": null
+    }
+}
+```
+
+```json
+{
+    "success": true,
+    "data": {
+        "subscription": {
+            "id": 3,
+            "status": "active",
+            "amount": "500.00",
+            "currency": "ETB",
+            "startsAt": "2026-09-23T15:07:29.000Z",
+            "expiresAt": "2026-10-23T15:07:29.000Z",
+            "isActive": true,
+            "plan": { "slug": "basic", "name": "Basic" }
+        },
+        "payment": { "status": "success", "provider": "chapa", "mode": "test" }
+    }
+}
+```
+
+---
+
 # API Authorization Matrix
 
 | Endpoint | Guest | Buyer | Agent | Admin |
@@ -971,6 +1131,12 @@ Public
 | Messages | ❌ | ✅ | ✅ | ❌ |
 | Add Property | ❌ | ❌ | ✅ | ❌ |
 | Edit Own Property | ❌ | ❌ | ✅ | ❌ |
+| List Subscription Plans | ✅ | ✅ | ✅ | ✅ |
+| Subscription Checkout | ❌ | ❌ | ✅ | ❌ |
+| Current Subscription | ❌ | ❌ | ✅ | ❌ |
+| Chapa Webhook | ✅ | ✅ | ✅ | ✅ |
+| Chapa Callback | ✅ | ✅ | ✅ | ✅ |
+| Subscription Plan CRUD | ❌ | ❌ | ❌ | ✅ |
 | Approve Agent | ❌ | ❌ | ❌ | ✅ |
 | User Management | ❌ | ❌ | ❌ | ✅ |
 

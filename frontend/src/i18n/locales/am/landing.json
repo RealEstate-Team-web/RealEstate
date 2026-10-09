@@ -23,5 +23,7 @@
   "pricing_eyebrow": "ዋጋዎች",
   "pricing_title": "የአባልነት እቅዶች",
   "pricing_subtitle": "ከፍላጎቶችዎ ጋር የሚስማማውን እቅድ ይምረጡ እና ንብረቶችዎን ለብዙ ገዢዎች ማቅረብ ይጀምሩ።",
-  "pricing_cta": "ይጀምሩ"
+  "pricing_cta": "ይጀምሩ",
+  "pricing_cta_checkout_starting": "ክፍያ በመጀመር ላይ...",
+  "pricing_checkout_error": "ክፍያውን መጀመር አልተቻለም። እባክዎ እንደገና ይሞክሩ።"
 }

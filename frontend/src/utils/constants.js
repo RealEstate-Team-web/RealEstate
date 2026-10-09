@@ -26,6 +26,7 @@ export const ROUTES = {
   agentSettings: '/agent/settings',
   agentNotifications: '/agent/notifications',
   agentSubscription: '/agent/subscription',
+  agentSubscriptionResult: '/agent/subscription/result',
   admin: '/admin',
   adminSubscriptionPlans: '/admin/subscription-plans',
 }

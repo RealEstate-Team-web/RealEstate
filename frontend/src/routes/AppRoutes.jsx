@@ -30,6 +30,7 @@ import AgentMessages from '../pages/agent/Messages';
 import AgentSettings from '../pages/agent/Settings';
 import AgentNotifications from '../pages/agent/Notifications';
 import AgentSubscription from '../pages/agent/Subscription';
+import AgentSubscriptionResult from '../pages/agent/SubscriptionResult';
 
 import DashboardLayout from '../hooks/layouts/DashboardLayout';
 import Dashboard from '../pages/buyer/Dashboard';
@@ -148,6 +149,7 @@ export const AppRoutes = () => {
             <Route path="profile" element={<AgentProfile />} />
             <Route path="settings" element={<AgentSettings />} />
             <Route path="notifications" element={<AgentNotifications />} />
+            <Route path="subscription/result" element={<AgentSubscriptionResult />} />
             <Route path="subscription" element={<AgentSubscription />} />
             <Route path="*" element={<Navigate to={ROUTES.agent} replace />} />
           </Route>

@@ -54,13 +54,15 @@ app.use(
   })
 );
 
-// 3. BODY PARSERS
+
 app.use(
   express.json({
     verify: (req, res, buf) => {
       if (buf && buf.length) req.rawBody = buf;
     },
+
   })
+
 );
 app.use(express.urlencoded({ extended: true }));
 

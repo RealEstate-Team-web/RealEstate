@@ -1146,6 +1146,9 @@ favorites
 visit_bookings
 messages
 notifications
+subscription_plans
+subscriptions
+payments
 ```
 
 ## Columns
@@ -1195,7 +1198,109 @@ category_id
 
 ---
 
-# 27. Security Requirements
+# 27. Table 14 — subscription_plans
+
+### Purpose
+
+Defines the sellable agent subscription tiers. Seeded data only (see `backend/database/migrations/017_*`); committed plans are treated as reference data.
+
+### Fields
+
+| Column | Type | Notes |
+|---|---|---|
+| `id` | BIGINT UNSIGNED PK | |
+| `slug` | VARCHAR(50) UNIQUE | e.g. `basic`, `premium`, `gold` |
+| `name` | VARCHAR(100) | |
+| `description` | TEXT | |
+| `price` | DECIMAL(10,2) | Base price in `currency` |
+| `currency` | VARCHAR(3) | e.g. `ETB` |
+| `duration_days` | SMALLINT UNSIGNED | Subscription length in days |
+| `is_active` | TINYINT(1) | Admin can toggle availability |
+| `sort_order` | INT | Display order |
+| `created_at` / `updated_at` | TIMESTAMP | |
+
+### Relationship
+
+- One `subscription_plans` → many `subscriptions`
+
+---
+
+# 28. Table 15 — subscriptions
+
+### Purpose
+
+Tracks each agent's subscription lifecycle. Status is the source of truth for whether an agent may publish properties.
+
+### Fields
+
+| Column | Type | Notes |
+|---|---|---|
+| `id` | BIGINT UNSIGNED PK | |
+| `user_id` | BIGINT UNSIGNED FK → users | Agent; `ON DELETE CASCADE` |
+| `plan_id` | BIGINT UNSIGNED FK → subscription_plans | |
+| `status` | ENUM('pending','active','expired','cancelled') | Indexed |
+| `amount` | DECIMAL(10,2) | Snapshot from plan at checkout |
+| `currency` | VARCHAR(3) | Snapshot |
+| `duration_days` | SMALLINT UNSIGNED | Snapshot |
+| `starts_at` | TIMESTAMP NULL | Set on activation |
+| `expires_at` | TIMESTAMP NULL | `starts_at + duration_days` |
+| `created_at` / `updated_at` | TIMESTAMP | |
+
+Indexes: `user_id`, `status`, `(user_id, status)`.
+
+### State transitions
+
+```
+pending ──(webhook verified, via API verify)──▶ active ──(expires_at passed)──▶ expired
+   │                                              │
+   └──(superseded/abandoned)──▶ cancelled          └──(manual)──▶ cancelled
+```
+
+- `active` is the only effective state. `expired` is applied lazily on read (`expireOverdueByUser`).
+- `created_at`/`expires_at` never implicit; `expires_at = DATE_ADD(starts_at, INTERVAL duration_days DAY)`.
+- One agent may have at most one `active` subscription (backend rejects a second checkout while one exists).
+
+---
+
+# 29. Table 16 — payments
+
+### Purpose
+
+Records every Chapa payment attempt for a subscription. One subscription may have several payment attempts (e.g. a failed first attempt followed by a successful retry).
+
+### Fields
+
+| Column | Type | Notes |
+|---|---|---|
+| `id` | BIGINT UNSIGNED PK | |
+| `subscription_id` | BIGINT UNSIGNED FK → subscriptions | `ON DELETE CASCADE` |
+| `user_id` | BIGINT UNSIGNED FK → users | `ON DELETE CASCADE` |
+| `provider` | VARCHAR(20) | `chapa` |
+| `tx_ref` | VARCHAR(100) UNIQUE | `SUB-AGENT-{userId}-{ts}-{rand}` |
+| `chapa_reference` | VARCHAR(100) NULL | Chapa's id, stored on success |
+| `amount` | DECIMAL(10,2) | Matches subscription snapshot |
+| `currency` | VARCHAR(3) | |
+| `status` | ENUM('pending','success','failed','cancelled') | Indexed |
+| `mode` | VARCHAR(10) | `test` |
+| `failure_reason` | VARCHAR(255) NULL | e.g. user_canceled |
+| `created_at` / `updated_at` | TIMESTAMP | |
+
+Indexes: `subscription_id`, `user_id`, `tx_ref` (unique), `status`.
+
+### State transitions
+
+```
+pending ──(success)──▶ success
+   │────────(failure)──▶ failed
+   └────────(superseded)──▶ cancelled
+```
+
+- `tx_ref` uniqueness + `WHERE status='pending'` guards make activation idempotent against webhook retries.
+- Amount/currency/tx_ref must be re-verified against Chapa's API before a payment is marked `success`.
+
+---
+
+# 30. Security Requirements
 
 - Passwords must be hashed using bcrypt.
 - Password hashes must never be exposed in API responses.
@@ -1211,7 +1316,7 @@ category_id
 
 ---
 
-# 28. Final Schema
+# 31. Final Schema
 
 ```text
 users
@@ -1222,7 +1327,10 @@ users
 ├── favorites
 ├── visit_bookings
 ├── messages
-└── notifications
+├── notifications
+└── subscriptions ─── payments
+                   │
+                   └── subscription_plans
 
 property_categories
 │
