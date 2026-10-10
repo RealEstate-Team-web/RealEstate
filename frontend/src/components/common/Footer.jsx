@@ -181,33 +181,48 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/*  NEWSLETTER  */}
+          {/*  TEAMS  */}
           <div>
             <h3 className="mb-4 text-[12px] font-semibold leading-5 text-white">
-              {t("footer_stay_updated")}
+              {t("footer_teams")}
             </h3>
 
-            <p className="mb-3 max-w-[270px] text-[12px] leading-[1.5] text-[#8FA1AA]">
-              {t("footer_newsletter_blurb")}
-            </p>
+            <ul className="space-y-2">
 
-            <form
-              onSubmit={(e) => e.preventDefault()}
-              className="flex w-full max-w-[300px]"
-            >
-              <input
-                type="email"
-                placeholder={t("footer_email_placeholder")}
-                className="h-9 min-w-0 flex-1 rounded-l-md border border-[#334B56] bg-[#1B3039] px-3 text-[11px] leading-none text-white outline-none placeholder:text-[#647983] focus:border-[#0F9690]"
-              />
+              <li>
+                <a
+                  href="https://github.com/MilaDev7"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[12px] leading-5 transition-colors hover:text-white"
+                >
+                  Milion
+                </a>
+              </li>
 
-              <button
-                type="submit"
-                className="h-9 shrink-0 rounded-r-md bg-[#0F9690] px-4 text-[11px] font-medium leading-none text-white transition-colors hover:bg-[#0D827D]"
-              >
-                {t("footer_subscribe")}
-              </button>
-            </form>
+              <li>
+                <a
+                  href="https://github.com/belkysupreme22"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[12px] leading-5 transition-colors hover:text-white"
+                >
+                  Beamlak
+                </a>
+              </li>
+
+              <li>
+                <a
+                  href="https://github.com/tot8894/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[12px] leading-5 transition-colors hover:text-white"
+                >
+                  Shabel
+                </a>
+              </li>
+
+            </ul>
 
             {/* Social */}
             <div className="mt-4 flex gap-2">
